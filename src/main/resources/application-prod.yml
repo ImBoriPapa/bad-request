@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password: 1234
+  h2:
+    console:
+      enabled: true
+      path: /h2/console
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true # log
+        show_sql: true
+    open-in-view: false
+    database-platform: org.hibernate.dialect.H2Dialect
+  logging:
+    level:
+      org.hibernate.SQL:
+        type.descriptor.sql: trace
+        SQL: DEBUG
+
+logging:
+  level:
+    root: info
+    org.springframework.orm.jpa: DEBUG
+    org.springframework.transaction: DEBUG
+
+message:
+  hello: hello
+
+
+
+
