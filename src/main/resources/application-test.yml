@@ -8,7 +8,7 @@ spring:
       max-request-size: 10MB
   config:
     activate:
-      on-profile: dev
+      on-profile: test
 
   datasource:
     driver-class-name: org.h2.Driver
