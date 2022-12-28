@@ -24,18 +24,30 @@ ext {
 }
 
 dependencies {
+	//redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	//hateoas
 	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+	//security
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+	//web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+
 	implementation 'org.codehaus.groovy:groovy'
 	compileOnly 'org.projectlombok:lombok'
+	//h2
 	runtimeOnly 'com.h2database:h2'
+	//client
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
+	//test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 	testImplementation 'org.springframework.security:spring-security-test'
+	//embedded-redis
+	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
 }
 
 tasks.named('test') {

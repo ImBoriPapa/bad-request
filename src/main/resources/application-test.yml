@@ -2,6 +2,9 @@ server:
   port: 8080
 
 spring:
+  redis:
+    host: localhost
+    port: 6379
   servlet:
     multipart:
       max-file-size: 10MB
@@ -12,7 +15,7 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test
+    url: jdbc:h2:mem:testdb;MODE=MySQL
     username: sa
     password: 1234
   h2:
@@ -26,6 +29,7 @@ spring:
       hibernate:
         format_sql: true # log
         show_sql: true
+        dialect: org.hibernate.dialect.MariaDBDialect
     open-in-view: false
     database-platform: org.hibernate.dialect.H2Dialect
   logging:
