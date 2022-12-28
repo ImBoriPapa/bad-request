@@ -1,0 +1,10 @@
+server:
+  port: 8080
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import:
+      -optional: file:/home/ec2-user/yml/application-prod.yml
+
