@@ -1,6 +1,7 @@
 package com.study.badrequest.Member.entity;
 
-import com.study.badrequest.Member.repository.MemberRepository;
+import com.study.badrequest.Member.domain.entity.Member;
+import com.study.badrequest.Member.domain.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

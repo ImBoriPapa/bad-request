@@ -1,4 +1,4 @@
-package com.study.badrequest.Member.entity;
+package com.study.badrequest.Member.domain.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -14,7 +14,6 @@ public class Profile {
     @Column(name = "PROFILE_ID")
     private Long id;
     private String nickname;
-
     private String aboutMe;
     @Builder
     public Profile(String nickname, String aboutMe) {

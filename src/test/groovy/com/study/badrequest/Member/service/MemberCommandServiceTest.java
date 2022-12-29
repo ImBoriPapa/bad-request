@@ -1,12 +1,13 @@
 package com.study.badrequest.Member.service;
 
+import com.study.badrequest.Member.domain.service.MemberCommandService;
 import com.study.badrequest.Member.dto.CreateMemberForm;
-import com.study.badrequest.Member.entity.Member;
-import com.study.badrequest.Member.entity.Profile;
-import com.study.badrequest.Member.repository.MemberRepository;
-import com.study.badrequest.Member.repository.ProfileRepository;
-import com.study.badrequest.exception.CustomMemberException;
-import org.assertj.core.api.Assertions;
+import com.study.badrequest.Member.domain.entity.Member;
+import com.study.badrequest.Member.domain.repository.MemberRepository;
+import com.study.badrequest.Member.domain.repository.ProfileRepository;
+import com.study.badrequest.Member.dto.UpdateMemberForm;
+import com.study.badrequest.commons.exception.CustomMemberException;
+import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("dev")
 @Transactional
+@Slf4j
 class MemberCommandServiceTest {
 
     @Autowired
@@ -48,7 +46,7 @@ class MemberCommandServiceTest {
                 .contact("01011111234")
                 .build();
         //when
-        Member signup = memberCommandService.signup(form);
+        Member signup = memberCommandService.signupMember(form);
         Member findMember = memberRepository.findById(signup.getId()).get();
         //then
         assertThat(findMember.getEmail()).isEqualTo(signup.getEmail());
@@ -80,7 +78,7 @@ class MemberCommandServiceTest {
                 .contact("01011111234")
                 .build();
         //when
-        Member signup = memberCommandService.signup(form);
+        Member signup = memberCommandService.signupMember(form);
         Member member = memberRepository.findById(signup.getId()).get();
         member.changePermissions(Member.Authority.TEACHER);
         //then
@@ -98,13 +96,21 @@ class MemberCommandServiceTest {
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
+
         String newContact = "01012341111";
+
+        UpdateMemberForm updateMemberForm = UpdateMemberForm.builder()
+                .contact(newContact)
+                .build();
         //when
-        Member signup = memberCommandService.signup(form);
-        Member member = memberRepository.findById(signup.getId()).get();
-        memberCommandService.changeContact(member.getId(), newContact);
+        Member signup = memberCommandService.signupMember(form);
+
+        memberCommandService.updateMember(signup.getId(), updateMemberForm);
+
+        Member findMember = memberRepository.findById(signup.getId()).get();
         //then
-        assertThat(member.getContact()).isEqualTo(newContact);
+        assertThat(findMember.getContact()).isEqualTo(newContact);
+        assertThat(passwordEncoder.matches(form.getPassword(), findMember.getPassword())).isTrue();
     }
 
     @Test
@@ -119,12 +125,51 @@ class MemberCommandServiceTest {
                 .contact("01011111234")
                 .build();
         String newPassword = "newPassword1234";
+
+        UpdateMemberForm updateMemberForm = UpdateMemberForm.builder()
+                .password(form.getPassword())
+                .newPassword(newPassword)
+                .build();
+
         //when
-        Member signup = memberCommandService.signup(form);
+        Member signup = memberCommandService.signupMember(form);
+        memberCommandService.updateMember(signup.getId(), updateMemberForm);
+
         Member member = memberRepository.findById(signup.getId()).get();
-        memberCommandService.changePassword(member.getId(), form.getPassword(), newPassword);
         //then
         assertThat(passwordEncoder.matches(newPassword, member.getPassword())).isTrue();
+
+    }
+
+    @Test
+    @DisplayName("연락처,비밀번호 변경")
+    void changeContactPasswordTest() throws Exception {
+        //given
+        CreateMemberForm form = CreateMemberForm.builder()
+                .email("email@email.com")
+                .password("password1234")
+                .name("name")
+                .nickname("nickname")
+                .contact("01011111234")
+                .build();
+
+        String newPassword = "newPassword1234";
+        String newContact = "01012341111";
+
+        UpdateMemberForm updateMemberForm = UpdateMemberForm.builder()
+                .password(form.getPassword())
+                .newPassword(newPassword)
+                .contact(newContact)
+                .build();
+
+        //when
+        Member signup = memberCommandService.signupMember(form);
+        memberCommandService.updateMember(signup.getId(), updateMemberForm);
+
+        Member findMember = memberRepository.findById(signup.getId()).get();
+        //then
+        assertThat(passwordEncoder.matches(newPassword, findMember.getPassword())).isTrue();
+        assertThat(findMember.getContact()).isEqualTo(newContact);
     }
 
     @Test
@@ -139,7 +184,7 @@ class MemberCommandServiceTest {
                 .contact("01011111234")
                 .build();
         //when
-        Member signup = memberCommandService.signup(form);
+        Member signup = memberCommandService.signupMember(form);
         Member member = memberRepository.findById(signup.getId()).get();
         Long profileId = member.getProfile().getId();
         memberCommandService.resignMember(member.getId(), form.getPassword());

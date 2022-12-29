@@ -1,12 +1,10 @@
-package com.study.badrequest.Member.entity;
+package com.study.badrequest.Member.domain.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor

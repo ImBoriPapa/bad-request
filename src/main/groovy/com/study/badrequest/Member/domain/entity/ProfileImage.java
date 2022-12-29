@@ -1,4 +1,4 @@
-package com.study.badrequest.Member.entity;
+package com.study.badrequest.Member.domain.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

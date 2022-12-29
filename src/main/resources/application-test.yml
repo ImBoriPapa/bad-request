@@ -44,7 +44,7 @@ logging:
     org.springframework.transaction: DEBUG
 
 message:
-  hello: it is test server
+  hello: This is test server
 
 token:
   access-time: 60

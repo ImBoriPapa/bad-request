@@ -1,9 +1,10 @@
-package com.study.badrequest.Member.entity;
+package com.study.badrequest.Member.domain.entity;
 
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -119,8 +120,10 @@ public class Member implements UserDetails {
     }
 
     public void changeContact(String contact) {
-        this.contact = contact;
-        this.updatedAt = LocalDateTime.now();
+        if (StringUtils.hasLength(contact)) {
+            this.contact = contact;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 
 }

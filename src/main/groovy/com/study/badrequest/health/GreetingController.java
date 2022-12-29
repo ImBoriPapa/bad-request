@@ -1,4 +1,4 @@
-package com.study.badrequest.controller;
+package com.study.badrequest.health;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class GreetingController {
 
     @Value("${message.hello}")
-    public String hello;
+    public String serverKind;
 
     @GetMapping("/")
-    public String greeting(){
+    public String responseServerKind(){
 
-        return hello;
+        return serverKind;
     }
 }

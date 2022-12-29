@@ -1,18 +1,18 @@
-package com.study.badrequest.Member.service;
+package com.study.badrequest.Member.domain.service;
 
 import com.study.badrequest.Member.dto.CreateMemberForm;
-import com.study.badrequest.Member.entity.Member;
-import com.study.badrequest.Member.entity.Profile;
-import com.study.badrequest.Member.repository.MemberRepository;
-import com.study.badrequest.consts.CustomStatus;
-import com.study.badrequest.exception.CustomMemberException;
+import com.study.badrequest.Member.domain.entity.Member;
+import com.study.badrequest.Member.domain.entity.Profile;
+import com.study.badrequest.Member.domain.repository.MemberRepository;
+import com.study.badrequest.Member.dto.UpdateMemberForm;
+import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.commons.exception.CustomMemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import org.springframework.util.StringUtils;
 
 @Service
 @Transactional
@@ -23,7 +23,7 @@ public class MemberCommandService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-    public Member signup(CreateMemberForm form) {
+    public Member signupMember(CreateMemberForm form) {
         log.info("[signup]");
         Profile profile = Profile.builder()
                 .nickname(form.getNickname())
@@ -48,32 +48,39 @@ public class MemberCommandService {
                 .changePermissions(authority);
     }
 
-    public void changePassword(Long memberId, String password, String newPassword) {
-        log.info("[changePassword]");
+    public Member updateMember(Long memberId, UpdateMemberForm form) {
+        log.info("[updateMember]");
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
 
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalArgumentException("");
-        }
-        member.changePassword(passwordEncoder.encode(newPassword));
-    }
+        changePassword(member, form.getPassword(), form.getNewPassword());
 
-    public void changeContact(Long memberId, String contact) {
-        log.info("[changeContact]");
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
+        member.changeContact(form.getContact());
 
-        member.changeContact(contact);
+        return member;
     }
 
     public void resignMember(Long memberId, String password) {
         log.info("[resignMember]");
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
-        if (!passwordEncoder.matches(password, member.getPassword())) {
-            throw new IllegalArgumentException("");
-        }
+        passwordCheck(password, member.getPassword());
         memberRepository.delete(member);
     }
+
+    private void changePassword(Member member, String password, String newPassword) {
+        if (StringUtils.hasLength(password) && StringUtils.hasLength(newPassword)) {
+            log.info("[changePassword]");
+            passwordCheck(password, member.getPassword());
+            member.changePassword(passwordEncoder.encode(newPassword));
+        }
+    }
+
+    private void passwordCheck(String password, String storedPassword) {
+        if (!passwordEncoder.matches(password, storedPassword)) {
+            log.info("[passwordCheck]");
+            throw new CustomMemberException(CustomStatus.WRONG_PASSWORD);
+        }
+    }
+
 }
