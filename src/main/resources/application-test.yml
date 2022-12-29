@@ -5,6 +5,7 @@ spring:
   redis:
     host: localhost
     port: 6379
+
   servlet:
     multipart:
       max-file-size: 10MB
@@ -45,8 +46,10 @@ logging:
     org.springframework.transaction: DEBUG
 
 message:
-  hello: hello
+  hello: it is test server
 
-
+token:
+  access-time: 600
+  refresh-time: 604800
 
 

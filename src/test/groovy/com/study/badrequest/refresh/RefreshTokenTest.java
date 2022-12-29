@@ -43,4 +43,26 @@ class RefreshTokenTest {
 
     }
 
+    @Test
+    @DisplayName("토큰 교체")
+    void replaceToken() throws Exception{
+        //given
+        Long id = 1L;
+        String token = UUID.randomUUID().toString();
+        RefreshToken refreshToken = RefreshToken.builder()
+                .id(id)
+                .token(token)
+                .isLogin(true)
+                .build();
+        String newToken = token + "is new token";
+        //when
+        RefreshToken save = refreshTokenRepository.save(refreshToken);
+        save.replaceToken(newToken);
+        refreshTokenRepository.save(save);
+
+        //then
+        Assertions.assertThat(save.getToken()).isEqualTo(newToken);
+
+    }
+
 }

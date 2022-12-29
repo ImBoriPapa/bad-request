@@ -1,5 +1,6 @@
 package com.study.badrequest.refresh;
 
+
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
@@ -7,11 +8,9 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 
-
 @Getter
-@RedisHash("refresh")
+@RedisHash(value = "refresh", timeToLive = 604800)
 public class RefreshToken implements Serializable {
-
     @Id
     private Long id;
     private String token;
@@ -24,7 +23,7 @@ public class RefreshToken implements Serializable {
         this.isLogin = isLogin;
     }
 
-    public void updateToken(String token) {
+    public void replaceToken(String token) {
         this.token = token;
     }
 }
