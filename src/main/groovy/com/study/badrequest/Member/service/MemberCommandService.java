@@ -4,6 +4,8 @@ import com.study.badrequest.Member.dto.CreateMemberForm;
 import com.study.badrequest.Member.entity.Member;
 import com.study.badrequest.Member.entity.Profile;
 import com.study.badrequest.Member.repository.MemberRepository;
+import com.study.badrequest.consts.CustomStatus;
+import com.study.badrequest.exception.CustomMemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,14 +44,14 @@ public class MemberCommandService {
     public void changePermissions(Long memberId, Member.Authority authority) {
         log.info("[changePermissions]");
         memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(""))
+                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER))
                 .changePermissions(authority);
     }
 
     public void changePassword(Long memberId, String password, String newPassword) {
         log.info("[changePassword]");
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
 
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new IllegalArgumentException("");
@@ -60,7 +62,7 @@ public class MemberCommandService {
     public void changeContact(Long memberId, String contact) {
         log.info("[changeContact]");
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
 
         member.changeContact(contact);
     }
@@ -68,7 +70,7 @@ public class MemberCommandService {
     public void resignMember(Long memberId, String password) {
         log.info("[resignMember]");
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
         if (!passwordEncoder.matches(password, member.getPassword())) {
             throw new IllegalArgumentException("");
         }

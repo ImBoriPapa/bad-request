@@ -5,6 +5,7 @@ import com.study.badrequest.Member.entity.Member;
 import com.study.badrequest.Member.entity.Profile;
 import com.study.badrequest.Member.repository.MemberRepository;
 import com.study.badrequest.Member.repository.ProfileRepository;
+import com.study.badrequest.exception.CustomMemberException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -49,7 +51,7 @@ class MemberCommandServiceTest {
         Member signup = memberCommandService.signup(form);
         Member findMember = memberRepository.findById(signup.getId()).get();
         //then
-        Assertions.assertThat(findMember.getEmail()).isEqualTo(signup.getEmail());
+        assertThat(findMember.getEmail()).isEqualTo(signup.getEmail());
 
     }
 
@@ -61,8 +63,8 @@ class MemberCommandServiceTest {
         //when
 
         //then
-        Assertions.assertThatThrownBy(() -> memberCommandService.changePermissions(100L, Member.Authority.TEACHER))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> memberCommandService.changePermissions(100L, Member.Authority.TEACHER))
+                .isInstanceOf(CustomMemberException.class);
 
     }
 
@@ -82,7 +84,7 @@ class MemberCommandServiceTest {
         Member member = memberRepository.findById(signup.getId()).get();
         member.changePermissions(Member.Authority.TEACHER);
         //then
-        Assertions.assertThat(member.getAuthority()).isEqualTo(Member.Authority.TEACHER);
+        assertThat(member.getAuthority()).isEqualTo(Member.Authority.TEACHER);
     }
 
     @Test
@@ -102,7 +104,7 @@ class MemberCommandServiceTest {
         Member member = memberRepository.findById(signup.getId()).get();
         memberCommandService.changeContact(member.getId(), newContact);
         //then
-        Assertions.assertThat(member.getContact()).isEqualTo(newContact);
+        assertThat(member.getContact()).isEqualTo(newContact);
     }
 
     @Test
@@ -122,7 +124,7 @@ class MemberCommandServiceTest {
         Member member = memberRepository.findById(signup.getId()).get();
         memberCommandService.changePassword(member.getId(), form.getPassword(), newPassword);
         //then
-        Assertions.assertThat(passwordEncoder.matches(newPassword, member.getPassword())).isTrue();
+        assertThat(passwordEncoder.matches(newPassword, member.getPassword())).isTrue();
     }
 
     @Test
@@ -143,7 +145,7 @@ class MemberCommandServiceTest {
         memberCommandService.resignMember(member.getId(), form.getPassword());
 
         //then
-        Assertions.assertThat(memberRepository.findById(member.getId()).isEmpty()).isTrue();
-        Assertions.assertThat(profileRepository.findById(profileId).isEmpty()).isTrue();
+        assertThat(memberRepository.findById(member.getId()).isEmpty()).isTrue();
+        assertThat(profileRepository.findById(profileId).isEmpty()).isTrue();
     }
 }
