@@ -17,9 +17,7 @@ public class Board {
     private String title;
 
     private String context;
-
-    private Integer like;
-
+    private Integer likeCount;
 
     private String tag;
 
@@ -29,10 +27,10 @@ public class Board {
     private LocalDateTime updatedAt;
 
 
-    public Board(String title, String context, Integer like, String tag, Category category) {
+    public Board(String title, String context, Integer likeCount, String tag, Category category) {
         this.title = title;
         this.context = context;
-        this.like = like;
+        this.likeCount = likeCount;
         this.tag = tag;
         this.category = category;
     }
