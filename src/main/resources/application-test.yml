@@ -11,7 +11,7 @@ spring:
       max-request-size: 10MB
   config:
     activate:
-      on-profile: dev
+      on-profile: test
 
   datasource:
     driver-class-name: org.h2.Driver
@@ -44,11 +44,11 @@ logging:
     org.springframework.transaction: DEBUG
 
 message:
-  hello: This is dev server
+  hello: This is test server
 
 token:
   secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
-  access-life: 600
-  refresh-life: 604800
+  access-life: 6
+  refresh-life: 10
 
 
