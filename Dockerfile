@@ -9,4 +9,4 @@ COPY ${JAR_FILE} app.jar
 
 # 시스템 진입점 정의
 #ENTRYPOINT ["java","-Dspring.profiles.active=test","-jar","/app.jar"]
-ENTRYPOINT ["java","--spring.config.import=file:./home/application-prod.yml","-jar","/app.jar"]
+ENTRYPOINT ["java","-Dspring.config.import=file:./home/application-prod.yml","-jar","/app.jar"]
