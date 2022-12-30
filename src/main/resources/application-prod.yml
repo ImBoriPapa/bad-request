@@ -6,5 +6,5 @@ spring:
     activate:
       on-profile: prod
     import:
-      -optional: file:/home/ec2-user/yml/application-prod.yml
+      -optional: file:/home/application-prod.yml
 

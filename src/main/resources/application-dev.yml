@@ -47,7 +47,8 @@ message:
   hello: This is dev server
 
 token:
-  access-time: 60
-  refresh-time: 604800
+  secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
+  access-life: 6
+  refresh-life: 10
 
 
