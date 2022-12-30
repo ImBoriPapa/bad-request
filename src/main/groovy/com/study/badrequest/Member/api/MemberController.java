@@ -31,7 +31,7 @@ public class MemberController {
         Member member = memberCommandService.signupMember(form);
 
         URI location = linkTo(MemberCommandService.class).slash(member.getId()).toUri();
-
+        
         return ResponseEntity
                 .created(location)
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, new MemberSignupResult(member)));
