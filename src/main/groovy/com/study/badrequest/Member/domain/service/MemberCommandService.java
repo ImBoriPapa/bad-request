@@ -6,7 +6,7 @@ import com.study.badrequest.Member.domain.entity.Profile;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.CustomMemberException;
+import com.study.badrequest.commons.exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,14 +44,14 @@ public class MemberCommandService {
     public void changePermissions(Long memberId, Member.Authority authority) {
         log.info("[changePermissions]");
         memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER))
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .changePermissions(authority);
     }
 
     public Member updateMember(Long memberId, UpdateMemberForm form) {
         log.info("[updateMember]");
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
         changePassword(member, form.getPassword(), form.getNewPassword());
 
@@ -63,7 +63,7 @@ public class MemberCommandService {
     public void resignMember(Long memberId, String password) {
         log.info("[resignMember]");
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomMemberException(CustomStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
         passwordCheck(password, member.getPassword());
         memberRepository.delete(member);
     }
@@ -79,7 +79,7 @@ public class MemberCommandService {
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
             log.info("[passwordCheck]");
-            throw new CustomMemberException(CustomStatus.WRONG_PASSWORD);
+            throw new MemberException(CustomStatus.WRONG_PASSWORD);
         }
     }
 

@@ -6,7 +6,7 @@ import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.Member.domain.repository.ProfileRepository;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
-import com.study.badrequest.commons.exception.CustomMemberException;
+import com.study.badrequest.commons.exception.MemberException;
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,7 +62,7 @@ class MemberCommandServiceTest {
 
         //then
         assertThatThrownBy(() -> memberCommandService.changePermissions(100L, Member.Authority.TEACHER))
-                .isInstanceOf(CustomMemberException.class);
+                .isInstanceOf(MemberException.class);
 
     }
 

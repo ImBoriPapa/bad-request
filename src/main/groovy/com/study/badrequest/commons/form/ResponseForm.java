@@ -1,14 +1,23 @@
 package com.study.badrequest.commons.form;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.BasicException;
+import com.study.badrequest.commons.exception.JwtAuthenticationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class ResponseForm {
 
     @NoArgsConstructor
@@ -51,5 +60,6 @@ public class ResponseForm {
             this.message = ex.getErrorMessage();
         }
     }
+
 
 }

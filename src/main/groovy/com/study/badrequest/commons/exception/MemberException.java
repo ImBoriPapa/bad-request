@@ -5,9 +5,9 @@ import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class CustomMemberException extends BasicException {
+public class MemberException extends BasicException {
 
-    public CustomMemberException(String message) {
+    public MemberException(String message) {
         super(message);
     }
 
@@ -26,15 +26,15 @@ public class CustomMemberException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public CustomMemberException() {
+    public MemberException() {
         super();
     }
 
-    public CustomMemberException(CustomStatus status) {
+    public MemberException(CustomStatus status) {
         super(status);
     }
 
-    public CustomMemberException(CustomStatus status, BindingResult bindingResult) {
+    public MemberException(CustomStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

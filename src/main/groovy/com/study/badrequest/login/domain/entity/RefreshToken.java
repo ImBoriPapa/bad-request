@@ -1,4 +1,4 @@
-package com.study.badrequest.refresh.domain.entity;
+package com.study.badrequest.login.domain.entity;
 
 
 import lombok.Builder;
