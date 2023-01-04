@@ -27,7 +27,10 @@ public class EmbeddedRedisConfig {
     @PostConstruct
     public void redisServer() throws IOException {
         int port = isRedisRunning() ? findAvailablePort() : redisPort;
-        redisServer = new RedisServer(port);
+        redisServer = RedisServer.builder()
+                .port(port)
+                .setting("maxmemory 128M")
+                .build();
         redisServer.start();
     }
 
@@ -63,11 +66,6 @@ public class EmbeddedRedisConfig {
     /**
      * 해당 port를 사용중인 프로세스 확인하는 sh 실행
      */
-//    private Process executeGrepProcessCommand(int port) throws IOException {
-//        String command = String.format("netstat -nat | grep LISTEN|grep %d", port);
-//        String[] shell = {"/bin/sh", "-c", command};
-//        return Runtime.getRuntime().exec(shell);
-//    }
     private Process executeGrepProcessCommand(int port) throws IOException {
         String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
         if (os.contains("win")) {
