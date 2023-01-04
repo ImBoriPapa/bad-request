@@ -2,7 +2,7 @@ package com.study.badrequest.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.JwtAuthenticationException;
+import com.study.badrequest.exception.JwtAuthenticationException;
 import com.study.badrequest.commons.form.ResponseForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

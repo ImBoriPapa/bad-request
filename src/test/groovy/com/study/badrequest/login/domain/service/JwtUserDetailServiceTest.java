@@ -3,14 +3,11 @@ package com.study.badrequest.login.domain.service;
 import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.MemberException;
 import groovy.util.logging.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j

@@ -1,4 +1,4 @@
-package com.study.badrequest.commons.exception;
+package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import org.springframework.validation.BindingResult;

@@ -8,7 +8,8 @@ public enum JwtStatus {
     EXPIRED("인증 기한 만료"),
     DENIED("인증 실패"),
 
-    EMPTY_TOKEN("토큰없음");
+    EMPTY_TOKEN("토큰없음"),
+    LOGOUT("로그아웃한 토큰");
 
     private String message;
 

@@ -48,7 +48,7 @@ message:
 
 token:
   secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
-  access-life: 6
-  refresh-life: 10
+  access-life: 2
+  refresh-life: 4
 
 

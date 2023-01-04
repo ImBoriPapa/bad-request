@@ -33,5 +33,6 @@ public class JwtUserDetailService implements UserDetailsService {
                         member.getPassword(),
                         member.getAuthorities()))
                 .orElseThrow(() -> new UsernameNotFoundException(CustomStatus.NOTFOUND_MEMBER.getMessage()));
+
     }
 }

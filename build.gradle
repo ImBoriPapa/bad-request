@@ -1,8 +1,8 @@
 plugins {
-	id 'groovy'
-	id 'org.springframework.boot' version '2.7.7'
-	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
-	id 'org.asciidoctor.convert' version '1.5.8'
+    id 'groovy'
+    id 'org.springframework.boot' version '2.7.7'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.8'
 }
 
 group = 'com.study'
@@ -10,56 +10,88 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 ext {
-	set('snippetsDir', file("build/generated-snippets"))
+    set('snippetsDir', file("build/generated-snippets"))
 }
 
 dependencies {
-	//jwt
-	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    testImplementation 'org.projectlombok:lombok:1.18.22'
+    //jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-	//redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	//jpa
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	//hateoas
-	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-	//security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	//web
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+    //redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //hateoas
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    //security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    //web
+    implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	implementation 'org.codehaus.groovy:groovy'
-	compileOnly 'org.projectlombok:lombok'
-	//h2
-	runtimeOnly 'com.h2database:h2'
-	//client
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-	annotationProcessor 'org.projectlombok:lombok'
-	//test
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
-	testImplementation 'org.springframework.security:spring-security-test'
-	//embedded-redis
-	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
+    implementation 'org.codehaus.groovy:groovy'
+    compileOnly 'org.projectlombok:lombok'
+    //h2
+    runtimeOnly 'com.h2database:h2'
+    //client
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    annotationProcessor 'org.projectlombok:lombok'
+    //test
+    testImplementation 'org.projectlombok:lombok:1.18.24'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
+    //embedded-redis
+    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.1'
+}
+
+//spring docs
+ext {
+    snippetDir = file('build/generated-snippets')
+}
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetDir
+}
+
+asciidoctor {
+    dependsOn test
+    inputs.dir snippetDir
+}
+
+asciidoctor.doFirst {
+    delete file('src/main/resources/static/docs')
+}
+
+bootJar {
+    dependsOn asciidoctor
+    copy {
+        from "asciidoctor.outputDir"
+        into 'BOOT-INF/classes/static/docs'
+    }
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
 }
 
 tasks.named('test') {
-	outputs.dir snippetsDir
-	useJUnitPlatform()
+    useJUnitPlatform()
 }
 
-tasks.named('asciidoctor') {
-	inputs.dir snippetsDir
-	dependsOn test
-}

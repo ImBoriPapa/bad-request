@@ -5,11 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class JwtDto {
+public class TokenDto {
     private String accessToken;
     private String refreshToken;
+    private Date accessTokenExpiredAt;
+    private Long refreshTokenExpiredTime;
 }

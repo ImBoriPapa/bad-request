@@ -1,12 +1,13 @@
-package com.study.badrequest.commons.exception;
+package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class TokenException extends BasicException {
-    public TokenException(String message) {
+public class MemberException extends BasicException {
+
+    public MemberException(String message) {
         super(message);
     }
 
@@ -25,15 +26,15 @@ public class TokenException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public TokenException() {
+    public MemberException() {
         super();
     }
 
-    public TokenException(CustomStatus status) {
+    public MemberException(CustomStatus status) {
         super(status);
     }
 
-    public TokenException(CustomStatus status, BindingResult bindingResult) {
+    public MemberException(CustomStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

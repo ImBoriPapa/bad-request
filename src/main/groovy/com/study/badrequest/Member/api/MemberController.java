@@ -6,17 +6,23 @@ import com.study.badrequest.Member.domain.service.MemberCommandService;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
+import com.study.badrequest.login.api.LoginController;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,10 +37,13 @@ public class MemberController {
         Member member = memberCommandService.signupMember(form);
 
         URI location = linkTo(MemberCommandService.class).slash(member.getId()).toUri();
-        
+        Link loginLink = linkTo(LoginController.class).slash("/login").withRel("POST: 로그인");
+        EntityModel<MemberSignupResult> model = EntityModel.of(new MemberSignupResult(member));
+        model.add(loginLink);
+
         return ResponseEntity
                 .created(location)
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, new MemberSignupResult(member)));
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
     @NoArgsConstructor

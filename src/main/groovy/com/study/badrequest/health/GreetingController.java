@@ -1,20 +1,26 @@
 package com.study.badrequest.health;
 
+import com.study.badrequest.utils.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+
+import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
 public class GreetingController {
 
+    private final JwtUtils jwtUtils;
     @Value("${message.hello}")
     public String serverKind;
 
@@ -25,9 +31,12 @@ public class GreetingController {
     }
 
     @GetMapping("/token")
-    public String tokenCheck(HttpHeaders headers) {
+    public String tokenCheck(HttpServletRequest request) {
+        String token = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
-        return "token";
+        log.info("[TOKEN ={}]", token);
+
+        return token;
     }
 
     @Getter
