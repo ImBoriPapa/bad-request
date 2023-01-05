@@ -50,7 +50,9 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
     //embedded-redis
-    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+//    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+    // test-containers
+    testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
