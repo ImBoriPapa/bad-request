@@ -4,7 +4,8 @@ import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.Member.domain.repository.ProfileRepository;
 import com.study.badrequest.Member.domain.service.MemberCommandService;
-import com.study.badrequest.Member.dto.CreateMemberForm;
+
+import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ class MemberCommandServiceTest {
     @DisplayName("회원등록")
     void signupTest() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -71,7 +72,7 @@ class MemberCommandServiceTest {
     @DisplayName("권한 변경 성공")
     void successChangePermissions() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -90,7 +91,7 @@ class MemberCommandServiceTest {
     @DisplayName("연락처 변경")
     void changeContactTest() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -118,7 +119,7 @@ class MemberCommandServiceTest {
     @DisplayName("비밀번호 변경")
     void changePasswordTest() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -146,7 +147,7 @@ class MemberCommandServiceTest {
     @DisplayName("연락처,비밀번호 변경")
     void changeContactPasswordTest() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -177,7 +178,7 @@ class MemberCommandServiceTest {
     @DisplayName("회원탈퇴")
     void resignTest() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")

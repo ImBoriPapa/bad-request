@@ -1,5 +1,7 @@
 package com.study.badrequest.config;
 
+import com.study.badrequest.Member.domain.entity.Member;
+import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.login.domain.service.JwtUserDetailService;
@@ -20,6 +22,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPointFilter jwtAuthenticationEntryPointFilter;
     private final JwtUserDetailService jwtUserDetailService;
+    private final JwtAccessDeniedFilter accessDeniedFilter;
 
 
     @Bean
@@ -32,6 +35,7 @@ public class SecurityConfig {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPointFilter)
+                .accessDeniedHandler(accessDeniedFilter)
                 .and()
                 .userDetailsService(jwtUserDetailService)
                 .authorizeRequests()
@@ -39,6 +43,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST,"/api/v1/member").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
+                .antMatchers("/test/teacher").hasAuthority("ROLL_TEACHER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -88,7 +88,6 @@ public class LoginController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
-
     private static HttpHeaders setTokenInHeader(LoginDto loginDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

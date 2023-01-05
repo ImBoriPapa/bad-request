@@ -39,7 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (StringUtils.hasText(accessToken)) {
 
-
             JwtStatus jwtStatus = jwtUtils.validateToken(accessToken);
 
             switch (jwtStatus) {
@@ -47,9 +46,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     Authentication authentication = jwtUtils.getAuthentication(accessToken);
 
                     if (loginService.loginCheck(authentication.getName())) {
+                        log.info("[JwtAuthenticationFilter .Set SecurityContextHolder Context]");
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     } else
-                        request.setAttribute(JWT_STATUS_HEADER, JwtStatus.LOGOUT);
+                        log.info("[JwtAuthenticationFilter .is Logout token]");
+                    request.setAttribute(JWT_STATUS_HEADER, JwtStatus.LOGOUT);
                     break;
                 case EXPIRED:
                     request.setAttribute(JWT_STATUS_HEADER, JwtStatus.EXPIRED);

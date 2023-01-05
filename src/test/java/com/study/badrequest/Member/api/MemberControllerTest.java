@@ -2,7 +2,7 @@ package com.study.badrequest.Member.api;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.Member.dto.CreateMemberForm;
+import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -40,14 +40,13 @@ class MemberControllerTest {
     @DisplayName("회원가입")
     void 회원가입() throws Exception {
         //given
-        CreateMemberForm form = CreateMemberForm.builder()
+        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
                 .email("tester@test.com")
                 .nickname("tester")
                 .password("test1234!@")
                 .name("테스터")
                 .contact("010-1234-1234")
                 .build();
-
         //when
         mockMvc.perform(post("/api/v1/member")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -81,11 +80,17 @@ class MemberControllerTest {
                                 fieldWithPath("result.memberId").description("식별 아이디"),
                                 fieldWithPath("result.createdAt").description("계정 생성일"),
                                 fieldWithPath("result.links.[0].rel").description("링크 정보"),
-                                fieldWithPath("result.links.[0].href").description("링크")
-                        )
-                ));
+                                fieldWithPath("result.links.[0].href").description("링크"))));
+    }
+
+    @Test
+    @DisplayName("회원 가입 요청 검증 테스트")
+    void createValidation() throws Exception{
+        //given
+
+        //when
+
         //then
 
     }
-
 }

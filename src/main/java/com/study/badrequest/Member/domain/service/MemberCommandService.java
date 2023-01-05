@@ -3,7 +3,7 @@ package com.study.badrequest.Member.domain.service;
 import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.entity.Profile;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
-import com.study.badrequest.Member.dto.CreateMemberForm;
+import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.MemberException;
@@ -23,7 +23,7 @@ public class MemberCommandService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
 
-    public Member signupMember(CreateMemberForm form) {
+    public Member signupMember(MemberRequestForm.CreateMember form) {
         log.info("[signup]");
         Profile profile = Profile.builder()
                 .nickname(form.getNickname())
@@ -34,7 +34,7 @@ public class MemberCommandService {
                 .password(passwordEncoder.encode(form.getPassword()))
                 .name(form.getName())
                 .contact(form.getContact())
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .profile(profile)
                 .build();
 

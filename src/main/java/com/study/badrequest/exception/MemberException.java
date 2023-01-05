@@ -12,7 +12,7 @@ public class MemberException extends BasicException {
     }
 
     @Override
-    public CustomStatus getStatus() {
+    public String getStatus() {
         return super.getStatus();
     }
 

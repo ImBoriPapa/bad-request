@@ -43,7 +43,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         jwtLoginService.loginProcessing(email, password);
@@ -64,7 +64,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .build();
         //when
         memberRepository.save(member);
@@ -88,7 +88,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         //when
@@ -107,7 +107,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         //when

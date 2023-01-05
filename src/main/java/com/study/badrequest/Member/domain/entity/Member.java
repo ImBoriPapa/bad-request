@@ -57,9 +57,9 @@ public class Member implements UserDetails {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-
+    @Getter
     public enum Authority {
-        USER("ROLL_MEMBER"),
+        MEMBER("ROLL_MEMBER"),
         TEACHER("ROLL_MEMBER,ROLL_TEACHER"),
         ADMIN("ROLL_MEMBER,ROLL_TEACHER,ROLL_ADMIN");
 

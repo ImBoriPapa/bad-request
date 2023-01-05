@@ -2,7 +2,6 @@ package com.study.badrequest.Member.entity;
 
 import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -36,7 +34,7 @@ class MemberTest {
                 .password("password1234")
                 .name("member")
                 .contact("01011112222")
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .build();
         //when
         Member save = memberRepository.save(member);
@@ -54,7 +52,7 @@ class MemberTest {
         Member user = Member.createMember()
                 .email("email")
                 .password("password")
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .build();
         Member teacher = Member.createMember()
                 .email("email")

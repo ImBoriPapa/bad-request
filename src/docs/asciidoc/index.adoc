@@ -7,7 +7,7 @@ endif::[]
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels:3
+:toclevels: 2
 :sectlinks:
 
 
@@ -26,10 +26,36 @@ include::{snippets}/member/response-fields.adoc[]
 ==== 요청
 include::{snippets}/login/http-request.adoc[]
 include::{snippets}/login/request-fields.adoc[]
-==== 응답 헤더
-include::{snippets}/login/response-headers.adoc[]
-==== 응답 필드
+==== 응답
 include::{snippets}/login/http-response.adoc[]
+==== 헤더
+include::{snippets}/login/response-headers.adoc[]
+==== 필드
 include::{snippets}/login/response-fields.adoc[]
 
+== 인증 및 인가
+=== 인증
+=== 인가
+. 권한 종류
+- MEMBER : 일반 사용자 MEMBER 인가 통과
+- TEACHER : 강사권한, MEMBER, TEACHER 인가 통과
+- ADMIN : 관리자 권한 모든 인가 통과
 
+
+==== Case 인가 실패
+MEMBER 권한으로 TEACHER 권한이 필요한 API 호출시 에러
+include::{snippets}/authorityFail/http-request.adoc[]
+include::{snippets}/authorityFail/http-response.adoc[]
+include::{snippets}/authorityFail/response-fields.adoc[]
+
+==== Case 인가 성공
+TEACHER 권한으로 TEACHER 권한이 필요한 API 호출시 성공
+include::{snippets}/authoritySuccess/http-request.adoc[]
+include::{snippets}/authoritySuccess/http-response.adoc[]
+include::{snippets}/authoritySuccess/response-fields.adoc[]
+
+==== Case 인가 관리자
+ADMIN 권한은 모든 인가 통과
+include::{snippets}/authoritySuccessAdmin/http-request.adoc[]
+include::{snippets}/authoritySuccessAdmin/http-response.adoc[]
+include::{snippets}/authoritySuccessAdmin/response-fields.adoc[]

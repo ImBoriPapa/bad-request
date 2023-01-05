@@ -43,19 +43,24 @@ public class JwtLoginService {
      */
     public LoginDto loginProcessing(String email, String password) {
         log.info("[JwtLoginService.loginProcessing]");
-        //1. 이메일 중복 확인
+        //1. 이메일 확인
+        log.info("[1. JwtLoginService.check email]");
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
         //2. authenticationToken 생성
+        log.info("[2. JwtLoginService. create authenticationToken]");
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getUsername(), password);
 
         //3. Security 회원 검증 authenticate() -> JwtUserDetailService.loadByUsername()
+        log.info("[3. JwtLoginService. check Authentication -> LoadByUsername]");
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         //4. accessToken, refreshToken 생성
+        log.info("[4. JwtLoginService. generateToken]");
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
 
         //5. RefreshToken 저장
+        log.info("[5. JwtLoginService. save refresh]");
         RefreshToken refreshToken = RefreshToken.createRefresh()
                 .username(member.getUsername())
                 .token(tokenDto.getRefreshToken())

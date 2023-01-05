@@ -2,7 +2,7 @@ package com.study.badrequest.Member.api;
 
 import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.service.MemberCommandService;
-import com.study.badrequest.Member.dto.CreateMemberForm;
+import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
@@ -32,7 +32,7 @@ public class MemberController {
     private final MemberCommandService memberCommandService;
 
     @PostMapping(value = "/member",consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity postMember(@RequestBody CreateMemberForm form) {
+    public ResponseEntity postMember(@RequestBody MemberRequestForm.CreateMember form) {
         log.info("[postMember]");
         Member member = memberCommandService.signupMember(form);
 

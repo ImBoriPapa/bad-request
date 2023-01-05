@@ -13,12 +13,12 @@ public class BasicException extends RuntimeException {
         super(message);
     }
 
-    private CustomStatus status;
+    private String status;
 
     private int errorCode;
     private List<String> errorMessage;
 
-    public CustomStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -35,14 +35,14 @@ public class BasicException extends RuntimeException {
 
     public BasicException(CustomStatus status) {
         super(status.getMessage());
-        this.status = status;
+        this.status = status.name();
         this.errorCode = status.getCode();
         this.errorMessage = List.of(status.getMessage());
     }
 
     public BasicException(CustomStatus status, BindingResult bindingResult) {
         super(status.getMessage());
-        this.status = status;
+        this.status = status.name();
         this.errorCode = status.getCode();
         this.errorMessage = getErrorList(bindingResult);
     }

@@ -40,7 +40,7 @@ class JwtUserDetailServiceTest {
         String password = "password1234!@";
         Member member = Member.createMember()
                 .email(email)
-                .authority(Member.Authority.USER)
+                .authority(Member.Authority.MEMBER)
                 .password(passwordEncoder.encode(password))
                 .build();
         //when
