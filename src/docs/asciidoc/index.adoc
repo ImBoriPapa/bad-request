@@ -7,19 +7,29 @@ endif::[]
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels:2
+:toclevels:3
 :sectlinks:
 
 
 
-== 회원 가입
-=== 요청
+== Member
+=== 회원가입
+==== 요청
 include::{snippets}/member/http-request.adoc[]
 include::{snippets}/member/request-fields.adoc[]
-=== 응답
+==== 응답
 include::{snippets}/member/http-response.adoc[]
 include::{snippets}/member/response-fields.adoc[]
 
-
+== Login
+=== 로그인
+==== 요청
+include::{snippets}/login/http-request.adoc[]
+include::{snippets}/login/request-fields.adoc[]
+==== 응답 헤더
+include::{snippets}/login/response-headers.adoc[]
+==== 응답 필드
+include::{snippets}/login/http-response.adoc[]
+include::{snippets}/login/response-fields.adoc[]
 
 

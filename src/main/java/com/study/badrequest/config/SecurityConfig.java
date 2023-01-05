@@ -21,6 +21,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPointFilter jwtAuthenticationEntryPointFilter;
     private final JwtUserDetailService jwtUserDetailService;
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
         security.httpBasic().disable()
@@ -34,8 +35,8 @@ public class SecurityConfig {
                 .and()
                 .userDetailsService(jwtUserDetailService)
                 .authorizeRequests()
-                .antMatchers("/", "/login","/log-out","/refresh","/docs/index.html").permitAll()
-                .antMatchers(HttpMethod.POST,"/member").permitAll()
+                .antMatchers("/", "/api/v1/login","/api/v1/log-out","/api/v1/refresh","/docs/index.html").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/v1/member").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated()

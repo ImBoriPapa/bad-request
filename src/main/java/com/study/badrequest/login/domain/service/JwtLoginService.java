@@ -14,6 +14,7 @@ import com.study.badrequest.utils.JwtUtils;
 import com.study.badrequest.utils.TokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 
 @Service
@@ -32,7 +34,8 @@ public class JwtLoginService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
+    @Value("${cookie-status.secure}")
+    private boolean secure;
     // TODO: 2023/01/02 test
 
     /**
@@ -77,10 +80,10 @@ public class JwtLoginService {
      */
     private ResponseCookie getResponseCookie(RefreshToken refreshToken) {
 
-        return ResponseCookie.from("Refresh", REFRESH_TOKEN_PREFIX + refreshToken.getToken())
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + refreshToken.getToken())
                 .maxAge(refreshToken.getExpiration())
                 .path("/")
-                .secure(false)
+                .secure(secure)
                 .sameSite("None")
                 .httpOnly(true)
                 .build();

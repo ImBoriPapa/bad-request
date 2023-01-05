@@ -13,22 +13,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.time.LocalDateTime;
 
+import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping(BASE_URL)
 @Slf4j
 public class MemberController {
 
     private final MemberCommandService memberCommandService;
 
-    @PostMapping("/member")
+    @PostMapping(value = "/member",consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity postMember(@RequestBody CreateMemberForm form) {
         log.info("[postMember]");
         Member member = memberCommandService.signupMember(form);

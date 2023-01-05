@@ -10,6 +10,8 @@ import com.study.badrequest.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +22,20 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping(BASE_URL)
 public class LoginController {
     private final JwtLoginService loginService;
     private final JwtUtils jwtUtils;
 
-    @PostMapping("/login")
+    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@Validated @RequestBody LoginRequest.Login form, BindingResult bindingResult) {
         log.info("[LoginController.login]");
 
@@ -41,6 +46,8 @@ public class LoginController {
         LoginDto loginDto = loginService.loginProcessing(form.getEmail(), form.getPassword());
 
         EntityModel<LoginResponse.LoginResult> model = EntityModel.of(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getAccessTokenExpired()));
+        model.add(WebMvcLinkBuilder.linkTo(LoginController.class).slash("/log-out").withRel("POST: 로그아웃"));
+        model.add(WebMvcLinkBuilder.linkTo(LoginController.class).slash("/refresh").withRel("POST: 토큰재발급"));
 
         // TODO: 2023/01/04 hateoas 링크 무었을 넣을지 고민
 
@@ -63,7 +70,7 @@ public class LoginController {
                 .body(new ResponseForm.Of<>(CustomStatus.LOGOUT_SUCCESS));
     }
 
-    @GetMapping("/refresh")
+    @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity reIssue(HttpServletRequest request, @CookieValue(value = "Refresh") Cookie cookie) {
         log.info("Cookie Name= {}, Value= {}", cookie.getName(), cookie.getValue());
 

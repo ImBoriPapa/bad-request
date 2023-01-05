@@ -49,7 +49,7 @@ class MemberControllerTest {
                 .build();
 
         //when
-        mockMvc.perform(post("/member")
+        mockMvc.perform(post("/api/v1/member")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(form)))
                 .andExpect(status().isCreated())

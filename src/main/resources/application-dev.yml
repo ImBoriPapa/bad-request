@@ -42,6 +42,8 @@ logging:
     root: info
     org.springframework.orm.jpa: DEBUG
     org.springframework.transaction: DEBUG
+    org.springframework.data.*.*: DEBUG
+    org.springframework.cache.*: DEBUG
 
 message:
   hello: This is dev server
@@ -50,5 +52,6 @@ token:
   secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
   access-life: 2
   refresh-life: 4
-
-
+#개발환경에서는 HTTPS 적용 x
+cookie-status:
+  secure: false

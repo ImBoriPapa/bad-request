@@ -1,5 +1,7 @@
 package com.study.badrequest.login.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -7,6 +9,7 @@ import lombok.NoArgsConstructor;
 public class LoginRequest {
 
     @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
     public static class Login{
         private String email;
