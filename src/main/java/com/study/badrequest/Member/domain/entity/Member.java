@@ -1,5 +1,6 @@
 package com.study.badrequest.Member.domain.entity;
 
+import com.fasterxml.uuid.Generators;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +23,8 @@ public class Member implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
     private Long id;
+    @Column(name = "USER_NAME")
+    private String username;
     @Column(name = "EMAIL")
     private String email;
     @Column(name = "PASSWORD")
@@ -46,6 +49,7 @@ public class Member implements UserDetails {
     public Member(String email, String password, String name, String contact, Authority authority, Profile profile) {
         this.email = email;
         this.password = password;
+        this.username = generateSequentialUUID();
         this.name = name;
         this.contact = contact;
         this.authority = authority;
@@ -84,9 +88,24 @@ public class Member implements UserDetails {
         return authorities;
     }
 
+    /**
+     * 시간순 정렬 UUID
+     */
+    private String generateSequentialUUID() {
+        String proto = Generators.timeBasedGenerator().generate().toString();
+        String[] array = proto.split("-");
+        String sort = array[2] + array[1] + array[0] + array[3] + array[4];
+        StringBuilder builder = new StringBuilder(sort);
+        builder.insert(8, "-");
+        builder.insert(13, "-");
+        builder.insert(18, "-");
+        builder.insert(23, "-");
+        return builder.toString();
+    }
+
     @Override
     public String getUsername() {
-        return this.email;
+        return this.username;
     }
 
     @Override

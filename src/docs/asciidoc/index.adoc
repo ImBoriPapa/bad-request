@@ -9,7 +9,13 @@
 :sectlinks:
 
 == 회원 가입
-
 === 요청
+include::{snippets}/member/http-request.adoc[]
+include::{snippets}/member/request-fields.adoc[]
+=== 응답
+include::{snippets}/member/http-response.adoc[]
+include::{snippets}/member/response-fields.adoc[]
+
+
 
 

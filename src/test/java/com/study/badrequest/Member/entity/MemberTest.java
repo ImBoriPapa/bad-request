@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -42,8 +43,7 @@ class MemberTest {
 
         //then
         Member findMember = memberRepository.findById(save.getId()).get();
-        System.out.println(findMember.getProfile());
-        Assertions.assertThat(findMember.getName()).isEqualTo(member.getName());
+        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
 
     }
 

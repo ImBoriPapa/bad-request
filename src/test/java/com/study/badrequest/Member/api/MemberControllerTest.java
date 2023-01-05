@@ -75,9 +75,9 @@ class MemberControllerTest {
                                 fieldWithPath("contact").description("연락처")
                         ),
                         responseFields(
-                                fieldWithPath("status").description("응답상태"),
-                                fieldWithPath("code").description("응답상태"),
-                                fieldWithPath("message").description("응답상태"),
+                                fieldWithPath("status").description("커스텀 응답상태"),
+                                fieldWithPath("code").description("커스텀 응답 코드"),
+                                fieldWithPath("message").description("커스텀 응답 메시지"),
                                 fieldWithPath("result.memberId").description("식별 아이디"),
                                 fieldWithPath("result.createdAt").description("계정 생성일"),
                                 fieldWithPath("result.links.[0].rel").description("링크 정보"),

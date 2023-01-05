@@ -44,7 +44,7 @@ public class JwtLoginService {
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
         //2. authenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getUsername(), password);
 
         //3. Security 회원 검증 authenticate() -> JwtUserDetailService.loadByUsername()
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -54,10 +54,9 @@ public class JwtLoginService {
 
         //5. RefreshToken 저장
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .email(member.getUsername())
+                .username(member.getUsername())
                 .token(tokenDto.getRefreshToken())
                 .expiration(tokenDto.getRefreshTokenExpiredTime())
-                .isLogin(true)
                 .build();
         refreshTokenRepository.save(refreshToken);
         //6. RefreshToken 생성
@@ -101,7 +100,7 @@ public class JwtLoginService {
         RefreshToken refreshToken = refreshTokenRepository.findById(authentication.getName())
                 .orElseThrow(() -> new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT));
         //2.Refresh Token 삭제 Refresh 가 존재하지 않는 다면 로그아웃으로 간주
-        refreshTokenRepository.deleteById(refreshToken.getEmail());
+        refreshTokenRepository.deleteById(refreshToken.getUsername());
     }
 
     private void deniedTokenHandle(JwtStatus jwtStatus) {
@@ -123,7 +122,7 @@ public class JwtLoginService {
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //3. 존재하는 회원인지 확인
-        Member member = memberRepository.findByEmail(authentication.getName())
+        Member member = memberRepository.findByUsername(authentication.getName())
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
         //4. Refresh 토큰이 존재하지 않으면 로그아웃으로 간주
         RefreshToken refresh = refreshTokenRepository.findById(member.getUsername())

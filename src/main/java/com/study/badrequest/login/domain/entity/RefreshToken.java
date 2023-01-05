@@ -17,18 +17,18 @@ import java.util.concurrent.TimeUnit;
 @RedisHash(value = "refresh")
 public class RefreshToken implements Serializable {
     @Id
-    private String email;
+    private String username;
     private String token;
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private long expiration;
-    private Boolean isLogin;
+
 
     @Builder(builderMethodName = "createRefresh")
-    public RefreshToken(String email, String token, Long expiration, Boolean isLogin) {
-        this.email = email;
+    public RefreshToken(String username, String token, Long expiration) {
+        this.username = username;
         this.token = token;
         this.expiration = expiration;
-        this.isLogin = isLogin;
+
     }
 
     public void replaceToken(String token, Long expiration) {
@@ -36,9 +36,4 @@ public class RefreshToken implements Serializable {
         this.expiration = expiration;
     }
 
-    public void logout() {
-        this.token = "";
-        this.expiration = 0L;
-        this.isLogin = false;
-    }
 }

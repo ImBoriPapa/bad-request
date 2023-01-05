@@ -31,19 +31,18 @@ class RefreshTokenTest {
     @DisplayName("토큰 저장")
     void createRefresh() throws Exception {
         //given
-        String email = "user@user.com";
+        String username = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .email(email)
+                .username(username)
                 .token(token)
-                .isLogin(true)
                 .expiration(10000L)
                 .build();
         //when
         RefreshToken save = refreshTokenRepository.save(refreshToken);
 
         //then
-        RefreshToken find = refreshTokenRepository.findById(email).get();
+        RefreshToken find = refreshTokenRepository.findById(username).get();
         assertThat(find.getToken()).isEqualTo(token);
 
     }
@@ -52,12 +51,11 @@ class RefreshTokenTest {
     @DisplayName("토큰 교체")
     void replaceToken() throws Exception {
         //given
-        String email = "user@user.com";
+        String username = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .email(email)
+                .username(username)
                 .token(token)
-                .isLogin(true)
                 .expiration(10000L)
                 .build();
         String newToken = token + "is new token";
@@ -75,25 +73,24 @@ class RefreshTokenTest {
     @DisplayName("TTL 테스트")
     void ttlTest() throws Exception {
         //given
-        String email = "user@user.com";
+        String email = UUID.randomUUID().toString();
         String token = UUID.randomUUID().toString();
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .email(email)
+                .username(email)
                 .token(token)
                 .expiration(2000L)
-                .isLogin(true)
                 .build();
         //when
         RefreshToken save = refreshTokenRepository.save(refreshToken);
 
-        assertThat(refreshTokenRepository.findById(save.getEmail()).isPresent()).isTrue();
+        assertThat(refreshTokenRepository.findById(save.getUsername()).isPresent()).isTrue();
 
         for (int i = 0; i < 3; i++) {
             log.info("count={}", i);
             Thread.sleep(1000L);
         }
         //then
-        assertThat(refreshTokenRepository.findById(save.getEmail()).isPresent()).isFalse();
+        assertThat(refreshTokenRepository.findById(save.getUsername()).isPresent()).isFalse();
 
     }
 

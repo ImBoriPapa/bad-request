@@ -49,8 +49,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
-    //embedded-redis
-//    implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.2'
+    //UUID
+    implementation "com.fasterxml.uuid:java-uuid-generator:4.0.1"
     // test-containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
     //lombok
