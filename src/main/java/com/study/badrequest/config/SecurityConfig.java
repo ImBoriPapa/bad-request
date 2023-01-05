@@ -37,7 +37,7 @@ public class SecurityConfig {
                 .antMatchers("/", "/login","/log-out","/refresh","/docs/index.html").permitAll()
                 .antMatchers(HttpMethod.POST,"/member").permitAll()
                 .antMatchers("/static/**").permitAll()
-                .antMatchers("/favicon.ico").permitAll()
+                .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

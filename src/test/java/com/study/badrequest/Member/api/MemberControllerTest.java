@@ -38,7 +38,7 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("회원가입")
-    void postMemberTest() throws Exception {
+    void 회원가입() throws Exception {
         //given
         CreateMemberForm form = CreateMemberForm.builder()
                 .email("tester@test.com")
@@ -84,7 +84,6 @@ class MemberControllerTest {
                                 fieldWithPath("result.links.[0].href").description("링크")
                         )
                 ));
-
         //then
 
     }

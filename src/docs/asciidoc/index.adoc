@@ -1,4 +1,6 @@
-
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
 
 = bad-request API
 :doctype: book
@@ -7,6 +9,8 @@
 :toc: left
 :toclevels:2
 :sectlinks:
+
+
 
 == 회원 가입
 === 요청
