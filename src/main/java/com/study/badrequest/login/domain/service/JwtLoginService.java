@@ -4,8 +4,8 @@ package com.study.badrequest.login.domain.service;
 import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.JwtAuthenticationException;
-import com.study.badrequest.exception.MemberException;
+import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
+import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.login.domain.entity.RefreshToken;
 import com.study.badrequest.login.domain.repository.RefreshTokenRepository;
 import com.study.badrequest.login.dto.LoginDto;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -28,7 +29,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_P
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class JwtLoginService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -52,23 +53,15 @@ public class JwtLoginService {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getUsername(), password);
 
         //3. Security 회원 검증 authenticate() -> JwtUserDetailService.loadByUsername()
-        log.info("[3. JwtLoginService. check Authentication -> LoadByUsername]");
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        Authentication authentication = getAuthentication(authenticationToken);
 
         //4. accessToken, refreshToken 생성
         log.info("[4. JwtLoginService. generateToken]");
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
 
         //5. RefreshToken 저장
-        log.info("[5. JwtLoginService. save refresh]");
-        RefreshToken refreshToken = RefreshToken.createRefresh()
-                .username(member.getUsername())
-                .token(tokenDto.getRefreshToken())
-                .expiration(tokenDto.getRefreshTokenExpiredTime())
-                .build();
-        refreshTokenRepository.save(refreshToken);
+        RefreshToken refreshToken = setRefreshToken(member, tokenDto);
         //6. RefreshToken 생성
-
         ResponseCookie cookie = getResponseCookie(refreshToken);
 
         return LoginDto.builder()
@@ -78,6 +71,30 @@ public class JwtLoginService {
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
                 .build();
 
+    }
+
+    @Transactional
+    public RefreshToken setRefreshToken(Member member, TokenDto tokenDto) {
+        log.info("[5. JwtLoginService. save refresh]");
+        RefreshToken refreshToken = RefreshToken.createRefresh()
+                .username(member.getUsername())
+                .token(tokenDto.getRefreshToken())
+                .expiration(tokenDto.getRefreshTokenExpiredTime())
+                .build();
+        refreshTokenRepository.save(refreshToken);
+        return refreshToken;
+    }
+
+
+    private Authentication getAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
+        log.info("[3. JwtLoginService. check Authentication -> LoadByUsername]");
+        final Authentication authentication;
+        try {
+            authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        } catch (BadCredentialsException e) {
+            throw new MemberException(CustomStatus.LOGIN_FAIL);
+        }
+        return authentication;
     }
 
     /**
@@ -105,10 +122,11 @@ public class JwtLoginService {
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //1.Refresh Token 확인 없다면 인증기간 만료로 인한 로그아웃
-        RefreshToken refreshToken = refreshTokenRepository.findById(authentication.getName())
-                .orElseThrow(() -> new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT));
+        if (!refreshTokenRepository.existsById(authentication.getName())) {
+            throw new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT);
+        }
         //2.Refresh Token 삭제 Refresh 가 존재하지 않는 다면 로그아웃으로 간주
-        refreshTokenRepository.deleteById(refreshToken.getUsername());
+        refreshTokenRepository.deleteById(authentication.getName());
     }
 
     private void deniedTokenHandle(JwtStatus jwtStatus) {
@@ -120,6 +138,7 @@ public class JwtLoginService {
     /**
      * 토큰 재발급
      */
+    @Transactional
     public LoginDto reissueProcessing(String accessToken, String refreshToken) {
         //1. 토큰 validation
         JwtStatus accessStatus = jwtUtils.validateToken(accessToken);

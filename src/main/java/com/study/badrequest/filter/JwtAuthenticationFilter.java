@@ -27,13 +27,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
     private final JwtLoginService loginService;
 
-    // TODO: 2023/01/02 logout
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("[JwtAuthenticationFilter]");
         String accessToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
         if (accessToken == null) {
+            log.info("JwtAuthenticationFilter");
             request.setAttribute(JWT_STATUS_HEADER, JwtStatus.EMPTY_TOKEN);
         }
 
@@ -41,26 +41,46 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             JwtStatus jwtStatus = jwtUtils.validateToken(accessToken);
 
-            switch (jwtStatus) {
-                case ACCESS:
-                    Authentication authentication = jwtUtils.getAuthentication(accessToken);
+            jwtStatusHandle(request, accessToken, jwtStatus);
 
-                    if (loginService.loginCheck(authentication.getName())) {
-                        log.info("[JwtAuthenticationFilter .Set SecurityContextHolder Context]");
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
-                    } else
-                        log.info("[JwtAuthenticationFilter .is Logout token]");
-                    request.setAttribute(JWT_STATUS_HEADER, JwtStatus.LOGOUT);
-                    break;
-                case EXPIRED:
-                    request.setAttribute(JWT_STATUS_HEADER, JwtStatus.EXPIRED);
-                    break;
-                case DENIED:
-                    request.setAttribute(JWT_STATUS_HEADER, JwtStatus.DENIED);
-                    break;
-            }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * JWT Status 에 따라서 인증 처리
+     */
+    private void jwtStatusHandle(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
+        switch (jwtStatus) {
+            case ACCESS:
+                Authentication authentication = jwtUtils.getAuthentication(accessToken);
+
+                if (loginCheck(authentication)) {
+                    log.info("[JwtAuthenticationFilter .Set SecurityContextHolder Context]");
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    break;
+                } else
+                    log.info("[JwtAuthenticationFilter .is Logout token]");
+                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.LOGOUT);
+                break;
+            case EXPIRED:
+                log.info("[JwtAuthenticationFilter .is EXPIRED token]");
+                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.EXPIRED);
+                break;
+            case DENIED:
+                log.info("[JwtAuthenticationFilter .is DENIED token]");
+                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.DENIED);
+                break;
+            default:
+                log.info("[JwtAuthenticationFilter .is ERROR token]");
+                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.ERROR);
+
+        }
+    }
+
+    private boolean loginCheck(Authentication authentication) {
+        log.info("[JwtAuthenticationFilter.loginCheck]");
+        return loginService.loginCheck(authentication.getName());
     }
 }

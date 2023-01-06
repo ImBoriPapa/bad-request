@@ -15,6 +15,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static com.study.badrequest.health.ValueController.CUSTOM_STATUS;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -39,8 +41,8 @@ public class SecurityConfig {
                 .and()
                 .userDetailsService(jwtUserDetailService)
                 .authorizeRequests()
-                .antMatchers("/", "/api/v1/login","/api/v1/log-out","/api/v1/refresh","/docs/index.html").permitAll()
-                .antMatchers(HttpMethod.POST,"/api/v1/member").permitAll()
+                .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", CUSTOM_STATUS).permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/member").permitAll()
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
                 .antMatchers("/test/teacher").hasAuthority("ROLL_TEACHER")

@@ -6,7 +6,7 @@ import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.MemberException;
+import com.study.badrequest.exception.custom_exception.MemberException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;

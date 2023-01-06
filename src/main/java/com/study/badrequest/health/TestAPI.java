@@ -3,6 +3,8 @@ package com.study.badrequest.health;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.utils.JwtUtils;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,9 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 
@@ -25,6 +26,14 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_H
 public class TestAPI {
 
     private final JwtUtils jwtUtils;
+
+    @GetMapping("/test/welcome")
+    public ResponseEntity welcome() {
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseForm.Of<>());
+    }
 
     @GetMapping("/test/teacher")
     public ResponseEntity authorityTestApi(@RequestHeader(value = AUTHORIZATION_HEADER) String accessToken) {
@@ -48,4 +57,6 @@ public class TestAPI {
                 .ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, result));
     }
+
+
 }

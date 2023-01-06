@@ -17,7 +17,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_H
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class GreetingController {
+public class HealthCheckController {
 
     private final JwtUtils jwtUtils;
     @Value("${message.hello}")

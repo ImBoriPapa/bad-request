@@ -1,7 +1,9 @@
 package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.form.ResponseForm;
+import com.study.badrequest.exception.custom_exception.MemberException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -22,10 +24,18 @@ public class ExceptionAdvisor {
     }
 
     @ExceptionHandler(BasicException.class)
-    public final ResponseEntity basicException(HttpServletRequest request,BasicException e){
+    public final ResponseEntity basicException(HttpServletRequest request, BasicException e) {
         log.info("[ExceptionAdvisor.exception]");
         ResponseForm.Error error = new ResponseForm.Error(e, request.getRequestURI());
 
         return ResponseEntity.badRequest().body(error);
+    }
+
+    @ExceptionHandler(MemberException.class)
+    public final ResponseEntity memberException(HttpServletRequest request, MemberException e) {
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ResponseForm.Error(e, request.getRequestURI()));
     }
 }

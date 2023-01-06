@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import java.util.HashMap;
+
+import static com.study.badrequest.commons.consts.CustomStatus.LOGOUT_SUCCESS;
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -59,15 +62,20 @@ public class LoginController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
-    @PostMapping("/log-out")
+    @PostMapping(value = "/log-out", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity logout(HttpServletRequest request) {
         log.info("[LoginController.logout]");
         String resolveToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
         loginService.logoutProcessing(resolveToken);
+        HashMap<String, String> thanks = new HashMap<>();
+        thanks.put("thanks", "로그인을 기다립니다.");
+
+        EntityModel<HashMap<String, String>> model = EntityModel.of(thanks);
+        model.add(WebMvcLinkBuilder.linkTo(LoginController.class).slash("/login").withRel("POST : 로그인"));
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(CustomStatus.LOGOUT_SUCCESS));
+                .body(new ResponseForm.Of<>(LOGOUT_SUCCESS, model));
     }
 
     @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -88,7 +96,7 @@ public class LoginController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
-    private static HttpHeaders setTokenInHeader(LoginDto loginDto) {
+    private HttpHeaders setTokenInHeader(LoginDto loginDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(loginDto.getAccessToken());

@@ -113,6 +113,108 @@ class LoginControllerTest {
     }
 
     @Test
+    @DisplayName("로그인 실패 테스트-잘못된 비밀번호")
+    void 로그인실패1() throws Exception {
+        //given
+        Member member = Member.createMember()
+                .email("email@email.com")
+                .password(passwordEncoder.encode("password1234!@"))
+                .authority(Member.Authority.MEMBER).build();
+        memberRepository.save(member);
+        LoginRequest.Login form = new LoginRequest.Login("email@email.com", "wrong-password");
+        String content = objectMapper.writeValueAsString(form);
+        //when
+        mockMvc.perform(post("/api/v1/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+        //then
+    }
+
+    @Test
+    @DisplayName("로그인 실패 테스트-잘못된 이메일")
+    void 로그인실패2() throws Exception {
+        //given
+        Member member = Member.createMember()
+                .email("email@email.com")
+                .password(passwordEncoder.encode("password1234!@"))
+                .authority(Member.Authority.MEMBER).build();
+        memberRepository.save(member);
+        LoginRequest.Login form = new LoginRequest.Login("wrong@email.com", "password1234!@");
+        String content = objectMapper.writeValueAsString(form);
+        //when
+        mockMvc.perform(post("/api/v1/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
+                .andExpect(status().isUnauthorized())
+                .andDo(print());
+        //then
+    }
+
+    @Test
+    @DisplayName("로그아웃 테스트")
+    void logoutTest() throws Exception {
+        //given
+        Member member = Member.createMember()
+                .email("email@email.com")
+                .password(passwordEncoder.encode("password1234!@"))
+                .authority(Member.Authority.MEMBER).build();
+        memberRepository.save(member);
+        LoginDto loginDto = loginService.loginProcessing("email@email.com", "password1234!@");
+
+
+        //logout 요청
+        mockMvc.perform(post("/api/v1/log-out")
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("logout",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 메시지"),
+                                fieldWithPath("result.thanks").description("인삿말"),
+                                fieldWithPath("result.links.[0].rel").description("로그인"),
+                                fieldWithPath("result.links.[0].href").description("링크")
+                        )
+
+
+                ));
+    }
+
+    @Test
+    @DisplayName("로그아웃 후 요청")
+    void afterLogout() throws Exception {
+        //logout 후 접근
+        Member member = Member.createMember()
+                .email("email@email.com")
+                .password(passwordEncoder.encode("password1234!@"))
+                .authority(Member.Authority.MEMBER).build();
+        memberRepository.save(member);
+        LoginDto loginDto = loginService.loginProcessing("email@email.com", "password1234!@");
+        loginService.logoutProcessing(loginDto.getAccessToken());
+        mockMvc.perform(post("/test/welcome")
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                .andExpect(status().isUnauthorized())
+                .andDo(print())
+                .andDo(document("accessAfterLogout",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 상태"),
+                                fieldWithPath("requestPath").type(JsonFieldType.STRING).description("요청 URL"),
+                                fieldWithPath("errorCode").type(JsonFieldType.NUMBER).description("커스텀 에러 코드"),
+                                fieldWithPath("message").type(JsonFieldType.ARRAY).description("에러 메시지"))));
+
+    }
+
+    @Test
     @DisplayName("인가 테스트- 실패")
     void authorityFailTest() throws Exception {
         //given

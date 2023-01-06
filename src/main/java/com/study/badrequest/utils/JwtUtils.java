@@ -105,6 +105,8 @@ public class JwtUtils implements InitializingBean {
         } catch (JwtException | IllegalArgumentException e) {
             log.info("[JWT_UTILS validateToken= {}]", JwtStatus.DENIED);
             return JwtStatus.DENIED;
+        } catch (Exception e){
+            return JwtStatus.ERROR;
         }
     }
 

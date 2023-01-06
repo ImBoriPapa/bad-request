@@ -3,7 +3,7 @@ package com.study.badrequest.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.exception.JwtAuthenticationException;
+import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
 import com.study.badrequest.utils.JwtStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,9 +48,13 @@ public class JwtAuthenticationEntryPointFilter implements AuthenticationEntryPoi
             setFilterResponse(request, response, CustomStatus.ALREADY_LOGOUT);
         }
 
+        if (jwtStatus == JwtStatus.ERROR) {
+            setFilterResponse(request, response, CustomStatus.TOKEN_IS_DENIED);
+        }
     }
 
     private void setFilterResponse(HttpServletRequest request, HttpServletResponse response, CustomStatus status) throws IOException {
+        log.info("[JwtAuthenticationEntryPointFilter. response error status={}]",status);
         ResponseForm.Error error = new ResponseForm.Error(new JwtAuthenticationException(status), request.getRequestURI());
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
