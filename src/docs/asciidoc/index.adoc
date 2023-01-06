@@ -59,6 +59,25 @@ include::{snippets}/logout/request-headers.adoc[]
 include::{snippets}/logout/http-response.adoc[]
 include::{snippets}/logout/response-fields.adoc[]
 
+=== 토큰 재발급
+
+==== 요청
+
+include::{snippets}/reissue/http-request.adoc[]
+
+==== 요청 헤더
+
+- Refresh Token Cookie 가 필요합니다.
+include::{snippets}/reissue/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/reissue/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/reissue/response-fields.adoc[]
+
 == 인증 및 인가
 
 === 인증
@@ -96,9 +115,14 @@ include::{snippets}/authoritySuccessAdmin/http-response.adoc[]
 include::{snippets}/authoritySuccessAdmin/response-fields.adoc[]
 
 == Values
+
 === CustomStatus
+
 ==== 요청
+
 include::{snippets}/custom-status/http-request.adoc[]
+
 ==== 응답
+
 include::{snippets}/custom-status/http-response.adoc[]
 include::{snippets}/custom-status/response-fields.adoc[]

@@ -29,7 +29,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_P
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class JwtLoginService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -73,7 +73,9 @@ public class JwtLoginService {
 
     }
 
-    @Transactional
+    /**
+     * 리프레시 토큰 저장
+     */
     public RefreshToken setRefreshToken(Member member, TokenDto tokenDto) {
         log.info("[5. JwtLoginService. save refresh]");
         RefreshToken refreshToken = RefreshToken.createRefresh()
@@ -85,7 +87,10 @@ public class JwtLoginService {
         return refreshToken;
     }
 
-
+    /**
+     * security 인증 실패시 BadCredentialsException -> MemberException throw
+     * LOGIN_FAIL(1501, "로그인에 실패했습니다.") 응답에 로그인 아이디 혹은 비밀번호 중 어떤것이 잘못되었는지 감추기 위해 통일
+     */
     private Authentication getAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
         log.info("[3. JwtLoginService. check Authentication -> LoadByUsername]");
         final Authentication authentication;
@@ -99,6 +104,7 @@ public class JwtLoginService {
 
     /**
      * Https 적용 후 secure false -> true
+     * ResponseCookie 생성 운영 환경별로 secure 설정
      */
     private ResponseCookie getResponseCookie(RefreshToken refreshToken) {
 
@@ -116,9 +122,8 @@ public class JwtLoginService {
      */
     public void logoutProcessing(String accessToken) {
         log.info("[JwtLoginService.logoutProcessing]");
-        JwtStatus jwtStatus = jwtUtils.validateToken(accessToken);
 
-        deniedTokenHandle(jwtStatus);
+        handleDeniedToken(accessToken);
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //1.Refresh Token 확인 없다면 인증기간 만료로 인한 로그아웃
@@ -129,41 +134,29 @@ public class JwtLoginService {
         refreshTokenRepository.deleteById(authentication.getName());
     }
 
-    private void deniedTokenHandle(JwtStatus jwtStatus) {
-        if (jwtStatus != JwtStatus.ACCESS) {
-            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
-        }
-    }
 
     /**
      * 토큰 재발급
      */
     @Transactional
     public LoginDto reissueProcessing(String accessToken, String refreshToken) {
+        log.info("[JwtLoginService.reissueProcessing]");
         //1. 토큰 validation
-        JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
-        JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
-        //2. 토큰이 access 가 아니면 exception
-        deniedTokenHandle(accessStatus);
-        deniedTokenHandle(refreshStatus);
+        handleDeniedOrErrorAccessToken(accessToken);
+        handleDeniedToken(refreshToken);
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
-        //3. 존재하는 회원인지 확인
-        Member member = memberRepository.findByUsername(authentication.getName())
-                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
-        //4. Refresh 토큰이 존재하지 않으면 로그아웃으로 간주
+        //2. 존재하는 회원인지 확인
+        Member member = findMemberByUsername(authentication.getName());
+        //3. Refresh 토큰이 존재하지 않으면 로그아웃으로 간주
         RefreshToken refresh = refreshTokenRepository.findById(member.getUsername())
                 .orElseThrow(() -> new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT));
-        //5. 저장된 리프레시 토큰과 요청한 토큰을 비교
-        if (!refresh.getToken().equals(refreshToken)) {
-            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
-        }
+        //4. 저장된 리프레시 토큰과 요청한 토큰을 비교
+        compareRefreshWithStored(refresh.getToken(), refreshToken);
         //6. 토큰 생성
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
         //7. 토큰 갱신
-        refresh.replaceToken(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiredTime());
-
-        refreshTokenRepository.save(refresh);
+        replaceRefresh(refresh, tokenDto);
 
         ResponseCookie responseCookie = getResponseCookie(refresh);
 
@@ -173,6 +166,38 @@ public class JwtLoginService {
                 .refreshCookie(responseCookie)
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
                 .build();
+    }
+
+    public void replaceRefresh(RefreshToken refresh, TokenDto tokenDto) {
+        refresh.replaceToken(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiredTime());
+        refreshTokenRepository.save(refresh);
+    }
+
+    private static void compareRefreshWithStored(String StoredRefresh, String refreshToken) {
+        if (!StoredRefresh.equals(refreshToken)) {
+            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
+        }
+    }
+
+    public Member findMemberByUsername(String username) {
+        return memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
+    }
+
+    private void handleDeniedOrErrorAccessToken(String accessToken) {
+        log.info("[JwtLoginService.handleDeniedOrErrorAccessToken]");
+        JwtStatus status = jwtUtils.validateToken(accessToken);
+
+        if (status == JwtStatus.DENIED || status == JwtStatus.ERROR) {
+            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
+        }
+    }
+
+    private void handleDeniedToken(String refreshToken) {
+        log.info("[JwtLoginService.handleDeniedToken]");
+        if (jwtUtils.validateToken(refreshToken) != JwtStatus.ACCESS) {
+            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
+        }
     }
 
     /**

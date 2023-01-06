@@ -1,5 +1,7 @@
 package com.study.badrequest.utils;
 
+import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.exception.custom_exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.TOKEN_PREFIX;
 
 @Component
@@ -105,7 +108,7 @@ public class JwtUtils implements InitializingBean {
         } catch (JwtException | IllegalArgumentException e) {
             log.info("[JWT_UTILS validateToken= {}]", JwtStatus.DENIED);
             return JwtStatus.DENIED;
-        } catch (Exception e){
+        } catch (Exception e) {
             return JwtStatus.ERROR;
         }
     }
@@ -113,12 +116,21 @@ public class JwtUtils implements InitializingBean {
     // 헤더에서 토큰 확인
     public String resolveToken(HttpServletRequest request, String header) {
         String bearerToken = request.getHeader(header);
-        log.info("[JWT_UTILS resolveToken ={}]", bearerToken);
 
         if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
+            log.info("[JWT_UTILS resolveToken ={}]", bearerToken);
             return bearerToken.substring(7);
         }
 
+        return null;
+    }
+
+    public String resolveRefreshCookie(Cookie cookie) {
+
+        if (cookie != null && cookie.getValue() != null && cookie.getValue().startsWith(REFRESH_TOKEN_PREFIX)) {
+            log.info("[JWT_UTILS resolveRefreshCookie ={}]", cookie.getValue());
+            return cookie.getValue().substring(7);
+        }
         return null;
     }
 
@@ -130,7 +142,7 @@ public class JwtUtils implements InitializingBean {
 
     public long getExpirationTime(String token) {
         long expiration = getExpirationDate(token).getTime();
-        return (expiration-new Date().getTime());
+        return (expiration - new Date().getTime());
     }
 
     private Jws<Claims> getClaimsJws(String token) {
@@ -147,7 +159,7 @@ public class JwtUtils implements InitializingBean {
         Claims claims = getClaimsJws(accessToken).getBody();
 
         if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new TokenException(CustomStatus.TOKEN_IS_DENIED);
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -161,8 +173,5 @@ public class JwtUtils implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-    public String resolveRefreshCookie(Cookie cookie) {
-        return cookie.getValue().substring(7);
-    }
 
 }

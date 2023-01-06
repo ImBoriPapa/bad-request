@@ -16,11 +16,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.Cookie;
 
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
@@ -211,7 +214,99 @@ class LoginControllerTest {
                                 fieldWithPath("requestPath").type(JsonFieldType.STRING).description("요청 URL"),
                                 fieldWithPath("errorCode").type(JsonFieldType.NUMBER).description("커스텀 에러 코드"),
                                 fieldWithPath("message").type(JsonFieldType.ARRAY).description("에러 메시지"))));
+    }
 
+    @Test
+    @DisplayName("토큰재발급 테스트")
+    void reIssuedTest() throws Exception {
+        //given
+        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        ResponseCookie refreshCookie = member.getRefreshCookie();
+
+        Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
+        cookie.setPath(refreshCookie.getPath());
+        cookie.setMaxAge(refreshCookie.getMaxAge().toMillisPart());
+        cookie.setSecure(refreshCookie.isSecure());
+        cookie.setHttpOnly(refreshCookie.isHttpOnly());
+        //when
+        mockMvc.perform(post("/api/v1/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + member.getAccessToken())
+                        .cookie(cookie)
+                ).andDo(print())
+                //then
+                .andDo(document("reissue",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 메시지"),
+                                fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("Member 식별 아이디"),
+                                fieldWithPath("result.accessTokenExpired").type(JsonFieldType.STRING).description("Access Token 만료 기한"),
+                                fieldWithPath("result.links").ignored()
+                        )
+                ));
+    }
+
+    @Test
+    @DisplayName("토큰 재발급 실패1 - 잘못된 AccessToken")
+    void failReissue() throws Exception {
+        //given
+        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        ResponseCookie refreshCookie = member.getRefreshCookie();
+        Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
+        cookie.setPath(refreshCookie.getPath());
+        cookie.setMaxAge(refreshCookie.getMaxAge().toMillisPart());
+        cookie.setSecure(refreshCookie.isSecure());
+        cookie.setHttpOnly(refreshCookie.isHttpOnly());
+        //when
+        mockMvc.perform(post("/api/v1/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + member.getAccessToken() + "wrong token")
+                        .cookie(cookie)
+                ).andExpect(status().isUnauthorized())
+                .andDo(print());
+        //then
+
+    }
+
+    @Test
+    @DisplayName("토큰 재발급 실패2 - 잘못된 RefreshToken")
+    void failReissue2() throws Exception {
+        //given
+        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        ResponseCookie refreshCookie = member.getRefreshCookie();
+        Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue() + "wrong");
+        cookie.setPath(refreshCookie.getPath());
+        cookie.setMaxAge(refreshCookie.getMaxAge().toMillisPart());
+        cookie.setSecure(refreshCookie.isSecure());
+        cookie.setHttpOnly(refreshCookie.isHttpOnly());
+        //when
+        mockMvc.perform(post("/api/v1/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + member.getAccessToken())
+                        .cookie(cookie)
+                ).andExpect(status().isUnauthorized())
+                .andDo(print());
+        //then
+    }
+
+    @Test
+    @DisplayName("토큰 재발급 실패3 - 잘못된 Refresh 쿠키가 없을 경우")
+    void failReissue3() throws Exception {
+        //given
+        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        //when
+        mockMvc.perform(post("/api/v1/refresh")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + member.getAccessToken())
+                ).andExpect(status().isBadRequest())
+                .andDo(print());
+        //then
     }
 
     @Test
