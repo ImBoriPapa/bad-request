@@ -57,6 +57,7 @@ public class Member implements UserDetails {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
+
     @Getter
     public enum Authority {
         MEMBER("ROLL_MEMBER"),
@@ -139,10 +140,10 @@ public class Member implements UserDetails {
     }
 
     public void changeContact(String contact) {
-        if (StringUtils.hasLength(contact)) {
-            this.contact = contact;
-            this.updatedAt = LocalDateTime.now();
-        }
+
+        this.contact = contact;
+        this.updatedAt = LocalDateTime.now();
+
     }
 
 }

@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 @Service
 @Transactional
@@ -24,7 +23,7 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
 
     public Member signupMember(MemberRequestForm.CreateMember form) {
-        log.info("[signup]");
+        log.info("[MemberCommandService.signupMember]");
         Profile profile = Profile.builder()
                 .nickname(form.getNickname())
                 .build();
@@ -42,38 +41,37 @@ public class MemberCommandService {
     }
 
     public void changePermissions(Long memberId, Member.Authority authority) {
-        log.info("[changePermissions]");
+        log.info("[MemberCommandService.changePermissions]");
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .changePermissions(authority);
     }
 
-    public Member updateMember(Long memberId, UpdateMemberForm form) {
-        log.info("[updateMember]");
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
+    public Member updateContact(Long memberId, String contact) {
+        log.info("[MemberCommandService.updateMember]");
+        Member member = findMemberById(memberId);
+        member.changeContact(contact);
+        return member;
+    }
 
-        changePassword(member, form.getPassword(), form.getNewPassword());
-
-        member.changeContact(form.getContact());
-
+    public Member resetPassword(Long id, String password, String newPassword) {
+        log.info("[MemberCommandService.changePassword]");
+        Member member = findMemberById(id);
+        passwordCheck(password, member.getPassword());
+        member.changePassword(passwordEncoder.encode(newPassword));
         return member;
     }
 
     public void resignMember(Long memberId, String password) {
-        log.info("[resignMember]");
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
+        log.info("[MemberCommandService.resignMember]");
+        Member member = findMemberById(memberId);
         passwordCheck(password, member.getPassword());
         memberRepository.delete(member);
     }
 
-    private void changePassword(Member member, String password, String newPassword) {
-        if (StringUtils.hasLength(password) && StringUtils.hasLength(newPassword)) {
-            log.info("[changePassword]");
-            passwordCheck(password, member.getPassword());
-            member.changePassword(passwordEncoder.encode(newPassword));
-        }
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
     }
 
     private void passwordCheck(String password, String storedPassword) {

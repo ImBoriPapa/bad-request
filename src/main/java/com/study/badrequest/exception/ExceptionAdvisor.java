@@ -37,7 +37,7 @@ public class ExceptionAdvisor {
     public final ResponseEntity memberException(HttpServletRequest request, MemberException e) {
         log.info("[ExceptionAdvisor.memberException]");
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new ResponseForm.Error(e, request.getRequestURI()));
     }
 

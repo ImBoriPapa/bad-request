@@ -130,7 +130,7 @@ class LoginControllerTest {
         mockMvc.perform(post("/api/v1/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isBadRequest())
                 .andDo(print());
         //then
     }
@@ -150,7 +150,7 @@ class LoginControllerTest {
         mockMvc.perform(post("/api/v1/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content))
-                .andExpect(status().isUnauthorized())
+                .andExpect(status().isBadRequest())
                 .andDo(print());
         //then
     }

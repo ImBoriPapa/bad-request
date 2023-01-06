@@ -101,13 +101,10 @@ class MemberCommandServiceTest {
 
         String newContact = "01012341111";
 
-        UpdateMemberForm updateMemberForm = UpdateMemberForm.builder()
-                .contact(newContact)
-                .build();
         //when
         Member signup = memberCommandService.signupMember(form);
 
-        memberCommandService.updateMember(signup.getId(), updateMemberForm);
+        memberCommandService.updateContact(signup.getId(), newContact);
 
         Member findMember = memberRepository.findById(signup.getId()).get();
         //then
@@ -126,16 +123,13 @@ class MemberCommandServiceTest {
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
+
         String newPassword = "newPassword1234";
 
-        UpdateMemberForm updateMemberForm = UpdateMemberForm.builder()
-                .password(form.getPassword())
-                .newPassword(newPassword)
-                .build();
 
         //when
         Member signup = memberCommandService.signupMember(form);
-        memberCommandService.updateMember(signup.getId(), updateMemberForm);
+        memberCommandService.resetPassword(signup.getId(),form.getPassword(),newPassword);
 
         Member member = memberRepository.findById(signup.getId()).get();
         //then
@@ -143,36 +137,7 @@ class MemberCommandServiceTest {
 
     }
 
-    @Test
-    @DisplayName("연락처,비밀번호 변경")
-    void changeContactPasswordTest() throws Exception {
-        //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
-                .email("email@email.com")
-                .password("password1234")
-                .name("name")
-                .nickname("nickname")
-                .contact("01011111234")
-                .build();
 
-        String newPassword = "newPassword1234";
-        String newContact = "01012341111";
-
-        UpdateMemberForm updateMemberForm = UpdateMemberForm.builder()
-                .password(form.getPassword())
-                .newPassword(newPassword)
-                .contact(newContact)
-                .build();
-
-        //when
-        Member signup = memberCommandService.signupMember(form);
-        memberCommandService.updateMember(signup.getId(), updateMemberForm);
-
-        Member findMember = memberRepository.findById(signup.getId()).get();
-        //then
-        assertThat(passwordEncoder.matches(newPassword, findMember.getPassword())).isTrue();
-        assertThat(findMember.getContact()).isEqualTo(newContact);
-    }
 
     @Test
     @DisplayName("회원탈퇴")
