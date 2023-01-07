@@ -18,13 +18,79 @@ endif::[]
 
 ==== 요청
 
-include::{snippets}/member/http-request.adoc[]
-include::{snippets}/member/request-fields.adoc[]
+include::{snippets}/postMember/http-request.adoc[]
+===== 요청 필드
+
+include::{snippets}/postMember/request-fields.adoc[]
 
 ==== 응답
 
-include::{snippets}/member/http-response.adoc[]
-include::{snippets}/member/response-fields.adoc[]
+include::{snippets}/postMember/http-response.adoc[]
+===== 응답 필드
+
+include::{snippets}/postMember/response-fields.adoc[]
+
+=== 연락처 변경
+
+==== 요청
+
+include::{snippets}/putContact/http-request.adoc[]
+===== 요청 헤더
+
+include::{snippets}/putContact/request-headers.adoc[]
+
+===== 요청 필드
+
+include::{snippets}/putContact/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/putContact/http-response.adoc[]
+===== 응답 필드
+
+include::{snippets}/putContact/response-fields.adoc[]
+
+=== 비밀번호 변경
+
+==== 요청
+
+include::{snippets}/putPassword/http-request.adoc[]
+===== 요청 헤더
+
+include::{snippets}/putPassword/request-headers.adoc[]
+
+===== 요청 필드
+
+include::{snippets}/putPassword/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/putPassword/http-response.adoc[]
+===== 응답 필드
+
+include::{snippets}/putPassword/response-fields.adoc[]
+
+=== 회원 탈퇴
+
+==== 요청
+
+include::{snippets}/deleteMember/http-request.adoc[]
+
+==== 요청 헤더
+
+include::{snippets}/deleteMember/request-headers.adoc[]
+
+==== 요청 필드
+
+include::{snippets}/deleteMember/request-fields.adoc[]
+
+==== 응답
+
+include::{snippets}/deleteMember/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/deleteMember/response-fields.adoc[]
 
 == Login
 

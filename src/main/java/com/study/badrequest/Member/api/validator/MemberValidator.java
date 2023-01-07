@@ -17,8 +17,8 @@ public class MemberValidator {
 
     private final MemberRepository memberRepository;
 
-    public void validate(MemberRequestForm.CreateMember form) {
-        log.info("[MemberValidator]");
+    public void validateCreateForm(MemberRequestForm.CreateMember form) {
+        log.info("[MemberValidator.validateCreateForm]");
 
         if (memberRepository.existsByEmail(form.getEmail())) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_EMAIL);
@@ -27,6 +27,12 @@ public class MemberValidator {
         if (memberRepository.existsByContact(form.getContact())) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_CONTACT);
         }
+    }
 
+    public void validateContact(MemberRequestForm.UpdateContact form) {
+        log.info("[MemberValidator.validateContact]");
+        if (memberRepository.existsByContact(form.getContact())) {
+            throw new CustomValidationException(CustomStatus.DUPLICATE_CONTACT);
+        }
     }
 }

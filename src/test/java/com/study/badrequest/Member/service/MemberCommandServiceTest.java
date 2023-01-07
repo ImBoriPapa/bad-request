@@ -17,6 +17,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -34,6 +37,9 @@ class MemberCommandServiceTest {
     PasswordEncoder passwordEncoder;
     @Autowired
     ProfileRepository profileRepository;
+    @Autowired
+    EntityManager em;
+
 
 
     @Test
@@ -155,6 +161,8 @@ class MemberCommandServiceTest {
         Member member = memberRepository.findById(signup.getId()).get();
         Long profileId = member.getProfile().getId();
         memberCommandService.resignMember(member.getId(), form.getPassword());
+        em.flush();
+        em.clear();
 
         //then
         assertThat(memberRepository.findById(member.getId()).isEmpty()).isTrue();

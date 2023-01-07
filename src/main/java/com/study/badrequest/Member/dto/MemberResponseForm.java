@@ -25,11 +25,11 @@ public class MemberResponseForm {
     @NoArgsConstructor
     @Getter
     public static class UpdateResult {
-        private Long id;
+        private Long memberId;
         private LocalDateTime updatedAt;
 
         public UpdateResult(Member member) {
-            this.id = member.getId();
+            this.memberId = member.getId();
             this.updatedAt = member.getUpdatedAt();
         }
     }

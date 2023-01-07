@@ -1,6 +1,7 @@
 package com.study.badrequest.login.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.DocsFileGenerators;
 import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -94,8 +95,8 @@ class LoginControllerTest {
                                 fieldWithPath("password").description("비밀번호")
                         ),
                         responseHeaders(
-                                headerWithName(AUTHORIZATION_HEADER).description("Access Token").optional(),
-                                headerWithName("Set-Cookie").description("Refresh Token Cookie").optional()
+                                headerWithName(AUTHORIZATION_HEADER).description("Access Token"),
+                                headerWithName("Set-Cookie").description("Refresh Token Cookie")
                         ),
                         responseFields(
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 응답상태"),

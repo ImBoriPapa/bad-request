@@ -50,7 +50,7 @@ message:
 
 token:
   secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
-  access-life: 2
+  access-life: 3
   refresh-life: 4
 #개발환경에서는 HTTPS 적용 x
 cookie-status:

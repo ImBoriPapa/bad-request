@@ -26,25 +26,34 @@ public class SampleData {
     public static final String SAMPLE_TEACHER_EMAIL = "teacher@gmail.com";
     public static final String SAMPLE_ADMIN_EMAIL = "admin@gmail.com";
 
+    public static final String SAMPLE_PASSWORD = "password1234!@";
+
     @PostConstruct
     public void sampleUser() {
         log.info("[INIT SAMPLE USER]");
+
+        com.study.badrequest.Member.domain.entity.Profile userProfile = com.study.badrequest.Member.domain.entity.Profile.builder()
+                .nickname("sample_nick")
+                .build();
+
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)
-                .password(passwordEncoder.encode("password1234!@"))
+                .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .contact(SAMPLE_USER_CONTACT)
                 .authority(Member.Authority.MEMBER)
+                .profile(userProfile)
                 .build();
+
 
         Member teacher = Member.createMember()
                 .email(SAMPLE_TEACHER_EMAIL)
-                .password(passwordEncoder.encode("password1234!@"))
+                .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .authority(Member.Authority.TEACHER)
                 .build();
 
         Member admin = Member.createMember()
                 .email(SAMPLE_ADMIN_EMAIL)
-                .password(passwordEncoder.encode("password1234!@"))
+                .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .authority(Member.Authority.ADMIN)
                 .build();
         memberRepository.saveAll(List.of(user, teacher, admin));

@@ -1,7 +1,6 @@
 package com.study.badrequest.Member.dto;
 
 
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,7 +42,7 @@ public class MemberRequestForm {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class ResetPassword{
+    public static class ResetPassword {
         @Pattern(regexp = PASSWORD, message = "비밀번호는 숫자,문자,특수문자 포함 8~15자리")
         private String password;
         @Pattern(regexp = PASSWORD, message = "비밀번호는 숫자,문자,특수문자 포함 8~15자리")
@@ -51,9 +50,18 @@ public class MemberRequestForm {
     }
 
     @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
-    public static class UpdateContact{
+    public static class UpdateContact {
         @NotEmpty(message = "연락처를 입력해주세요")
         private String contact;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class DeleteMember {
+        @NotEmpty(message = "비밀번호를 입력해 주세요")
+        private String password;
     }
 }

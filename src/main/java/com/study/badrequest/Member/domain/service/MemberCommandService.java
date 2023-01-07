@@ -7,6 +7,7 @@ import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.login.domain.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,8 @@ public class MemberCommandService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public Member signupMember(MemberRequestForm.CreateMember form) {
         log.info("[MemberCommandService.signupMember]");
@@ -66,6 +69,9 @@ public class MemberCommandService {
         log.info("[MemberCommandService.resignMember]");
         Member member = findMemberById(memberId);
         passwordCheck(password, member.getPassword());
+        refreshTokenRepository.findById(member.getUsername()).ifPresent(
+                refreshTokenRepository::delete
+        );
         memberRepository.delete(member);
     }
 

@@ -2,8 +2,13 @@ package com.study.badrequest.Member.api;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.DocsFileGenerators;
+import com.study.badrequest.Member.domain.entity.Member;
+import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.Member.dto.MemberRequestForm;
 import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.login.domain.service.JwtLoginService;
+import com.study.badrequest.login.dto.LoginDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,17 +18,27 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.study.badrequest.SampleData.SAMPLE_USER_CONTACT;
-import static com.study.badrequest.SampleData.SAMPLE_USER_EMAIL;
+import javax.print.attribute.Attribute;
+
+import static com.study.badrequest.SampleData.*;
+import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -38,6 +53,8 @@ class MemberControllerTest {
     MockMvc mockMvc;
     @Autowired
     ObjectMapper objectMapper;
+    @Autowired
+    JwtLoginService loginService;
 
     @Test
     @DisplayName("회원가입")
@@ -66,7 +83,7 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.result.links.[0].rel").exists())
                 .andExpect(jsonPath("$.result.links.[0].href").exists())
                 .andDo(print())
-                .andDo(document("member",
+                .andDo(document("postMember",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestFields(
@@ -156,5 +173,129 @@ class MemberControllerTest {
                 .andExpect(jsonPath("errorCode").value(CustomStatus.VALIDATION_ERROR.getCode()))
                 .andExpect(jsonPath("message").exists())
                 .andDo(print());
+    }
+
+    @Test
+    @DisplayName("비밀번호 변경 테스트")
+    void putPasswordTest() throws Exception {
+        //given
+        String password = SAMPLE_PASSWORD;
+        String newPassword = "newPassword1234!@";
+        MemberRequestForm.ResetPassword resetForm = new MemberRequestForm.ResetPassword(password, newPassword);
+        String content = objectMapper.writeValueAsString(resetForm);
+
+        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+
+        //when
+        mockMvc.perform(put("/api/v1/member/{memberId}/password", loginDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+
+                //then
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("putPassword",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 식별 아이디").attributes()
+                        ),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("기존 비밀번호"),
+                                fieldWithPath("newPassword").type(JsonFieldType.STRING).description("변경할 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 응답상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
+                                fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("식별 아이디"),
+                                fieldWithPath("result.updatedAt").type(JsonFieldType.STRING).description("계정 생성일"),
+                                fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("회원 정보"),
+                                fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크"))));
+    }
+
+    @Test
+    @DisplayName("연락처 변경 테스트")
+    void putContactTest() throws Exception {
+        //given
+        String newContact = "010-1212-1312";
+        MemberRequestForm.UpdateContact contact = new MemberRequestForm.UpdateContact(newContact);
+        String content = objectMapper.writeValueAsString(contact);
+
+        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+
+        //when
+        mockMvc.perform(put("/api/v1/member/{memberId}/contact", loginDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+
+                //then
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("putContact",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 식별 아이디").attributes()
+                        ),
+                        requestFields(
+                                fieldWithPath("contact").type(JsonFieldType.STRING).description("새 연락처")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 응답상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
+                                fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("식별 아이디"),
+                                fieldWithPath("result.updatedAt").type(JsonFieldType.STRING).description("계정 생성일"),
+                                fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("로그인"),
+                                fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크"))));
+    }
+
+    @Test
+    @DisplayName("회원 탈퇴 테스트")
+    void deleteMemberTest() throws Exception {
+        //given
+
+        MemberRequestForm.DeleteMember password = new MemberRequestForm.DeleteMember(SAMPLE_PASSWORD);
+        String content = objectMapper.writeValueAsString(password);
+
+        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+
+        //when
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/member/{memberId}", loginDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+
+                //then
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("deleteMember",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("AccessToken")
+                        ),
+                        pathParameters(
+                                parameterWithName("memberId").description("회원 식별 아이디").attributes()
+                        ),
+                        requestFields(
+                                fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 응답상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
+                                fieldWithPath("result.thanks").type(JsonFieldType.STRING).description("인사"),
+                                fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("회원 가입"),
+                                fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크"))));
     }
 }
