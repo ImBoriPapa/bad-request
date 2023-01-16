@@ -45,6 +45,13 @@ logging:
     org.springframework.data.*.*: DEBUG
     org.springframework.cache.*: DEBUG
 
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
 message:
   hello: This is dev server
 

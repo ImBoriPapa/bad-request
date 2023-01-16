@@ -41,7 +41,8 @@ dependencies {
     //validation
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
+    //s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     //h2
     runtimeOnly 'com.h2database:h2'
     //client
@@ -51,7 +52,7 @@ dependencies {
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
     //UUID
-    implementation "com.fasterxml.uuid:java-uuid-generator:4.0.1"
+    implementation 'com.fasterxml.uuid:java-uuid-generator:4.1.0'
     // test-containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
     //lombok

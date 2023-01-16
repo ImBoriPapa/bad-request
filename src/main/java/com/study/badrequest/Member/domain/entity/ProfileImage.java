@@ -5,12 +5,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
+@Embeddable
 @NoArgsConstructor
 @Getter
 public class ProfileImage {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "ORIGINAL_NAME")
     private String originalFileName;

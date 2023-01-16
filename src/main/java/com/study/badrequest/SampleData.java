@@ -32,16 +32,11 @@ public class SampleData {
     public void sampleUser() {
         log.info("[INIT SAMPLE USER]");
 
-        com.study.badrequest.Member.domain.entity.Profile userProfile = com.study.badrequest.Member.domain.entity.Profile.builder()
-                .nickname("sample_nick")
-                .build();
-
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .contact(SAMPLE_USER_CONTACT)
                 .authority(Member.Authority.MEMBER)
-                .profile(userProfile)
                 .build();
 
 

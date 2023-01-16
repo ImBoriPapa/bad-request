@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,33 +26,36 @@ public class Member implements UserDetails {
     private String username;
     @Column(name = "EMAIL")
     private String email;
+    @Column(name = "NICK_NAME")
+    private String nickname;
+    @Column(name = "ABOUT_ME")
+    private String aboutMe;
     @Column(name = "PASSWORD")
     private String password;
     @Column(name = "NAME")
     private String name;
     @Column(name = "CONTACT")
     private String contact;
+    @Embedded
+    private ProfileImage profileImage;
     @Column(name = "AUTHORITY")
     @Enumerated(EnumType.STRING)
     private Authority authority;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "PROFILE_ID")
-    private Profile profile;
-
     @Column(name = "CREATE_AT")
     private LocalDateTime createdAt;
     @Column(name = "UPDATE_AT")
     private LocalDateTime updatedAt;
 
     @Builder(builderMethodName = "createMember")
-    public Member(String email, String password, String name, String contact, Authority authority, Profile profile) {
-        this.email = email;
-        this.password = password;
+    public Member(String email, String nickname, String aboutMe, String password, String name, String contact, Authority authority) {
         this.username = generateSequentialUUID();
+        this.email = email;
+        this.nickname = nickname;
+        this.aboutMe = aboutMe;
+        this.password = password;
         this.name = name;
         this.contact = contact;
         this.authority = authority;
-        this.profile = profile;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

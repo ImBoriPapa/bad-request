@@ -1,15 +1,15 @@
 package com.study.badrequest.Member.domain.service;
 
 import com.study.badrequest.Member.domain.entity.Member;
-import com.study.badrequest.Member.domain.entity.Profile;
+
 import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.Member.dto.MemberRequestForm;
-import com.study.badrequest.Member.dto.UpdateMemberForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.login.domain.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,25 +22,24 @@ public class MemberCommandService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-
     private final RefreshTokenRepository refreshTokenRepository;
+
 
     public Member signupMember(MemberRequestForm.CreateMember form) {
         log.info("[MemberCommandService.signupMember]");
-        Profile profile = Profile.builder()
-                .nickname(form.getNickname())
-                .build();
 
         Member member = Member.createMember()
                 .email(form.getEmail())
                 .password(passwordEncoder.encode(form.getPassword()))
                 .name(form.getName())
+                .nickname(form.getNickname())
                 .contact(form.getContact())
                 .authority(Member.Authority.MEMBER)
-                .profile(profile)
                 .build();
 
-        return memberRepository.save(member);
+        Member savedMember = memberRepository.save(member);
+
+        return savedMember;
     }
 
     public void changePermissions(Long memberId, Member.Authority authority) {
@@ -72,6 +71,7 @@ public class MemberCommandService {
         refreshTokenRepository.findById(member.getUsername()).ifPresent(
                 refreshTokenRepository::delete
         );
+
         memberRepository.delete(member);
     }
 

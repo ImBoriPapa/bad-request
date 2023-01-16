@@ -1,13 +1,15 @@
 package com.study.badrequest.Member.service;
 
 import com.study.badrequest.Member.domain.entity.Member;
+
 import com.study.badrequest.Member.domain.repository.MemberRepository;
-import com.study.badrequest.Member.domain.repository.ProfileRepository;
+
 import com.study.badrequest.Member.domain.service.MemberCommandService;
 
 import com.study.badrequest.Member.dto.MemberRequestForm;
-import com.study.badrequest.Member.dto.UpdateMemberForm;
+
 import com.study.badrequest.exception.custom_exception.MemberException;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -35,11 +39,9 @@ class MemberCommandServiceTest {
     MemberRepository memberRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
-    @Autowired
-    ProfileRepository profileRepository;
+
     @Autowired
     EntityManager em;
-
 
 
     @Test
@@ -53,6 +55,7 @@ class MemberCommandServiceTest {
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
+
         //when
         Member signup = memberCommandService.signupMember(form);
         Member findMember = memberRepository.findById(signup.getId()).get();
@@ -135,14 +138,13 @@ class MemberCommandServiceTest {
 
         //when
         Member signup = memberCommandService.signupMember(form);
-        memberCommandService.resetPassword(signup.getId(),form.getPassword(),newPassword);
+        memberCommandService.resetPassword(signup.getId(), form.getPassword(), newPassword);
 
         Member member = memberRepository.findById(signup.getId()).get();
         //then
         assertThat(passwordEncoder.matches(newPassword, member.getPassword())).isTrue();
 
     }
-
 
 
     @Test
@@ -159,13 +161,12 @@ class MemberCommandServiceTest {
         //when
         Member signup = memberCommandService.signupMember(form);
         Member member = memberRepository.findById(signup.getId()).get();
-        Long profileId = member.getProfile().getId();
         memberCommandService.resignMember(member.getId(), form.getPassword());
-        em.flush();
-        em.clear();
 
         //then
         assertThat(memberRepository.findById(member.getId()).isEmpty()).isTrue();
-        assertThat(profileRepository.findById(profileId).isEmpty()).isTrue();
+
     }
+
+
 }
