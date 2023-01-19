@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .antMatchers("/static/**").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
                 .antMatchers("/test/teacher").hasAuthority("ROLL_TEACHER")
+                .antMatchers("/api/image").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
