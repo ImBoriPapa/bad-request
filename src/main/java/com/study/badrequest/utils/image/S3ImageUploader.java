@@ -1,4 +1,4 @@
-package com.study.badrequest.utils;
+package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;

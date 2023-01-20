@@ -1,4 +1,4 @@
-package com.study.badrequest.utils;
+package com.study.badrequest.utils.jwt;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.TokenException;

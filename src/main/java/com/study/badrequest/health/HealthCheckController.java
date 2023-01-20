@@ -1,6 +1,6 @@
 package com.study.badrequest.health;
 
-import com.study.badrequest.utils.JwtUtils;
+import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

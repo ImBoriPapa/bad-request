@@ -2,9 +2,7 @@ package com.study.badrequest.health;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.utils.JwtUtils;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 

@@ -1,4 +1,4 @@
-package com.study.badrequest.utils;
+package com.study.badrequest.utils.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -98,12 +98,11 @@ public class Member implements UserDetails {
         String proto = Generators.timeBasedGenerator().generate().toString();
         String[] array = proto.split("-");
         String sort = array[2] + array[1] + array[0] + array[3] + array[4];
-        StringBuilder builder = new StringBuilder(sort);
-        builder.insert(8, "-");
-        builder.insert(13, "-");
-        builder.insert(18, "-");
-        builder.insert(23, "-");
-        return builder.toString();
+        return new StringBuilder(sort)
+                .insert(8, "-")
+                .insert(13, "-")
+                .insert(18, "-")
+                .insert(23, "-").toString();
     }
 
     @Override

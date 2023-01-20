@@ -1,12 +1,9 @@
-package com.study.badrequest.Member.domain.entity;
+package com.study.badrequest.board.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -16,5 +13,9 @@ public class Comment {
     private Long id;
 
     private String comment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BOARD_ID")
+    private Board board;
 
 }

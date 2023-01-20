@@ -5,7 +5,7 @@ import com.study.badrequest.Member.domain.repository.MemberRepository;
 import com.study.badrequest.login.domain.entity.RefreshToken;
 import com.study.badrequest.login.domain.repository.RefreshTokenRepository;
 import com.study.badrequest.login.dto.LoginDto;
-import com.study.badrequest.utils.JwtUtils;
+import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

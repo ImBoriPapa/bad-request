@@ -1,8 +1,8 @@
 package com.study.badrequest.filter;
 
 import com.study.badrequest.login.domain.service.JwtLoginService;
-import com.study.badrequest.utils.JwtStatus;
-import com.study.badrequest.utils.JwtUtils;
+import com.study.badrequest.utils.jwt.JwtStatus;
+import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;

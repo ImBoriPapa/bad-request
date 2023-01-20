@@ -7,11 +7,10 @@ import com.study.badrequest.login.domain.service.JwtLoginService;
 import com.study.badrequest.login.dto.LoginDto;
 import com.study.badrequest.login.dto.LoginRequest;
 import com.study.badrequest.login.dto.LoginResponse;
-import com.study.badrequest.utils.JwtUtils;
+import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -29,7 +28,6 @@ import java.util.Map;
 import static com.study.badrequest.commons.consts.CustomStatus.LOGOUT_SUCCESS;
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController

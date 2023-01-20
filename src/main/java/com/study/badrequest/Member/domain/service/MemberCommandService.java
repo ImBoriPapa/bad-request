@@ -24,7 +24,7 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
-
+    // TODO: 2023/01/18 profile image
     public Member signupMember(MemberRequestForm.CreateMember form) {
         log.info("[MemberCommandService.signupMember]");
 
@@ -38,6 +38,7 @@ public class MemberCommandService {
                 .build();
 
         Member savedMember = memberRepository.save(member);
+
 
         return savedMember;
     }

@@ -1,4 +1,4 @@
-package com.study.badrequest.utils;
+package com.study.badrequest.utils.image;
 
 import lombok.Getter;
 
