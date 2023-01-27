@@ -26,11 +26,10 @@ public class LogTrace {
 
     private List<LogEntity> logs = new ArrayList<>();
     private final LogRepository logRepository;
-
     private String className;
     private String methodName;
     private String message;
-    private LogKind logKind;
+
 
     @Before("@annotation(com.study.badrequest.aop.trace.CustomLog)")
     public void doTrace(JoinPoint joinPoint) {
@@ -42,6 +41,7 @@ public class LogTrace {
         String remoteAddr = getClientIP(request);
         String requestURI = request.getRequestURI();
         String username = "NO NAME";
+
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             username = SecurityContextHolder.getContext().getAuthentication().getName();
         }
@@ -70,18 +70,19 @@ public class LogTrace {
 
     public String getClientIP(HttpServletRequest request) {
         AtomicReference<String> ip = new AtomicReference<>(request.getHeader("X-Forwarded-For"));
+
         Arrays.stream(IpName.values())
-                .filter(i -> i.equals(request.getHeader(i.getHeaderName())))
-                .findFirst()
+                .filter(i -> i.getHeaderName().equals(request.getHeader(i.getHeaderName())))
+                .findAny()
                 .ifPresentOrElse(r -> ip.set(r.getHeaderName()),
-                        () -> ip.set("")
+                        () -> ip.set("127.0.0.1")
                 );
 
         return ip.get();
     }
 
     @Getter
-    static enum IpName{
+    private enum IpName{
 
         X_FORWARDED_FOR("X-Forwarded-For"),
         PROXY_CLIENT_IP("Proxy-Client-IP"),
