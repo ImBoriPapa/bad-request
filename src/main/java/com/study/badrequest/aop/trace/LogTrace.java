@@ -40,7 +40,7 @@ public class LogTrace {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String remoteAddr = getClientIP(request);
         String requestURI = request.getRequestURI();
-        String username = "NO NAME";
+        String username = "NOT_AUTHENTICATION";
 
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -69,20 +69,30 @@ public class LogTrace {
     }
 
     public String getClientIP(HttpServletRequest request) {
-        AtomicReference<String> ip = new AtomicReference<>(request.getHeader("X-Forwarded-For"));
+        String ip = request.getHeader("X-Forwarded-For");
 
-        Arrays.stream(IpName.values())
-                .filter(i -> i.getHeaderName().equals(request.getHeader(i.getHeaderName())))
-                .findAny()
-                .ifPresentOrElse(r -> ip.set(r.getHeaderName()),
-                        () -> ip.set("127.0.0.1")
-                );
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        } else
+            ip = "127.0.0.1";
 
-        return ip.get();
+        return ip;
     }
 
     @Getter
-    private enum IpName{
+    private enum IpName {
 
         X_FORWARDED_FOR("X-Forwarded-For"),
         PROXY_CLIENT_IP("Proxy-Client-IP"),
