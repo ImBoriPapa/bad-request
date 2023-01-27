@@ -48,6 +48,7 @@ public class LogController {
                 Logs.builder()
                         .id(m.getId())
                         .logTime(m.getLogTime())
+                        .logKind(m.getLogKind())
                         .className(m.getClassName())
                         .methodName(m.getMethodName())
                         .message(m.getMessage())

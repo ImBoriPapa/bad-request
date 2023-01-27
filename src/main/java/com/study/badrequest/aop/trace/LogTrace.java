@@ -1,5 +1,6 @@
 package com.study.badrequest.aop.trace;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -14,6 +15,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
 @Aspect
@@ -67,31 +69,30 @@ public class LogTrace {
     }
 
     public String getClientIP(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
+        AtomicReference<String> ip = new AtomicReference<>(request.getHeader("X-Forwarded-For"));
+        Arrays.stream(IpName.values())
+                .filter(i -> i.equals(request.getHeader(i.getHeaderName())))
+                .findFirst()
+                .ifPresentOrElse(r -> ip.set(r.getHeaderName()),
+                        () -> ip.set("")
+                );
 
+        return ip.get();
+    }
 
-        if (ip == null) {
-            ip = request.getHeader("Proxy-Client-IP");
+    @Getter
+    static enum IpName{
 
+        X_FORWARDED_FOR("X-Forwarded-For"),
+        PROXY_CLIENT_IP("Proxy-Client-IP"),
+        WL_PROXY_CLIENT_IP("WL-Proxy-Client-IP"),
+        HTTP_CLIENT_IP("HTTP_CLIENT_IP"),
+        HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR");
+
+        private String headerName;
+
+        IpName(String headerName) {
+            this.headerName = headerName;
         }
-        if (ip == null) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-
-        }
-        if (ip == null) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-
-        }
-        if (ip == null) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-
-        }
-        if (ip == null) {
-            ip = request.getRemoteAddr();
-
-        }
-
-
-        return ip;
     }
 }
