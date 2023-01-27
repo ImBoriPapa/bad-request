@@ -1,7 +1,7 @@
 package com.study.badrequest.Member.entity;
 
-import com.study.badrequest.Member.domain.entity.Member;
-import com.study.badrequest.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

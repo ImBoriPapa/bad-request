@@ -1,10 +1,9 @@
 package com.study.badrequest.config;
 
-import com.study.badrequest.Member.domain.entity.Member;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.login.domain.service.JwtUserDetailService;
+import com.study.badrequest.domain.login.domain.service.JwtUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,7 +42,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", CUSTOM_STATUS).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/member").permitAll()
-                .antMatchers("/static/**").permitAll()
+                .antMatchers("/static/**","/log").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
                 .antMatchers("/test/teacher").hasAuthority("ROLL_TEACHER")
                 .antMatchers("/api/image").permitAll()

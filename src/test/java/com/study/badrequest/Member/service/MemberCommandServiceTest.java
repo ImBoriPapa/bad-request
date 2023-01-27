@@ -1,12 +1,12 @@
 package com.study.badrequest.Member.service;
 
-import com.study.badrequest.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.domain.entity.Member;
 
-import com.study.badrequest.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 
-import com.study.badrequest.Member.domain.service.MemberCommandService;
+import com.study.badrequest.domain.Member.domain.service.MemberCommandService;
 
-import com.study.badrequest.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 
 import com.study.badrequest.exception.custom_exception.MemberException;
 
@@ -20,9 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

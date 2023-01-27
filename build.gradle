@@ -35,6 +35,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     //jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // MariaDB
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     //querydsl 추가
     implementation "com.querydsl:querydsl-jpa:5.0.0"
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0"
@@ -53,12 +55,15 @@ dependencies {
     runtimeOnly 'com.h2database:h2'
     //client
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
     //test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
     //UUID
     implementation 'com.fasterxml.uuid:java-uuid-generator:4.1.0'
+    //mock s3
+    testImplementation 'io.findify:s3mock_2.12:0.2.4'
     // test-containers
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
     //lombok

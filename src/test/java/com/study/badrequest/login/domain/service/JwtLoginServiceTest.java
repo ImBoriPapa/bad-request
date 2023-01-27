@@ -1,10 +1,11 @@
 package com.study.badrequest.login.domain.service;
 
-import com.study.badrequest.Member.domain.entity.Member;
-import com.study.badrequest.Member.domain.repository.MemberRepository;
-import com.study.badrequest.login.domain.entity.RefreshToken;
-import com.study.badrequest.login.domain.repository.RefreshTokenRepository;
-import com.study.badrequest.login.dto.LoginDto;
+import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.login.domain.entity.RefreshToken;
+import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.domain.service.JwtLoginService;
+import com.study.badrequest.domain.login.dto.LoginDto;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;

@@ -1,10 +1,7 @@
 package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
 import lombok.RequiredArgsConstructor;
@@ -24,15 +21,14 @@ import java.util.UUID;
 
 @Component
 @Slf4j
+@Profile("!dev")
 @RequiredArgsConstructor
-@Profile("prod")
-public class S3ImageUploader implements ImageUploader {
+public class S3ImageUploader implements ImageUploader{
 
     private String bucket = "bori-market-bucket";
     private String path = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
     private final AmazonS3Client amazonS3Client;
 
-    @Override
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
         ArrayList<ImageDetailDto> details = new ArrayList<>();
@@ -42,14 +38,15 @@ public class S3ImageUploader implements ImageUploader {
 
             putImage(file, storedName);
 
-            details.add(ImageDetailDto
-                    .builder()
-                    .originalFileName(file.getOriginalFilename())
-                    .storedFileName(storedName)
-                    .fullPath(path + storedName)
-                    .fileType(file.getContentType())
-                    .size(file.getSize())
-                    .build());
+            details.add(
+                    ImageDetailDto
+                            .builder()
+                            .originalFileName(file.getOriginalFilename())
+                            .storedFileName(storedName)
+                            .fullPath(path + storedName)
+                            .fileType(file.getContentType())
+                            .size(file.getSize())
+                            .build());
         });
         return details;
     }
@@ -70,8 +67,14 @@ public class S3ImageUploader implements ImageUploader {
 
         try (InputStream inputStream = file.getInputStream()) {
             amazonS3Client.putObject(
-                    new PutObjectRequest(bucket, storedName, inputStream, objectMetadata)
+                    new PutObjectRequest(
+                            bucket,
+                            storedName,
+                            inputStream,
+                            objectMetadata
+                    )
                             .withCannedAcl(CannedAccessControlList.PublicRead));
+
         } catch (IOException e) {
             throw new ImageFileUploadException(CustomStatus.UPLOAD_FAIL_ERROR);
         }
@@ -87,12 +90,12 @@ public class S3ImageUploader implements ImageUploader {
         return objectMetadata;
     }
 
-    @Override
+
     public String createFileName(String originalFileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
     }
 
-    @Override
+
     public String getFileExtension(String originalFileName) {
 
         hasExtension(originalFileName);
@@ -124,13 +127,13 @@ public class S3ImageUploader implements ImageUploader {
                 .orElseThrow(() -> new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR));
     }
 
-    @Override
+
     public void deleteFile(String storedName) {
         log.info("[deleteFile]");
         amazonS3Client.deleteObject(new DeleteObjectRequest(path, storedName));
     }
 
-    @Override
+
     public void deleteFile(List<String> storedNameList) {
         log.info("[deleteFile]");
         storedNameList.forEach(list -> new DeleteObjectRequest(bucket, list));

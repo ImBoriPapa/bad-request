@@ -14,14 +14,11 @@ spring:
       on-profile: test
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:test;MODE=MySQL
-    username: sa
-    password: 1234
-  h2:
-    console:
-      enabled: true
-      path: /h2/console
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:3306/BAD_REQUEST?characterEncoding=UTF-8&serverTimezone=UTC
+    username: root
+    password: 0209
+
   jpa:
     hibernate:
       ddl-auto: create
@@ -30,25 +27,31 @@ spring:
         format_sql: true # log
         show_sql: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.H2Dialect
-  logging:
-    level:
-      org.hibernate.SQL:
-        type.descriptor.sql: trace
-        SQL: DEBUG
+    database: mysql
 
 logging:
+
+  pattern:
+#    file: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
+    file: "[%d{yyyy-MM-dd-HH:mm}][%-5level][%thread][%logger] - %msg%n"
+  file:
+    name: /Users/leechoongsub/desktop/log/test.log
   level:
-    root: info
-    org.springframework.orm.jpa: DEBUG
-    org.springframework.transaction: DEBUG
-    org.springframework.data.*.*: DEBUG
-    org.springframework.cache.*: DEBUG
+    root: INFO
+#    org.springframework.orm.jpa: DEBUG
+#    org.springframework.transaction: DEBUG
+#    org.springframework.data.*.*: DEBUG
+#    org.springframework.cache.*: DEBUG
+  logback:
+    rolling policy:
+      file-name-pattern: "/Users/leechoongsub/desktop/log/test.log.%d{yyyy-MM-dd}.%i"
+      max-file-size: 5MB
 
 cloud:
   aws:
     region:
       static: ap-northeast-2
+      auto: false
     stack:
       auto: false
 

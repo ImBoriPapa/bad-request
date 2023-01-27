@@ -2,13 +2,10 @@ package com.study.badrequest.Member.api;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.DocsFileGenerators;
-import com.study.badrequest.Member.domain.entity.Member;
-import com.study.badrequest.Member.domain.repository.MemberRepository;
-import com.study.badrequest.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.login.domain.service.JwtLoginService;
-import com.study.badrequest.login.dto.LoginDto;
+import com.study.badrequest.domain.login.domain.service.JwtLoginService;
+import com.study.badrequest.domain.login.dto.LoginDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,8 +20,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.print.attribute.Attribute;
 
 import static com.study.badrequest.SampleData.*;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;

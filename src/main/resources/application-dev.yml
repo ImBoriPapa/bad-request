@@ -49,8 +49,13 @@ cloud:
   aws:
     region:
       static: ap-northeast-2
+      auto: false
     stack:
       auto: false
+    credentials:
+      access-key: fsdafasfas
+      secret-key: afsafsafasfa
+
 
 message:
   hello: This is dev server

@@ -1,7 +1,7 @@
 package com.study.badrequest.refresh;
 
-import com.study.badrequest.login.domain.entity.RefreshToken;
-import com.study.badrequest.login.domain.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.domain.entity.RefreshToken;
+import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,7 +1,7 @@
 package com.study.badrequest;
 
-import com.study.badrequest.Member.domain.entity.Member;
-import com.study.badrequest.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
@@ -25,7 +25,6 @@ public class SampleData {
     public static final String SAMPLE_USER_CONTACT = "010-0000-1234";
     public static final String SAMPLE_TEACHER_EMAIL = "teacher@gmail.com";
     public static final String SAMPLE_ADMIN_EMAIL = "admin@gmail.com";
-
     public static final String SAMPLE_PASSWORD = "password1234!@";
 
     @PostConstruct

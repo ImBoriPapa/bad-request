@@ -1,13 +1,13 @@
 package com.study.badrequest.login.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.DocsFileGenerators;
-import com.study.badrequest.Member.domain.entity.Member;
-import com.study.badrequest.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.login.domain.service.JwtLoginService;
-import com.study.badrequest.login.dto.LoginDto;
-import com.study.badrequest.login.dto.LoginRequest;
+import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.domain.service.JwtLoginService;
+import com.study.badrequest.domain.login.dto.LoginDto;
+import com.study.badrequest.domain.login.dto.LoginRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -396,7 +396,7 @@ class LoginControllerTest {
                                 fieldWithPath("result.authority").type(JsonFieldType.STRING).description("결과 예시")
                         )
                 ));
-
-
     }
+
+
 }
