@@ -14,25 +14,28 @@ public class LogEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private LocalDateTime logTime;
     @Enumerated(EnumType.STRING)
-    private LogKind logKind;
+    private LogLevel logLevel;
     private String className;
     private String methodName;
     private String message;
     private String requestURI;
     private String username;
-    private String remoteAddr;
+    private String clientIp;
+    @Lob
+    private String stackTrace;
+
     @Builder
-    public LogEntity(LocalDateTime logTime, LogKind logKind, String className, String methodName, String message,String requestURI,String username,String remoteAddr) {
+    public LogEntity(LocalDateTime logTime, LogLevel logLevel, String className, String methodName, String message, String requestURI, String username, String clientIp, String stackTrace) {
         this.logTime = logTime;
-        this.logKind = logKind;
+        this.logLevel = logLevel;
         this.className = className;
         this.methodName = methodName;
         this.message = message;
         this.requestURI = requestURI;
         this.username = username;
-        this.remoteAddr = remoteAddr;
+        this.clientIp = clientIp;
+        this.stackTrace = stackTrace;
     }
 }

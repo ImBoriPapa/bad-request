@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +17,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+
 
 @Slf4j
 @Aspect
@@ -24,25 +25,32 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class LogTrace {
-
-    private List<LogEntity> logs = new ArrayList<>();
-
-    private Queue logQueue = new LinkedList();
-    private final LogRepository logRepository;
     private String className;
     private String methodName;
     private String message;
+    private HttpServletRequest request;
+    private String remoteAddr;
+    private String requestURI;
+    private String username;
 
-    @Before("@annotation(com.study.badrequest.aop.trace.CustomLog)")
-    public void doTrace(JoinPoint joinPoint) {
+    private String stackTrace;
+    private final Queue<LogEntity> logQueue = new LinkedList<LogEntity>();
+    private final LogRepository logRepository;
+
+    @AfterThrowing(pointcut = "@annotation(com.study.badrequest.aop.trace.CustomLog)", throwing = "exception")
+    public void doErrorHandle(JoinPoint joinPoint, Exception exception) {
+        log.error("[LogTrace . Error Handle={}]", exception.getMessage());
 
         className = joinPoint.getSignature().getDeclaringType().getSimpleName();
         methodName = joinPoint.getSignature().getName();
-        message = Arrays.toString(joinPoint.getArgs());
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String remoteAddr = getIp(request);
-        String requestURI = request.getRequestURI();
-        String username = "NOT_AUTHENTICATION";
+        message = exception.getMessage();
+        request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        remoteAddr = resolveClientIp(request);
+        requestURI = request.getRequestURI();
+        username = "NOT_AUTHENTICATION";
+        StringBuilder stringBuilder = new StringBuilder();
+        Arrays.stream(exception.getStackTrace()).forEach(stringBuilder::append);
+        stackTrace = stringBuilder.toString();
 
         if (SecurityContextHolder.getContext().getAuthentication() != null) {
             username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -51,87 +59,113 @@ public class LogTrace {
         logQueue.add(
                 LogEntity.builder()
                         .logTime(LocalDateTime.now())
-                        .logKind(LogKind.INFO)
+                        .logLevel(LogLevel.ERROR)
                         .className(className)
                         .methodName(methodName)
                         .message(message)
                         .requestURI(requestURI)
                         .username(username)
-                        .remoteAddr(remoteAddr)
+                        .clientIp(remoteAddr)
+                        .stackTrace(stackTrace)
                         .build()
         );
-        log.info("[LOG STACK ID={}]", logQueue.size());
-        boolean time = logQueue.size() == 10;
 
-        if (time) {
+        saveLogs();
+
+        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
+
+    }
+
+    @Before("@annotation(com.study.badrequest.aop.trace.CustomLog)")
+    public void doTrace(JoinPoint joinPoint) {
+
+        className = joinPoint.getSignature().getDeclaringType().getSimpleName();
+        methodName = joinPoint.getSignature().getName();
+        message = Arrays.toString(joinPoint.getArgs());
+        request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        remoteAddr = resolveClientIp(request);
+        requestURI = request.getRequestURI();
+        username = "NOT_AUTHENTICATION";
+        stackTrace = "NO TRACE";
+
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            username = SecurityContextHolder.getContext().getAuthentication().getName();
+        }
+
+        logQueue.add(
+                LogEntity.builder()
+                        .logTime(LocalDateTime.now())
+                        .logLevel(LogLevel.INFO)
+                        .className(className)
+                        .methodName(methodName)
+                        .message(message)
+                        .requestURI(requestURI)
+                        .username(username)
+                        .clientIp(remoteAddr)
+                        .stackTrace(stackTrace)
+                        .build()
+        );
+
+        log.info("[LOG STACK ID={}]", logQueue.size());
+        boolean max = logQueue.size() == 7;
+
+        if (max) {
+            saveLogs();
+        }
+
+        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
+
+    }
+
+    private void saveLogs() {
+        logRepository.saveAll(logQueue);
+        logQueue.clear();
+        log.info("[LOG STACK SAVE DATABASE]");
+    }
+
+    @Scheduled(fixedDelay = 2000)
+    private void saveEachTime() {
+
+        if (logQueue.size() > 0) {
+
             logRepository.saveAll(logQueue);
             logQueue.clear();
-            log.info("[LOG STACK SAVE DATABASE]");
+            log.info("[LOG STACK SAVE DATABASE EACH TIME]");
         }
-        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
+        log.info("[LOG STACK SAVE DATABASE EACH TIME NO LOGS]");
     }
 
-    public String getClientIP(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For");
+    private String resolveClientIp(HttpServletRequest request) {
 
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            log.info("[CLIENT IP request Header={}]", ClientIP.PROXY_CLIENT_IP);
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            log.info("[CLIENT IP request Header={}]", ClientIP.WL_PROXY_CLIENT_IP);
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            log.info("[CLIENT IP request Header={}]", ClientIP.HTTP_CLIENT_IP);
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            log.info("[CLIENT IP request Header={}]", ClientIP.HTTP_X_FORWARDED_FOR);
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            log.info("[CLIENT IP request Header={}]", "getRemote");
-            ip = request.getRemoteAddr();
-        }
-
-        return ip;
-    }
-
-    public String getIp(HttpServletRequest request) {
-        String ip = getString(request.getRemoteAddr());
-
+        String ip = matchClientIpPattern(request.getRemoteAddr());
 
         if (ip == null) {
-            return Arrays.stream(ClientIP.values())
-                    .filter(v -> getString(request.getHeader(v.getHeaderName())) != null)
+            return Arrays.stream(ClientIpHeader.values())
+                    .filter(v -> matchClientIpPattern(request.getHeader(v.getHeaderName())) != null)
                     .findFirst()
-                    .orElse(ClientIP.LOCALHOST)
+                    .orElse(ClientIpHeader.UNKNOWN_CLIENT_IP)
                     .getHeaderName();
         }
 
         return ip;
     }
 
-    private static String getString(String ip) {
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            return null;
-        }
-        return ip;
+    private String matchClientIpPattern(String ip) {
+        return ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip) ? null : ip;
     }
 
     @Getter
-    public enum ClientIP {
+    public enum ClientIpHeader {
         X_FORWARDED_FOR("X-Forwarded-For"),
         PROXY_CLIENT_IP("Proxy-Client-IP"),
         WL_PROXY_CLIENT_IP("WL-Proxy-Client-IP"),
         HTTP_CLIENT_IP("HTTP_CLIENT_IP"),
         HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR"),
-        LOCALHOST("127.0.0.1");
+        UNKNOWN_CLIENT_IP("UNKNOWN_CLIENT_IP");
 
-        private String headerName;
+        private final String headerName;
 
-        ClientIP(String headerName) {
+        ClientIpHeader(String headerName) {
             this.headerName = headerName;
         }
 

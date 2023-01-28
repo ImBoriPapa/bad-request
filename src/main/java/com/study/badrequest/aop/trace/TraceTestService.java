@@ -8,4 +8,9 @@ public class TraceTestService {
     public void logTest(String args){
 
     }
+
+    @CustomLog
+    public void logExTest(String args){
+        throw new IllegalArgumentException("[EXCEPTION]");
+    }
 }
