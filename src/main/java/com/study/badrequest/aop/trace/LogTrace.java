@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Aspect
@@ -25,11 +26,12 @@ import java.util.concurrent.atomic.AtomicReference;
 public class LogTrace {
 
     private List<LogEntity> logs = new ArrayList<>();
+
+    private Queue logQueue = new LinkedList();
     private final LogRepository logRepository;
     private String className;
     private String methodName;
     private String message;
-
 
     @Before("@annotation(com.study.badrequest.aop.trace.CustomLog)")
     public void doTrace(JoinPoint joinPoint) {
@@ -38,7 +40,7 @@ public class LogTrace {
         methodName = joinPoint.getSignature().getName();
         message = Arrays.toString(joinPoint.getArgs());
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String remoteAddr = getClientIP(request);
+        String remoteAddr = getIp(request);
         String requestURI = request.getRequestURI();
         String username = "NOT_AUTHENTICATION";
 
@@ -46,7 +48,7 @@ public class LogTrace {
             username = SecurityContextHolder.getContext().getAuthentication().getName();
         }
 
-        logs.add(
+        logQueue.add(
                 LogEntity.builder()
                         .logTime(LocalDateTime.now())
                         .logKind(LogKind.INFO)
@@ -58,11 +60,12 @@ public class LogTrace {
                         .remoteAddr(remoteAddr)
                         .build()
         );
-        log.info("[LOG STACK ID={}]", logs.size());
-        boolean time = logs.size() == 10;
+        log.info("[LOG STACK ID={}]", logQueue.size());
+        boolean time = logQueue.size() == 10;
+
         if (time) {
-            logRepository.saveAll(logs);
-            logs.removeAll(logs);
+            logRepository.saveAll(logQueue);
+            logQueue.clear();
             log.info("[LOG STACK SAVE DATABASE]");
         }
         log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
@@ -72,37 +75,65 @@ public class LogTrace {
         String ip = request.getHeader("X-Forwarded-For");
 
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            log.info("[CLIENT IP request Header={}]", ClientIP.PROXY_CLIENT_IP);
             ip = request.getHeader("Proxy-Client-IP");
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            log.info("[CLIENT IP request Header={}]", ClientIP.WL_PROXY_CLIENT_IP);
             ip = request.getHeader("WL-Proxy-Client-IP");
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            log.info("[CLIENT IP request Header={}]", ClientIP.HTTP_CLIENT_IP);
             ip = request.getHeader("HTTP_CLIENT_IP");
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            log.info("[CLIENT IP request Header={}]", ClientIP.HTTP_X_FORWARDED_FOR);
             ip = request.getHeader("HTTP_X_FORWARDED_FOR");
         }
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            log.info("[CLIENT IP request Header={}]", "getRemote");
             ip = request.getRemoteAddr();
         }
 
         return ip;
     }
 
-    @Getter
-    private enum IpName {
+    public String getIp(HttpServletRequest request) {
+        String ip = getString(request.getRemoteAddr());
 
+
+        if (ip == null) {
+            return Arrays.stream(ClientIP.values())
+                    .filter(v -> getString(request.getHeader(v.getHeaderName())) != null)
+                    .findFirst()
+                    .orElse(ClientIP.LOCALHOST)
+                    .getHeaderName();
+        }
+
+        return ip;
+    }
+
+    private static String getString(String ip) {
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            return null;
+        }
+        return ip;
+    }
+
+    @Getter
+    public enum ClientIP {
         X_FORWARDED_FOR("X-Forwarded-For"),
         PROXY_CLIENT_IP("Proxy-Client-IP"),
         WL_PROXY_CLIENT_IP("WL-Proxy-Client-IP"),
         HTTP_CLIENT_IP("HTTP_CLIENT_IP"),
-        HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR");
+        HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR"),
+        LOCALHOST("127.0.0.1");
 
         private String headerName;
 
-        IpName(String headerName) {
+        ClientIP(String headerName) {
             this.headerName = headerName;
         }
+
     }
 }

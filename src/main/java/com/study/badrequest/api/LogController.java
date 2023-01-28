@@ -32,7 +32,7 @@ public class LogController {
     @GetMapping("/log")
     public ResponseEntity logs() throws IOException {
 
-        for (int i = 1; i <= 100; i++) {
+        for (int i = 1; i <= 200; i++) {
             testService.logTest("test" + i);
         }
 //        File log = new File(path);
