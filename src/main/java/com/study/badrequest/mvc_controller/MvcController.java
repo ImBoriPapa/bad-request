@@ -35,7 +35,7 @@ public class MvcController {
             Model model) {
 
         List<LogDto> allLog = logQueryRepository.findAllLog(size, localDateTime, logLevel, clientIp, username);
-
+        //test
         model.addAttribute("logList", allLog);
 
         return "/log/log-console";
