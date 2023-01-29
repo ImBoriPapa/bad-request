@@ -34,7 +34,7 @@ public class LogController {
     @CustomLogger
     public ResponseEntity getLogs(
             @RequestParam(value = "size", defaultValue = "30") int size,
-            @RequestParam(value = "date", required = false) String localDateTime,
+            @RequestParam(value = "date", required = false) LocalDateTime localDateTime,
             @RequestParam(value = "level", required = false) LogLevel logLevel,
             @RequestParam(value = "clientIp", required = false) String clientIp,
             @RequestParam(value = "username", required = false) String username

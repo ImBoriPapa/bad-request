@@ -20,7 +20,7 @@ public class LogQueryRepositoryImpl {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<LogDto> findAllLog(int size, String localDateTime, LogLevel logLevel, String clientIp, String username) {
+    public List<LogDto> findAllLog(int size, LocalDateTime date, LogLevel logLevel, String clientIp, String username) {
 
         return jpaQueryFactory
                 .select(Projections.fields(LogDto.class,
@@ -36,9 +36,24 @@ public class LogQueryRepositoryImpl {
                         log.stackTrace.as("stackTrace")
                 ))
                 .from(log)
-                .where()
+                .where(
+                        levelEq(logLevel),
+                        clientIpEq(clientIp),
+                        usernameEq(username)
+                )
                 .orderBy(log.id.desc())
                 .limit(size)
                 .fetch();
+    }
+
+    public BooleanExpression levelEq(LogLevel level) {
+        return level != null ? log.logLevel.eq(level) : null;
+    }
+
+    private BooleanExpression clientIpEq(String clientIp) {
+        return clientIp != null ? log.clientIp.eq(clientIp) : null;
+    }
+    private BooleanExpression usernameEq(String username) {
+        return username != null ? log.username.eq(username) : null;
     }
 }
