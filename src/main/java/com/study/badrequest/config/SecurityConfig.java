@@ -42,7 +42,7 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", CUSTOM_STATUS).permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/member").permitAll()
-                .antMatchers("/static/**","/log","/log-ex","/console").permitAll()
+                .antMatchers("/static/**","/log","/log-ex","/console","/heap").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico").permitAll()
                 .antMatchers("/test/teacher").hasAuthority("ROLL_TEACHER")
                 .antMatchers("/api/image").permitAll()

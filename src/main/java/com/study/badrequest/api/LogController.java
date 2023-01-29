@@ -83,7 +83,7 @@ public class LogController {
     }
 
     @GetMapping("/heap")
-    public void getHeap(){
+    public ResponseEntity getHeap(){
 
         long heapSize = Runtime.getRuntime().totalMemory();
         log.info("[HEAP SIZE= {}]", heapSize);
@@ -91,6 +91,23 @@ public class LogController {
         log.info("[HEAP MAX SIZE= {}]", heapMaxSize);
         long heapFreeSize = Runtime.getRuntime().freeMemory();
         log.info("[HEAP HEAP FREE SIZE= {}]", heapFreeSize);
+
+        return ResponseEntity
+                .ok()
+                .body(new HeapDto(heapSize,heapMaxSize,heapFreeSize));
+    }
+    @Data
+    @NoArgsConstructor
+    class HeapDto{
+        private Long heapSize;
+        private Long heapMaxSize;
+        private Long heapFreeSize;
+
+        public HeapDto(Long heapSize, Long heapMaxSize, Long heapFreeSize) {
+            this.heapSize = heapSize;
+            this.heapMaxSize = heapMaxSize;
+            this.heapFreeSize = heapFreeSize;
+        }
     }
 
 }

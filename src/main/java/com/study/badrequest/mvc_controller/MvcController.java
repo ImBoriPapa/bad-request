@@ -38,7 +38,7 @@ public class MvcController {
         //test
         model.addAttribute("logList", allLog);
 
-        return "/log/log-console";
+        return "log/log-console";
     }
 
 }
