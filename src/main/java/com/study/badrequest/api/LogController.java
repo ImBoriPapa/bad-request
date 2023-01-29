@@ -44,13 +44,6 @@ public class LogController {
             testService.logTest("test" + i);
         }
 
-        long heapSize = Runtime.getRuntime().totalMemory();
-        log.info("[HEAP SIZE= {}]", heapSize);
-        long heapMaxSize = Runtime.getRuntime().maxMemory();
-        log.info("[HEAP MAX SIZE= {}]", heapMaxSize);
-        long heapFreeSize = Runtime.getRuntime().freeMemory();
-        log.info("[HEAP HEAP FREE SIZE= {}]", heapFreeSize);
-
         List<LogDto> logList = logQueryRepository.findAllLog(
                         size,
                         localDateTime,
@@ -89,5 +82,15 @@ public class LogController {
         }
     }
 
+    @GetMapping("/heap")
+    public void getHeap(){
+
+        long heapSize = Runtime.getRuntime().totalMemory();
+        log.info("[HEAP SIZE= {}]", heapSize);
+        long heapMaxSize = Runtime.getRuntime().maxMemory();
+        log.info("[HEAP MAX SIZE= {}]", heapMaxSize);
+        long heapFreeSize = Runtime.getRuntime().freeMemory();
+        log.info("[HEAP HEAP FREE SIZE= {}]", heapFreeSize);
+    }
 
 }
