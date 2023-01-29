@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.login.domain.service;
 
 
-import com.study.badrequest.aop.trace.CustomLog;
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.domain.entity.Member;
 import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -43,7 +43,7 @@ public class JwtLoginService {
     /**
      * 로그인
      */
-    @CustomLog
+    @CustomLogger
     public LoginDto loginProcessing(String email, String password) {
         log.info("[JwtLoginService.loginProcessing]");
         //1. 이메일 확인

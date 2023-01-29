@@ -1,4 +1,4 @@
-package com.study.badrequest.aop.trace;
+package com.study.badrequest.domain.log.entity;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +19,7 @@ public class LogEntity {
     private LogLevel logLevel;
     private String className;
     private String methodName;
+    @Lob
     private String message;
     private String requestURI;
     private String username;

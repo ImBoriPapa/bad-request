@@ -1,4 +1,4 @@
-package com.study.badrequest.aop.trace;
+package com.study.badrequest.domain.log.entity;
 
 import lombok.Getter;
 

@@ -1,9 +1,9 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.aop.trace.CustomLog;
-import com.study.badrequest.aop.trace.LogLevel;
-import com.study.badrequest.aop.trace.LogRepository;
-import com.study.badrequest.aop.trace.TraceTestService;
+import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.domain.log.entity.LogLevel;
+import com.study.badrequest.domain.log.repositoey.LogRepository;
+import com.study.badrequest.domain.log.service.TraceTestService;
 import lombok.*;
 
 
@@ -22,21 +22,20 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 public class LogController {
-//    @Value("${logging.file.name}")
-//    public String path;
 
     private final TraceTestService testService;
     private final LogRepository logRepository;
 
+
     @GetMapping("/log")
-    @CustomLog
-    public ResponseEntity logs() throws IOException {
+    @CustomLogger
+    public ResponseEntity logs() {
 
         for (int i = 1; i <= 50; i++) {
             testService.logTest("test" + i);
         }
 
-        List<Logs> collect = logRepository.findAll().stream().map(m ->
+        List<Logs> logList = logRepository.findAll().stream().map(m ->
                 Logs.builder()
                         .id(m.getId())
                         .logTime(m.getLogTime())
@@ -51,12 +50,14 @@ public class LogController {
                         .build()
         ).collect(Collectors.toList());
 
-        return ResponseEntity.ok()
-                .body(new Result(collect));
+
+        return ResponseEntity
+                .ok()
+                .body(new Result(logList));
     }
 
     @GetMapping("/log-ex")
-    @CustomLog
+    @CustomLogger
     public ResponseEntity logsEx() throws IOException {
 
         testService.logExTest("test");
@@ -81,7 +82,8 @@ public class LogController {
     }
 
     @Data
-    static class Result {
+    @NoArgsConstructor
+    public static class Result {
         private List<Logs> result = new ArrayList<>();
 
         public Result(List<Logs> result) {
@@ -91,6 +93,8 @@ public class LogController {
 
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     static class Logs {
         private Long id;
         private LocalDateTime logTime;

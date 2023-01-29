@@ -1,6 +1,6 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.aop.trace.CustomLog;
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
@@ -39,7 +39,7 @@ public class LoginController {
     private final JwtLoginService loginService;
     private final JwtUtils jwtUtils;
 
-    @CustomLog
+    @CustomLogger
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@Validated @RequestBody LoginRequest.Login form, BindingResult bindingResult) {
         log.info("[LoginController.login]");

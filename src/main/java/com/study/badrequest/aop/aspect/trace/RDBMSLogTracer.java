@@ -1,12 +1,13 @@
-package com.study.badrequest.aop.trace;
+package com.study.badrequest.aop.aspect.trace;
 
+import com.study.badrequest.domain.log.entity.LogEntity;
+import com.study.badrequest.domain.log.entity.LogLevel;
+import com.study.badrequest.domain.log.repositoey.LogRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 
 @Slf4j
@@ -24,7 +26,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class LogTrace {
+public class RDBMSLogTracer implements CustomLogTracer {
     private String className;
     private String methodName;
     private String message;
@@ -32,29 +34,57 @@ public class LogTrace {
     private String remoteAddr;
     private String requestURI;
     private String username;
-
     private String stackTrace;
-    private final Queue<LogEntity> logQueue = new LinkedList<LogEntity>();
+    public int batchSize = 30;
+    private final StringBuilder stringBuilder = new StringBuilder();
+    private final ConcurrentLinkedQueue<LogEntity> logQueue = new ConcurrentLinkedQueue<>();
     private final LogRepository logRepository;
 
-    @AfterThrowing(pointcut = "@annotation(com.study.badrequest.aop.trace.CustomLog)", throwing = "exception")
-    public void doErrorHandle(JoinPoint joinPoint, Exception exception) {
-        log.error("[LogTrace . Error Handle={}]", exception.getMessage());
+    public void doTrace(JoinPoint joinPoint) {
 
-        className = joinPoint.getSignature().getDeclaringType().getSimpleName();
-        methodName = joinPoint.getSignature().getName();
-        message = exception.getMessage();
-        request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        className = getClassName(joinPoint);
+        methodName = getMethodName(joinPoint);
+        message = Arrays.toString(joinPoint.getArgs());
+        request = getRequest();
         remoteAddr = resolveClientIp(request);
         requestURI = request.getRequestURI();
-        username = "NOT_AUTHENTICATION";
-        StringBuilder stringBuilder = new StringBuilder();
+        username = getAuthentication();
+        stackTrace = "NO TRACE";
+
+        logQueue.add(
+                LogEntity.builder()
+                        .logTime(LocalDateTime.now())
+                        .logLevel(LogLevel.INFO)
+                        .className(className)
+                        .methodName(methodName)
+                        .message(message)
+                        .requestURI(requestURI)
+                        .username(username)
+                        .clientIp(remoteAddr)
+                        .stackTrace(stackTrace)
+                        .build()
+        );
+
+        batchSaveLog();
+
+        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
+    }
+
+    public void doErrorTrace(JoinPoint joinPoint, Exception exception) {
+        log.error("[LogTrace . Error Handle={}]", exception.getMessage());
+
+        className = getClassName(joinPoint);
+        methodName = getMethodName(joinPoint);
+        message = exception.getMessage();
+        request = getRequest();
+        remoteAddr = resolveClientIp(request);
+        requestURI = request.getRequestURI();
+        username = getAuthentication();
+
         Arrays.stream(exception.getStackTrace()).forEach(stringBuilder::append);
         stackTrace = stringBuilder.toString();
 
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            username = SecurityContextHolder.getContext().getAuthentication().getName();
-        }
+        getAuthentication();
 
         logQueue.add(
                 LogEntity.builder()
@@ -76,63 +106,39 @@ public class LogTrace {
 
     }
 
-    @Before("@annotation(com.study.badrequest.aop.trace.CustomLog)")
-    public void doTrace(JoinPoint joinPoint) {
-
-        className = joinPoint.getSignature().getDeclaringType().getSimpleName();
-        methodName = joinPoint.getSignature().getName();
-        message = Arrays.toString(joinPoint.getArgs());
-        request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        remoteAddr = resolveClientIp(request);
-        requestURI = request.getRequestURI();
-        username = "NOT_AUTHENTICATION";
-        stackTrace = "NO TRACE";
-
-        if (SecurityContextHolder.getContext().getAuthentication() != null) {
-            username = SecurityContextHolder.getContext().getAuthentication().getName();
-        }
-
-        logQueue.add(
-                LogEntity.builder()
-                        .logTime(LocalDateTime.now())
-                        .logLevel(LogLevel.INFO)
-                        .className(className)
-                        .methodName(methodName)
-                        .message(message)
-                        .requestURI(requestURI)
-                        .username(username)
-                        .clientIp(remoteAddr)
-                        .stackTrace(stackTrace)
-                        .build()
-        );
-
-        log.info("[LOG STACK ID={}]", logQueue.size());
-        boolean max = logQueue.size() == 7;
-
-        if (max) {
+    private void batchSaveLog() {
+        if (logQueue.size() == batchSize) {
             saveLogs();
         }
-
-        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
-
     }
 
-    private void saveLogs() {
+    @Scheduled(fixedDelay = 10000)
+    public void clearLogQueueEachTime() {
+
+        if (logQueue.size() > 0) {
+            saveLogs();
+        }
+        log.info("[LOG STACK SAVE DATABASE EACH TIME NO LOGS]");
+    }
+
+    private static String getMethodName(JoinPoint joinPoint) {
+        return joinPoint.getSignature().getName();
+    }
+    private static String getClassName(JoinPoint joinPoint) {
+        return joinPoint.getSignature().getDeclaringType().getSimpleName();
+    }
+    private static HttpServletRequest getRequest() {
+        return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+    }
+
+    private String getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication() != null
+                ? SecurityContextHolder.getContext().getAuthentication().getName() : "NOT_AUTHENTICATION";
+    }
+    public void saveLogs() {
         logRepository.saveAll(logQueue);
         logQueue.clear();
         log.info("[LOG STACK SAVE DATABASE]");
-    }
-
-    @Scheduled(fixedDelay = 2000)
-    private void saveEachTime() {
-
-        if (logQueue.size() > 0) {
-
-            logRepository.saveAll(logQueue);
-            logQueue.clear();
-            log.info("[LOG STACK SAVE DATABASE EACH TIME]");
-        }
-        log.info("[LOG STACK SAVE DATABASE EACH TIME NO LOGS]");
     }
 
     private String resolveClientIp(HttpServletRequest request) {
@@ -168,6 +174,5 @@ public class LogTrace {
         ClientIpHeader(String headerName) {
             this.headerName = headerName;
         }
-
     }
 }
