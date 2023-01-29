@@ -2,9 +2,9 @@ package com.study.badrequest.api;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.log.entity.LogLevel;
-import com.study.badrequest.domain.log.repositoey.LogRepository;
+
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
-import com.study.badrequest.domain.log.repositoey.query.LogQueryRepository;
+
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
 import com.study.badrequest.domain.log.service.TraceTestService;
 import lombok.*;
@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import com.sun.management.OperatingSystemMXBean;
+
+import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class LogController {
-    private final TraceTestService testService;
+
     private final LogQueryRepositoryImpl logQueryRepository;
 
     @GetMapping("/log")
@@ -39,10 +42,6 @@ public class LogController {
             @RequestParam(value = "clientIp", required = false) String clientIp,
             @RequestParam(value = "username", required = false) String username
     ) {
-
-        for (int i = 1; i <= 50; i++) {
-            testService.logTest("test" + i);
-        }
 
         List<LogDto> logList = logQueryRepository.findAllLog(
                         size,
@@ -83,30 +82,54 @@ public class LogController {
     }
 
     @GetMapping("/heap")
-    public ResponseEntity getHeap(){
+    @CustomLogger
+    public ResponseEntity getHeap() {
 
-        long heapSize = Runtime.getRuntime().totalMemory();
-        log.info("[HEAP SIZE= {}]", heapSize);
-        long heapMaxSize = Runtime.getRuntime().maxMemory();
-        log.info("[HEAP MAX SIZE= {}]", heapMaxSize);
-        long heapFreeSize = Runtime.getRuntime().freeMemory();
-        log.info("[HEAP HEAP FREE SIZE= {}]", heapFreeSize);
+        final long heapSize = Runtime.getRuntime().totalMemory();
+
+        final long heapMaxSize = Runtime.getRuntime().maxMemory();
+
+        final long heapFreeSize = Runtime.getRuntime().freeMemory();
+
+
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
+        final double cpuUsage = osBean.getSystemCpuLoad() * 100;
+        final double memoryTotalSpace = (double) osBean.getFreePhysicalMemorySize() / 1024 / 1024 / 1024;
+        final double memoryFreeSpace = (double) osBean.getTotalPhysicalMemorySize() / 1024 / 1024 / 1024;
 
         return ResponseEntity
                 .ok()
-                .body(new HeapDto(heapSize,heapMaxSize,heapFreeSize));
+                .body(
+                        PlatFormStatusDto
+                                .builder()
+                                .heapSize(heapSize)
+                                .heapMaxSize(heapMaxSize)
+                                .heapFreeSize(heapFreeSize)
+                                .cpuUsage(cpuUsage)
+                                .memoryFreeSpace(memoryTotalSpace)
+                                .memoryTotalSpace(memoryFreeSpace)
+                                .build()
+                );
     }
+
     @Data
     @NoArgsConstructor
-    class HeapDto{
+    @Builder
+    public static class PlatFormStatusDto {
         private Long heapSize;
         private Long heapMaxSize;
         private Long heapFreeSize;
+        private double cpuUsage;
+        private double memoryTotalSpace;
+        private double memoryFreeSpace;
 
-        public HeapDto(Long heapSize, Long heapMaxSize, Long heapFreeSize) {
+        public PlatFormStatusDto(Long heapSize, Long heapMaxSize, Long heapFreeSize, double cpuUsage, double memoryFreeSpace, double memoryTotalSpace) {
             this.heapSize = heapSize;
             this.heapMaxSize = heapMaxSize;
             this.heapFreeSize = heapFreeSize;
+            this.cpuUsage = cpuUsage;
+            this.memoryFreeSpace = memoryFreeSpace;
+            this.memoryTotalSpace = memoryTotalSpace;
         }
     }
 
