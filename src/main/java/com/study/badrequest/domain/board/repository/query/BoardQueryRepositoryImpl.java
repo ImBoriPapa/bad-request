@@ -47,7 +47,8 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                         eqCategory(category),
                         eqKeyword(keyword),
                         eqTopic(topic)
-                ).orderBy(board.id.desc())
+                )
+                .orderBy(board.id.desc())
                 .limit(size + 1)
                 .fetch();
 

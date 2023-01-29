@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.service;
 
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.domain.entity.Member;
 import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
@@ -33,7 +34,7 @@ public class BoardCommandService {
 
     private final CommentRepository commentRepository;
 
-
+    @CustomLogger
     public BoardResponse.Create create(BoardRequest.Create form, List<MultipartFile> images) {
 
         log.info("[BoardCommandService.create]");

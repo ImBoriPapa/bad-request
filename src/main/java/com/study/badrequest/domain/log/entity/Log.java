@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class LogEntity {
+public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,7 +28,7 @@ public class LogEntity {
     private String stackTrace;
 
     @Builder
-    public LogEntity(LocalDateTime logTime, LogLevel logLevel, String className, String methodName, String message, String requestURI, String username, String clientIp, String stackTrace) {
+    public Log(LocalDateTime logTime, LogLevel logLevel, String className, String methodName, String message, String requestURI, String username, String clientIp, String stackTrace) {
         this.logTime = logTime;
         this.logLevel = logLevel;
         this.className = className;

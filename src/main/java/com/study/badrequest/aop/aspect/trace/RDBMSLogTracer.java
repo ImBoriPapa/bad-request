@@ -1,6 +1,6 @@
 package com.study.badrequest.aop.aspect.trace;
 
-import com.study.badrequest.domain.log.entity.LogEntity;
+import com.study.badrequest.domain.log.entity.Log;
 import com.study.badrequest.domain.log.entity.LogLevel;
 import com.study.badrequest.domain.log.repositoey.LogRepository;
 import lombok.Getter;
@@ -37,7 +37,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
     private String stackTrace;
     public int batchSize = 30;
     private final StringBuilder stringBuilder = new StringBuilder();
-    private final ConcurrentLinkedQueue<LogEntity> logQueue = new ConcurrentLinkedQueue<>();
+    private final ConcurrentLinkedQueue<Log> logQueue = new ConcurrentLinkedQueue<>();
     private final LogRepository logRepository;
 
     public void doTrace(JoinPoint joinPoint) {
@@ -52,7 +52,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
         stackTrace = "NO TRACE";
 
         logQueue.add(
-                LogEntity.builder()
+                Log.builder()
                         .logTime(LocalDateTime.now())
                         .logLevel(LogLevel.INFO)
                         .className(className)
@@ -87,7 +87,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
         getAuthentication();
 
         logQueue.add(
-                LogEntity.builder()
+                Log.builder()
                         .logTime(LocalDateTime.now())
                         .logLevel(LogLevel.ERROR)
                         .className(className)

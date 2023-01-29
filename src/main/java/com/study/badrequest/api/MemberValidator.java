@@ -1,5 +1,6 @@
 package com.study.badrequest.api;
 
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -16,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberValidator {
 
     private final MemberRepository memberRepository;
-
+    @CustomLogger
     public void validateCreateForm(MemberRequestForm.CreateMember form) {
-        log.info("[MemberValidator.validateCreateForm]");
+
 
         if (memberRepository.existsByEmail(form.getEmail())) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_EMAIL);
@@ -30,7 +31,7 @@ public class MemberValidator {
     }
 
     public void validateContact(MemberRequestForm.UpdateContact form) {
-        log.info("[MemberValidator.validateContact]");
+
         if (memberRepository.existsByContact(form.getContact())) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_CONTACT);
         }

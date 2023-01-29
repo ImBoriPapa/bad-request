@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.Member.domain.service;
 
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.domain.entity.Member;
 
 import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
@@ -25,8 +26,9 @@ public class MemberCommandService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     // TODO: 2023/01/18 profile image
+    @CustomLogger
     public Member signupMember(MemberRequestForm.CreateMember form) {
-        log.info("[MemberCommandService.signupMember]");
+
 
         Member member = Member.createMember()
                 .email(form.getEmail())
@@ -43,30 +45,34 @@ public class MemberCommandService {
         return savedMember;
     }
 
+    @CustomLogger
     public void changePermissions(Long memberId, Member.Authority authority) {
-        log.info("[MemberCommandService.changePermissions]");
+
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .changePermissions(authority);
     }
 
+    @CustomLogger
     public Member updateContact(Long memberId, String contact) {
-        log.info("[MemberCommandService.updateMember]");
+
         Member member = findMemberById(memberId);
         member.changeContact(contact);
         return member;
     }
 
+    @CustomLogger
     public Member resetPassword(Long id, String password, String newPassword) {
-        log.info("[MemberCommandService.changePassword]");
+
         Member member = findMemberById(id);
         passwordCheck(password, member.getPassword());
         member.changePassword(passwordEncoder.encode(newPassword));
         return member;
     }
 
+    @CustomLogger
     public void resignMember(Long memberId, String password) {
-        log.info("[MemberCommandService.resignMember]");
+
         Member member = findMemberById(memberId);
         passwordCheck(password, member.getPassword());
         refreshTokenRepository.findById(member.getUsername()).ifPresent(
@@ -76,14 +82,16 @@ public class MemberCommandService {
         memberRepository.delete(member);
     }
 
+    @CustomLogger
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
     }
 
+    @CustomLogger
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
-            log.info("[passwordCheck]");
+
             throw new MemberException(CustomStatus.WRONG_PASSWORD);
         }
     }

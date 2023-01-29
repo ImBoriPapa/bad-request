@@ -1,5 +1,6 @@
 package com.study.badrequest.api;
 
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.domain.entity.Member;
 import com.study.badrequest.domain.Member.domain.service.MemberCommandService;
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
@@ -35,8 +36,9 @@ public class MemberController {
     private final MemberValidator memberValidator;
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CustomLogger
     public ResponseEntity postMember(@Validated @RequestBody MemberRequestForm.CreateMember form, BindingResult bindingResult) {
-        log.info("[MemberController.postMember]");
+
 
         memberValidator.validateCreateForm(form);
 
@@ -57,8 +59,8 @@ public class MemberController {
 
     // TODO: 2023/01/06 test 
     @PutMapping("/member/{memberId}/password")
+    @CustomLogger
     public ResponseEntity putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.ResetPassword form, BindingResult bindingResult) {
-        log.info("[MemberController.patchMember]");
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
@@ -73,8 +75,9 @@ public class MemberController {
     }
 
     @PutMapping(value = "/member/{memberId}/contact",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @CustomLogger
     public ResponseEntity putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.UpdateContact form, BindingResult bindingResult) {
-        log.info("[MemberController.putContact]");
+
 
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
@@ -91,8 +94,9 @@ public class MemberController {
     }
 
     @DeleteMapping("/member/{memberId}")
+    @CustomLogger
     public ResponseEntity deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.DeleteMember form, BindingResult bindingResult) {
-        log.info("[MemberController.deleteMember]");
+
 
         if(bindingResult.hasErrors()){
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
@@ -107,6 +111,7 @@ public class MemberController {
     }
 
     @GetMapping("/member/{memberId}")
+    @CustomLogger
     public ResponseEntity getMember(@PathVariable Long memberId) {
 
 

@@ -67,3 +67,5 @@ token:
 #개발환경에서는 HTTPS 적용 x
 cookie-status:
   secure: false
+custom-url:
+  host: http://localhost:8080

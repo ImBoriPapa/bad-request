@@ -66,3 +66,6 @@ token:
 
 cookie-status:
   secure: false
+
+custom-url:
+  host: http://localhost:8080

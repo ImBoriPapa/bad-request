@@ -45,25 +45,21 @@ public class JwtLoginService {
      */
     @CustomLogger
     public LoginDto loginProcessing(String email, String password) {
-        log.info("[JwtLoginService.loginProcessing]");
-        //1. 이메일 확인
-        log.info("[1. JwtLoginService.check email]");
+
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
-        //2. authenticationToken 생성
-        log.info("[2. JwtLoginService. create authenticationToken]");
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getUsername(), password);
 
-        //3. Security 회원 검증 authenticate() -> JwtUserDetailService.loadByUsername()
+
         Authentication authentication = getAuthentication(authenticationToken);
 
-        //4. accessToken, refreshToken 생성
-        log.info("[4. JwtLoginService. generateToken]");
+
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
 
-        //5. RefreshToken 저장
+
         RefreshToken refreshToken = setRefreshToken(member, tokenDto);
-        //6. RefreshToken 생성
+
         ResponseCookie cookie = getResponseCookie(refreshToken);
 
         return LoginDto.builder()
@@ -78,8 +74,9 @@ public class JwtLoginService {
     /**
      * 리프레시 토큰 저장
      */
+    @CustomLogger
     public RefreshToken setRefreshToken(Member member, TokenDto tokenDto) {
-        log.info("[5. JwtLoginService. save refresh]");
+
         RefreshToken refreshToken = RefreshToken.createRefresh()
                 .username(member.getUsername())
                 .token(tokenDto.getRefreshToken())
@@ -95,8 +92,9 @@ public class JwtLoginService {
      * security 인증 실패시 BadCredentialsException -> MemberException throw
      * LOGIN_FAIL(1501, "로그인에 실패했습니다.") 응답에 로그인 아이디 혹은 비밀번호 중 어떤것이 잘못되었는지 감추기 위해 통일
      */
+    @CustomLogger
     private Authentication getAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
-        log.info("[3. JwtLoginService. check Authentication -> LoadByUsername]");
+
         final Authentication authentication;
         try {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -124,8 +122,8 @@ public class JwtLoginService {
     /**
      * 로그아웃
      */
+    @CustomLogger
     public void logoutProcessing(String accessToken) {
-        log.info("[JwtLoginService.logoutProcessing]");
 
         handleDeniedToken(accessToken);
 
@@ -143,8 +141,9 @@ public class JwtLoginService {
      * 토큰 재발급
      */
     @Transactional
+    @CustomLogger
     public LoginDto reissueProcessing(String accessToken, String refreshToken) {
-        log.info("[JwtLoginService.reissueProcessing]");
+
         //1. 토큰 validation
         handleDeniedOrErrorAccessToken(accessToken);
         handleDeniedToken(refreshToken);

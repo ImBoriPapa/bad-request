@@ -1,5 +1,6 @@
 package com.study.badrequest.api;
 
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.entity.Category;
@@ -27,6 +28,7 @@ public class BoardController {
     private final BoardQueryRepository boardQueryRepository;
 
     @PostMapping("/api/board")
+    @CustomLogger
     public ResponseEntity postBoard(@RequestBody BoardRequest.Create form,
                                     List<MultipartFile> images) {
 
@@ -38,6 +40,7 @@ public class BoardController {
     }
 
     @GetMapping("/api/board")
+    @CustomLogger
     public ResponseEntity getBoardList(@RequestParam(value = "size", defaultValue = "10") int size,
                                        @RequestParam(value = "lastIndex", defaultValue = "0") Long lastIndex,
                                        @RequestParam(value = "keyword", required = false) String keyword,

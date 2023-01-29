@@ -42,7 +42,7 @@ public class LoginController {
     @CustomLogger
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@Validated @RequestBody LoginRequest.Login form, BindingResult bindingResult) {
-        log.info("[LoginController.login]");
+
 
         if (bindingResult.hasErrors()) {
             log.error("error");
@@ -65,8 +65,9 @@ public class LoginController {
     }
 
     @PostMapping(value = "/log-out", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CustomLogger
     public ResponseEntity logout(HttpServletRequest request) {
-        log.info("[LoginController.logout]");
+
         String resolveToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
         loginService.logoutProcessing(resolveToken);
@@ -81,8 +82,9 @@ public class LoginController {
     }
 
     @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @CustomLogger
     public ResponseEntity reIssue(HttpServletRequest request, @CookieValue(value = "Refresh", required = false) Cookie cookie) {
-        log.info("[LoginController.reIssue]");
+
 
         String accessToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
         checkTokenIsEmpty(accessToken, CustomStatus.TOKEN_IS_EMPTY);
