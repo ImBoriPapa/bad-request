@@ -6,7 +6,7 @@ import com.study.badrequest.domain.log.entity.LogLevel;
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
 
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
-import com.study.badrequest.domain.log.service.TraceTestService;
+
 import lombok.*;
 
 
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sun.management.OperatingSystemMXBean;
 
-import java.lang.management.ManagementFactory;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,9 +73,8 @@ public class LogController {
 
     @Data
     @NoArgsConstructor
-    public static class Result {
+    static class Result {
         private List<LogDto> result = new ArrayList<>();
-
         public Result(List<LogDto> result) {
             this.result = result;
         }
@@ -91,12 +90,6 @@ public class LogController {
 
         final long heapFreeSize = Runtime.getRuntime().freeMemory();
 
-
-        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-        final double cpuUsage = osBean.getSystemCpuLoad() * 100;
-        final double memoryTotalSpace = (double) osBean.getFreePhysicalMemorySize() / 1024 / 1024 / 1024;
-        final double memoryFreeSpace = (double) osBean.getTotalPhysicalMemorySize() / 1024 / 1024 / 1024;
-
         return ResponseEntity
                 .ok()
                 .body(
@@ -105,9 +98,6 @@ public class LogController {
                                 .heapSize(heapSize)
                                 .heapMaxSize(heapMaxSize)
                                 .heapFreeSize(heapFreeSize)
-                                .cpuUsage(cpuUsage)
-                                .memoryFreeSpace(memoryTotalSpace)
-                                .memoryTotalSpace(memoryFreeSpace)
                                 .build()
                 );
     }
