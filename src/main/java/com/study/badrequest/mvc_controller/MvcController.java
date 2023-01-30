@@ -31,7 +31,7 @@ public class MvcController {
     private final MemoryMonitor memoryMonitor;
 
 
-    @GetMapping("/dashboard/log")
+    @GetMapping("/dashboard")
 
     @CustomLogger
     public String console(

@@ -112,7 +112,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
         }
     }
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelay = 30000)
     public void clearLogQueueEachTime() {
 
         if (logQueue.size() > 0) {
