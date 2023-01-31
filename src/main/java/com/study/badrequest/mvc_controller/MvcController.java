@@ -26,14 +26,11 @@ import java.util.List;
 public class MvcController {
 
     private final LogQueryRepositoryImpl logQueryRepository;
-    private final TraceTestService testService;
     private final CpuMonitor cpuMonitor;
     private final MemoryMonitor memoryMonitor;
 
 
     @GetMapping("/dashboard")
-
-    @CustomLogger
     public String console(
             @RequestParam(value = "size", defaultValue = "30") int size,
             @RequestParam(value = "date", required = false) LocalDateTime localDateTime,
