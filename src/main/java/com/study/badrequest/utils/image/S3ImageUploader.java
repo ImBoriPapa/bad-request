@@ -14,16 +14,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 @Profile("!dev")
 @RequiredArgsConstructor
-public class S3ImageUploader implements ImageUploader{
+public class S3ImageUploader implements ImageUploader {
 
     private String bucket = "bori-market-bucket";
     private String path = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
@@ -31,6 +29,11 @@ public class S3ImageUploader implements ImageUploader{
 
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
+        return getImageDetailList(images, folderName);
+    }
+
+    private ArrayList<ImageDetailDto> getImageDetailList(List<MultipartFile> images, String folderName) {
+
         ArrayList<ImageDetailDto> details = new ArrayList<>();
 
         images.forEach(file -> {

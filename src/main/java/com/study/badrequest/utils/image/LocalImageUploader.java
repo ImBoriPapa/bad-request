@@ -1,6 +1,5 @@
 package com.study.badrequest.utils.image;
 
-import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +16,12 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 @Profile("dev")
-public class MemoryImageUploader implements ImageUploader{
+public class LocalImageUploader implements ImageUploader {
 
-    private String bucket = "bori-market-bucket";
-    private String path = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
-    private final MemoryS3 memoryS3;
+    private String location = System.getProperty("user.dir");
+    private String bucket = location + "/src/main/resources/static/image";
+    private String path = "http://localhost:8080/image/";
+
 
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[LocalImageUploader -> uploadFile()]");
@@ -52,17 +52,11 @@ public class MemoryImageUploader implements ImageUploader{
     private void putImage(MultipartFile file, String storedName) {
         log.info("[LocalImageUploader -> fileTransfer]");
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
-
         try {
-            memoryS3.putObjectRequest(
-                    bucket,
-                    storedName,
-                    file.getInputStream(),
-                    objectMetadata);
+            File f = new File(bucket, storedName);
+            file.transferTo(f);
         } catch (IOException e) {
+            log.error("Error= {}", e);
             throw new ImageFileUploadException(CustomStatus.UPLOAD_FAIL_ERROR);
         }
 
@@ -90,17 +84,16 @@ public class MemoryImageUploader implements ImageUploader{
                 .orElseThrow(() -> new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR)).getExtension();
     }
 
-
     public void deleteFile(String storedName) {
         log.info("[IMAGE DELETE imageName= {}]", storedName);
         File target = new File(path + storedName);
-        target.delete();
+        boolean b = target.exists() ? target.delete() : target.exists();
     }
 
 
     public void deleteFile(List<String> storedNameList) {
         log.info("[IMAGE DELETE imageNameList]");
-        storedNameList.forEach(data -> new File(path, data).delete());
+        storedNameList.forEach(this::deleteFile);
     }
 
 }

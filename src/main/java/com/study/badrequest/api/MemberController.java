@@ -10,6 +10,7 @@ import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -34,6 +35,22 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
     private final MemberValidator memberValidator;
+
+    @GetMapping("/member/email")
+    @CustomLogger
+    public ResponseEntity getMemberEmail(@RequestParam(value = "email",defaultValue = "empty") String email) {
+
+        if(email.equals("empty")){
+            throw new IllegalArgumentException("Email Empty");
+        }
+
+        memberValidator.validateEmail(email);
+
+        return ResponseEntity.ok()
+                .body(new ResponseForm
+                        .Of<>(CustomStatus.SUCCESS, new MemberResponseForm.ValidateEmail(false,email)));
+    }
+
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
@@ -74,7 +91,7 @@ public class MemberController {
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, model));
     }
 
-    @PutMapping(value = "/member/{memberId}/contact",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
     public ResponseEntity putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.UpdateContact form, BindingResult bindingResult) {
 
@@ -83,7 +100,7 @@ public class MemberController {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        memberValidator.validateContact(form);
+        memberValidator.validateContact(form.getContact());
 
         Member member = memberCommandService.updateContact(memberId, form.getContact());
         EntityModel<MemberResponseForm.UpdateResult> model = EntityModel.of(new MemberResponseForm.UpdateResult(member));
@@ -98,7 +115,7 @@ public class MemberController {
     public ResponseEntity deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.DeleteMember form, BindingResult bindingResult) {
 
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 

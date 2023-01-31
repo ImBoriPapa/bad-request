@@ -31,13 +31,14 @@ public class BoardCommandService {
     private final BoardRepository boardRepository;
     private final BoardImageRepository boardImageRepository;
     private final ImageUploader imageUploader;
-
     private final CommentRepository commentRepository;
 
+    /**
+     * 게시판 생성
+     */
     @CustomLogger
     public BoardResponse.Create create(BoardRequest.Create form, List<MultipartFile> images) {
 
-        log.info("[BoardCommandService.create]");
         Member member = memberRepository.findById(form.getMemberId())
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
@@ -49,45 +50,52 @@ public class BoardCommandService {
                 .member(member)
                 .build();
 
+        saveImages(images, board);
+
+        Board save = boardRepository.save(board);
+
+        return new BoardResponse.Create(save.getId(), save.getCreatedAt());
+    }
+    @CustomLogger
+    public void saveImages(List<MultipartFile> images, Board board) {
         if (!images.isEmpty()) {
 
             List<BoardImage> boardImages = imageUploader.uploadFile(images, "board")
                     .stream()
                     .map(image ->
-                                    BoardImage.builder()
-                                            .originalFileName(image.getOriginalFileName())
-                                            .storedFileName(image.getStoredFileName())
-                                            .fullPath(image.getFullPath())
-                                            .size(image.getSize())
-                                            .fileType(image.getFileType())
-                                            .board(board)
-                                            .build()
+                            BoardImage.builder()
+                                    .originalFileName(image.getOriginalFileName())
+                                    .storedFileName(image.getStoredFileName())
+                                    .fullPath(image.getFullPath())
+                                    .size(image.getSize())
+                                    .fileType(image.getFileType())
+                                    .board(board)
+                                    .build()
                     ).collect(Collectors.toList());
 
             boardImageRepository.saveAll(boardImages);
         }
-
-        Board save = boardRepository.save(board);
-        return new BoardResponse.Create(save.getId(), save.getCreatedAt());
     }
 
+    @CustomLogger
     public void update(Long boardId) {
-        log.info("[BoardCommandService.update]");
+
     }
 
+    @CustomLogger
     public void delete(Long boardId) {
         log.info("[BoardCommandService.delete]");
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
         List<BoardImage> images = boardImageRepository.findByBoard(board);
-        if(!images.isEmpty()){
+        if (!images.isEmpty()) {
             imageUploader.deleteFile(images.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
             boardImageRepository.deleteAll(images);
         }
 
         List<Comment> comments = commentRepository.findAllByBoard(board);
-        if(!comments.isEmpty()){
+        if (!comments.isEmpty()) {
             commentRepository.deleteAll(comments);
         }
         boardRepository.delete(board);
@@ -96,6 +104,7 @@ public class BoardCommandService {
     /**
      * 댓글 등록
      */
+    @CustomLogger
     public void addComment(Long boardId, String comment) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException(""));

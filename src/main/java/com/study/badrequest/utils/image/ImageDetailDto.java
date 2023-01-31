@@ -1,5 +1,6 @@
 package com.study.badrequest.utils.image;
 
+import com.study.badrequest.domain.board.entity.BoardImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,4 +22,17 @@ public class ImageDetailDto {
         this.size = size;
         this.fileType = fileType;
     }
+
+    /**
+     * Entity -> DTO
+     */
+    public ImageDetailDto(BoardImage boardImage) {
+        this.originalFileName = boardImage.getOriginalFileName();
+        this.storedFileName = boardImage.getStoredFileName();
+        this.fullPath = boardImage.getFullPath();
+        this.size = boardImage.getSize();
+        this.fileType = boardImage.getFileType();
+    }
+
+
 }

@@ -30,6 +30,16 @@ include::{snippets}/postMember/http-response.adoc[]
 
 include::{snippets}/postMember/response-fields.adoc[]
 
+=== 이메일 중복 확인
+==== 요청
+include::{snippets}/email_duplicate_success/http-request.adoc[]
+
+==== 응답
+===== 요청 성공 이메일 중복 X
+include::{snippets}/email_duplicate_success/http-response.adoc[]
+===== 요청 실패 이메일 중복 O
+include::{snippets}/email_duplicate_fail/http-response.adoc[]
+
 === 연락처 변경
 
 ==== 요청

@@ -7,6 +7,7 @@ import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginDto;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.boot.TempTableDdlTransactionHandling;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,7 +259,6 @@ class MemberControllerTest {
     @DisplayName("회원 탈퇴 테스트")
     void deleteMemberTest() throws Exception {
         //given
-
         MemberRequestForm.DeleteMember password = new MemberRequestForm.DeleteMember(SAMPLE_PASSWORD);
         String content = objectMapper.writeValueAsString(password);
 
@@ -292,5 +292,48 @@ class MemberControllerTest {
                                 fieldWithPath("result.thanks").type(JsonFieldType.STRING).description("인사"),
                                 fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("회원 가입"),
                                 fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크"))));
+    }
+
+    @Test
+    @DisplayName("이메일 중복확인")
+    void duplicateEmailTest() throws Exception{
+        //given
+        String email = "gdfagsdgs@email.com";
+
+        mockMvc.perform(get("/api/v1/member/email")
+                        .param("email", email)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andDo(document("email_duplicate_success",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 응답상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
+                                fieldWithPath("result.duplicate").type(JsonFieldType.BOOLEAN).description("중복 여부"),
+                                fieldWithPath("result.email").type(JsonFieldType.STRING).description("요청 이메일")
+                        )
+                ));
+        //when
+        String dupl = "user@gmail.com";
+        mockMvc.perform(get("/api/v1/member/email")
+                        .param("email", dupl)
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andDo(document("email_duplicate_fail",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("응답 상태"),
+                                fieldWithPath("requestPath").type(JsonFieldType.STRING).description("요청 URI"),
+                                fieldWithPath("errorCode").type(JsonFieldType.NUMBER).description("에러 코드"),
+                                fieldWithPath("message").type(JsonFieldType.ARRAY).description("에러 메시지")
+                        )
+                ));
+
+
     }
 }

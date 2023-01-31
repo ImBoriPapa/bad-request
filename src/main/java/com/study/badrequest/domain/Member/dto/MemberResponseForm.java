@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.Member.dto;
 
 import com.study.badrequest.domain.Member.domain.entity.Member;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,5 +39,13 @@ public class MemberResponseForm {
     @Getter
     public static class DeleteResult{
         private String thanks = "이용해 주셔서 감사합니다.";
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class ValidateEmail{
+        private boolean duplicate;
+        private String email;
     }
 }

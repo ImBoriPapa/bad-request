@@ -17,23 +17,25 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberValidator {
 
     private final MemberRepository memberRepository;
+
     @CustomLogger
     public void validateCreateForm(MemberRequestForm.CreateMember form) {
 
+        validateEmail(form.getEmail());
 
-        if (memberRepository.existsByEmail(form.getEmail())) {
+        validateContact(form.getContact());
+    }
+
+    public void validateEmail(String email) {
+        if (memberRepository.existsByEmail(email)) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_EMAIL);
         }
+    }
 
-        if (memberRepository.existsByContact(form.getContact())) {
+    public void validateContact(String contact) {
+        if (memberRepository.existsByContact(contact)) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_CONTACT);
         }
     }
 
-    public void validateContact(MemberRequestForm.UpdateContact form) {
-
-        if (memberRepository.existsByContact(form.getContact())) {
-            throw new CustomValidationException(CustomStatus.DUPLICATE_CONTACT);
-        }
-    }
 }
