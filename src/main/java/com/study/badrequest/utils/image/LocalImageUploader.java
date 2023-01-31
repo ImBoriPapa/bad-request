@@ -1,5 +1,6 @@
 package com.study.badrequest.utils.image;
 
+import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class LocalImageUploader implements ImageUploader {
     private String location = System.getProperty("user.dir");
     private String bucket = location + "/src/main/resources/static/image";
     private String path = "http://localhost:8080/image/";
-
+    @CustomLogger
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[LocalImageUploader -> uploadFile()]");
 
