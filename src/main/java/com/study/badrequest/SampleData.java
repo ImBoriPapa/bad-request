@@ -19,9 +19,7 @@ public class SampleData {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-
     public static final String SAMPLE_USER_EMAIL = "user@gmail.com";
-
     public static final String SAMPLE_USER_CONTACT = "010-0000-1234";
     public static final String SAMPLE_TEACHER_EMAIL = "teacher@gmail.com";
     public static final String SAMPLE_ADMIN_EMAIL = "admin@gmail.com";
@@ -30,14 +28,13 @@ public class SampleData {
     @PostConstruct
     public void sampleUser() {
         log.info("[INIT SAMPLE USER]");
-
+        //
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .contact(SAMPLE_USER_CONTACT)
                 .authority(Member.Authority.MEMBER)
                 .build();
-
 
         Member teacher = Member.createMember()
                 .email(SAMPLE_TEACHER_EMAIL)
