@@ -29,12 +29,9 @@ import java.util.List;
 @Transactional
 @Slf4j
 class BoardCommandServiceTest {
-
     @Autowired
     private BoardCommandService boardCommandService;
 
-
-    // TODO: 2023/01/31 Test Server 에서 테스트 깨지는 이유 확인
     @Test
     @DisplayName("board 생성")
     void createBoard() throws Exception {

@@ -54,13 +54,11 @@ public class LocalImageUploader implements ImageUploader {
 
         ArrayList<String> store = new ArrayList<>();
         store.add(storedName);
-
     }
 
     public String createFileName(String originalFileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
     }
-
 
     public String getFileExtension(String originalFileName) {
         log.info("[originalFileName= {}]", originalFileName);
