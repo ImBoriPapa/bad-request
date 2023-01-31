@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class LogController {
+public class DashBoardController {
 
     private final LogQueryRepositoryImpl logQueryRepository;
 

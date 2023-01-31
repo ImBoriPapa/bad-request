@@ -1,12 +1,9 @@
 package com.study.badrequest.mvc_controller;
 
 
-import com.study.badrequest.aop.annotation.CustomLogger;
-import com.study.badrequest.api.LogController;
 import com.study.badrequest.domain.log.entity.LogLevel;
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
-import com.study.badrequest.domain.log.service.TraceTestService;
 import com.study.badrequest.utils.monitor.CpuMonitor;
 import com.study.badrequest.utils.monitor.MemoryMonitor;
 
@@ -23,12 +20,11 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-public class MvcController {
+public class MvcDashBoardController {
 
     private final LogQueryRepositoryImpl logQueryRepository;
     private final CpuMonitor cpuMonitor;
     private final MemoryMonitor memoryMonitor;
-
 
     @GetMapping("/dashboard")
     public String console(
