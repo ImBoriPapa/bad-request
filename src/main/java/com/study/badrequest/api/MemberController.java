@@ -39,7 +39,7 @@ public class MemberController {
     @GetMapping("/member/email")
     @CustomLogger
     public ResponseEntity getMemberEmail(@RequestParam(value = "email",defaultValue = "empty") String email) {
-
+        // TODO: 2023/01/31 이메일 형식 검증 추가
         if(email.equals("empty")){
             throw new IllegalArgumentException("Email Empty");
         }

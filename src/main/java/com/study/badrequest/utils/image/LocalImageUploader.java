@@ -27,7 +27,7 @@ public class LocalImageUploader implements ImageUploader {
         log.info("[LocalImageUploader -> uploadFile()]");
 
         List<ImageDetailDto> details = new ArrayList<>();
-
+        //???
         images.forEach(file -> {
             String storedName = getStoredName(folderName, file);
             putImage(file, storedName);
