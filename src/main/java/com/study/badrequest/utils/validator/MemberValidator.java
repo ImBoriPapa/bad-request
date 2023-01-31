@@ -1,4 +1,4 @@
-package com.study.badrequest.api;
+package com.study.badrequest.utils.validator;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.domain.repository.MemberRepository;

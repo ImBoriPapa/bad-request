@@ -190,6 +190,19 @@ include::{snippets}/authoritySuccessAdmin/http-request.adoc[]
 include::{snippets}/authoritySuccessAdmin/http-response.adoc[]
 include::{snippets}/authoritySuccessAdmin/response-fields.adoc[]
 
+== Board
+=== 게시판 생성
+==== 요청1 이미지 없이 생성
+include::{snippets}/board_create/http-request.adoc[]
+==== 요청
+include::{snippets}/board_create/request-part-form-fields.adoc[]
+==== 요청 헤더
+include::{snippets}/board_create/request-headers.adoc[]
+==== 응답
+include::{snippets}/board_create/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/board_create/response-fields.adoc[]
+
 == Values
 
 === CustomStatus

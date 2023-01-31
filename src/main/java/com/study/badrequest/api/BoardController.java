@@ -10,36 +10,54 @@ import com.study.badrequest.domain.board.repository.query.BoardQueryRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
+
+import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@RequestMapping(BASE_URL)
 public class BoardController {
 
     private final BoardCommandService boardCommandService;
     private final BoardQueryRepository boardQueryRepository;
 
-    @PostMapping("/api/board")
+    @PostMapping("/board")
     @CustomLogger
-    public ResponseEntity postBoard(@RequestBody BoardRequest.Create form,
-                                    List<MultipartFile> images) {
+    public ResponseEntity postBoard(@Valid
+                                        @RequestPart(value = "form", required = true) BoardRequest.Create form,
+                                    @RequestPart(value = "images", required = false) List<MultipartFile> images,
+                                    BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            throw new CustomValidationException(CustomStatus.VALIDATION_ERROR,bindingResult);
+        }
 
-        EntityModel<BoardResponse.Create> entityModel = EntityModel.of(boardCommandService.create(form, images));
+        BoardResponse.Create create = boardCommandService.create(form, images);
+
+        EntityModel<BoardResponse.Create> model = EntityModel.of(create);
+        model.add(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).withRel("PUT : 게시판 수정"));
+        model.add(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).withRel("DELETE : 게시판 삭제"));
+        model.add(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).withRel("GET : 게시판 내용"));
+        model.add(linkTo(BoardController.class).slash("/board").withRel("GET : 게시판 리스트"));
 
         return ResponseEntity
-                .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .created(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).toUri())
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
-    @GetMapping("/api/board")
+    @GetMapping("/board")
     @CustomLogger
     public ResponseEntity getBoardList(@RequestParam(value = "size", defaultValue = "10") int size,
                                        @RequestParam(value = "lastIndex", defaultValue = "0") Long lastIndex,

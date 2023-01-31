@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@Profile("!dev")
+@Profile("prod")
 @RequiredArgsConstructor
 public class S3ImageUploader implements ImageUploader {
 

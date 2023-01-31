@@ -56,9 +56,10 @@ public class BoardCommandService {
 
         return new BoardResponse.Create(save.getId(), save.getCreatedAt());
     }
+
     @CustomLogger
     public void saveImages(List<MultipartFile> images, Board board) {
-        if (!images.isEmpty()) {
+        if (images != null) {
 
             List<BoardImage> boardImages = imageUploader.uploadFile(images, "board")
                     .stream()
@@ -84,7 +85,6 @@ public class BoardCommandService {
 
     @CustomLogger
     public void delete(Long boardId) {
-        log.info("[BoardCommandService.delete]");
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
@@ -99,6 +99,12 @@ public class BoardCommandService {
             commentRepository.deleteAll(comments);
         }
         boardRepository.delete(board);
+    }
+
+    @CustomLogger
+    public void deleteAll(List<Long> boardId) {
+        boardRepository.findAllById(boardId);
+
     }
 
     /**

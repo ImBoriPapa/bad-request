@@ -1,0 +1,26 @@
+POST http://localhost:8080/api/v1/login
+Content-Type:application/json
+
+{
+  "email": "user@gmail.com",
+  "password": "password1234!@"
+}
+
+
+###
+POST http://localhost:8080/api/v1/board
+Content-Type:multipart/form-data; boundary=boundary
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTE1ZC0yN2EyLWUyYWEtYjBlMy0xM2QwNzg2M2M0YzMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzUxNjY0NjF9.FLdFE4qrsk7XQfL7msHmjLSc3Aeh42Md87vSZ4oNgS4-ww11MA3pKK6OcKglXXiu_YRXcvNwu7sAo5hAQrU3Dw
+
+--boundary
+Content-Disposition:  form-data; name="form"
+Content-Type: application/json
+
+{
+    "memberId":"1",
+    "title":"제목1",
+    "context":"내용1",
+    "topic":"JAVA",
+    "category": "QUESTION"
+}
+

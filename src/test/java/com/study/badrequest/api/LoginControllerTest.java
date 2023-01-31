@@ -1,4 +1,4 @@
-package com.study.badrequest.login.api;
+package com.study.badrequest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.domain.Member.domain.entity.Member;

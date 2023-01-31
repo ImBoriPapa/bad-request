@@ -10,7 +10,7 @@ import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
 
-import lombok.Getter;
+import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -36,26 +36,9 @@ public class MemberController {
     private final MemberCommandService memberCommandService;
     private final MemberValidator memberValidator;
 
-    @GetMapping("/member/email")
-    @CustomLogger
-    public ResponseEntity getMemberEmail(@RequestParam(value = "email",defaultValue = "empty") String email) {
-        // TODO: 2023/01/31 이메일 형식 검증 추가
-        if(email.equals("empty")){
-            throw new IllegalArgumentException("Email Empty");
-        }
-
-        memberValidator.validateEmail(email);
-
-        return ResponseEntity.ok()
-                .body(new ResponseForm
-                        .Of<>(CustomStatus.SUCCESS, new MemberResponseForm.ValidateEmail(false,email)));
-    }
-
-
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
     public ResponseEntity postMember(@Validated @RequestBody MemberRequestForm.CreateMember form, BindingResult bindingResult) {
-
 
         memberValidator.validateCreateForm(form);
 
@@ -135,5 +118,18 @@ public class MemberController {
         return null;
     }
 
+    @GetMapping("/member/email")
+    @CustomLogger
+    public ResponseEntity getMemberEmail(@RequestParam(value = "email",defaultValue = "empty") String email) {
+        // TODO: 2023/01/31 이메일 형식 검증 추가
+        if(email.equals("empty")){
+            throw new IllegalArgumentException("Email Empty");
+        }
 
+        memberValidator.validateEmail(email);
+
+        return ResponseEntity.ok()
+                .body(new ResponseForm
+                        .Of<>(CustomStatus.SUCCESS, new MemberResponseForm.ValidateEmail(false,email)));
+    }
 }
