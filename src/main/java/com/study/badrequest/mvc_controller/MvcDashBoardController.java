@@ -21,11 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class MvcDashBoardController {
-
     private final LogQueryRepositoryImpl logQueryRepository;
     private final CpuMonitor cpuMonitor;
     private final MemoryMonitor memoryMonitor;
 
+    // TODO: 2023/01/31 수치 계산해보기
     @GetMapping("/dashboard")
     public String console(
             @RequestParam(value = "size", defaultValue = "30") int size,
