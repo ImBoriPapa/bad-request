@@ -28,7 +28,7 @@ public class SampleData {
     @PostConstruct
     public void sampleUser() {
         log.info("[INIT SAMPLE USER]");
-        //
+        //dsafa
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
