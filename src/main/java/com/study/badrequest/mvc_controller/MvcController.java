@@ -42,10 +42,6 @@ public class MvcController {
             @RequestParam(value = "username", required = false) String username,
             Model model) {
 
-        for (int i = 1; i <= 50; i++) {
-            testService.logTest("test" + i);
-        }
-
         CpuMonitor.CpuMonitorDto cpuMonitorDto = cpuMonitor.monitor();
         model.addAttribute("cpu", cpuMonitorDto);
 
