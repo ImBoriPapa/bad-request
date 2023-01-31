@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 @Slf4j
@@ -22,6 +21,7 @@ public class LocalImageUploader implements ImageUploader {
     private String location = System.getProperty("user.dir");
     private String bucket = location + "/src/main/resources/static/image";
     private String path = "http://localhost:8080/image/";
+
     @CustomLogger
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[LocalImageUploader -> uploadFile()]");
@@ -52,13 +52,8 @@ public class LocalImageUploader implements ImageUploader {
     private void putImage(MultipartFile file, String storedName) {
         log.info("[LocalImageUploader -> fileTransfer]");
 
-        try {
-            File f = new File(bucket, storedName);
-            file.transferTo(f);
-        } catch (IOException e) {
-            log.error("Error= {}", e);
-            throw new ImageFileUploadException(CustomStatus.UPLOAD_FAIL_ERROR);
-        }
+        ArrayList<String> store = new ArrayList<>();
+        store.add(storedName);
 
     }
 
