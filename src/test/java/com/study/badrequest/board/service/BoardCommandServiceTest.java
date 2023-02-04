@@ -48,9 +48,9 @@ class BoardCommandServiceTest {
                 .topic(Topic.JAVA)
                 .build();
 
-        MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
+//        MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
         //when
-        BoardResponse.Create create = boardCommandService.create(form, List.of(image1));
+        BoardResponse.Create create = boardCommandService.create(form, null);
 
         //then
 

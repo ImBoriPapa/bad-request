@@ -48,8 +48,8 @@ public class BoardCommandService {
                 .category(form.getCategory())
                 .member(member)
                 .build();
-
-        saveImages(images, board);
+        // TODO: 2023/02/05 이미지 저장 분리
+//        saveImages(images, board);
 
         Board save = boardRepository.save(board);
 
