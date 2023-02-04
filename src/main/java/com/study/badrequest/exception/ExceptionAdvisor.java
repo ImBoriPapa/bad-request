@@ -25,6 +25,15 @@ public class ExceptionAdvisor {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public final ResponseEntity illegalArgumentException(HttpServletRequest request, IllegalArgumentException e) {
+        log.info("[ExceptionAdvisor.illegalArgumentException]");
+        e.printStackTrace();
+        ResponseForm.Error error = new ResponseForm.Error(e, request.getRequestURI());
+
+        return ResponseEntity.badRequest().body(error);
+    }
+
     @ExceptionHandler(BasicException.class)
     public final ResponseEntity basicException(HttpServletRequest request, BasicException e) {
         log.info("[ExceptionAdvisor.basicException]");

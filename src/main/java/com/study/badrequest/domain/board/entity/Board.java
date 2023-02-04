@@ -55,4 +55,12 @@ public class Board {
         this.createdAt = LocalDateFormatter.formatter(LocalDateTime.now());
         this.updatedAt = LocalDateFormatter.formatter(LocalDateTime.now());
     }
+
+    public void increaseCommentCount() {
+        ++this.commentCount;
+    }
+
+    public void decreaseCommentCount() {
+        --this.commentCount;
+    }
 }

@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @SpringBootTest
 @Slf4j
 @Transactional
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class JwtUserDetailServiceTest {
 
     @Autowired

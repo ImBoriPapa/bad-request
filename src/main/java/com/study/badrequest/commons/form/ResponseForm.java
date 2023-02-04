@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor
@@ -39,17 +40,17 @@ public class ResponseForm {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class Error {
+    public static class Error<T> {
         private String status;
         private String requestPath;
         private int errorCode;
-        private List<String> message;
+        private List message;
 
         public Error(Exception ex, String request) {
             this.status = CustomStatus.ERROR.name();
             this.requestPath = request;
             this.errorCode = CustomStatus.ERROR.getCode();
-            this.message = List.of(CustomStatus.ERROR.getMessage());
+            this.message = List.of(ex.getMessage());
         }
 
         public Error(BasicException ex, String request) {

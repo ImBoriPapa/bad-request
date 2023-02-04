@@ -9,28 +9,11 @@ import java.util.stream.Collectors;
 
 public class BasicException extends RuntimeException {
 
+    public BasicException() {
+    }
+
     public BasicException(String message) {
         super(message);
-    }
-
-    private String status;
-
-    private int errorCode;
-    private List<String> errorMessage;
-
-    public String getStatus() {
-        return status;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public List<String> getErrorMessage() {
-        return errorMessage;
-    }
-
-    public BasicException() {
     }
 
     public BasicException(CustomStatus status) {
@@ -47,7 +30,29 @@ public class BasicException extends RuntimeException {
         this.errorMessage = getErrorList(bindingResult);
     }
 
+    private String status;
+
+    private int errorCode;
+
+    private List<String> errorMessage;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public List<String> getErrorMessage() {
+        return errorMessage;
+    }
+
     private static List<String> getErrorList(BindingResult bindingResult) {
-        return bindingResult.getFieldErrors().stream().map(MessageSourceResolvable::getDefaultMessage).collect(Collectors.toList());
+        return bindingResult
+                .getFieldErrors()
+                .stream()
+                .map(MessageSourceResolvable::getDefaultMessage)
+                .collect(Collectors.toList());
     }
 }

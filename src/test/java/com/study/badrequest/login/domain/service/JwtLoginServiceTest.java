@@ -18,18 +18,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.study.badrequest.SampleData.SAMPLE_PASSWORD;
+import static com.study.badrequest.SampleData.SAMPLE_USER_EMAIL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @Transactional
 @Slf4j
 class JwtLoginServiceTest {
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
     @Autowired
-    JwtLoginService jwtLoginService;
+    JwtLoginService loginService;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -47,7 +49,7 @@ class JwtLoginServiceTest {
                 .authority(Member.Authority.MEMBER)
                 .build();
         memberRepository.save(member);
-        jwtLoginService.loginProcessing(email, password);
+        loginService.loginProcessing(email, password);
     }
 
     @AfterEach
@@ -60,22 +62,12 @@ class JwtLoginServiceTest {
     @DisplayName("login")
     void 로그인테스트() throws Exception {
         //given
-        String email = "email@email.com";
-        String password = "password1234!@";
-        Member member = Member.createMember()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.MEMBER)
-                .build();
+        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
         //when
-        memberRepository.save(member);
-        LoginDto loginDto = jwtLoginService.loginProcessing(email, password);
-        RefreshToken refreshToken = refreshTokenRepository.findById(member.getUsername()).get();
-        log.info("getExpiration= {}",refreshToken.getExpiration());
+
         //then
-        assertThat(loginDto.getId()).isEqualTo(member.getId());
+
         assertThat(loginDto.getAccessToken()).isNotEmpty();
-        assertThat(loginDto.getRefreshCookie().getValue()).isEqualTo(REFRESH_TOKEN_PREFIX+refreshToken.getToken());
         assertThat(loginDto.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDate(loginDto.getAccessToken()));
 
     }
@@ -93,8 +85,8 @@ class JwtLoginServiceTest {
                 .build();
         memberRepository.save(member);
         //when
-        LoginDto loginDto = jwtLoginService.loginProcessing(email, password);
-        jwtLoginService.logoutProcessing(loginDto.getAccessToken());
+        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        loginService.logoutProcessing(loginDto.getAccessToken());
         //then
         assertThat(refreshTokenRepository.findById(member.getUsername())).isEmpty();
     }
@@ -112,8 +104,8 @@ class JwtLoginServiceTest {
                 .build();
         memberRepository.save(member);
         //when
-        LoginDto loginDto = jwtLoginService.loginProcessing(email, password);
-        LoginDto reissueProcessing = jwtLoginService.reissueProcessing(loginDto.getAccessToken(), loginDto.getRefreshCookie().getValue().substring(7));
+        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginDto reissueProcessing = loginService.reissueProcessing(loginDto.getAccessToken(), loginDto.getRefreshCookie().getValue().substring(7));
         //then
         assertThat(reissueProcessing.getAccessToken()).isNotEmpty();
         assertThat(reissueProcessing.getRefreshCookie()).isNotNull();

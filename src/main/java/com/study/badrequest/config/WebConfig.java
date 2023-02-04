@@ -1,6 +1,9 @@
 package com.study.badrequest.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.study.badrequest.domain.board.entity.Category;
+import com.study.badrequest.utils.converter.BindingParamToCategory;
+import com.study.badrequest.utils.converter.BindingParamToTopic;
 import com.study.badrequest.utils.converter.LogLevelConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +30,8 @@ public class WebConfig implements WebMvcConfigurer {
 
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new LogLevelConverter());
+        registry.addConverter(new BindingParamToCategory());
+        registry.addConverter(new BindingParamToTopic());
     }
 }
 

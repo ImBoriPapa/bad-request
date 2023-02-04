@@ -1,9 +1,13 @@
 package com.study.badrequest.domain.board.repository.query;
 
-import com.study.badrequest.domain.board.entity.Category;
-import com.study.badrequest.domain.board.entity.Topic;
+
+
+import com.study.badrequest.domain.board.dto.BoardSearchCondition;
+
+import java.util.Optional;
 
 public interface BoardQueryRepository {
 
-    public BoardListDto findBoardList(int size, Long lastIndex, String keyword, Category category, Topic topic);
+    Optional<BoardDetailDto> findBoardDetail(Long boardId);
+     BoardListDto findBoardList(BoardSearchCondition condition);
 }

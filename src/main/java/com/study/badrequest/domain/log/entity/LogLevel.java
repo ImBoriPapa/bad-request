@@ -19,6 +19,7 @@ public enum LogLevel {
             return null;
         }
         for (LogLevel l : LogLevel.values()) {
+
             if (l.value.equalsIgnoreCase(level)) {
                 return l;
             }

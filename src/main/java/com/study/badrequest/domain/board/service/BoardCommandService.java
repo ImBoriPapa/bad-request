@@ -10,7 +10,7 @@ import com.study.badrequest.domain.board.entity.BoardImage;
 import com.study.badrequest.domain.comment.entity.Comment;
 import com.study.badrequest.domain.board.repository.BoardImageRepository;
 import com.study.badrequest.domain.board.repository.BoardRepository;
-import com.study.badrequest.domain.board.repository.CommentRepository;
+import com.study.badrequest.domain.comment.repository.CommentRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class BoardCommandService {
-
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final BoardImageRepository boardImageRepository;
@@ -105,17 +104,5 @@ public class BoardCommandService {
     public void deleteAll(List<Long> boardId) {
         boardRepository.findAllById(boardId);
 
-    }
-
-    /**
-     * 댓글 등록
-     */
-    @CustomLogger
-    public void addComment(Long boardId, String comment) {
-        Board board = boardRepository.findById(boardId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
-        Comment newComment = new Comment(comment, board);
-
-        commentRepository.save(newComment);
     }
 }

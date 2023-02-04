@@ -44,7 +44,10 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/member")
                 .permitAll()
-                .antMatchers("/static/**", "/log", "/log-ex", "/dashboard", "/heap")
+                //비회원 Board 허용
+                .antMatchers(HttpMethod.GET,"/api/v1/board","/api/v1/board/*")
+                .permitAll()
+                .antMatchers("/static/**", "/log", "/log-ex", "/dashboard","/dashboard/**" ,"/heap")
                 .permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
                 .permitAll()

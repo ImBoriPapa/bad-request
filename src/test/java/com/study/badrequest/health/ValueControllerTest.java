@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @Slf4j
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 class ValueControllerTest {
 
     @Autowired
