@@ -6,8 +6,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -18,9 +20,7 @@ public class SubComment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SUB_COMMENT")
     private Long id;
-
     private String text;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COMMENT_ID")
     private Comment comment;
@@ -31,11 +31,24 @@ public class SubComment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     private Board board;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
     @Builder
     public SubComment(String text, Comment comment, Member member, Board board) {
         this.text = text;
         this.comment = comment;
         this.member = member;
         this.board = board;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void modify(String text) {
+        if (StringUtils.hasText(text)) {
+            this.text = text;
+            this.updatedAt = LocalDateTime.now();
+        }
     }
 }

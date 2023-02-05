@@ -36,7 +36,6 @@ public class BoardController {
 
     private final BoardCommandService boardCommandService;
     private final BoardQueryRepository boardQueryRepository;
-
     private final BoardResponseModelAssemblerAssembler boardResponseModelAssembler;
 
     @PostMapping("/board")

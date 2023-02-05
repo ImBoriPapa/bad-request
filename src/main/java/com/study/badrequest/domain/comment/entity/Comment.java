@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class Comment {
     private String text;
     @OneToMany(mappedBy = "comment")
     private List<SubComment> subCommentList = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -31,16 +33,22 @@ public class Comment {
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
     @Builder
     public Comment(String text, Member member, Board board) {
         this.text = text;
         this.member = member;
         this.board = board;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void modify(String text) {
         if (StringUtils.hasText(text)) {
             this.text = text;
+            this.updatedAt = LocalDateTime.now();
         }
     }
 }

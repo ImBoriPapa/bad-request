@@ -18,12 +18,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalLong;
-import java.util.stream.Collectors;
+
 
 import static com.study.badrequest.domain.board.entity.QBoard.board;
 import static com.study.badrequest.domain.board.entity.QBoardImage.*;
-import static com.study.badrequest.domain.comment.entity.QComment.comment;
-import static com.study.badrequest.domain.comment.entity.QSubComment.*;
+
 
 
 @Repository
@@ -53,28 +52,6 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                 .board(fetchOneBoard)
                 .boardImages(imageList)
                 .build());
-    }
-
-    /**
-     * Entity 직접 조회
-     * 필드가 많지 않아 Entity 직접조회 후 -> DTO
-     */
-    public List<BoardCommentDto> getComments(Long boardId) {
-        log.info("=================[getComments QUERY START]=================");
-        List<BoardCommentDto> collect = jpaQueryFactory
-                .select(comment)
-                .from(comment)
-                .leftJoin(comment.subCommentList)
-                .fetchJoin()
-                .where(comment.board.id.eq(boardId))
-                .distinct()
-                .fetch()
-                .stream()
-                .map(BoardCommentDto::new)
-                .collect(Collectors.toList());
-        log.info("=================[getComments QUERY FINISH]=================");
-
-        return collect;
     }
 
     @Override
