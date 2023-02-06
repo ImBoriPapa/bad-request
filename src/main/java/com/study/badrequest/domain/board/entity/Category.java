@@ -10,11 +10,17 @@ import static com.study.badrequest.commons.consts.CustomStatus.NOT_EXIST_CATEGOR
 @Getter
 public enum Category {
 
-    NOTICE,
-    QUESTION,
-    KNOWLEDGE,
+    NOTICE("공지 사항 게시판"),
+    QUESTION("질문 게시판"),
+    KNOWLEDGE("지식 공유 게시판"),
 
-    COMMUNITY;
+    COMMUNITY("자유 게시판");
+
+    private String explain;
+
+    Category(String explain) {
+        this.explain = explain;
+    }
 
     public static Category convert(String source) {
 

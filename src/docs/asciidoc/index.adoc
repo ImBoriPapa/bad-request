@@ -243,13 +243,16 @@ include::{snippets}/board_getList_no_condition/response-fields.adoc[]
 * topic : topic으로 검색 (대소문자 상관x)
 
 ==== 요청
+
 include::{snippets}/board_getList_with_condition/http-request.adoc[]
+
 ==== 응답
+
 include::{snippets}/board_getList_with_condition/http-response.adoc[]
 
 == Values
 
-=== CustomStatus
+=== Custom Status
 
 ==== 요청
 
@@ -259,3 +262,25 @@ include::{snippets}/custom-status/http-request.adoc[]
 
 include::{snippets}/custom-status/http-response.adoc[]
 include::{snippets}/custom-status/response-fields.adoc[]
+
+== Category
+
+==== 요청
+
+include::{snippets}/category/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/category/http-response.adoc[]
+include::{snippets}/category/response-fields.adoc[]
+
+=== Topic
+
+==== 요청
+
+include::{snippets}/topic/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/topic/http-response.adoc[]
+include::{snippets}/topic/response-fields.adoc[]

@@ -9,11 +9,17 @@ import static com.study.badrequest.commons.consts.CustomStatus.NOT_EXIST_TOPIC;
 @Getter
 public enum Topic {
 
-    JAVA,
-    JAVASCRIPT,
-    PYTHON,
-    MYSQL,
-    MONGODB;
+    JAVA("자바"),
+    JAVASCRIPT("자바스크립트"),
+    PYTHON("파이썬"),
+    MYSQL("MySQL"),
+    MONGODB("MongoDb");
+
+    private String explain;
+
+    Topic(String explain) {
+        this.explain = explain;
+    }
 
     public static Topic convert(String source) {
 

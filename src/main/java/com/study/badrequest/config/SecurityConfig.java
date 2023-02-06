@@ -14,7 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import static com.study.badrequest.health.ValueController.CUSTOM_STATUS;
+import static com.study.badrequest.health.ValueController.VALUES;
 
 @Configuration
 @EnableWebSecurity
@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .and()
                 .userDetailsService(jwtUserDetailService)
                 .authorizeRequests()
-                .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", CUSTOM_STATUS, "/api/v1/member/email")
+                .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", "/api/v1/member/email")
                 .permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/member")
                 .permitAll()
@@ -50,6 +50,10 @@ public class SecurityConfig {
                 //comment
                 .antMatchers("/api/v1/board/{boardId}/comments")
                 .permitAll()
+                //values
+                .antMatchers(VALUES+"/*")
+                .permitAll()
+                //static
                 .antMatchers("/static/**", "/log", "/log-ex", "/dashboard","/dashboard/**" ,"/heap")
                 .permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")

@@ -11,7 +11,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.study.badrequest.health.ValueController.CUSTOM_STATUS;
+import static com.study.badrequest.health.ValueController.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
@@ -33,8 +33,7 @@ class ValueControllerTest {
     @Test
     @DisplayName("커스텀 스테이스 조회")
     void getCustomStatus() throws Exception {
-        //given
-        mockMvc.perform(get(CUSTOM_STATUS))
+        mockMvc.perform(get(VALUES + STATUS))
                 .andDo(print())
                 .andDo(document("custom-status",
                         preprocessRequest(prettyPrint()),
@@ -45,9 +44,35 @@ class ValueControllerTest {
                                 fieldWithPath("[0].message").type(JsonFieldType.STRING).description("커스텀 스테이터스 메시지")
                         )
                 ));
-        //when
+    }
 
-        //then
+    @Test
+    @DisplayName("Category 목록 조회")
+    void getCategoryTest() throws Exception {
+        mockMvc.perform(get(VALUES + CATEGORY))
+                .andDo(print())
+                .andDo(document("category",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[0].category").type(JsonFieldType.STRING).description("카테고리명"),
+                                fieldWithPath("[0].explain").type(JsonFieldType.STRING).description("카테고리 설명")
+                        )
+                ));
+    }
 
+    @Test
+    @DisplayName("Topic 목록 조회")
+    void getTopicTest() throws Exception {
+        mockMvc.perform(get(VALUES + TOPIC))
+                .andDo(print())
+                .andDo(document("topic",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("[0].topic").type(JsonFieldType.STRING).description("토픽명"),
+                                fieldWithPath("[0].explain").type(JsonFieldType.STRING).description("토픽 설명")
+                        )
+                ));
     }
 }
