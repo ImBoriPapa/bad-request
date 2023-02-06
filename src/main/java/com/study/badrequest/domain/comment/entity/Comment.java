@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.comment.entity;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.board.entity.Board;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,8 +10,6 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,8 +21,6 @@ public class Comment {
     @Column(name = "COMMENT_ID")
     private Long id;
     private String text;
-    @OneToMany(mappedBy = "comment")
-    private List<SubComment> subCommentList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
@@ -33,14 +29,16 @@ public class Comment {
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+    private Integer likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Builder
+    @Builder(builderMethodName = "createComment")
     public Comment(String text, Member member, Board board) {
         this.text = text;
         this.member = member;
         this.board = board;
+        this.likeCount = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

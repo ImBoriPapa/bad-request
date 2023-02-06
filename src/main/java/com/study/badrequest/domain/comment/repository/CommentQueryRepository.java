@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.study.badrequest.domain.Member.domain.entity.QMember.member;
+
+import static com.study.badrequest.domain.Member.entity.QMember.member;
 import static com.study.badrequest.domain.comment.entity.QComment.comment;
 import static com.study.badrequest.domain.comment.entity.QSubComment.*;
 
@@ -32,25 +32,27 @@ public class CommentQueryRepository {
      * 단점 1:  1:N 관계로 Projection 불가
      * 단점 2:  Comment,SubComment 일대다 ,다대일 양방향 관계
      */
-    public List<CommentDto> findCommentByBoardJustOneQuery(Long boardId) {
-        log.info("=================[getComments QUERY START]=================");
-        List<CommentDto> collect = jpaQueryFactory
-                .select(comment)
-                .from(comment)
-                .leftJoin(comment.member)
-                .fetchJoin()
-                .leftJoin(comment.subCommentList)
-                .fetchJoin()
-                .where(comment.board.id.eq(boardId))
-                .distinct()
-                .fetch()
-                .stream()
-                .map(CommentDto::new)
-                .collect(Collectors.toList());
-        log.info("=================[getComments QUERY FINISH]=================");
+//    public List<CommentDto> findCommentByBoardJustOneQuery(Long boardId) {
+//        log.info("=================[getComments QUERY START]=================");
+//        List<CommentDto> collect = jpaQueryFactory
+//                .select(comment)
+//                .from(comment)
+//                .leftJoin(comment.member)
+//                .fetchJoin()
+//                .leftJoin(comment.subCommentList)
+//                .fetchJoin()
+//                .where(comment.board.id.eq(boardId))
+//                .distinct()
+//                .fetch()
+//                .stream()
+//                .map(CommentDto::new)
+//                .collect(Collectors.toList());
+//        log.info("=================[getComments QUERY FINISH]=================");
+//
+//        return collect;
+//    }
 
-        return collect;
-    }
+    // TODO: 2023/02/06 페이징 기능 추가
 
     /**
      * Comment Entity Member Entity 조인, SubComment Entity Member Entity 조인 후 각각 조회 후 반환
@@ -58,9 +60,20 @@ public class CommentQueryRepository {
      * 장점2 : Comment,SubComment 다대일 단방향 설계 가능
      * 단점: 쿼리가 두번 나감
      */
-    public List<CommentDto> findCommentByBoardUseTwoQuery(Long boardId) {
-        log.info("=================[getComments QUERY START]=================");
-        List<CommentDto> commentDtoList = jpaQueryFactory
+    public List<CommentDto> findAllCommentAndSubCommentByBoardId(Long boardId) {
+        log.info("=================[findComments QUERY START]=================");
+        List<CommentDto> commentDtoList = findAllCommentByBoardId(boardId);
+
+        List<SubCommentDto> subCommentDtoList = findAllSubCommentByBoardId(boardId);
+
+        commentDtoList.forEach(list -> addSubToComment(list, subCommentDtoList));
+        log.info("=================[findComments QUERY FINISH]=================");
+
+        return commentDtoList;
+    }
+
+    public List<CommentDto> findAllCommentByBoardId(Long boardId) {
+        return jpaQueryFactory
                 .select(Projections.fields(CommentDto.class,
                         comment.id.as("commentId"),
                         comment.board.id.as("boardId"),
@@ -68,6 +81,7 @@ public class CommentQueryRepository {
                         comment.member.profileImage.fullPath.as("profileImage"),
                         comment.member.nickname.as("nickname"),
                         comment.text.as("text"),
+                        comment.likeCount.as("likeCount"),
                         comment.createdAt.as("createdAt"),
                         comment.updatedAt.as("updatedAt")
                 ))
@@ -75,8 +89,10 @@ public class CommentQueryRepository {
                 .leftJoin(comment.member, member)
                 .where(comment.board.id.eq(boardId))
                 .fetch();
+    }
 
-        List<SubCommentDto> subCommentDtoList = jpaQueryFactory
+    public List<SubCommentDto> findAllSubCommentByBoardId(Long boardId) {
+        return jpaQueryFactory
                 .select(Projections.fields(SubCommentDto.class,
                         subComment.id.as("subCommentId"),
                         subComment.comment.id.as("commentId"),
@@ -85,6 +101,7 @@ public class CommentQueryRepository {
                         subComment.member.profileImage.fullPath.as("profileImage"),
                         subComment.member.nickname.as("nickname"),
                         subComment.text.as("text"),
+                        subComment.likeCount.as("likeCount"),
                         subComment.createdAt.as("createdAt"),
                         subComment.updatedAt.as("updatedAt")
                 ))
@@ -92,20 +109,13 @@ public class CommentQueryRepository {
                 .leftJoin(subComment.member, member)
                 .where(subComment.board.id.eq(boardId))
                 .fetch();
-
-        commentDtoList
-                .forEach(list -> addSubToComment(list, subCommentDtoList));
-        log.info("=================[getComments QUERY FINISH]=================");
-
-        return commentDtoList;
     }
 
     private void addSubToComment(CommentDto commentDto, List<SubCommentDto> subCommentDtoList) {
-        if (commentDto.getCommentId() != null)
-            for (SubCommentDto subCommentDto : subCommentDtoList) {
-                if (subCommentDto.getCommentId() == commentDto.getCommentId()) {
-                    commentDto.addSub(subCommentDto);
-                }
-            }
+        if (commentDto.getCommentId() != null) {
+            subCommentDtoList.stream()
+                    .filter(subCommentDto -> subCommentDto.getCommentId() == commentDto.getCommentId())
+                    .forEach(commentDto::addSub);
+        }
     }
 }

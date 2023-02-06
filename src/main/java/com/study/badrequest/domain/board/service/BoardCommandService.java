@@ -1,8 +1,8 @@
 package com.study.badrequest.domain.board.service;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.entity.Board;
@@ -49,7 +49,7 @@ public class BoardCommandService {
                 .member(member)
                 .build();
         // TODO: 2023/02/05 이미지 저장 분리
-//        saveImages(images, board);
+        saveImages(images, board);
 
         Board save = boardRepository.save(board);
 

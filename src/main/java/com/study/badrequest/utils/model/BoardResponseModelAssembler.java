@@ -4,6 +4,7 @@ package com.study.badrequest.utils.model;
 import com.study.badrequest.api.BoardController;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.repository.query.BoardListDto;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
@@ -15,7 +16,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class BoardResponseModelAssemblerAssembler implements CustomEntityModelAssemblerSupport<BoardResponse.Create,BoardListDto> {
+public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSupport<BoardResponse.Create, BoardListDto> {
 
     /**
      * Add CRUD LINK To BoardResponse.Create
@@ -46,7 +47,11 @@ public class BoardResponseModelAssemblerAssembler implements CustomEntityModelAs
                 .add(linkTo(BoardController.class).slash("/board").withSelfRel())
                 .addAllIf(entity.getSize() > 0, links);
 
+    }
 
+    @Override
+    public CollectionModel<BoardListDto> toCollectionModel(BoardListDto target) {
+        return null;
     }
 
     /**

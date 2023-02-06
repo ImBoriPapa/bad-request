@@ -1,16 +1,13 @@
 package com.study.badrequest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.SampleData;
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginDto;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 
-import static com.study.badrequest.SampleData.SAMPLE_PASSWORD;
-import static com.study.badrequest.SampleData.SAMPLE_USER_EMAIL;
+import static com.study.badrequest.TestSampleData.SAMPLE_PASSWORD;
+import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;

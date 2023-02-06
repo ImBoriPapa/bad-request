@@ -12,7 +12,7 @@ import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.board.service.BoardCommandService;
 import com.study.badrequest.exception.custom_exception.RequestParamException;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
-import com.study.badrequest.utils.model.BoardResponseModelAssemblerAssembler;
+import com.study.badrequest.utils.model.BoardResponseModelAssembler;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -36,7 +35,7 @@ public class BoardController {
 
     private final BoardCommandService boardCommandService;
     private final BoardQueryRepository boardQueryRepository;
-    private final BoardResponseModelAssemblerAssembler boardResponseModelAssembler;
+    private final BoardResponseModelAssembler boardResponseModelAssembler;
 
     @PostMapping("/board")
     @CustomLogger

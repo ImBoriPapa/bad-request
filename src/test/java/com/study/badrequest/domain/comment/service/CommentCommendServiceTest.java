@@ -1,9 +1,11 @@
 package com.study.badrequest.domain.comment.service;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.repository.BoardRepository;
+import com.study.badrequest.domain.comment.dto.CommentRequest;
+import com.study.badrequest.domain.comment.dto.CommentResponse;
 import com.study.badrequest.domain.comment.entity.Comment;
 import com.study.badrequest.domain.comment.repository.CommentRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -48,12 +50,14 @@ class CommentCommendServiceTest {
                 .build();
         Board saveBoard = boardRepository.save(board);
 
+        CommentRequest.Create create = new CommentRequest.Create();
+        create.setText("text1");
         //when
-        Comment comment = commentCommendService.add(board.getId(), "댓글1");
-        Comment findById = commentRepository.findById(comment.getId()).orElseThrow(() -> new IllegalArgumentException(""));
+        CommentResponse.Create saved = commentCommendService.addComment(board.getId(), member.getId(), create);
+        Comment findById = commentRepository.findById(saved.getCommentId()).orElseThrow(() -> new IllegalArgumentException(""));
         //then
-        assertThat(findById.getId()).isEqualTo(comment.getId());
-        assertThat(findById.getText()).isEqualTo(comment.getText());
+        assertThat(findById.getId()).isEqualTo(saved.getCommentId());
+        assertThat(findById.getText()).isEqualTo(create.getText());
         assertThat(findById.getBoard()).isEqualTo(saveBoard);
         assertThat(findById.getMember()).isEqualTo(saveBoard.getMember());
         assertThat(findById.getBoard().getCommentCount()).isEqualTo(1);
@@ -76,12 +80,15 @@ class CommentCommendServiceTest {
                 .build();
         Board saveBoard = boardRepository.save(board);
 
-        commentCommendService.add(board.getId(), "before init");
+        CommentRequest.Create create = new CommentRequest.Create();
+        create.setText("text1");
+
+        commentCommendService.addComment(board.getId(), member.getId(), create);
 
         Board findBoard = boardRepository.findByTitle("before").orElseThrow(() -> new RuntimeException());
         Comment comment = commentRepository.findByBoard(findBoard).get();
         //when
-        commentCommendService.delete(comment.getId());
+        commentCommendService.deleteComment(comment.getId());
 
         //then
         assertThat(findBoard.getCommentCount()).isEqualTo(0);
@@ -92,7 +99,7 @@ class CommentCommendServiceTest {
 
     @Test
     @DisplayName("댓글 수정")
-    void modifyTest() throws Exception{
+    void modifyTest() throws Exception {
         //given
         Member member = Member.createMember()
                 .email("before@comment.com")
@@ -107,14 +114,16 @@ class CommentCommendServiceTest {
                 .build();
         Board saveBoard = boardRepository.save(board);
 
-        Comment comment = commentCommendService.add(board.getId(), "before init");
+        CommentRequest.Create create = new CommentRequest.Create();
+        create.setText("text1");
+
+        CommentResponse.Create saved = commentCommendService.addComment(board.getId(), member.getId(), create);
         //when
-        commentCommendService.modify(comment.getId(),"수정");
-        Comment findById = commentRepository.findById(comment.getId()).get();
+        commentCommendService.modifyComment(saved.getCommentId(), "수정");
+        Comment findById = commentRepository.findById(saved.getCommentId()).get();
         //then
         assertThat(findById.getText()).isEqualTo("수정");
     }
-
 
 
 }

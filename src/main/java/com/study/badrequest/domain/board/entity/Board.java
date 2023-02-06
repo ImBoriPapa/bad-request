@@ -1,8 +1,7 @@
 package com.study.badrequest.domain.board.entity;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.entity.Member;
 
-import com.study.badrequest.commons.LocalDateFormatter;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -39,9 +38,9 @@ public class Board {
     @Column(name = "COMMENT_COUNT")
     private Integer commentCount;
     @Column(name = "CREATE_AT")
-    private String createdAt;
+    private LocalDateTime createdAt;
     @Column(name = "UPDATE_AT")
-    private String updatedAt;
+    private LocalDateTime updatedAt;
 
     @Builder(builderMethodName = "createBoard")
     public Board(Member member, String title, String contents, Category category, Topic topic) {
@@ -52,8 +51,8 @@ public class Board {
         this.category = category;
         this.topic = topic;
         this.commentCount = 0;
-        this.createdAt = LocalDateFormatter.formatter(LocalDateTime.now());
-        this.updatedAt = LocalDateFormatter.formatter(LocalDateTime.now());
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void increaseCommentCount() {
@@ -63,4 +62,5 @@ public class Board {
     public void decreaseCommentCount() {
         --this.commentCount;
     }
+
 }

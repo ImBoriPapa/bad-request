@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.comment.entity;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.board.entity.Board;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,15 +32,17 @@ public class SubComment {
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+    private Integer likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    @Builder
+    @Builder(builderMethodName = "CreateSubComment")
     public SubComment(String text, Comment comment, Member member, Board board) {
         this.text = text;
         this.comment = comment;
         this.member = member;
         this.board = board;
+        this.likeCount = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }

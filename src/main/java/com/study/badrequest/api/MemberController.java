@@ -1,8 +1,8 @@
 package com.study.badrequest.api;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.service.MemberCommandService;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.service.MemberCommandService;
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 import com.study.badrequest.domain.Member.dto.MemberResponseForm;
 import com.study.badrequest.commons.consts.CustomStatus;

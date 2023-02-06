@@ -1,8 +1,8 @@
 package com.study.badrequest;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.entity.ProfileImage;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.entity.ProfileImage;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
@@ -29,7 +29,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class SampleData {
+@Profile({"test", "dev", "prod"})
+public class TestSampleData {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final BoardRepository boardRepository;
@@ -46,7 +47,7 @@ public class SampleData {
     public static final String SAMPLE_ADMIN_EMAIL = "admin@gmail.com";
     public static final String SAMPLE_PASSWORD = "password1234!@";
 
-    @Profile({"dev", "test"})
+
     @PostConstruct
     public void initSampleDataWhenDevelopmentAndTest() {
         initSampleUser();
@@ -140,17 +141,17 @@ public class SampleData {
         Board board = boardRepository.findByTitle("title1").get();
 
 
-        Comment comment1 = Comment.builder()
+        Comment comment1 = Comment.createComment()
                 .text("text1")
                 .board(board)
                 .member(board.getMember())
                 .build();
-        Comment comment2 = Comment.builder()
+        Comment comment2 = Comment.createComment()
                 .text("text2")
                 .board(board)
                 .member(board.getMember())
                 .build();
-        Comment comment3 = Comment.builder()
+        Comment comment3 = Comment.createComment()
                 .text("text3")
                 .board(board)
                 .member(board.getMember())
@@ -159,21 +160,21 @@ public class SampleData {
 
         commentRepository.saveAll(List.of(comment1, comment2, comment3));
         Comment parentComment = commentRepository.findById(comment1.getId()).get();
-        SubComment subComment1 = SubComment.builder()
+        SubComment subComment1 = SubComment.CreateSubComment()
                 .text("sub 1")
                 .board(board)
                 .member(board.getMember())
                 .comment(parentComment)
                 .build();
 
-        SubComment subComment2 = SubComment.builder()
+        SubComment subComment2 = SubComment.CreateSubComment()
                 .text("sub 2")
                 .board(board)
                 .member(board.getMember())
                 .comment(parentComment)
                 .build();
 
-        SubComment subComment3 = SubComment.builder()
+        SubComment subComment3 = SubComment.CreateSubComment()
                 .text("sub 3")
                 .board(board)
                 .member(board.getMember())

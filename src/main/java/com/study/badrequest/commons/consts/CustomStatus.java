@@ -23,9 +23,18 @@ public enum CustomStatus {
     NOT_SUPPORT_ERROR(2004, "지원하지 않는 파일 형식입니다."),
     DUPLICATE_EMAIL(2005, "이미 사용중인 이메일입니다."),
     DUPLICATE_CONTACT(2006, "이미 사용중인 연락처 입니다."),
-    WRONG_PARAMETER(2007,"파라미터값을 확인해 주세요."),
-    NOT_EXIST_CATEGORY(2008,"존재하지 않는 카테고리 입니다."),
-    NOT_EXIST_TOPIC(2009,"존재하지 않는 카테고리 입니다.");
+    WRONG_PARAMETER(2007, "파라미터값을 확인해 주세요."),
+    NOT_EXIST_CATEGORY(2008, "존재하지 않는 카테고리 입니다."),
+    NOT_EXIST_TOPIC(2009, "존재하지 않는 카테고리 입니다."),
+    /**
+     * 게시판 관련
+     */
+    NOT_FOUND_BOARD(3000, "존재하지 않는 게시판 입니다."),
+    /**
+     * 댓글 관련
+     */
+    NOT_FOUND_COMMENT(4000, "존재하지 않는 댓글 입니다.");
+
     private int code;
     private String message;
 

@@ -1,9 +1,9 @@
-package com.study.badrequest.domain.Member.domain.service;
+package com.study.badrequest.domain.Member.service;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
-import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.entity.Member;
 
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.MemberException;

@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.comment.repository.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.domain.comment.entity.SubComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,8 +22,11 @@ public class SubCommentDto {
     private String nickname;
     private String text;
 
-    private LocalDateTime createdAt;
+    private Integer likeCount;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime updatedAt;
 
     public SubCommentDto(SubComment subComment) {

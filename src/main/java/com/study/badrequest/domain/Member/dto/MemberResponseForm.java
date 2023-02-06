@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.Member.dto;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -14,7 +14,7 @@ public enum Category {
     QUESTION,
     KNOWLEDGE,
 
-    INFORMATION;
+    COMMUNITY;
 
     public static Category convert(String source) {
 

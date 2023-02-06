@@ -1,7 +1,7 @@
 package com.study.badrequest.board.repository;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardSearchCondition;
 
 import com.study.badrequest.domain.board.entity.Board;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.study.badrequest.SampleData.SAMPLE_USER_EMAIL;
+import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
 
 @SpringBootTest
 @Slf4j
@@ -95,17 +95,17 @@ class BoardQueryRepositoryImplTest {
                 .build();
         boardImageRepository.saveAll(List.of(boardImage1, boardImage2, boardImage3));
 
-        Comment comment1 = Comment.builder()
+        Comment comment1 = Comment.createComment()
                 .text("text1")
                 .board(board)
                 .member(board.getMember())
                 .build();
-        Comment comment2 = Comment.builder()
+        Comment comment2 = Comment.createComment()
                 .text("text2")
                 .board(board)
                 .member(board.getMember())
                 .build();
-        Comment comment3 = Comment.builder()
+        Comment comment3 = Comment.createComment()
                 .text("text3")
                 .board(board)
                 .member(board.getMember())

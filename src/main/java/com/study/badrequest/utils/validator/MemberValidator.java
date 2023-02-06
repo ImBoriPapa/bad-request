@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.validator;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;

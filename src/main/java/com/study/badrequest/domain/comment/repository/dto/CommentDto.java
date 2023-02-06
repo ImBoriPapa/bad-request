@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.comment.repository.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.domain.comment.entity.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,10 @@ public class CommentDto {
     private String profileImage;
     private String nickname;
     private String text;
-
+    private Integer likeCount;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime updatedAt;
     private List<SubCommentDto> subComments = new ArrayList<>();
 
@@ -36,18 +39,18 @@ public class CommentDto {
     /**
      * findCommentByBoardJustOneQuery 용 생성자
      */
-    public CommentDto(Comment comment) {
-        this.commentId = comment.getId();
-        this.boardId = comment.getBoard().getId();
-        this.memberId = comment.getMember().getId();
-        this.nickname = comment.getMember().getNickname();
-        this.text = comment.getText();
-        this.subComments = comment
-                .getSubCommentList()
-                .stream()
-                .map(SubCommentDto::new)
-                .collect(Collectors.toList());
-    }
+//    public CommentDto(Comment comment) {
+//        this.commentId = comment.getId();
+//        this.boardId = comment.getBoard().getId();
+//        this.memberId = comment.getMember().getId();
+//        this.nickname = comment.getMember().getNickname();
+//        this.text = comment.getText();
+//        this.subComments = comment
+//                .getSubCommentList()
+//                .stream()
+//                .map(SubCommentDto::new)
+//                .collect(Collectors.toList());
+//    }
 
 
 }

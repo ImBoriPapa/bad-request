@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.Member.domain.entity;
+package com.study.badrequest.domain.Member.entity;
 
 import com.fasterxml.uuid.Generators;
 import lombok.*;

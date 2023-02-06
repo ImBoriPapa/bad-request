@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.repository.query;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.BoardImage;
 import com.study.badrequest.domain.board.entity.Category;
@@ -8,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +25,10 @@ public class BoardDetailDto {
     private Category category;
     private Topic topic;
     private Integer commentCount;
-    private String createdAt;
-    private String updatedAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+    private LocalDateTime updatedAt;
     private List<BoardImage> boardImages = new ArrayList<>();
 
     @Builder

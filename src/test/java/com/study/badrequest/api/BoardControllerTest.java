@@ -21,10 +21,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.study.badrequest.SampleData.SAMPLE_PASSWORD;
-import static com.study.badrequest.SampleData.SAMPLE_USER_EMAIL;
+import static com.study.badrequest.TestSampleData.SAMPLE_PASSWORD;
+import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

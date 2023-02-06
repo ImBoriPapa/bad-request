@@ -1,8 +1,7 @@
 package com.study.badrequest.login.domain.service;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
-import com.study.badrequest.domain.login.domain.entity.RefreshToken;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginDto;
@@ -18,9 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.study.badrequest.SampleData.SAMPLE_PASSWORD;
-import static com.study.badrequest.SampleData.SAMPLE_USER_EMAIL;
-import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
+import static com.study.badrequest.TestSampleData.SAMPLE_PASSWORD;
+import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

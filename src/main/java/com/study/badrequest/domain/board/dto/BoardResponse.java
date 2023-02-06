@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ public class BoardResponse {
     public static class Create{
 
         private Long boardId;
-        private String createAt;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime createAt;
     }
 
 }

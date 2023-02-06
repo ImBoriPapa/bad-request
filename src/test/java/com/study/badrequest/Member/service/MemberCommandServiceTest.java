@@ -1,10 +1,10 @@
 package com.study.badrequest.Member.service;
 
-import com.study.badrequest.domain.Member.domain.entity.Member;
+import com.study.badrequest.domain.Member.entity.Member;
 
-import com.study.badrequest.domain.Member.domain.repository.MemberRepository;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 
-import com.study.badrequest.domain.Member.domain.service.MemberCommandService;
+import com.study.badrequest.domain.Member.service.MemberCommandService;
 
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
 
