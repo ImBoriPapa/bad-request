@@ -203,6 +203,15 @@ include::{snippets}/board_create/http-response.adoc[]
 ==== 응답 필드
 include::{snippets}/board_create/response-fields.adoc[]
 
+=== 게시판 리스트 조회
+==== 요청
+include::{snippets}/board_getList_no_condition/http-request.adoc[]
+==== 응답
+include::{snippets}/board_getList_no_condition/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/board_getList_no_condition/response-fields.adoc[]
+
+
 == Values
 
 === CustomStatus
@@ -210,6 +219,7 @@ include::{snippets}/board_create/response-fields.adoc[]
 ==== 요청
 
 include::{snippets}/custom-status/http-request.adoc[]
+
 
 ==== 응답
 
