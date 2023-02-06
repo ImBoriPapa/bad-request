@@ -3,10 +3,7 @@ package com.study.badrequest.domain.board.dto;
 import com.study.badrequest.aop.annotation.EnumValid;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -31,6 +28,7 @@ public class BoardRequest {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SearchCondition {

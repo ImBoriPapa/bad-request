@@ -31,13 +31,19 @@ include::{snippets}/postMember/http-response.adoc[]
 include::{snippets}/postMember/response-fields.adoc[]
 
 === 이메일 중복 확인
+
 ==== 요청
+
 include::{snippets}/email_duplicate_success/http-request.adoc[]
 
 ==== 응답
+
 ===== 요청 성공 이메일 중복 X
+
 include::{snippets}/email_duplicate_success/http-response.adoc[]
+
 ===== 요청 실패 이메일 중복 O
+
 include::{snippets}/email_duplicate_fail/http-response.adoc[]
 
 === 연락처 변경
@@ -191,26 +197,55 @@ include::{snippets}/authoritySuccessAdmin/http-response.adoc[]
 include::{snippets}/authoritySuccessAdmin/response-fields.adoc[]
 
 == Board
+
 === 게시판 생성
+
 ==== 요청1 이미지 없이 생성
+
 include::{snippets}/board_create/http-request.adoc[]
+
 ==== 요청
+
 include::{snippets}/board_create/request-part-form-fields.adoc[]
+
 ==== 요청 헤더
+
 include::{snippets}/board_create/request-headers.adoc[]
+
 ==== 응답
+
 include::{snippets}/board_create/http-response.adoc[]
+
 ==== 응답 필드
+
 include::{snippets}/board_create/response-fields.adoc[]
 
 === 게시판 리스트 조회
-==== 요청
-include::{snippets}/board_getList_no_condition/http-request.adoc[]
-==== 응답
-include::{snippets}/board_getList_no_condition/http-response.adoc[]
-==== 응답 필드
-include::{snippets}/board_getList_no_condition/response-fields.adoc[]
 
+==== 검색 조건 없이 검색
+
+==== 요청
+
+include::{snippets}/board_getList_no_condition/http-request.adoc[]
+
+==== 응답
+
+include::{snippets}/board_getList_no_condition/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/board_getList_no_condition/response-fields.adoc[]
+검색 조건::
+* size : default 10
+* lastIndex : default 0 다음 데이터는 응답값의 lastIndex
+* title : 제목에 포함된 단어 검색
+* category : category로 검색 (대소문자 상관x)
+* topic : topic으로 검색 (대소문자 상관x)
+
+==== 요청
+include::{snippets}/board_getList_with_condition/http-request.adoc[]
+==== 응답
+include::{snippets}/board_getList_with_condition/http-response.adoc[]
 
 == Values
 
@@ -219,7 +254,6 @@ include::{snippets}/board_getList_no_condition/response-fields.adoc[]
 ==== 요청
 
 include::{snippets}/custom-status/http-request.adoc[]
-
 
 ==== 응답
 
