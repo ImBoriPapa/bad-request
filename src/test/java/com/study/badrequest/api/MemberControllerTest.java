@@ -289,6 +289,7 @@ class MemberControllerTest {
                                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
                                 fieldWithPath("result.thanks").type(JsonFieldType.STRING).description("인사"),
+                                fieldWithPath("result.deletedAt").type(JsonFieldType.STRING).description("삭제 일자"),
                                 fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("회원 가입"),
                                 fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크"))));
     }

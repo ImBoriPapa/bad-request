@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.Member.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.domain.Member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +10,13 @@ import java.time.LocalDateTime;
 
 
 @NoArgsConstructor
-public class MemberResponseForm {
+public class MemberResponse {
 
     @NoArgsConstructor
     @Getter
     public static class SignupResult {
         private Long memberId;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
         public SignupResult(Member member) {
@@ -27,6 +29,7 @@ public class MemberResponseForm {
     @Getter
     public static class UpdateResult {
         private Long memberId;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime updatedAt;
 
         public UpdateResult(Member member) {
@@ -39,6 +42,8 @@ public class MemberResponseForm {
     @Getter
     public static class DeleteResult{
         private String thanks = "이용해 주셔서 감사합니다.";
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime deletedAt = LocalDateTime.now();
     }
 
     @NoArgsConstructor

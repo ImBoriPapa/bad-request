@@ -4,12 +4,13 @@ import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.service.MemberCommandService;
 import com.study.badrequest.domain.Member.dto.MemberRequestForm;
-import com.study.badrequest.domain.Member.dto.MemberResponseForm;
+import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
 
+import com.study.badrequest.utils.model.MemberResponseModel;
 import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,10 +36,11 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
     private final MemberValidator memberValidator;
+    private final MemberResponseModel memberResponseModel;
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
-    public ResponseEntity postMember(@Validated @RequestBody MemberRequestForm.CreateMember form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequestForm.CreateMember form, BindingResult bindingResult) {
 
         memberValidator.validateCreateForm(form);
 
@@ -47,36 +49,33 @@ public class MemberController {
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        Member member = memberCommandService.signupMember(form);
+        MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
 
-        EntityModel<MemberResponseForm.SignupResult> model = EntityModel.of(new MemberResponseForm.SignupResult(member));
-        model.add(linkTo(LoginController.class).slash("/login").withRel("POST: 로그인"));
+        EntityModel<MemberResponse.SignupResult> signupResultEntityModel = memberResponseModel.toModel(signupResult);
 
         return ResponseEntity
-                .created(linkTo(MemberCommandService.class).slash("/login").slash(member.getId()).toUri())
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
+                .created(memberResponseModel.getUri(signupResult.getMemberId()))
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
     }
 
-    // TODO: 2023/01/06 test 
     @PutMapping("/member/{memberId}/password")
     @CustomLogger
-    public ResponseEntity putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.ResetPassword form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.ResetPassword form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        Member member = memberCommandService.resetPassword(memberId, form.getPassword(), form.getNewPassword());
+        MemberResponse.UpdateResult updateResult = memberCommandService.resetPassword(memberId, form.getPassword(), form.getNewPassword());
 
-        EntityModel<MemberResponseForm.UpdateResult> model = EntityModel.of(new MemberResponseForm.UpdateResult(member));
-        model.add(linkTo(methodOn(MemberController.class).getMember(member.getId())).withRel("GET: 회원 정보"));
+        EntityModel<MemberResponse.UpdateResult> updateResultEntityModel = memberResponseModel.toModel(updateResult);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(CustomStatus.SUCCESS, model));
+                .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
     }
 
     @PutMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
-    public ResponseEntity putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.UpdateContact form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.UpdateContact form, BindingResult bindingResult) {
 
 
         if (bindingResult.hasErrors()) {
@@ -85,34 +84,34 @@ public class MemberController {
 
         memberValidator.validateContact(form.getContact());
 
-        Member member = memberCommandService.updateContact(memberId, form.getContact());
-        EntityModel<MemberResponseForm.UpdateResult> model = EntityModel.of(new MemberResponseForm.UpdateResult(member));
-        model.add(linkTo(methodOn(MemberController.class).getMember(member.getId())).withRel("GET: 회원 정보"));
+        MemberResponse.UpdateResult updateResult = memberCommandService.updateContact(memberId, form.getContact());
+
+        EntityModel<MemberResponse.UpdateResult> updateResultEntityModel = memberResponseModel.toModel(updateResult);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(CustomStatus.SUCCESS, model));
+                .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
     }
 
     @DeleteMapping("/member/{memberId}")
     @CustomLogger
-    public ResponseEntity deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.DeleteMember form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.DeleteMember form, BindingResult bindingResult) {
 
 
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        memberCommandService.resignMember(memberId, form.getPassword());
-        EntityModel<MemberResponseForm.DeleteResult> model = EntityModel.of(new MemberResponseForm.DeleteResult());
-        model.add(linkTo(MemberController.class).slash("/api").slash("/v1").slash("/member").withRel("POST: 회원가입"));
+        MemberResponse.DeleteResult deleteResult = memberCommandService.resignMember(memberId, form.getPassword());
+
+        EntityModel<MemberResponse.DeleteResult> deleteResultEntityModel = memberResponseModel.toModel(deleteResult);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(CustomStatus.SUCCESS, model));
+                .body(new ResponseForm.Of(CustomStatus.SUCCESS, deleteResultEntityModel));
     }
 
     @GetMapping("/member/{memberId}")
     @CustomLogger
-    public ResponseEntity getMember(@PathVariable Long memberId) {
+    public ResponseEntity<ResponseForm.Of> getMember(@PathVariable Long memberId) {
 
 
         return null;
@@ -120,9 +119,9 @@ public class MemberController {
 
     @GetMapping("/member/email")
     @CustomLogger
-    public ResponseEntity getMemberEmail(@RequestParam(value = "email",defaultValue = "empty") String email) {
+    public ResponseEntity<ResponseForm.Of> getMemberEmail(@RequestParam(value = "email", defaultValue = "empty") String email) {
         // TODO: 2023/01/31 이메일 형식 검증 추가
-        if(email.equals("empty")){
+        if (email.equals("empty")) {
             throw new IllegalArgumentException("Email Empty");
         }
 
@@ -130,6 +129,6 @@ public class MemberController {
 
         return ResponseEntity.ok()
                 .body(new ResponseForm
-                        .Of<>(CustomStatus.SUCCESS, new MemberResponseForm.ValidateEmail(false,email)));
+                        .Of<>(CustomStatus.SUCCESS, new MemberResponse.ValidateEmail(false, email)));
     }
 }

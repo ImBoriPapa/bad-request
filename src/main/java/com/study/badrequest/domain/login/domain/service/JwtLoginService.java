@@ -37,7 +37,7 @@ public class JwtLoginService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     @Value("${cookie-status.secure}")
-    private final boolean secure;
+    private boolean secure;
     // TODO: 2023/01/02 test
 
     /**

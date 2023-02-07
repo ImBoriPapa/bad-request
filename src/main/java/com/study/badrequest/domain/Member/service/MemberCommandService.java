@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.Member.service;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.domain.Member.entity.Member;
 
 import com.study.badrequest.domain.Member.repository.MemberRepository;
@@ -27,8 +28,7 @@ public class MemberCommandService {
 
     // TODO: 2023/01/18 profile image
     @CustomLogger
-    public Member signupMember(MemberRequestForm.CreateMember form) {
-
+    public MemberResponse.SignupResult signupMember(MemberRequestForm.CreateMember form) {
 
         Member member = Member.createMember()
                 .email(form.getEmail())
@@ -41,8 +41,7 @@ public class MemberCommandService {
 
         Member savedMember = memberRepository.save(member);
 
-
-        return savedMember;
+        return new MemberResponse.SignupResult(savedMember);
     }
 
     @CustomLogger
@@ -54,32 +53,36 @@ public class MemberCommandService {
     }
 
     @CustomLogger
-    public Member updateContact(Long memberId, String contact) {
-
+    public MemberResponse.UpdateResult updateContact(Long memberId, String contact) {
         Member member = findMemberById(memberId);
         member.changeContact(contact);
-        return member;
+        return new MemberResponse.UpdateResult(member);
     }
 
     @CustomLogger
-    public Member resetPassword(Long id, String password, String newPassword) {
+    public MemberResponse.UpdateResult resetPassword(Long id, String password, String newPassword) {
 
         Member member = findMemberById(id);
         passwordCheck(password, member.getPassword());
         member.changePassword(passwordEncoder.encode(newPassword));
-        return member;
+
+        return new MemberResponse.UpdateResult(member);
     }
 
     @CustomLogger
-    public void resignMember(Long memberId, String password) {
+    public MemberResponse.DeleteResult resignMember(Long memberId, String password) {
 
         Member member = findMemberById(memberId);
+
         passwordCheck(password, member.getPassword());
-        refreshTokenRepository.findById(member.getUsername()).ifPresent(
-                refreshTokenRepository::delete
-        );
+
+        refreshTokenRepository
+                .findById(member.getUsername())
+                .ifPresent(refreshTokenRepository::delete);
 
         memberRepository.delete(member);
+
+        return new MemberResponse.DeleteResult();
     }
 
     @CustomLogger
