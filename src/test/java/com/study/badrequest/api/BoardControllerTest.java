@@ -3,8 +3,10 @@ package com.study.badrequest.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.board.dto.BoardRequest;
+import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
+import com.study.badrequest.domain.board.repository.BoardRepository;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginDto;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +24,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+
+import java.util.List;
 
 import static com.study.badrequest.TestSampleData.SAMPLE_PASSWORD;
 import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
@@ -53,6 +57,8 @@ class BoardControllerTest {
     ObjectMapper objectMapper;
     @Autowired
     JwtLoginService jwtLoginService;
+    @Autowired
+    BoardRepository boardRepository;
 
     @Test
     @DisplayName("게시판 작성 이미지 없이")
@@ -115,6 +121,9 @@ class BoardControllerTest {
     @DisplayName("게시판 리스트 조회")
     void getBoardTest() throws Exception {
         //given
+
+        List<Board> all = boardRepository.findAll();
+        all.forEach(a->log.info("ID= {},TOPIC= {}",a.getId(),a.getTopic()));
 
         //when
         mockMvc.perform(get("/api/v1/board"))

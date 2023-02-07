@@ -29,21 +29,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        log.info("[JwtAuthenticationFilter]");
+        log.debug("JwtAuthenticationFilter");
         String accessToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
-        if (accessToken == null) {
-            log.info("JwtAuthenticationFilter");
-            request.setAttribute(JWT_STATUS_HEADER, JwtStatus.EMPTY_TOKEN);
-        }
+        JwtStatus jwtStatus = JwtStatus.EMPTY_TOKEN;
 
-        if (StringUtils.hasText(accessToken)) {
+        jwtStatus = StringUtils.hasText(accessToken) ? jwtUtils.validateToken(accessToken) : JwtStatus.EMPTY_TOKEN;
 
-            JwtStatus jwtStatus = jwtUtils.validateToken(accessToken);
-
-            jwtStatusHandle(request, accessToken, jwtStatus);
-
-        }
+        statusJwtHandle(request, accessToken, jwtStatus);
 
         filterChain.doFilter(request, response);
     }
@@ -51,36 +44,42 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * JWT Status 에 따라서 인증 처리
      */
-    private void jwtStatusHandle(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
+    private void statusJwtHandle(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
         switch (jwtStatus) {
             case ACCESS:
                 Authentication authentication = jwtUtils.getAuthentication(accessToken);
 
                 if (loginCheck(authentication)) {
-                    log.info("[JwtAuthenticationFilter .Set SecurityContextHolder Context]");
+                    log.debug("[JwtAuthenticationFilter Set SecurityContextHolder Context]");
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     break;
-                } else
-                    log.info("[JwtAuthenticationFilter .is Logout token]");
-                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.LOGOUT);
+                } else {
+                    log.debug("[JwtAuthenticationFilter is Logout token]");
+                    jwtStatus = JwtStatus.LOGOUT;
+                }
+
                 break;
             case EXPIRED:
-                log.info("[JwtAuthenticationFilter .is EXPIRED token]");
-                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.EXPIRED);
+                log.debug("[JwtAuthenticationFilter is EXPIRED token]");
+                jwtStatus = JwtStatus.EXPIRED;
                 break;
             case DENIED:
-                log.info("[JwtAuthenticationFilter .is DENIED token]");
-                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.DENIED);
+                log.debug("[JwtAuthenticationFilter is DENIED token]");
+                jwtStatus = JwtStatus.DENIED;
                 break;
             default:
-                log.info("[JwtAuthenticationFilter .is ERROR token]");
-                request.setAttribute(JWT_STATUS_HEADER, JwtStatus.ERROR);
-
+                log.debug("[JwtAuthenticationFilter is ERROR token]");
+                jwtStatus = JwtStatus.ERROR;
         }
+        request.setAttribute(JWT_STATUS_HEADER, jwtStatus);
+        Object attribute = request.getAttribute(JWT_STATUS_HEADER);
+        log.info("[attribute= {}]", attribute);
     }
 
     private boolean loginCheck(Authentication authentication) {
-        log.info("[JwtAuthenticationFilter.loginCheck]");
+        log.debug("[JwtAuthenticationFilter.loginCheck]");
         return loginService.loginCheck(authentication.getName());
     }
 }
+
+
