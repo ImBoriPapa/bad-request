@@ -4,7 +4,7 @@ import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
-import com.study.badrequest.domain.login.dto.LoginDto;
+import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
@@ -60,13 +60,13 @@ class JwtLoginServiceTest {
     @DisplayName("login")
     void 로그인테스트() throws Exception {
         //given
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
         //when
 
         //then
 
-        assertThat(loginDto.getAccessToken()).isNotEmpty();
-        assertThat(loginDto.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDate(loginDto.getAccessToken()));
+        assertThat(loginResult.getAccessToken()).isNotEmpty();
+        assertThat(loginResult.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDate(loginResult.getAccessToken()));
 
     }
 
@@ -83,8 +83,8 @@ class JwtLoginServiceTest {
                 .build();
         memberRepository.save(member);
         //when
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
-        loginService.logoutProcessing(loginDto.getAccessToken());
+        LoginResponse.LoginDto result = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        loginService.logoutProcessing(result.getAccessToken());
         //then
         assertThat(refreshTokenRepository.findById(member.getUsername())).isEmpty();
     }
@@ -102,8 +102,8 @@ class JwtLoginServiceTest {
                 .build();
         memberRepository.save(member);
         //when
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
-        LoginDto reissueProcessing = loginService.reissueProcessing(loginDto.getAccessToken(), loginDto.getRefreshCookie().getValue().substring(7));
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto reissueProcessing = loginService.reissueProcessing(loginResult.getAccessToken(), loginResult.getRefreshCookie().getValue().substring(7));
         //then
         assertThat(reissueProcessing.getAccessToken()).isNotEmpty();
         assertThat(reissueProcessing.getRefreshCookie()).isNotNull();

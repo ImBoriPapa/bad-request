@@ -8,7 +8,7 @@ import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
 import com.study.badrequest.domain.board.repository.BoardRepository;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
-import com.study.badrequest.domain.login.dto.LoginDto;
+import com.study.badrequest.domain.login.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +22,6 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
@@ -64,7 +62,7 @@ class BoardControllerTest {
     @DisplayName("게시판 작성 이미지 없이")
     void createBoardTest1() throws Exception {
         //given
-        LoginDto loginProcessing = jwtLoginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         BoardRequest.Create form = BoardRequest.Create.builder()
                 .memberId(loginProcessing.getId())

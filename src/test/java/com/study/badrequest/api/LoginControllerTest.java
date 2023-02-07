@@ -5,8 +5,8 @@ import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
-import com.study.badrequest.domain.login.dto.LoginDto;
 import com.study.badrequest.domain.login.dto.LoginRequest;
+import com.study.badrequest.domain.login.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -156,11 +156,13 @@ class LoginControllerTest {
     @DisplayName("로그아웃 테스트")
     void logoutTest() throws Exception {
         //given
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
         //logout 요청
         mockMvc.perform(post("/api/v1/log-out")
-                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("result.logout").value(true))
+                .andExpect(jsonPath("result.logoutAt").exists())
                 .andDo(print())
                 .andDo(document("logout",
                         preprocessRequest(prettyPrint()),
@@ -172,7 +174,8 @@ class LoginControllerTest {
                                 fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 상태"),
                                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 메시지"),
-                                fieldWithPath("result.thanks").description("인삿말"),
+                                fieldWithPath("result.logout").description("로그아웃 여부"),
+                                fieldWithPath("result.logoutAt").description("로그아웃 일자"),
                                 fieldWithPath("result.links.[0].rel").description("로그인"),
                                 fieldWithPath("result.links.[0].href").description("링크")
                         )
@@ -190,10 +193,10 @@ class LoginControllerTest {
                 .password(passwordEncoder.encode("password1234!@"))
                 .authority(Member.Authority.MEMBER).build();
         memberRepository.save(member);
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
-        loginService.logoutProcessing(loginDto.getAccessToken());
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        loginService.logoutProcessing(loginResult.getAccessToken());
         mockMvc.perform(post("/test/welcome")
-                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
                 .andExpect(status().isUnauthorized())
                 .andDo(print())
                 .andDo(document("accessAfterLogout",
@@ -210,7 +213,7 @@ class LoginControllerTest {
     @DisplayName("토큰재발급 테스트")
     void reIssuedTest() throws Exception {
         //given
-        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
         ResponseCookie refreshCookie = member.getRefreshCookie();
 
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
@@ -246,7 +249,7 @@ class LoginControllerTest {
     @DisplayName("토큰 재발급 실패1 - 잘못된 AccessToken")
     void failReissue() throws Exception {
         //given
-        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
         ResponseCookie refreshCookie = member.getRefreshCookie();
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
         cookie.setPath(refreshCookie.getPath());
@@ -268,7 +271,7 @@ class LoginControllerTest {
     @DisplayName("토큰 재발급 실패2 - 잘못된 RefreshToken")
     void failReissue2() throws Exception {
         //given
-        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
         ResponseCookie refreshCookie = member.getRefreshCookie();
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue() + "wrong");
         cookie.setPath(refreshCookie.getPath());
@@ -289,7 +292,7 @@ class LoginControllerTest {
     @DisplayName("토큰 재발급 실패3 - 잘못된 Refresh 쿠키가 없을 경우")
     void failReissue3() throws Exception {
         //given
-        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
         //when
         mockMvc.perform(post("/api/v1/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -303,7 +306,7 @@ class LoginControllerTest {
     @DisplayName("인가 테스트- 실패")
     void authorityFailTest() throws Exception {
         //given
-        LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
 
         //인가 없음
         mockMvc.perform(get("/test/teacher")
@@ -331,7 +334,7 @@ class LoginControllerTest {
     @DisplayName("인가 테스트- 성공")
     void authoritySuccessTest1() throws Exception {
         //given
-        LoginDto teacher = loginService.loginProcessing("teacher@gmail.com", "password1234!@");
+        LoginResponse.LoginDto teacher = loginService.loginProcessing("teacher@gmail.com", "password1234!@");
 
         //when
         //인가 있음
@@ -363,7 +366,7 @@ class LoginControllerTest {
     @DisplayName("인가 테스트- 성공 하위 권한 접근")
     void authoritySuccessTest2() throws Exception {
         //given
-        LoginDto admin = loginService.loginProcessing("admin@gmail.com", "password1234!@");
+        LoginResponse.LoginDto admin = loginService.loginProcessing("admin@gmail.com", "password1234!@");
         //when
         //인가 포함
         mockMvc.perform(get("/test/teacher")

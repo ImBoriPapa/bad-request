@@ -5,11 +5,11 @@ import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.login.domain.entity.RefreshToken;
 import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
-import com.study.badrequest.domain.login.dto.LoginDto;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
@@ -44,7 +44,7 @@ public class JwtLoginService {
      * 로그인
      */
     @CustomLogger
-    public LoginDto loginProcessing(String email, String password) {
+    public LoginResponse.LoginDto loginProcessing(String email, String password) {
         /**
          * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
          */
@@ -61,7 +61,7 @@ public class JwtLoginService {
 
         ResponseCookie cookie = generateResponseCookie(refreshToken);
 
-        return LoginDto.builder()
+        return LoginResponse.LoginDto.builder()
                 .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshCookie(cookie)
@@ -122,7 +122,7 @@ public class JwtLoginService {
      * 로그아웃
      */
     @CustomLogger
-    public void logoutProcessing(String accessToken) {
+    public LoginResponse.LogoutResult logoutProcessing(String accessToken) {
 
         checkTokenStatusIsAccess(accessToken);
 
@@ -133,6 +133,8 @@ public class JwtLoginService {
         }
         //2.Refresh Token 삭제 Refresh 가 존재하지 않는 다면 로그아웃으로 간주
         refreshTokenRepository.deleteById(authentication.getName());
+
+        return new LoginResponse.LogoutResult();
     }
 
 
@@ -140,7 +142,7 @@ public class JwtLoginService {
      * 토큰 재발급
      */
     @CustomLogger
-    public LoginDto reissueProcessing(String accessToken, String refreshToken) {
+    public LoginResponse.LoginDto reissueProcessing(String accessToken, String refreshToken) {
 
         //1. 토큰 validation
         checkTokenStatusIsDeniedOrError(accessToken);
@@ -162,7 +164,7 @@ public class JwtLoginService {
 
         ResponseCookie responseCookie = generateResponseCookie(refresh);
 
-        return LoginDto.builder()
+        return LoginResponse.LoginDto.builder()
                 .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshCookie(responseCookie)

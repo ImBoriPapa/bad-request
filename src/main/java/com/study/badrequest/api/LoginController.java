@@ -6,25 +6,19 @@ import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.exception.custom_exception.TokenException;
-import com.study.badrequest.domain.login.dto.LoginDto;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import com.study.badrequest.utils.jwt.JwtUtils;
+import com.study.badrequest.utils.model.LoginResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.study.badrequest.commons.consts.CustomStatus.LOGOUT_SUCCESS;
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
@@ -38,30 +32,22 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_H
 public class LoginController {
     private final JwtLoginService loginService;
     private final JwtUtils jwtUtils;
+    private final LoginResponseModelAssembler modelAssembler;
+
 
     @CustomLogger
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity login(@Validated @RequestBody LoginRequest.Login form, BindingResult bindingResult) {
+    public ResponseEntity login(@RequestBody LoginRequest.Login form) {
 
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(form.getEmail(), form.getPassword());
 
-        if (bindingResult.hasErrors()) {
-            log.error("error");
-        }
-
-        LoginDto loginDto = loginService.loginProcessing(form.getEmail(), form.getPassword());
-
-        EntityModel<LoginResponse.LoginResult> model = EntityModel.of(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getAccessTokenExpired()));
-        model.add(WebMvcLinkBuilder.linkTo(LoginController.class).slash("/log-out").withRel("POST: 로그아웃"));
-        model.add(WebMvcLinkBuilder.linkTo(LoginController.class).slash("/refresh").withRel("POST: 토큰재발급"));
-
-        // TODO: 2023/01/04 hateoas 링크 무었을 넣을지 고민
-
-        HttpHeaders headers = setTokenInHeader(loginDto);
+        EntityModel<LoginResponse.LoginResult> loginResultEntityModel = modelAssembler
+                .toModel(new LoginResponse.LoginResult(loginResult.getId(), loginResult.getAccessTokenExpired()));
 
         return ResponseEntity
                 .ok()
-                .headers(headers)
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
+                .headers(setAuthenticationHeader(loginResult.getAccessToken(), loginResult.getRefreshCookie().toString()))
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, loginResultEntityModel));
     }
 
     @PostMapping(value = "/log-out", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,15 +56,12 @@ public class LoginController {
 
         String resolveToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
-        loginService.logoutProcessing(resolveToken);
-        Map<String, String> thanks = new HashMap<>();
-        thanks.put("thanks", "로그인을 기다립니다.");
+        LoginResponse.LogoutResult logoutResult = loginService.logoutProcessing(resolveToken);
 
-        EntityModel<Map<String, String>> model = EntityModel.of(thanks);
-        model.add(WebMvcLinkBuilder.linkTo(LoginController.class).slash("/login").withRel("POST : 로그인"));
+        EntityModel<LoginResponse.LogoutResult> logoutResultEntityModel = modelAssembler.toModel(logoutResult);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(LOGOUT_SUCCESS, model));
+                .body(new ResponseForm.Of<>(LOGOUT_SUCCESS, logoutResultEntityModel));
     }
 
     @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,15 +70,20 @@ public class LoginController {
 
 
         String accessToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
-        checkTokenIsEmpty(accessToken, CustomStatus.TOKEN_IS_EMPTY);
 
-        String refreshToken = jwtUtils.resolveRefreshCookie(cookie);
-        checkTokenIsEmpty(refreshToken, CustomStatus.REFRESH_COOKIE_IS_EMPTY);
+        jwtUtils.checkTokenIsEmpty(accessToken, CustomStatus.TOKEN_IS_EMPTY);
 
-        LoginDto loginDto = loginService.reissueProcessing(accessToken, refreshToken);
-        EntityModel<LoginResponse.LoginResult> model = EntityModel.of(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getAccessTokenExpired()));
+        String refreshToken = jwtUtils.resolveTokenInRefreshCookie(cookie);
 
-        HttpHeaders headers = setTokenInHeader(loginDto);
+        jwtUtils.checkTokenIsEmpty(refreshToken, CustomStatus.REFRESH_COOKIE_IS_EMPTY);
+
+        LoginResponse.LoginDto result = loginService.reissueProcessing(accessToken, refreshToken);
+
+        modelAssembler.toModel(new LoginResponse.ReIssueResult(result.getId(), result.getAccessTokenExpired()));
+
+        EntityModel<LoginResponse.ReIssueResult> model = EntityModel.of(new LoginResponse.ReIssueResult(result.getId(), result.getAccessTokenExpired()));
+
+        HttpHeaders headers = setAuthenticationHeader(result.getAccessToken(), result.getRefreshCookie().toString());
 
         return ResponseEntity
                 .ok()
@@ -103,17 +91,11 @@ public class LoginController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
-    private static void checkTokenIsEmpty(String token, CustomStatus customStatus) {
-        if (token == null) {
-            throw new TokenException(customStatus);
-        }
-    }
-
-    private HttpHeaders setTokenInHeader(LoginDto loginDto) {
+    private HttpHeaders setAuthenticationHeader(String accessToken, String cookie) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(loginDto.getAccessToken());
-        headers.set(HttpHeaders.SET_COOKIE, loginDto.getRefreshCookie().toString());
+        headers.setBearerAuth(accessToken);
+        headers.set(HttpHeaders.SET_COOKIE, cookie);
         return headers;
     }
 

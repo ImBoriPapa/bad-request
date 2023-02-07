@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
-import com.study.badrequest.domain.login.dto.LoginDto;
+import com.study.badrequest.domain.login.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -179,13 +179,13 @@ class MemberControllerTest {
         MemberRequest.ResetPassword resetForm = new MemberRequest.ResetPassword(password, newPassword);
         String content = objectMapper.writeValueAsString(resetForm);
 
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(put("/api/v1/member/{memberId}/password", loginDto.getId())
+        mockMvc.perform(put("/api/v1/member/{memberId}/password", loginResult.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
 
                 //then
                 .andExpect(status().isOk())
@@ -221,13 +221,13 @@ class MemberControllerTest {
         MemberRequest.UpdateContact contact = new MemberRequest.UpdateContact(newContact);
         String content = objectMapper.writeValueAsString(contact);
 
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(put("/api/v1/member/{memberId}/contact", loginDto.getId())
+        mockMvc.perform(put("/api/v1/member/{memberId}/contact", loginResult.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
 
                 //then
                 .andExpect(status().isOk())
@@ -261,13 +261,13 @@ class MemberControllerTest {
         MemberRequest.DeleteMember password = new MemberRequest.DeleteMember(SAMPLE_PASSWORD);
         String content = objectMapper.writeValueAsString(password);
 
-        LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/member/{memberId}", loginDto.getId())
+        mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/member/{memberId}", loginResult.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
-                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken()))
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
 
                 //then
                 .andExpect(status().isOk())

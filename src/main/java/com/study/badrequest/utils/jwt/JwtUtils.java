@@ -125,7 +125,7 @@ public class JwtUtils implements InitializingBean {
         return null;
     }
 
-    public String resolveRefreshCookie(Cookie cookie) {
+    public String resolveTokenInRefreshCookie(Cookie cookie) {
 
         if (cookie != null && cookie.getValue() != null && cookie.getValue().startsWith(REFRESH_TOKEN_PREFIX)) {
             log.info("[JWT_UTILS resolveRefreshCookie ={}]", cookie.getValue());
@@ -173,5 +173,9 @@ public class JwtUtils implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
-
+    public void checkTokenIsEmpty(String token,CustomStatus status){
+        if(token == null){
+            throw new TokenException(status);
+        }
+    }
 }
