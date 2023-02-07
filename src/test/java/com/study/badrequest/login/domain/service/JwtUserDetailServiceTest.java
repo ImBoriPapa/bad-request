@@ -1,5 +1,6 @@
 package com.study.badrequest.login.domain.service;
 
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -41,7 +42,7 @@ class JwtUserDetailServiceTest {
         String password = "password1234!@";
         Member member = Member.createMember()
                 .email(email)
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .password(passwordEncoder.encode(password))
                 .build();
         //when

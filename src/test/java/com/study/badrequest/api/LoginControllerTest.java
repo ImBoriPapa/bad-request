@@ -1,6 +1,7 @@
 package com.study.badrequest.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -119,7 +120,7 @@ class LoginControllerTest {
         Member member = Member.createMember()
                 .email("email@email.com")
                 .password(passwordEncoder.encode("password1234!@"))
-                .authority(Member.Authority.MEMBER).build();
+                .authority(Authority.MEMBER).build();
         memberRepository.save(member);
         LoginRequest.Login form = new LoginRequest.Login("email@email.com", "wrong-password");
         String content = objectMapper.writeValueAsString(form);
@@ -139,7 +140,7 @@ class LoginControllerTest {
         Member member = Member.createMember()
                 .email("email@email.com")
                 .password(passwordEncoder.encode("password1234!@"))
-                .authority(Member.Authority.MEMBER).build();
+                .authority(Authority.MEMBER).build();
         memberRepository.save(member);
         LoginRequest.Login form = new LoginRequest.Login("wrong@email.com", "password1234!@");
         String content = objectMapper.writeValueAsString(form);
@@ -191,7 +192,7 @@ class LoginControllerTest {
         Member member = Member.createMember()
                 .email("email@email.com")
                 .password(passwordEncoder.encode("password1234!@"))
-                .authority(Member.Authority.MEMBER).build();
+                .authority(Authority.MEMBER).build();
         memberRepository.save(member);
         LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
         loginService.logoutProcessing(loginResult.getAccessToken());

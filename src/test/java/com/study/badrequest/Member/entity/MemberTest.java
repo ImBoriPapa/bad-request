@@ -1,5 +1,6 @@
 package com.study.badrequest.Member.entity;
 
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +35,7 @@ class MemberTest {
                 .password("password1234")
                 .name("member")
                 .contact("01011112222")
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
         //when
         Member save = memberRepository.save(member);
@@ -52,17 +53,17 @@ class MemberTest {
         Member user = Member.createMember()
                 .email("email")
                 .password("password")
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
         Member teacher = Member.createMember()
                 .email("email")
                 .password("password")
-                .authority(Member.Authority.TEACHER)
+                .authority(Authority.TEACHER)
                 .build();
         Member admin = Member.createMember()
                 .email("email")
                 .password("password")
-                .authority(Member.Authority.ADMIN)
+                .authority(Authority.ADMIN)
                 .build();
         //when
         List<SimpleGrantedAuthority> roll_member = List.of(new SimpleGrantedAuthority("ROLL_MEMBER"));

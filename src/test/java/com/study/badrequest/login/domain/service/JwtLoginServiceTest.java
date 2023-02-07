@@ -1,5 +1,6 @@
 package com.study.badrequest.login.domain.service;
 
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
@@ -44,7 +45,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         loginService.loginProcessing(email, password);
@@ -79,7 +80,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         //when
@@ -98,7 +99,7 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         //when

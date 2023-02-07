@@ -1,5 +1,6 @@
 package com.study.badrequest.board.entity;
 
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.entity.Board;
@@ -33,7 +34,7 @@ class BoardTest {
                 .email("email@email.com")
                 .nickname("nickname")
                 .contact("010-1122-1234")
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
         memberRepository.save(member);
         Board board = Board.createBoard()
