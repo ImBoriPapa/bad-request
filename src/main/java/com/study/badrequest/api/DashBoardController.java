@@ -1,5 +1,6 @@
 package com.study.badrequest.api;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.log.entity.LogLevel;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,8 @@ public class DashBoardController {
 
         return list;
     }
+
+
 
     @GetMapping("/log")
     @CustomLogTracer

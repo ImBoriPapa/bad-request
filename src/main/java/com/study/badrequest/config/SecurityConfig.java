@@ -59,9 +59,10 @@ public class SecurityConfig {
                 //static
                 .antMatchers("/static/**","/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
                 .permitAll()
+                //test
                 .antMatchers("/test/teacher")
                 .hasAuthority("ROLL_TEACHER")
-                .antMatchers("/api/image")
+                .antMatchers("/api/image","/test")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -14,8 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -25,11 +25,18 @@ public class S3ImageUploader implements ImageUploader {
 
     private String bucket = "bori-market-bucket";
     private String path = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
+
+    private String default_profile_image = "default/profile.JPG";
     private final AmazonS3Client amazonS3Client;
 
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
+
         return getImageDetailList(images, folderName);
+    }
+
+    public String getDefaultProfileImage() {
+        return amazonS3Client.getResourceUrl(this.bucket, default_profile_image);
     }
 
     private ArrayList<ImageDetailDto> getImageDetailList(List<MultipartFile> images, String folderName) {

@@ -22,6 +22,9 @@ public class LocalImageUploader implements ImageUploader {
     private String bucket = location + "/src/main/resources/static/image";
     private String path = "http://localhost:8080/image/";
 
+    public String getDefaultProfileImage() {
+        return "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG";
+    }
     @CustomLogTracer
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[LocalImageUploader -> uploadFile()]");

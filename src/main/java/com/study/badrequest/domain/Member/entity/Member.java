@@ -47,13 +47,14 @@ public class Member {
     private LocalDateTime updatedAt;
 
     @Builder(builderMethodName = "createMember")
-    public Member(String email, String nickname, String aboutMe, String password, String name, String contact, Authority authority) {
+    public Member(String email, String nickname, String aboutMe, String password, String name, String contact,ProfileImage profileImage, Authority authority) {
         this.username = generateSequentialUUID();
         this.email = email;
         this.nickname = nickname;
         this.aboutMe = aboutMe;
         this.password = password;
         this.name = name;
+        this.profileImage = profileImage;
         this.contact = contact;
         this.authority = authority;
         this.createdAt = LocalDateTime.now();

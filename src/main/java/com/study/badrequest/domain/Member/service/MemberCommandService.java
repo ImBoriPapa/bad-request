@@ -1,21 +1,26 @@
 package com.study.badrequest.domain.Member.service;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 
+import com.study.badrequest.domain.Member.entity.ProfileImage;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
+import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.net.URL;
 
 @Service
 @Transactional
@@ -27,16 +32,20 @@ public class MemberCommandService {
     private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    private final ImageUploader imageUploader;
+
     // TODO: 2023/01/18 profile image
     @CustomLogTracer
     public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
-
+        ProfileImage profileImage = ProfileImage.builder()
+                .fullPath(imageUploader.getDefaultProfileImage()).build();
         Member member = Member.createMember()
                 .email(form.getEmail())
                 .password(passwordEncoder.encode(form.getPassword()))
                 .name(form.getName())
                 .nickname(form.getNickname())
                 .contact(form.getContact())
+                .profileImage(profileImage)
                 .authority(Authority.MEMBER)
                 .build();
 

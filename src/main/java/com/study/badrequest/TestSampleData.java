@@ -1,9 +1,12 @@
 package com.study.badrequest;
 
+import com.study.badrequest.domain.Member.dto.MemberRequest;
+import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.entity.ProfileImage;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.Member.service.MemberCommandService;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
@@ -38,10 +41,7 @@ public class TestSampleData {
 
     private final BoardImageRepository boardImageRepository;
     private final CommentRepository commentRepository;
-
     private final SubCommentRepository subCommentRepository;
-
-
     public static final String SAMPLE_USER_EMAIL = "user@gmail.com";
     public static final String SAMPLE_USER_CONTACT = "010-0000-1234";
     public static final String SAMPLE_TEACHER_EMAIL = "teacher@gmail.com";
@@ -58,6 +58,8 @@ public class TestSampleData {
 
     public void initSampleUser() {
         log.info("[INIT SAMPLE USER START]");
+        ProfileImage defaultProfileImage = ProfileImage.builder()
+                .fullPath("https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG").build();
 
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)
@@ -65,19 +67,23 @@ public class TestSampleData {
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .contact(SAMPLE_USER_CONTACT)
                 .authority(Authority.MEMBER)
+                .profileImage(defaultProfileImage)
                 .build();
 
         Member teacher = Member.createMember()
                 .email(SAMPLE_TEACHER_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .authority(Authority.TEACHER)
+                .profileImage(defaultProfileImage)
                 .build();
 
         Member admin = Member.createMember()
                 .email(SAMPLE_ADMIN_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .authority(Authority.ADMIN)
+                .profileImage(defaultProfileImage)
                 .build();
+
         memberRepository.saveAll(List.of(user, teacher, admin));
         log.info("[INIT SAMPLE USER FINISH]");
     }
