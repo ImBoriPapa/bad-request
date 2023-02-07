@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.domain.login.domain.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;

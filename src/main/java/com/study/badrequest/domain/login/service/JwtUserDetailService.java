@@ -1,6 +1,8 @@
-package com.study.badrequest.domain.login.domain.service;
+package com.study.badrequest.domain.login.service;
 
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberReadOnlyRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,9 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtUserDetailService implements UserDetailsService {
-    private final MemberRepository memberRepository;
-
-    // TODO: 2023/01/02 Query 최적화
+    private final MemberReadOnlyRepository memberReadOnlyRepository;
 
     /**
      * Member.getUsername = email
@@ -24,14 +24,13 @@ public class JwtUserDetailService implements UserDetailsService {
      * @throws UsernameNotFoundException
      */
     @Override
+    @CustomLogTracer
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("[UserDetailService.loadUserByUsername]");
-
-        return memberRepository.findByUsername(username)
-                .map(member -> new User(
-                        member.getUsername(),
-                        member.getPassword(),
-                        member.getAuthorities()))
+        return memberReadOnlyRepository.findByUsername(username)
+                .map(memberDto -> new User(
+                        memberDto.getUsername(),
+                        memberDto.getPassword(),
+                        Member.getAuthorities(memberDto.getAuthority())))
                 .orElseThrow(() -> new UsernameNotFoundException(CustomStatus.NOTFOUND_MEMBER.getMessage()));
 
     }

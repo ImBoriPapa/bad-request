@@ -2,6 +2,7 @@ package com.study.badrequest.domain.board.entity;
 
 import com.study.badrequest.domain.Member.entity.Member;
 
+import com.study.badrequest.domain.Member.entity.ProfileImage;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -41,6 +44,9 @@ public class Board {
     private LocalDateTime createdAt;
     @Column(name = "UPDATE_AT")
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
+    private List<BoardImage> boardImages = new ArrayList<>();
 
     @Builder(builderMethodName = "createBoard")
     public Board(Member member, String title, String contents, Category category, Topic topic) {

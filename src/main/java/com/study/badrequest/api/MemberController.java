@@ -1,6 +1,6 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.service.MemberCommandService;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.domain.Member.dto.MemberResponse;
@@ -9,7 +9,7 @@ import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
 
-import com.study.badrequest.utils.model.MemberResponseModelAssembler;
+import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class MemberController {
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequest.CreateMember form, BindingResult bindingResult) {
 
         memberValidator.validateCreateForm(form);
@@ -57,7 +57,7 @@ public class MemberController {
     }
 
     @PutMapping("/member/{memberId}/password")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
@@ -72,7 +72,7 @@ public class MemberController {
     }
 
     @PutMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.UpdateContact form, BindingResult bindingResult) {
 
 
@@ -91,7 +91,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/member/{memberId}")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.DeleteMember form, BindingResult bindingResult) {
 
 
@@ -108,7 +108,7 @@ public class MemberController {
     }
 
     @GetMapping("/member/{memberId}")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> getMember(@PathVariable Long memberId) {
 
 
@@ -116,7 +116,7 @@ public class MemberController {
     }
 
     @GetMapping("/member/email")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> getMemberEmail(@RequestParam(value = "email", defaultValue = "empty") String email) {
         // TODO: 2023/01/31 이메일 형식 검증 추가
         if (email.equals("empty")) {

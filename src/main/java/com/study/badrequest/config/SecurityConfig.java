@@ -3,7 +3,7 @@ package com.study.badrequest.config;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.domain.login.domain.service.JwtUserDetailService;
+import com.study.badrequest.domain.login.service.JwtUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,10 +53,11 @@ public class SecurityConfig {
                 //values
                 .antMatchers(VALUES+"/*")
                 .permitAll()
-                //static
-                .antMatchers("/static/**", "/log", "/log-ex", "/dashboard","/dashboard/**" ,"/heap")
+                //dashboard
+                .antMatchers( "/log", "/log-ex", "/dashboard","/dashboard/**" ,"/heap","/refresh")
                 .permitAll()
-                .antMatchers("/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
+                //static
+                .antMatchers("/static/**","/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
                 .permitAll()
                 .antMatchers("/test/teacher")
                 .hasAuthority("ROLL_TEACHER")

@@ -1,4 +1,4 @@
-package com.study.badrequest.utils.model;
+package com.study.badrequest.utils.modelAssembler;
 
 
 import org.springframework.hateoas.CollectionModel;

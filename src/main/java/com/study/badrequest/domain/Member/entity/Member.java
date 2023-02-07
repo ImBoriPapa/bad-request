@@ -17,7 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
-public class Member implements UserDetails {
+public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
@@ -60,32 +60,21 @@ public class Member implements UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
-    @Getter
-    public enum Authority {
-        MEMBER("ROLL_MEMBER"),
-        TEACHER("ROLL_MEMBER,ROLL_TEACHER"),
-        ADMIN("ROLL_MEMBER,ROLL_TEACHER,ROLL_ADMIN");
-
-        private final String roll;
-
-        Authority(String roll) {
-            this.roll = roll;
-        }
-
-        private List<String> getRoleList() {
-            ArrayList<String> list = new ArrayList<>();
-            Arrays.stream(this.roll.split(","))
-                    .forEach(list::add);
-            return list;
-        }
-    }
-
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
         ArrayList<GrantedAuthority> authorities = new ArrayList<>();
 
         this.getAuthority().getRoleList()
+                .forEach(m -> authorities.add(new SimpleGrantedAuthority(m)));
+
+        return authorities;
+    }
+
+    public static Collection<? extends GrantedAuthority> getAuthorities(Authority authority) {
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
+
+        authority.getRoleList()
                 .forEach(m -> authorities.add(new SimpleGrantedAuthority(m)));
 
         return authorities;
@@ -105,30 +94,6 @@ public class Member implements UserDetails {
                 .insert(23, "-").toString();
     }
 
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 
     public void changePermissions(Authority authority) {
         this.authority = authority;

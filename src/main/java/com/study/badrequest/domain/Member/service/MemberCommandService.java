@@ -1,14 +1,15 @@
 package com.study.badrequest.domain.Member.service;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.dto.MemberResponse;
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.MemberException;
-import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +28,7 @@ public class MemberCommandService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     // TODO: 2023/01/18 profile image
-    @CustomLogger
+    @CustomLogTracer
     public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
 
         Member member = Member.createMember()
@@ -36,7 +37,7 @@ public class MemberCommandService {
                 .name(form.getName())
                 .nickname(form.getNickname())
                 .contact(form.getContact())
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
 
         Member savedMember = memberRepository.save(member);
@@ -44,22 +45,22 @@ public class MemberCommandService {
         return new MemberResponse.SignupResult(savedMember);
     }
 
-    @CustomLogger
-    public void changePermissions(Long memberId, Member.Authority authority) {
+    @CustomLogTracer
+    public void changePermissions(Long memberId, Authority authority) {
 
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .changePermissions(authority);
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public MemberResponse.UpdateResult updateContact(Long memberId, String contact) {
         Member member = findMemberById(memberId);
         member.changeContact(contact);
         return new MemberResponse.UpdateResult(member);
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public MemberResponse.UpdateResult resetPassword(Long id, String password, String newPassword) {
 
         Member member = findMemberById(id);
@@ -69,7 +70,7 @@ public class MemberCommandService {
         return new MemberResponse.UpdateResult(member);
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public MemberResponse.DeleteResult resignMember(Long memberId, String password) {
 
         Member member = findMemberById(memberId);
@@ -85,13 +86,13 @@ public class MemberCommandService {
         return new MemberResponse.DeleteResult();
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
     }
 
-    @CustomLogger
+    @CustomLogTracer
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
 

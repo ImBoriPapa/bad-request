@@ -1,5 +1,6 @@
 package com.study.badrequest;
 
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.entity.ProfileImage;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
@@ -63,19 +64,19 @@ public class TestSampleData {
                 .nickname("SAMPLE_USER")
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .contact(SAMPLE_USER_CONTACT)
-                .authority(Member.Authority.MEMBER)
+                .authority(Authority.MEMBER)
                 .build();
 
         Member teacher = Member.createMember()
                 .email(SAMPLE_TEACHER_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
-                .authority(Member.Authority.TEACHER)
+                .authority(Authority.TEACHER)
                 .build();
 
         Member admin = Member.createMember()
                 .email(SAMPLE_ADMIN_EMAIL)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
-                .authority(Member.Authority.ADMIN)
+                .authority(Authority.ADMIN)
                 .build();
         memberRepository.saveAll(List.of(user, teacher, admin));
         log.info("[INIT SAMPLE USER FINISH]");

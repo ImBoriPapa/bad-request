@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.login.domain.entity;
+package com.study.badrequest.domain.login.entity;
 
 
 import lombok.AccessLevel;

@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.validator;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -18,7 +18,7 @@ public class MemberValidator {
 
     private final MemberRepository memberRepository;
 
-    @CustomLogger
+    @CustomLogTracer
     public void validateCreateForm(MemberRequest.CreateMember form) {
 
         validateEmail(form.getEmail());

@@ -67,7 +67,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
 
         batchSaveLog();
 
-        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
+        log.debug("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
     }
 
     public void doErrorTrace(JoinPoint joinPoint, Exception exception) {
@@ -102,7 +102,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
 
         saveLogs();
 
-        log.info("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
+        log.debug("[CUSTOM LOG signature={}, args={}]", className + "." + methodName, message);
 
     }
 
@@ -118,7 +118,7 @@ public class RDBMSLogTracer implements CustomLogTracer {
         if (logQueue.size() > 0) {
             saveLogs();
         }
-        log.info("[LOG STACK SAVE DATABASE EACH TIME NO LOGS]");
+        log.debug("[LOG STACK SAVE DATABASE EACH TIME NO LOGS]");
     }
 
     private static String getMethodName(JoinPoint joinPoint) {
@@ -138,7 +138,8 @@ public class RDBMSLogTracer implements CustomLogTracer {
     public void saveLogs() {
         logRepository.saveAll(logQueue);
         logQueue.clear();
-        log.info("[LOG STACK SAVE DATABASE]");
+        log.debug("[LOG STACK SAVE DATABASE]");
+
     }
 
     private String resolveClientIp(HttpServletRequest request) {

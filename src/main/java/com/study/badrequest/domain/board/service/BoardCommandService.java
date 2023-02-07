@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.board.service;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
@@ -35,7 +35,7 @@ public class BoardCommandService {
     /**
      * 게시판 생성
      */
-    @CustomLogger
+    @CustomLogTracer
     public BoardResponse.Create create(BoardRequest.Create form, List<MultipartFile> images) {
 
         Member member = memberRepository.findById(form.getMemberId())
@@ -56,7 +56,7 @@ public class BoardCommandService {
         return new BoardResponse.Create(save.getId(), save.getCreatedAt());
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void saveImages(List<MultipartFile> images, Board board) {
         if (images != null) {
 
@@ -77,12 +77,12 @@ public class BoardCommandService {
         }
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void update(Long boardId) {
 
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void delete(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
@@ -100,7 +100,7 @@ public class BoardCommandService {
         boardRepository.delete(board);
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void deleteAll(List<Long> boardId) {
         boardRepository.findAllById(boardId);
 

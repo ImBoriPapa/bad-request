@@ -6,11 +6,11 @@ import org.aspectj.lang.annotation.Before;
 
 public interface CustomLogTracer {
 
-    @AfterThrowing(pointcut = "@annotation(com.study.badrequest.aop.annotation.CustomLogger)",
+    @AfterThrowing(pointcut = "@annotation(com.study.badrequest.aop.annotation.CustomLogTracer)",
             throwing = "exception")
     void doErrorTrace(JoinPoint joinPoint, Exception exception);
 
-    @Before("@annotation(com.study.badrequest.aop.annotation.CustomLogger)")
+    @Before("@annotation(com.study.badrequest.aop.annotation.CustomLogTracer)")
     void doTrace(JoinPoint joinPoint);
 }
 

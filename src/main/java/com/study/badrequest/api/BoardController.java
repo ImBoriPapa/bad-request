@@ -1,6 +1,6 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.dto.BoardSearchCondition;
@@ -12,7 +12,7 @@ import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.board.service.BoardCommandService;
 import com.study.badrequest.exception.custom_exception.RequestParamException;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
-import com.study.badrequest.utils.model.BoardResponseModelAssembler;
+import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -38,7 +38,7 @@ public class BoardController {
     private final BoardResponseModelAssembler boardResponseModelAssembler;
 
     @PostMapping("/board")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity postBoard(@Valid
                                     @RequestPart(value = "form", required = true) BoardRequest.Create form,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
@@ -58,7 +58,7 @@ public class BoardController {
     }
 
     @GetMapping("/board")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity getBoardList(BoardSearchCondition condition, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {

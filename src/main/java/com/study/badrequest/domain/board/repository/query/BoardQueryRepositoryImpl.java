@@ -21,7 +21,6 @@ import java.util.OptionalLong;
 
 
 import static com.study.badrequest.domain.board.entity.QBoard.board;
-import static com.study.badrequest.domain.board.entity.QBoardImage.*;
 
 
 
@@ -34,24 +33,24 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     public Optional<BoardDetailDto> findBoardDetail(Long boardId) {
-
-        List<BoardImage> imageList = jpaQueryFactory
-                .select(boardImage)
-                .from(boardImage)
-                .where(boardImage.board.id.eq(boardId))
-                .fetch();
-        log.info("[fetchOneBoard QUERY FINISH]");
-        Board fetchOneBoard = jpaQueryFactory
+        log.info("[fetchOneBoard QUERY START]");
+        Board findBoard = jpaQueryFactory
                 .select(board)
                 .from(board)
+                .join(board.member)
+                .fetchJoin()
+                .leftJoin(board.boardImages)
+                .fetchJoin()
                 .where(board.id.eq(boardId))
+                .distinct()
                 .fetchOne();
         log.info("[findBoardDetail QUERY FINISH]");
 
-        return Optional.of(BoardDetailDto.builder()
-                .board(fetchOneBoard)
-                .boardImages(imageList)
-                .build());
+        return findBoard == null ? Optional.empty() : Optional
+                .ofNullable(BoardDetailDto.builder()
+                        .board(findBoard)
+                        .boardImages(findBoard.getBoardImages())
+                        .build());
     }
 
     @Override

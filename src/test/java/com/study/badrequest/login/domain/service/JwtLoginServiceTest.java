@@ -2,8 +2,8 @@ package com.study.badrequest.login.domain.service;
 
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
-import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
-import com.study.badrequest.domain.login.domain.service.JwtLoginService;
+import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;

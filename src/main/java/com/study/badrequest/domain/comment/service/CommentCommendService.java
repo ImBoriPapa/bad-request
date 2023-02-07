@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.comment.service;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
@@ -34,7 +34,7 @@ public class CommentCommendService {
     private final SubCommentRepository subCommentRepository;
     private final BoardRepository boardRepository;
 
-    @CustomLogger
+    @CustomLogTracer
     public CommentResponse.Create addComment(Long boardId, Long memberId, CommentRequest.Create request) {
 
         Board board = boardRepository
@@ -59,7 +59,7 @@ public class CommentCommendService {
         return new CommentResponse.Create(saveComment.getId(), saveComment.getCreatedAt());
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public CommentResponse.Modify modifyComment(Long commentId, String text) {
         commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_COMMENT))
@@ -76,7 +76,7 @@ public class CommentCommendService {
      * 댓글 삭제시 Sub 댓글 삭제
      * -> 게시판의 댓글 감소
      */
-    @CustomLogger
+    @CustomLogTracer
     public CommentResponse.Delete deleteComment(Long commentId) {
         //댓글 조회
         Comment comment = commentRepository.findById(commentId)
@@ -97,7 +97,7 @@ public class CommentCommendService {
     /**
      * 게시판 삭제시 게시판의 댓글 모두 삭제
      */
-    @CustomLogger
+    @CustomLogTracer
     public void deleteAllCommentsAndSubCommentsByBoardId(Long boardId) {
         Board board = boardRepository
                 .findById(boardId)
@@ -112,7 +112,7 @@ public class CommentCommendService {
     /**
      * 대댓글
      */
-    @CustomLogger
+    @CustomLogTracer
     public CommentResponse.CreateSub addSubComment(Long commentId, Long memberId, CommentRequest.Create request) {
 
         Member member = memberRepository.findById(memberId)
@@ -137,14 +137,14 @@ public class CommentCommendService {
         return new CommentResponse.CreateSub(save.getId(), save.getCreatedAt());
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void modifySubComment(Long subCommentId, String text) {
         subCommentRepository.findById(subCommentId)
                 .orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_COMMENT))
                 .modify(text);
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void deleteSubComment(Long subCommentId) {
         SubComment subComment = subCommentRepository.findById(subCommentId)
                 .orElseThrow(() -> new IllegalArgumentException(""));

@@ -1,17 +1,17 @@
 package com.study.badrequest.domain.log.service;
 
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TraceTestService {
-    @CustomLogger
+    @CustomLogTracer
     public void logTest(String args){
 
     }
 
-    @CustomLogger
+    @CustomLogTracer
     public void logExTest(String args){
         throw new IllegalArgumentException("[EXCEPTION]");
     }

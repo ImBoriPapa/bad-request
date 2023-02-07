@@ -1,12 +1,14 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.log.entity.LogLevel;
 
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
 
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
 
+import com.study.badrequest.domain.login.entity.RefreshToken;
+import com.study.badrequest.domain.login.service.RefreshTokenService;
 import lombok.*;
 
 
@@ -15,10 +17,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
 
 
@@ -28,9 +32,22 @@ import java.util.stream.Collectors;
 public class DashBoardController {
 
     private final LogQueryRepositoryImpl logQueryRepository;
+    private final RefreshTokenService refreshTokenService;
+
+    @GetMapping("/refresh")
+    public List<RefreshToken> getAll() {
+
+        ArrayList<RefreshToken> list = new ArrayList<>();
+        Iterable<RefreshToken> all = refreshTokenService.findAll();
+        if (all.iterator().hasNext()) {
+            list.add(all.iterator().next());
+        }
+
+        return list;
+    }
 
     @GetMapping("/log")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity getLogs(
             @RequestParam(value = "size", defaultValue = "30") int size,
             @RequestParam(value = "date", required = false) LocalDateTime localDateTime,
@@ -71,13 +88,14 @@ public class DashBoardController {
     @NoArgsConstructor
     static class Result {
         private List<LogDto> result = new ArrayList<>();
+
         public Result(List<LogDto> result) {
             this.result = result;
         }
     }
 
     @GetMapping("/heap")
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity getHeap() {
 
         final long heapSize = Runtime.getRuntime().totalMemory();

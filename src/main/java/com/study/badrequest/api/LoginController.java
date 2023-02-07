@@ -1,14 +1,13 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.login.domain.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
-import com.study.badrequest.exception.custom_exception.TokenException;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.utils.model.LoginResponseModelAssembler;
+import com.study.badrequest.utils.modelAssembler.LoginResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -35,7 +34,7 @@ public class LoginController {
     private final LoginResponseModelAssembler modelAssembler;
 
 
-    @CustomLogger
+    @CustomLogTracer
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody LoginRequest.Login form) {
 
@@ -51,7 +50,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/log-out", produces = MediaType.APPLICATION_JSON_VALUE)
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity logout(HttpServletRequest request) {
 
         String resolveToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
@@ -65,7 +64,7 @@ public class LoginController {
     }
 
     @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @CustomLogger
+    @CustomLogTracer
     public ResponseEntity reIssue(HttpServletRequest request, @CookieValue(value = "Refresh", required = false) Cookie cookie) {
 
 

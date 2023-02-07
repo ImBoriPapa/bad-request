@@ -1,4 +1,4 @@
-package com.study.badrequest.utils.model;
+package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.CommentController;
 import com.study.badrequest.domain.comment.repository.dto.CommentDto;

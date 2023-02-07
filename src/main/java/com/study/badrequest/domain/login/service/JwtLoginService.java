@@ -1,15 +1,17 @@
-package com.study.badrequest.domain.login.domain.service;
+package com.study.badrequest.domain.login.service;
 
 
-import com.study.badrequest.aop.annotation.CustomLogger;
+import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberDtoForLogin;
+import com.study.badrequest.domain.Member.repository.MemberReadOnlyRepository;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
-import com.study.badrequest.domain.login.domain.entity.RefreshToken;
-import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.entity.RefreshToken;
+import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
@@ -33,6 +35,8 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_P
 @Transactional
 public class JwtLoginService {
     private final MemberRepository memberRepository;
+
+    private final MemberReadOnlyRepository memberReadOnlyRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -43,26 +47,27 @@ public class JwtLoginService {
     /**
      * 로그인
      */
-    @CustomLogger
+    @CustomLogTracer
+    @Transactional(readOnly = true)
     public LoginResponse.LoginDto loginProcessing(String email, String password) {
         /**
          * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
          */
-        Member member = memberRepository.findByEmail(email)
+        MemberDtoForLogin memberDtoForLogin = memberReadOnlyRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getUsername(), password);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberDtoForLogin.getUsername(), password);
 
         Authentication authentication = getAuthentication(authenticationToken);
 
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
 
-        RefreshToken refreshToken = saveRefreshToken(member, tokenDto);
+        RefreshToken refreshToken = saveRefreshToken(memberDtoForLogin.getUsername(), tokenDto);
 
         ResponseCookie cookie = generateResponseCookie(refreshToken);
 
         return LoginResponse.LoginDto.builder()
-                .id(member.getId())
+                .id(memberDtoForLogin.getId())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshCookie(cookie)
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
@@ -73,11 +78,11 @@ public class JwtLoginService {
     /**
      * 리프레시 토큰 저장
      */
-    @CustomLogger
-    public RefreshToken saveRefreshToken(Member member, TokenDto tokenDto) {
+    @CustomLogTracer
+    public RefreshToken saveRefreshToken(String username, TokenDto tokenDto) {
 
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .username(member.getUsername())
+                .username(username)
                 .token(tokenDto.getRefreshToken())
                 .expiration(tokenDto.getRefreshTokenExpiredTime())
                 .build();
@@ -91,7 +96,7 @@ public class JwtLoginService {
      * security 인증 실패시 BadCredentialsException -> MemberException throw
      * LOGIN_FAIL(1501, "로그인에 실패했습니다.") 응답에 로그인 아이디 혹은 비밀번호 중 어떤것이 잘못되었는지 감추기 위해 통일
      */
-    @CustomLogger
+    @CustomLogTracer
     private Authentication getAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
 
         final Authentication authentication;
@@ -121,7 +126,7 @@ public class JwtLoginService {
     /**
      * 로그아웃
      */
-    @CustomLogger
+    @CustomLogTracer
     public LoginResponse.LogoutResult logoutProcessing(String accessToken) {
 
         checkTokenStatusIsAccess(accessToken);
@@ -141,7 +146,7 @@ public class JwtLoginService {
     /**
      * 토큰 재발급
      */
-    @CustomLogger
+    @CustomLogTracer
     public LoginResponse.LoginDto reissueProcessing(String accessToken, String refreshToken) {
 
         //1. 토큰 validation

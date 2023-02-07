@@ -1,6 +1,7 @@
 package com.study.badrequest.Member.service;
 
 import com.study.badrequest.domain.Member.dto.MemberResponse;
+import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 
 import com.study.badrequest.domain.Member.repository.MemberRepository;
@@ -70,7 +71,7 @@ class MemberCommandServiceTest {
         //when
 
         //then
-        assertThatThrownBy(() -> memberCommandService.changePermissions(100L, Member.Authority.TEACHER))
+        assertThatThrownBy(() -> memberCommandService.changePermissions(100L, Authority.TEACHER))
                 .isInstanceOf(MemberException.class);
 
     }
@@ -89,9 +90,9 @@ class MemberCommandServiceTest {
         //when
         MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
         Member member = memberRepository.findById(signupResult.getMemberId()).get();
-        member.changePermissions(Member.Authority.TEACHER);
+        member.changePermissions(Authority.TEACHER);
         //then
-        assertThat(member.getAuthority()).isEqualTo(Member.Authority.TEACHER);
+        assertThat(member.getAuthority()).isEqualTo(Authority.TEACHER);
     }
 
     @Test
