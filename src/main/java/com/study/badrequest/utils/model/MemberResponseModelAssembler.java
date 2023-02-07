@@ -13,7 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @Component
-public class MemberResponseModel {
+public class MemberResponseModelAssembler {
 
     public EntityModel<MemberResponse.SignupResult> toModel(MemberResponse.SignupResult result) {
         return EntityModel.of(result)
@@ -32,7 +32,7 @@ public class MemberResponseModel {
 
 
     public URI getUri(Long memberId) {
-        return linkTo(MemberResponseModel.class).slash("/login").slash(memberId).toUri();
+        return linkTo(MemberResponseModelAssembler.class).slash("/login").slash(memberId).toUri();
     }
 
 }

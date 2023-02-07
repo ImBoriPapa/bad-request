@@ -2,7 +2,7 @@ package com.study.badrequest.api;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.domain.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.domain.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginDto;
@@ -55,7 +55,7 @@ class MemberControllerTest {
     @DisplayName("회원가입")
     void 회원가입() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("tester@test.com")
                 .nickname("tester")
                 .password("test1234!@")
@@ -102,7 +102,7 @@ class MemberControllerTest {
     @DisplayName("회원 가입 요청 검증 테스트 - email 중복")
     void createValidation1() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email(SAMPLE_USER_EMAIL)
                 .nickname("tester")
                 .password("test1234!@")
@@ -126,7 +126,7 @@ class MemberControllerTest {
     @DisplayName("회원 가입 요청 검증 테스트 - contact 중복")
     void createValidation2() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("new@new.com")
                 .nickname("tester")
                 .password("password1234!@")
@@ -150,7 +150,7 @@ class MemberControllerTest {
     @DisplayName("회원 가입 요청 검증 테스트 - form validation")
     void createValidation3() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("")
                 .nickname("tester")
                 .password("")
@@ -176,7 +176,7 @@ class MemberControllerTest {
         //given
         String password = SAMPLE_PASSWORD;
         String newPassword = "newPassword1234!@";
-        MemberRequestForm.ResetPassword resetForm = new MemberRequestForm.ResetPassword(password, newPassword);
+        MemberRequest.ResetPassword resetForm = new MemberRequest.ResetPassword(password, newPassword);
         String content = objectMapper.writeValueAsString(resetForm);
 
         LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
@@ -218,7 +218,7 @@ class MemberControllerTest {
     void putContactTest() throws Exception {
         //given
         String newContact = "010-1212-1312";
-        MemberRequestForm.UpdateContact contact = new MemberRequestForm.UpdateContact(newContact);
+        MemberRequest.UpdateContact contact = new MemberRequest.UpdateContact(newContact);
         String content = objectMapper.writeValueAsString(contact);
 
         LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
@@ -258,7 +258,7 @@ class MemberControllerTest {
     @DisplayName("회원 탈퇴 테스트")
     void deleteMemberTest() throws Exception {
         //given
-        MemberRequestForm.DeleteMember password = new MemberRequestForm.DeleteMember(SAMPLE_PASSWORD);
+        MemberRequest.DeleteMember password = new MemberRequest.DeleteMember(SAMPLE_PASSWORD);
         String content = objectMapper.writeValueAsString(password);
 
         LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);

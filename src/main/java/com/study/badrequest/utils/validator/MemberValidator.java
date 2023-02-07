@@ -2,7 +2,7 @@ package com.study.badrequest.utils.validator;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
-import com.study.badrequest.domain.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class MemberValidator {
     private final MemberRepository memberRepository;
 
     @CustomLogger
-    public void validateCreateForm(MemberRequestForm.CreateMember form) {
+    public void validateCreateForm(MemberRequest.CreateMember form) {
 
         validateEmail(form.getEmail());
 

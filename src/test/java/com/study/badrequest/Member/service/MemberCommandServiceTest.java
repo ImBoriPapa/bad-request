@@ -7,7 +7,7 @@ import com.study.badrequest.domain.Member.repository.MemberRepository;
 
 import com.study.badrequest.domain.Member.service.MemberCommandService;
 
-import com.study.badrequest.domain.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequest;
 
 import com.study.badrequest.exception.custom_exception.MemberException;
 
@@ -46,7 +46,7 @@ class MemberCommandServiceTest {
     @DisplayName("회원등록")
     void signupTest() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -79,7 +79,7 @@ class MemberCommandServiceTest {
     @DisplayName("권한 변경 성공")
     void successChangePermissions() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -98,7 +98,7 @@ class MemberCommandServiceTest {
     @DisplayName("연락처 변경")
     void changeContactTest() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -123,7 +123,7 @@ class MemberCommandServiceTest {
     @DisplayName("비밀번호 변경")
     void changePasswordTest() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")
@@ -149,7 +149,7 @@ class MemberCommandServiceTest {
     @DisplayName("회원탈퇴")
     void resignTest() throws Exception {
         //given
-        MemberRequestForm.CreateMember form = MemberRequestForm.CreateMember.builder()
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
                 .name("name")

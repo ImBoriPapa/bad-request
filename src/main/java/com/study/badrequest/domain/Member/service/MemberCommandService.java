@@ -5,7 +5,7 @@ import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.domain.Member.entity.Member;
 
 import com.study.badrequest.domain.Member.repository.MemberRepository;
-import com.study.badrequest.domain.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.login.domain.repository.RefreshTokenRepository;
@@ -28,7 +28,7 @@ public class MemberCommandService {
 
     // TODO: 2023/01/18 profile image
     @CustomLogger
-    public MemberResponse.SignupResult signupMember(MemberRequestForm.CreateMember form) {
+    public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
 
         Member member = Member.createMember()
                 .email(form.getEmail())

@@ -1,16 +1,15 @@
 package com.study.badrequest.api;
 
 import com.study.badrequest.aop.annotation.CustomLogger;
-import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.service.MemberCommandService;
-import com.study.badrequest.domain.Member.dto.MemberRequestForm;
+import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.exception.custom_exception.MemberException;
 
-import com.study.badrequest.utils.model.MemberResponseModel;
+import com.study.badrequest.utils.model.MemberResponseModelAssembler;
 import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,11 +34,11 @@ public class MemberController {
 
     private final MemberCommandService memberCommandService;
     private final MemberValidator memberValidator;
-    private final MemberResponseModel memberResponseModel;
+    private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
-    public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequestForm.CreateMember form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequest.CreateMember form, BindingResult bindingResult) {
 
         memberValidator.validateCreateForm(form);
 
@@ -51,23 +49,23 @@ public class MemberController {
 
         MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
 
-        EntityModel<MemberResponse.SignupResult> signupResultEntityModel = memberResponseModel.toModel(signupResult);
+        EntityModel<MemberResponse.SignupResult> signupResultEntityModel = memberResponseModelAssembler.toModel(signupResult);
 
         return ResponseEntity
-                .created(memberResponseModel.getUri(signupResult.getMemberId()))
+                .created(memberResponseModelAssembler.getUri(signupResult.getMemberId()))
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
     }
 
     @PutMapping("/member/{memberId}/password")
     @CustomLogger
-    public ResponseEntity<ResponseForm.Of> putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.ResetPassword form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
         MemberResponse.UpdateResult updateResult = memberCommandService.resetPassword(memberId, form.getPassword(), form.getNewPassword());
 
-        EntityModel<MemberResponse.UpdateResult> updateResultEntityModel = memberResponseModel.toModel(updateResult);
+        EntityModel<MemberResponse.UpdateResult> updateResultEntityModel = memberResponseModelAssembler.toModel(updateResult);
 
         return ResponseEntity.ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
@@ -75,7 +73,7 @@ public class MemberController {
 
     @PutMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogger
-    public ResponseEntity<ResponseForm.Of> putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.UpdateContact form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.UpdateContact form, BindingResult bindingResult) {
 
 
         if (bindingResult.hasErrors()) {
@@ -86,7 +84,7 @@ public class MemberController {
 
         MemberResponse.UpdateResult updateResult = memberCommandService.updateContact(memberId, form.getContact());
 
-        EntityModel<MemberResponse.UpdateResult> updateResultEntityModel = memberResponseModel.toModel(updateResult);
+        EntityModel<MemberResponse.UpdateResult> updateResultEntityModel = memberResponseModelAssembler.toModel(updateResult);
 
         return ResponseEntity.ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
@@ -94,7 +92,7 @@ public class MemberController {
 
     @DeleteMapping("/member/{memberId}")
     @CustomLogger
-    public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequestForm.DeleteMember form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.DeleteMember form, BindingResult bindingResult) {
 
 
         if (bindingResult.hasErrors()) {
@@ -103,7 +101,7 @@ public class MemberController {
 
         MemberResponse.DeleteResult deleteResult = memberCommandService.resignMember(memberId, form.getPassword());
 
-        EntityModel<MemberResponse.DeleteResult> deleteResultEntityModel = memberResponseModel.toModel(deleteResult);
+        EntityModel<MemberResponse.DeleteResult> deleteResultEntityModel = memberResponseModelAssembler.toModel(deleteResult);
 
         return ResponseEntity.ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, deleteResultEntityModel));
