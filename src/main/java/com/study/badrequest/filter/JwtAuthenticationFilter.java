@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.debug("JwtAuthenticationFilter");
         String accessToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
-        JwtStatus jwtStatus = JwtStatus.EMPTY_TOKEN;
+        JwtStatus jwtStatus;
 
         jwtStatus = StringUtils.hasText(accessToken) ? jwtUtils.validateToken(accessToken) : JwtStatus.EMPTY_TOKEN;
 
@@ -72,8 +72,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 jwtStatus = JwtStatus.ERROR;
         }
         request.setAttribute(JWT_STATUS_HEADER, jwtStatus);
-        Object attribute = request.getAttribute(JWT_STATUS_HEADER);
-        log.info("[attribute= {}]", attribute);
     }
 
     private boolean loginCheck(Authentication authentication) {

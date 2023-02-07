@@ -37,7 +37,7 @@ public class JwtLoginService {
     private final JwtUtils jwtUtils;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     @Value("${cookie-status.secure}")
-    private boolean secure;
+    private final boolean secure;
     // TODO: 2023/01/02 test
 
     /**
@@ -45,22 +45,21 @@ public class JwtLoginService {
      */
     @CustomLogger
     public LoginDto loginProcessing(String email, String password) {
-
+        /**
+         * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
+         */
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(member.getUsername(), password);
 
-
         Authentication authentication = getAuthentication(authenticationToken);
-
 
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
 
+        RefreshToken refreshToken = saveRefreshToken(member, tokenDto);
 
-        RefreshToken refreshToken = setRefreshToken(member, tokenDto);
-
-        ResponseCookie cookie = getResponseCookie(refreshToken);
+        ResponseCookie cookie = generateResponseCookie(refreshToken);
 
         return LoginDto.builder()
                 .id(member.getId())
@@ -75,7 +74,7 @@ public class JwtLoginService {
      * 리프레시 토큰 저장
      */
     @CustomLogger
-    public RefreshToken setRefreshToken(Member member, TokenDto tokenDto) {
+    public RefreshToken saveRefreshToken(Member member, TokenDto tokenDto) {
 
         RefreshToken refreshToken = RefreshToken.createRefresh()
                 .username(member.getUsername())
@@ -83,9 +82,9 @@ public class JwtLoginService {
                 .expiration(tokenDto.getRefreshTokenExpiredTime())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);
+        return refreshTokenRepository.save(refreshToken);
 
-        return refreshToken;
+
     }
 
     /**
@@ -108,7 +107,7 @@ public class JwtLoginService {
      * Https 적용 후 secure false -> true
      * ResponseCookie 생성 운영 환경별로 secure 설정
      */
-    private ResponseCookie getResponseCookie(RefreshToken refreshToken) {
+    private ResponseCookie generateResponseCookie(RefreshToken refreshToken) {
 
         return ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + refreshToken.getToken())
                 .maxAge(refreshToken.getExpiration())
@@ -125,7 +124,7 @@ public class JwtLoginService {
     @CustomLogger
     public void logoutProcessing(String accessToken) {
 
-        handleDeniedToken(accessToken);
+        checkTokenStatusIsAccess(accessToken);
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //1.Refresh Token 확인 없다면 인증기간 만료로 인한 로그아웃
@@ -140,13 +139,13 @@ public class JwtLoginService {
     /**
      * 토큰 재발급
      */
-    @Transactional
     @CustomLogger
     public LoginDto reissueProcessing(String accessToken, String refreshToken) {
 
         //1. 토큰 validation
-        handleDeniedOrErrorAccessToken(accessToken);
-        handleDeniedToken(refreshToken);
+        checkTokenStatusIsDeniedOrError(accessToken);
+
+        checkTokenStatusIsAccess(refreshToken);
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //2. 존재하는 회원인지 확인
@@ -161,7 +160,7 @@ public class JwtLoginService {
         //7. 토큰 갱신
         replaceRefresh(refresh, tokenDto);
 
-        ResponseCookie responseCookie = getResponseCookie(refresh);
+        ResponseCookie responseCookie = generateResponseCookie(refresh);
 
         return LoginDto.builder()
                 .id(member.getId())
@@ -187,8 +186,8 @@ public class JwtLoginService {
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
     }
 
-    private void handleDeniedOrErrorAccessToken(String accessToken) {
-        log.info("[JwtLoginService.handleDeniedOrErrorAccessToken]");
+    private void checkTokenStatusIsDeniedOrError(String accessToken) {
+        log.debug("[JwtLoginService.handleDeniedOrErrorAccessToken]");
         JwtStatus status = jwtUtils.validateToken(accessToken);
 
         if (status == JwtStatus.DENIED || status == JwtStatus.ERROR) {
@@ -196,8 +195,8 @@ public class JwtLoginService {
         }
     }
 
-    private void handleDeniedToken(String refreshToken) {
-        log.info("[JwtLoginService.handleDeniedToken]");
+    private void checkTokenStatusIsAccess(String refreshToken) {
+        log.debug("[JwtLoginService.checkTokenIsAccess]");
         if (jwtUtils.validateToken(refreshToken) != JwtStatus.ACCESS) {
             throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
         }
@@ -209,7 +208,7 @@ public class JwtLoginService {
      */
     @Transactional(readOnly = true)
     public boolean loginCheck(String email) {
-        log.info("[LOGIN CHECK]");
+        log.debug("[JwtLoginService.loginCheck]");
         return refreshTokenRepository.findById(email).isPresent();
     }
 
