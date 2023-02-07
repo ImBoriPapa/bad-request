@@ -13,6 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 import static com.study.badrequest.health.ValueController.VALUES;
 
@@ -25,11 +30,11 @@ public class SecurityConfig {
     private final JwtUserDetailService jwtUserDetailService;
     private final JwtAccessDeniedFilter accessDeniedFilter;
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
         security.httpBasic().disable()
-                .cors().disable()
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -45,29 +50,40 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/v1/member")
                 .permitAll()
                 //비회원 Board 허용
-                .antMatchers(HttpMethod.GET,"/api/v1/board","/api/v1/board/*")
+                .antMatchers("/api/v1/board", "/api/v1/board/*")
                 .permitAll()
                 //comment
                 .antMatchers("/api/v1/board/{boardId}/comments")
                 .permitAll()
                 //values
-                .antMatchers(VALUES+"/*")
+                .antMatchers(VALUES + "/*")
                 .permitAll()
                 //dashboard
-                .antMatchers( "/log", "/log-ex", "/dashboard","/dashboard/**" ,"/heap","/refresh")
+                .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh")
                 .permitAll()
                 //static
-                .antMatchers("/static/**","/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
+                .antMatchers("/static/**", "/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
                 .permitAll()
                 //test
                 .antMatchers("/test/teacher")
                 .hasAuthority("ROLL_TEACHER")
-                .antMatchers("/api/image","/test")
+                .antMatchers("/api/image", "/test")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return security.build();
+    }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
