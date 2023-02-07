@@ -33,17 +33,21 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
         security.httpBasic().disable()
-                .cors().configurationSource(corsConfigurationSource())
+                .cors()
                 .and()
+
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPointFilter)
                 .accessDeniedHandler(accessDeniedFilter)
+
                 .and()
                 .userDetailsService(jwtUserDetailService)
+
                 .authorizeRequests()
                 .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", "/api/v1/member/email")
                 .permitAll()
@@ -75,11 +79,12 @@ public class SecurityConfig {
 
         return security.build();
     }
+
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*"));
-        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT"));
+        configuration.setAllowedMethods(Arrays.asList("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
