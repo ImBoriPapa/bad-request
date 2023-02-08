@@ -109,8 +109,10 @@ public class S3ImageUploader implements ImageUploader {
     public String getFileExtension(String originalFileName) {
 
         hasExtension(originalFileName);
-
-        String ext = originalFileName.substring(originalFileName.lastIndexOf("."));
+        /**
+         * 확장자 소문자로 변경
+         */
+        String ext = originalFileName.substring(originalFileName.lastIndexOf(".")).toLowerCase();
 
         isSupportExtension(ext);
 
@@ -132,11 +134,10 @@ public class S3ImageUploader implements ImageUploader {
      */
     private void isSupportExtension(String ext) {
         Arrays.stream(SupportImageExtension.values())
-                .filter(d -> d.getExtension().equals(ext.toLowerCase()))
+                .filter(d -> d.getExtension().equals(ext))
                 .findFirst()
                 .orElseThrow(() -> new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR));
     }
-
 
     public void deleteFile(String storedName) {
         log.info("[deleteFile]");

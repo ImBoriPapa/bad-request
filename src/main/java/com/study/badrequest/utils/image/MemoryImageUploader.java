@@ -28,7 +28,7 @@ public class MemoryImageUploader implements ImageUploader {
     private MemoryImageStore memoryImageStore;
 
     public String getDefaultProfileImage() {
-        return "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG";
+        return "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg";
     }
 
     @CustomLogTracer
@@ -61,7 +61,7 @@ public class MemoryImageUploader implements ImageUploader {
     private void putImage(MultipartFile file, String storedName) {
         log.info("[LocalImageUploader -> fileTransfer]");
 
-        memoryImageStore.transFerToMemory(file, storedName);
+//        memoryImageStore.transFerToMemory(file, storedName);
 
     }
 
