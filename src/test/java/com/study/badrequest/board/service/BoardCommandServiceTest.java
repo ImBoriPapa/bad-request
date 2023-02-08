@@ -79,10 +79,18 @@ class BoardCommandServiceTest {
     @DisplayName("게시판 수정")
     void updateBoard() throws Exception{
         //given
-
+        Board board = boardRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException(""));
+        BoardRequest.Update newData = BoardRequest.Update
+                .builder()
+                .title("변경된 제목")
+                .contents("변경된 내용")
+                .build();
+        BoardRequest.Update form = newData;
         //when
-
+        BoardResponse.Update update = boardCommandService.update(board.getId(), newData, null);
+        Board findBoard = boardRepository.findById(update.getBoardId()).orElseThrow(() -> new IllegalArgumentException());
         //then
-
+        Assertions.assertThat(findBoard.getTitle()).isEqualTo(newData.getTitle());
+        Assertions.assertThat(findBoard.getContents()).isEqualTo(newData.getContents());
     }
 }

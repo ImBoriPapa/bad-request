@@ -61,6 +61,19 @@ public class BoardController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
+    @PatchMapping("/board/{boardId}")
+    public ResponseEntity patchBoard(
+            @PathVariable(name = "boardId") Long boardId
+            , BoardRequest.Update form
+            , List<MultipartFile> images) {
+
+        BoardResponse.Update update = boardCommandService.update(boardId, form, images);
+
+        return ResponseEntity
+                .ok()
+                .body(update);
+    }
+
     @GetMapping("/board")
     @CustomLogTracer
     public ResponseEntity getBoardList(BoardSearchCondition condition, BindingResult bindingResult) {
