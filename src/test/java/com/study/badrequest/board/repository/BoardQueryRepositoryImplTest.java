@@ -120,8 +120,7 @@ class BoardQueryRepositoryImplTest {
         BoardDetailDto boardDetail = boardQueryRepositoryImpl.findBoardDetail(save.getId(), null)
                 .orElseThrow(() -> new IllegalArgumentException("검색 결과 없음"));
         //when
-        boardDetail.getBoardImages()
-                .forEach(i -> log.info("Board Images Id= {}, ori name= {}", i.getId(), i.getOriginalFileName()));
+
 
 
         //then
@@ -138,7 +137,7 @@ class BoardQueryRepositoryImplTest {
 
         //then
 
-        detailDto.getBoardImages().forEach(image -> log.info("BOARD DETAIL IMAGES", image.getOriginalFileName()));
+
 
     }
 

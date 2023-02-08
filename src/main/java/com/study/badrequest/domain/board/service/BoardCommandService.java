@@ -79,7 +79,8 @@ public class BoardCommandService {
 
     @CustomLogTracer
     public void update(Long boardId) {
-
+        boardRepository.findById(boardId)
+                .orElseThrow(() -> new IllegalArgumentException());
     }
 
     @CustomLogTracer
