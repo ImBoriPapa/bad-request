@@ -320,6 +320,7 @@ class BoardControllerTest {
                 .andExpect(jsonPath("message").value(CustomStatus.SUCCESS.getMessage()))
                 .andExpect(jsonPath("result.boardId").exists())
                 .andExpect(jsonPath("result.memberId").exists())
+                .andExpect(jsonPath("result.profileImage").exists())
                 .andExpect(jsonPath("result.nickname").exists())
                 .andExpect(jsonPath("result.title").exists())
                 .andExpect(jsonPath("result.contents").exists())
@@ -343,6 +344,7 @@ class BoardControllerTest {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
                                 fieldWithPath("result.boardId").type(JsonFieldType.NUMBER).description("게시판 아이디"),
                                 fieldWithPath("result.memberId").type(JsonFieldType.NUMBER).description("작성자 회원 아이디"),
+                                fieldWithPath("result.profileImage").type(JsonFieldType.STRING).description("프로필 이미지"),
                                 fieldWithPath("result.nickname").type(JsonFieldType.STRING).description("작성자 닉네임"),
                                 fieldWithPath("result.title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("result.contents").type(JsonFieldType.STRING).description("본문"),

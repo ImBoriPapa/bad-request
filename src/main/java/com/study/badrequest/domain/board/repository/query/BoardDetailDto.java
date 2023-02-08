@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class BoardDetailDto {
     private Long boardId;
     private Long memberId;
+    private String profileImage;
     private String nickname;
     private String title;
     private String contents;
@@ -36,6 +37,7 @@ public class BoardDetailDto {
     public BoardDetailDto(Board board, List<BoardImage> boardImages) {
         this.boardId = board.getId();
         this.memberId = board.getMember().getId();
+        this.profileImage = board.getMember().getProfileImage().getFullPath();
         this.nickname = board.getMember().getNickname();
         this.title = board.getTitle();
         this.contents = board.getContents();

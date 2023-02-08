@@ -25,7 +25,6 @@ public class MemoryImageUploader implements ImageUploader {
     private String location = System.getProperty("user.dir");
     private String bucket = location + "/src/main/resources/static/image";
     private String path = "http://localhost:8080/image/";
-    private MemoryImageStore memoryImageStore;
 
     public String getDefaultProfileImage() {
         return "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg";
@@ -88,8 +87,6 @@ public class MemoryImageUploader implements ImageUploader {
 
     public void deleteFile(String storedName) {
         log.info("[IMAGE DELETE imageName= {}]", storedName);
-        File target = new File(path + storedName);
-        boolean b = target.exists() ? target.delete() : target.exists();
     }
 
 
@@ -97,5 +94,4 @@ public class MemoryImageUploader implements ImageUploader {
         log.info("[IMAGE DELETE imageNameList]");
         storedNameList.forEach(this::deleteFile);
     }
-
 }
