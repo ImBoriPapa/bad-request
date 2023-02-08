@@ -1,12 +1,9 @@
 package com.study.badrequest;
 
-import com.study.badrequest.domain.Member.dto.MemberRequest;
-import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.domain.Member.entity.Authority;
 import com.study.badrequest.domain.Member.entity.Member;
 import com.study.badrequest.domain.Member.entity.ProfileImage;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
-import com.study.badrequest.domain.Member.service.MemberCommandService;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
@@ -28,12 +25,14 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.study.badrequest.SampleUserData.*;
+
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-@Profile({"test", "dev", "prod"})
+@Profile("test")
 public class TestSampleData {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
@@ -42,11 +41,7 @@ public class TestSampleData {
     private final BoardImageRepository boardImageRepository;
     private final CommentRepository commentRepository;
     private final SubCommentRepository subCommentRepository;
-    public static final String SAMPLE_USER_EMAIL = "user@gmail.com";
-    public static final String SAMPLE_USER_CONTACT = "010-0000-1234";
-    public static final String SAMPLE_TEACHER_EMAIL = "teacher@gmail.com";
-    public static final String SAMPLE_ADMIN_EMAIL = "admin@gmail.com";
-    public static final String SAMPLE_PASSWORD = "password1234!@";
+
 
 
     @PostConstruct
@@ -63,7 +58,7 @@ public class TestSampleData {
 
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)
-                .nickname("SAMPLE_USER")
+                .nickname(SAMPLE_USER_NICKNAME)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .contact(SAMPLE_USER_CONTACT)
                 .authority(Authority.MEMBER)
@@ -72,6 +67,7 @@ public class TestSampleData {
 
         Member teacher = Member.createMember()
                 .email(SAMPLE_TEACHER_EMAIL)
+                .nickname(SAMPLE_TEACHER_NICKNAME)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .authority(Authority.TEACHER)
                 .profileImage(defaultProfileImage)
@@ -79,6 +75,8 @@ public class TestSampleData {
 
         Member admin = Member.createMember()
                 .email(SAMPLE_ADMIN_EMAIL)
+                .nickname(SAMPLE_ADMIN_NICKNAME)
+                .contact(SAMPLE_ADMIN_CONTACT)
                 .password(passwordEncoder.encode(SAMPLE_PASSWORD))
                 .authority(Authority.ADMIN)
                 .profileImage(defaultProfileImage)
@@ -162,7 +160,6 @@ public class TestSampleData {
                 .board(board)
                 .member(board.getMember())
                 .build();
-
 
         commentRepository.saveAll(List.of(comment1, comment2, comment3));
         Comment parentComment = commentRepository.findById(comment1.getId()).get();

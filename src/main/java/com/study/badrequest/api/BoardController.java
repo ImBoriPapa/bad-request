@@ -11,19 +11,23 @@ import com.study.badrequest.domain.board.repository.query.BoardQueryRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.exception.custom_exception.BoardException;
 import com.study.badrequest.exception.custom_exception.RequestParamException;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -33,7 +37,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL)
 public class BoardController {
-
     private final BoardCommandService boardCommandService;
     private final BoardQueryRepository boardQueryRepository;
     private final BoardResponseModelAssembler boardResponseModelAssembler;
@@ -76,13 +79,21 @@ public class BoardController {
     }
 
     @GetMapping("/board/{boardId}")
-    public ResponseEntity getBoard(@PathVariable("boardId") Long id, @RequestParam(name = "category",required = false)Category category) {
+    @CustomLogTracer
+    public ResponseEntity getBoard(@PathVariable("boardId") Long id,
+                                   @RequestParam(name = "category", required = false) Category category) {
 
-        BoardDetailDto boardDetail = boardQueryRepository.findBoardDetail(id,category)
-                .orElseThrow(() -> new IllegalArgumentException("결과를 확인할 수 없습니다."));
+        Optional<BoardDetailDto> boardDetail = boardQueryRepository.findBoardDetail(id, category);
 
-        return ResponseEntity.ok()
-                .body(boardDetail);
+        if (boardDetail.isEmpty()) {
+            throw new BoardException(CustomStatus.NOT_FOUND_BOARD);
+        }
+
+        EntityModel<BoardDetailDto> entityModel = boardResponseModelAssembler.toModel(boardDetail.get());
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
 

@@ -18,8 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.study.badrequest.TestSampleData.SAMPLE_PASSWORD;
-import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
+
+import static com.study.badrequest.SampleUserData.SAMPLE_PASSWORD;
+import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest

@@ -24,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.study.badrequest.TestSampleData.SAMPLE_USER_EMAIL;
+import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
+
 
 @SpringBootTest
 @Slf4j

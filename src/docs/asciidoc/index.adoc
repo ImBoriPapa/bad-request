@@ -204,6 +204,17 @@ include::{snippets}/authoritySuccessAdmin/response-fields.adoc[]
 
 include::{snippets}/board_create/http-request.adoc[]
 
+==== 요청2 이미지 추가
+include::{snippets}/board_create_add_image/http-request.adoc[]
+- 이미지 첨부 요청시 (이미지 미첨부 가능)
+[%header]
+|===
+
+|Path|Type|Description
+|images|png, jpeg, jpg, gif|이미지 추가
+
+|===
+
 ==== 요청
 
 include::{snippets}/board_create/request-part-form-fields.adoc[]
@@ -259,6 +270,22 @@ include::{snippets}/board_getList_with_condition/http-request.adoc[]
 ==== 응답
 
 include::{snippets}/board_getList_with_condition/http-response.adoc[]
+
+=== 게시판 상세 조회
+
+==== 요청
+
+include::{snippets}/board_get_detail/http-request.adoc[]
+
+TIP: 검색 파라미터 category 생략 가능 category 파라미터 추가시 검색 속도가 더 빠를수 있음
+
+==== 응답
+
+include::{snippets}/board_get_detail/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/board_get_detail/response-fields.adoc[]
 
 == Values
 

@@ -21,6 +21,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.study.badrequest.SampleUserData.*;
 import static com.study.badrequest.TestSampleData.*;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
