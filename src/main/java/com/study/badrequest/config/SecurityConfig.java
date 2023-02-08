@@ -35,7 +35,6 @@ public class SecurityConfig {
         security.httpBasic().disable()
                 .cors()
                 .and()
-                //?????????
                 .csrf().disable()
                 .formLogin().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

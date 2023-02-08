@@ -142,7 +142,6 @@ public class JwtLoginService {
         return new LoginResponse.LogoutResult();
     }
 
-
     /**
      * 토큰 재발급
      */

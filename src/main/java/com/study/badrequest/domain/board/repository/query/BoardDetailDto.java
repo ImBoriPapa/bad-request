@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class BoardDetailDto {
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime updatedAt;
-    private List<BoardImage> boardImages = new ArrayList<>();
+    private List<String> boardImages = new ArrayList<>();
 
     @Builder
     public BoardDetailDto(Board board, List<BoardImage> boardImages) {
@@ -44,7 +45,7 @@ public class BoardDetailDto {
         this.commentCount = board.getCommentCount();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
-        this.boardImages = boardImages;
+        this.boardImages = boardImages.stream().map(BoardImage::getFullPath).collect(Collectors.toList());
 
     }
 }

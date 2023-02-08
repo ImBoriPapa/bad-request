@@ -57,7 +57,6 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                         .build());
     }
 
-
     @Override
     public BoardListDto findBoardList(BoardSearchCondition condition) {
         int limitSize = setSize(condition.getSize());
