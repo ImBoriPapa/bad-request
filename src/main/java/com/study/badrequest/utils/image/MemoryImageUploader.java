@@ -16,24 +16,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
 @Profile("test")
-public class MemoryImageUploader implements ImageUploader{
+public class MemoryImageUploader implements ImageUploader {
     private String location = System.getProperty("user.dir");
     private String bucket = location + "/src/main/resources/static/image";
     private String path = "http://localhost:8080/image/";
+    private MemoryImageStore memoryImageStore;
 
     public String getDefaultProfileImage() {
         return "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG";
     }
+
     @CustomLogTracer
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[LocalImageUploader -> uploadFile()]");
 
         List<ImageDetailDto> details = new ArrayList<>();
-        //???
+
         images.forEach(file -> {
             String storedName = getStoredName(folderName, file);
             putImage(file, storedName);
@@ -57,16 +60,9 @@ public class MemoryImageUploader implements ImageUploader{
 
     private void putImage(MultipartFile file, String storedName) {
         log.info("[LocalImageUploader -> fileTransfer]");
-        File f = new File(bucket ,storedName);
-        try {
-            file.transferTo(f);
-        } catch (IOException e) {
-            log.info("[업로드 에러= {}]", e.getMessage());
-            throw new ImageFileUploadException(CustomStatus.WRONG_FILE_ERROR);
-        }
 
-        ArrayList<String> store = new ArrayList<>();
-        store.add(storedName);
+        memoryImageStore.transFerToMemory(file, storedName);
+
     }
 
     public String createFileName(String originalFileName) {

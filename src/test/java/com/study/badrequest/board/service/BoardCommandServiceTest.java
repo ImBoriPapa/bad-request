@@ -22,7 +22,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @SpringBootTest
@@ -44,13 +43,13 @@ class BoardCommandServiceTest {
                 .memberId(1L)
                 .title("제목")
                 .category(Category.KNOWLEDGE)
-                .context("내용")
+                .contents("내용")
                 .topic(Topic.JAVA)
                 .build();
 
-//        MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
+        MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
         //when
-        BoardResponse.Create create = boardCommandService.create(form, null);
+        BoardResponse.Create create = boardCommandService.create(form, List.of(image1));
 
         //then
 
@@ -65,7 +64,7 @@ class BoardCommandServiceTest {
                 .memberId(1L)
                 .title("제목")
                 .category(Category.KNOWLEDGE)
-                .context("내용")
+                .contents("내용")
                 .topic(Topic.JAVA)
                 .build();
 

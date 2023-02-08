@@ -26,7 +26,7 @@ public class S3ImageUploader implements ImageUploader {
     private String bucket = "bori-market-bucket";
     private String path = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
 
-    private String default_profile_image = "default/profile.JPG";
+    private String default_profile_image = "default/profile.jpg";
     private final AmazonS3Client amazonS3Client;
 
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {

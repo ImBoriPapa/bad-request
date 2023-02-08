@@ -23,8 +23,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import static com.study.badrequest.SampleUserData.SAMPLE_PASSWORD;
 import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
@@ -68,7 +66,7 @@ class BoardControllerTest {
         BoardRequest.Create form = BoardRequest.Create.builder()
                 .memberId(loginProcessing.getId())
                 .title("제목입니다")
-                .context("내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.")
+                .contents("내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.")
                 .topic(Topic.JAVA)
                 .category(Category.KNOWLEDGE)
                 .build();
@@ -100,7 +98,7 @@ class BoardControllerTest {
                         requestPartFields("form",
                                 fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 아이디"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
-                                fieldWithPath("context").type(JsonFieldType.STRING).description("본문"),
+                                fieldWithPath("contents").type(JsonFieldType.STRING).description("본문"),
                                 fieldWithPath("topic").type(JsonFieldType.STRING).description("주제"),
                                 fieldWithPath("category").type(JsonFieldType.STRING).description("카테고리")
                         ),
@@ -125,7 +123,7 @@ class BoardControllerTest {
         BoardRequest.Create form = BoardRequest.Create.builder()
                 .memberId(loginProcessing.getId())
                 .title("제목입니다")
-                .context("내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.")
+                .contents("내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.")
                 .topic(Topic.JAVA)
                 .category(Category.KNOWLEDGE)
                 .build();

@@ -2,7 +2,6 @@ package com.study.badrequest.domain.board.entity;
 
 import com.study.badrequest.domain.Member.entity.Member;
 
-import com.study.badrequest.domain.Member.entity.ProfileImage;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -60,6 +59,38 @@ public class Board {
         this.commentCount = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void update(String title, String contents, Category category, Topic topic) {
+        ifHasTitleUpdate(title);
+        ifHasContents(contents);
+        ifHasCategory(category);
+        ifHasTopic(topic);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    private void ifHasTitleUpdate(String title) {
+        if (title != null) {
+            this.title = title;
+        }
+    }
+
+    private void ifHasContents(String contents) {
+        if (contents != null) {
+            this.contents = contents;
+        }
+    }
+
+    private void ifHasCategory(Category category) {
+        if (category != null) {
+            this.category = category;
+        }
+    }
+
+    private void ifHasTopic(Topic topic) {
+        if (topic != null) {
+            this.topic = topic;
+        }
     }
 
     public void increaseCommentCount() {
