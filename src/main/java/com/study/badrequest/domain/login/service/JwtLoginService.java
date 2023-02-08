@@ -48,7 +48,7 @@ public class JwtLoginService {
      * 로그인
      */
     @CustomLogTracer
-    @Transactional(readOnly = true)
+
     public LoginResponse.LoginDto loginProcessing(String email, String password) {
         /**
          * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
