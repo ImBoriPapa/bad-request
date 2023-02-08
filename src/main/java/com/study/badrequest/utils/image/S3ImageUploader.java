@@ -136,6 +136,7 @@ public class S3ImageUploader implements ImageUploader {
         Arrays.stream(SupportImageExtension.values())
                 .filter(d -> d.getExtension().equals(ext))
                 .findFirst()
+                .map(SupportImageExtension::getExtension)
                 .orElseThrow(() -> new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR));
     }
 

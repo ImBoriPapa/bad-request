@@ -50,8 +50,9 @@ class BoardCommandServiceTest {
         MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
         //when
         BoardResponse.Create create = boardCommandService.create(form, List.of(image1));
-
+        Board board = boardRepository.findById(create.getBoardId()).orElseThrow(() -> new IllegalArgumentException());
         //then
+        Assertions.assertThat(board.getId()).isEqualTo(create.getBoardId());
 
     }
 
@@ -67,11 +68,21 @@ class BoardCommandServiceTest {
                 .contents("내용")
                 .topic(Topic.JAVA)
                 .build();
-
         //when
         BoardResponse.Create create = boardCommandService.create(form, null);
-        Board board = boardRepository.findById(create.getBoardId()).orElseThrow(()->new IllegalArgumentException(""));
+        Board board = boardRepository.findById(create.getBoardId()).orElseThrow(() -> new IllegalArgumentException(""));
         //then
         Assertions.assertThat(board).isNotNull();
+    }
+
+    @Test
+    @DisplayName("게시판 수정")
+    void updateBoard() throws Exception{
+        //given
+
+        //when
+
+        //then
+
     }
 }
