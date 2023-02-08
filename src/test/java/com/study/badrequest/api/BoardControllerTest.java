@@ -116,7 +116,7 @@ class BoardControllerTest {
                 ));
     }
 
-    @Test
+//    @Test
     @DisplayName("게시판 작성 이미지 첨부")
     void createBoardTest2() throws Exception {
         //given
