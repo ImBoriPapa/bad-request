@@ -4,6 +4,7 @@ import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.dto.BoardSearchCondition;
+import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.repository.query.BoardDetailDto;
 import com.study.badrequest.domain.board.repository.query.BoardListDto;
 import com.study.badrequest.domain.board.repository.query.BoardQueryRepository;
@@ -75,9 +76,9 @@ public class BoardController {
     }
 
     @GetMapping("/board/{boardId}")
-    public ResponseEntity getBoard(@PathVariable("boardId") Long id) {
+    public ResponseEntity getBoard(@PathVariable("boardId") Long id, @RequestParam(name = "category",required = false)Category category) {
 
-        BoardDetailDto boardDetail = boardQueryRepository.findBoardDetail(id)
+        BoardDetailDto boardDetail = boardQueryRepository.findBoardDetail(id,category)
                 .orElseThrow(() -> new IllegalArgumentException("결과를 확인할 수 없습니다."));
 
         return ResponseEntity.ok()

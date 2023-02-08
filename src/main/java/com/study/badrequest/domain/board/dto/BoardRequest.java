@@ -26,18 +26,4 @@ public class BoardRequest {
         @EnumValid(message = "카테고리는 필수입니다.", enumClass = Category.class)
         private Category category;
     }
-
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SearchCondition {
-
-        private Integer size;
-        private Long lastIndex;
-        private String title;
-        private Category category;
-        private Topic topic;
-
-    }
 }

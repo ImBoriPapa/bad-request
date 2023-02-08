@@ -147,7 +147,6 @@ public class TestSampleData {
 
         Board board = boardRepository.findByTitle("title1").get();
 
-
         Comment comment1 = Comment.createComment()
                 .text("text1")
                 .board(board)

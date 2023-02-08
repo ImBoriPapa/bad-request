@@ -17,4 +17,6 @@ public class BoardSearchCondition {
     private String title;
     private Category category;
     private Topic topic;
+    private String nickname;
+    private Long memberId;
 }

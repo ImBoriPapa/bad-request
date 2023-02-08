@@ -50,8 +50,8 @@ class BoardQueryRepositoryImplTest {
         //given
 
         //when
-        BoardSearchCondition condition1 = new BoardSearchCondition(40, 0L, null, null, null);
-        BoardSearchCondition condition2 = new BoardSearchCondition(40, 0L, "Webflux", null, null);
+        BoardSearchCondition condition1 = new BoardSearchCondition(40, 0L, null, null, null, null, null);
+        BoardSearchCondition condition2 = new BoardSearchCondition(40, 0L, "Webflux", null, null, null, null);
         List<BoardListResult> results1 = boardQueryRepositoryImpl.findBoardList(condition1)
                 .getResults();
         List<BoardListResult> results2 = boardQueryRepositoryImpl.findBoardList(condition2)
@@ -116,7 +116,7 @@ class BoardQueryRepositoryImplTest {
                 List.of(comment1, comment2, comment3)
         );
 
-        BoardDetailDto boardDetail = boardQueryRepositoryImpl.findBoardDetail(save.getId())
+        BoardDetailDto boardDetail = boardQueryRepositoryImpl.findBoardDetail(save.getId(), null)
                 .orElseThrow(() -> new IllegalArgumentException("검색 결과 없음"));
         //when
         boardDetail.getBoardImages()
@@ -131,7 +131,7 @@ class BoardQueryRepositoryImplTest {
     @DisplayName("댓글 조회 테스트")
     void commentTest() throws Exception {
         //given
-        BoardDetailDto detailDto = boardQueryRepositoryImpl.findBoardDetail(2L)
+        BoardDetailDto detailDto = boardQueryRepositoryImpl.findBoardDetail(2L, null)
                 .orElseThrow(() -> new IllegalArgumentException(""));
         //when
 

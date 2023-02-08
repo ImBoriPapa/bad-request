@@ -23,7 +23,6 @@ import java.util.OptionalLong;
 import static com.study.badrequest.domain.board.entity.QBoard.board;
 
 
-
 @Repository
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -32,7 +31,12 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Optional<BoardDetailDto> findBoardDetail(Long boardId) {
+    /**
+     * BOARD_CATEGORY_IDX 인덱스를 사용하여 검색
+     * Category 검색조건에 카테고리가 없으면 게시판 아이디로만 검색 인덱스 사용 x
+     */
+    @Override
+    public Optional<BoardDetailDto> findBoardDetail(Long boardId, Category category) {
         log.info("[fetchOneBoard QUERY START]");
         Board findBoard = jpaQueryFactory
                 .select(board)
@@ -41,7 +45,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                 .fetchJoin()
                 .leftJoin(board.boardImages)
                 .fetchJoin()
-                .where(board.id.eq(boardId))
+                .where(board.id.eq(boardId), eqCategory(category))
                 .distinct()
                 .fetchOne();
         log.info("[findBoardDetail QUERY FINISH]");
@@ -52,6 +56,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                         .boardImages(findBoard.getBoardImages())
                         .build());
     }
+
 
     @Override
     public BoardListDto findBoardList(BoardSearchCondition condition) {
@@ -77,7 +82,9 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                 .where(cursor(lastIndex),
                         eqCategory(condition.getCategory()),
                         title(condition.getTitle()),
-                        eqTopic(condition.getTopic())
+                        eqTopic(condition.getTopic()),
+                        eqNickname(condition.getNickname()),
+                        eqMember(condition.getMemberId())
                 )
                 .orderBy(board.id.desc())
                 //요청 데이터 size 보다 +1 조회
@@ -128,5 +135,13 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
 
     private BooleanExpression eqTopic(Topic topic) {
         return topic != null ? board.topic.eq(topic) : null;
+    }
+
+    private BooleanExpression eqNickname(String nickname) {
+        return nickname != null ? board.member.nickname.eq(nickname) : null;
+    }
+
+    private BooleanExpression eqMember(Long memberId) {
+        return memberId != null ? board.member.id.eq(memberId) : null;
     }
 }

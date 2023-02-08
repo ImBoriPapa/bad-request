@@ -235,12 +235,22 @@ include::{snippets}/board_getList_no_condition/http-response.adoc[]
 ==== 응답 필드
 
 include::{snippets}/board_getList_no_condition/response-fields.adoc[]
+
+=== 게시판 리스트 조건 검색
+
 검색 조건::
-* size : default 10
-* lastIndex : default 0 다음 데이터는 응답값의 lastIndex
-* title : 제목에 포함된 단어 검색
-* category : category로 검색 (대소문자 상관x)
-* topic : topic으로 검색 (대소문자 상관x)
+
+[%header%autowidth]
+|===
+| Param     | Description                | Default
+| size      |요청할 데이터 개수               | 10
+| lastIndex |다음 데이터 요청시 lastIndex     | 0
+| title     |제목에 포함된 단어 검색           | 0
+| category  |category로 검색 (대소문자 상관x)  | null
+| topic     |topic으로 검색 (대소문자 상관x)    | null
+| nickname  |회원 닉네임으로 검색              | null
+| memberId  |회원 식별 아이디로 검색            | null
+|===
 
 ==== 요청
 
@@ -274,7 +284,7 @@ include::{snippets}/category/http-request.adoc[]
 include::{snippets}/category/http-response.adoc[]
 include::{snippets}/category/response-fields.adoc[]
 
-=== Topic
+== Topic
 
 ==== 요청
 

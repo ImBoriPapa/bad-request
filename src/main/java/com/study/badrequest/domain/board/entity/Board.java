@@ -16,6 +16,7 @@ import java.util.List;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "BOARD", indexes = @Index(name = "BOARD_CATEGORY_IDX", columnList = "category"))
 @Getter
 public class Board {
     @Id
@@ -45,7 +46,7 @@ public class Board {
     @Column(name = "UPDATE_AT")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "board",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
     private List<BoardImage> boardImages = new ArrayList<>();
 
     @Builder(builderMethodName = "createBoard")
