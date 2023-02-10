@@ -12,6 +12,8 @@ import com.study.badrequest.utils.monitor.HeapMemoryMonitor;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -32,10 +35,18 @@ public class MvcDashBoardController {
     private final SystemMonitor systemMonitor;
     private final HeapMemoryMonitor heapMemoryMonitor;
 
+    private final Environment environment;
+
     @GetMapping("/dashboard/sse")
     public String sse() {
 
-        return "dashboard/sse-console";
+        boolean present = Arrays.stream(environment.getActiveProfiles())
+                .filter(p -> p.equalsIgnoreCase("prod"))
+                .findAny().isPresent();
+
+
+        return present ? "dashboard/sse-console-prod" : "dashboard/sse-console";
+
     }
 
     // TODO: 2023/01/31 수치 계산해보기

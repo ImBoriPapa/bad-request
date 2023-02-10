@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th>
+            System Data
+        </th>
+    </tr>
+    <tr>
+        <th>
+            Heap Memory Data
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td id="systemData"></td>
+    </tr>
+    <tr>
+        <td id="heapData">
+
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<script>
+
+    let systemValue = document.getElementById("systemData");
+    let heapValue = document.getElementById("heapData");
+
+    const systemData = new EventSource("http://www.bad-request.co.kr/dashboard/system");
+    const heapData = new EventSource("http://www.bad-request.co.kr/dashboard/heap");
+
+    systemData.addEventListener("data", function (event) {
+            console.log(event.data);
+
+            systemValue.innerHTML = event.data;
+        }
+    );
+
+    heapData.addEventListener("data", function (event) {
+            console.log(event.data);
+            heapValue.innerHTML = event.data;
+        }
+    );
+
+</script>
+
+</body>
+</html>
