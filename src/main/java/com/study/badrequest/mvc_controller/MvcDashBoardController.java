@@ -35,7 +35,7 @@ public class MvcDashBoardController {
     @GetMapping("/dashboard/sse")
     public String sse() {
 
-        return "/dashboard/sse-console";
+        return "dashboard/sse-console";
     }
 
     // TODO: 2023/01/31 수치 계산해보기

@@ -36,10 +36,14 @@ public class DashBoardController {
     private final MonitorService monitorService;
 
     /**
+     * SSE Protocol
+     *
      * GET: System Data
      * 운영환경 CPU, Memory 사용 정보
      *
-     * @return Media Type: text/event-stream
+     * @return
+     * ResponseEntity
+     * Media Type: text/event-stream
      * cpuUsagePercent : CPU 사용량
      * memoryTotalSpace: 총 메모리 공간
      * memoryUsageSpace: 사용중인 메모리 공간
@@ -55,6 +59,20 @@ public class DashBoardController {
                 .body(sseEmitter);
     }
 
+    /**
+     * SSE Protocol
+     *
+     * GET: System Data
+     * 운영환경 CPU, Memory 사용 정보
+     *
+     * @return
+     * ResponseEntity
+     * Media Type: text/event-stream
+     * cpuUsagePercent : CPU 사용량
+     * memoryTotalSpace: 총 메모리 공간
+     * memoryUsageSpace: 사용중인 메모리 공간
+     * memoryFreeSpace :사용가능한 메모리 공간
+     */
 
     @GetMapping(value = "/dashboard/heap", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> getHeapData() {
