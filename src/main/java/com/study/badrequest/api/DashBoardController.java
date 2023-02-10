@@ -56,6 +56,7 @@ public class DashBoardController {
 
         return ResponseEntity.ok()
                 .header(MediaType.TEXT_EVENT_STREAM_VALUE)
+                .header("X-Accel-Buffering","no")
                 .body(sseEmitter);
     }
 
@@ -81,6 +82,7 @@ public class DashBoardController {
         return ResponseEntity
                 .ok()
                 .header(MediaType.TEXT_EVENT_STREAM_VALUE)
+                .header("X-Accel-Buffering","no")
                 .body(sseEmitter);
     }
 

@@ -8,8 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.yaml.snakeyaml.emitter.Emitter;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +26,11 @@ public class MonitorService {
 
     private final int THREAD_DELAY = 5000;
 
+    private final List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+
     private void sendData(SseEmitter sseEmitter, Object data) {
         try {
+            this.emitters.add(sseEmitter);
             sseEmitter.send(SseEmitter.event()
                     .name("data")
                     .data(data));
@@ -32,7 +38,8 @@ public class MonitorService {
             String dataName = data.getClass().getSimpleName();
 
             sseEmitter.complete();
-            sseEmitter.onCompletion(() -> log.debug("[SEND " + dataName + " Data Completion]"));
+            sseEmitter.onCompletion(() -> log.debug("[SEND " + dataName + " Data Completion]"
+                    , this.emitters.remove(sseEmitter)));
 
             Thread.sleep(THREAD_DELAY);
         } catch (Exception e) {
