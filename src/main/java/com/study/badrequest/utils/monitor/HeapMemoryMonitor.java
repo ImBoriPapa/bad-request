@@ -1,32 +1,22 @@
 package com.study.badrequest.utils.monitor;
 
 
-import com.study.badrequest.domain.dashboard.repository.HeapMemoryEntity;
-import com.study.badrequest.domain.dashboard.repository.MemoryHeapMemoryRepository;
+
 import lombok.*;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.MemoryUsage;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MemoryMonitor {
-
-    private final MemoryHeapMemoryRepository memoryHeapMemoryRepository;
-    private List<HeapMemoryEntity> list = new ArrayList<>();
+public class HeapMemoryMonitor {
 
     /**
      * init = 초기 상태 상태의 메모리
@@ -51,7 +41,6 @@ public class MemoryMonitor {
         long nonHeapMemoryMax = nonHeapMemoryUsage.getMax();
 
         return HeapMemoryDto.builder()
-                .date(LocalDateTime.now().atZone(ZoneId.of("Asia/Seoul")).toLocalDateTime())
                 .heapMemoryInit(heapMemoryInit)
                 .heapMemoryUsed(heapMemoryUsed)
                 .heapMemoryUsageCommitted(heapMemoryUsageCommitted)
@@ -68,7 +57,6 @@ public class MemoryMonitor {
     @AllArgsConstructor
     @Builder
     public static class HeapMemoryDto {
-        private LocalDateTime date;
         private long heapMemoryInit;
         private long heapMemoryUsed;
         private long heapMemoryUsageCommitted;

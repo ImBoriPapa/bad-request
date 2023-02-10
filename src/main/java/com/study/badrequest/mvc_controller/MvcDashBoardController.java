@@ -7,8 +7,8 @@ import com.study.badrequest.domain.log.repositoey.LogRepository;
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
 import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
-import com.study.badrequest.utils.monitor.CpuMonitor;
-import com.study.badrequest.utils.monitor.MemoryMonitor;
+import com.study.badrequest.utils.monitor.SystemMonitor;
+import com.study.badrequest.utils.monitor.HeapMemoryMonitor;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -29,8 +29,14 @@ import java.util.List;
 public class MvcDashBoardController {
     private final LogQueryRepositoryImpl logQueryRepository;
     private final LogRepository logRepository;
-    private final CpuMonitor cpuMonitor;
-    private final MemoryMonitor memoryMonitor;
+    private final SystemMonitor systemMonitor;
+    private final HeapMemoryMonitor heapMemoryMonitor;
+
+    @GetMapping("/dashboard/sse")
+    public String sse() {
+
+        return "/dashboard/sse-console";
+    }
 
     // TODO: 2023/01/31 수치 계산해보기
     @GetMapping("/dashboard")
@@ -42,10 +48,10 @@ public class MvcDashBoardController {
             @RequestParam(value = "username", required = false) String username,
             Model model) {
 
-        CpuMonitor.CpuMonitorDto cpuMonitorDto = cpuMonitor.monitor();
-        model.addAttribute("cpu", cpuMonitorDto);
+        SystemMonitor.SystemMonitorDto systemMonitorDto = systemMonitor.monitor();
+        model.addAttribute("cpu", systemMonitorDto);
 
-        MemoryMonitor.HeapMemoryDto heapMemoryDto = memoryMonitor.monitor();
+        HeapMemoryMonitor.HeapMemoryDto heapMemoryDto = heapMemoryMonitor.monitor();
         model.addAttribute("memory", heapMemoryDto);
 
         List<LogDto> allLog = logQueryRepository.findAllLog(size, localDateTime, logLevel, clientIp, username);
@@ -55,7 +61,7 @@ public class MvcDashBoardController {
     }
 
     @GetMapping("/dashboard/log/{id}")
-    public String errorConsole(@PathVariable Long id,Model model){
+    public String errorConsole(@PathVariable Long id, Model model) {
         Log trace = logRepository.findById(id).orElseThrow(() -> new ImageFileUploadException("로그를 찾을수 없습니다."));
 
 
@@ -66,7 +72,7 @@ public class MvcDashBoardController {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    static class TraceDto{
+    static class TraceDto {
         private Long id;
         private String trace;
     }

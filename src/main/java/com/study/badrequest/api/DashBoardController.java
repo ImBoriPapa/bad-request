@@ -1,7 +1,7 @@
 package com.study.badrequest.api;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
+import com.study.badrequest.domain.admin.MonitorService;
 import com.study.badrequest.domain.log.entity.LogLevel;
 
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
@@ -14,17 +14,16 @@ import lombok.*;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Flow;
 import java.util.stream.Collectors;
 
 
@@ -32,9 +31,41 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class DashBoardController {
-
     private final LogQueryRepositoryImpl logQueryRepository;
     private final RefreshTokenService refreshTokenService;
+    private final MonitorService monitorService;
+
+    /**
+     * GET: System Data
+     * 운영환경 CPU, Memory 사용 정보
+     *
+     * @return Media Type: text/event-stream
+     * cpuUsagePercent : CPU 사용량
+     * memoryTotalSpace: 총 메모리 공간
+     * memoryUsageSpace: 사용중인 메모리 공간
+     * memoryFreeSpace :사용가능한 메모리 공간
+     */
+
+    @GetMapping(value = "/dashboard/system", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> getSystemData() {
+        SseEmitter sseEmitter = monitorService.suppleSystemData();
+
+        return ResponseEntity.ok()
+                .header(MediaType.TEXT_EVENT_STREAM_VALUE)
+                .body(sseEmitter);
+    }
+
+
+    @GetMapping(value = "/dashboard/heap", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> getHeapData() {
+        SseEmitter sseEmitter = monitorService.suppleHeapData();
+
+        return ResponseEntity
+                .ok()
+                .header(MediaType.TEXT_EVENT_STREAM_VALUE)
+                .body(sseEmitter);
+    }
+
 
     @GetMapping("/refresh")
     public List<RefreshToken> getAll() {
@@ -47,8 +78,6 @@ public class DashBoardController {
 
         return list;
     }
-
-
 
     @GetMapping("/log")
     @CustomLogTracer

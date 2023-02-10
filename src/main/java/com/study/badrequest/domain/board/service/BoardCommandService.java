@@ -61,10 +61,14 @@ public class BoardCommandService {
 
     @CustomLogTracer
     public BoardResponse.Update update(Long boardId, BoardRequest.Update form, List<MultipartFile> images) {
+
+        Member member = memberRepository.findById(form.getMemberId())
+                .orElseThrow(() -> new BoardException(CustomStatus.NOT_MATCH_BOARD_WRITER));
+
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardException(CustomStatus.NOT_FOUND_BOARD));
 
-        deleteImages(images, board);
+        patchImages(images, board);
 
         saveImages(images, board);
 
@@ -92,6 +96,7 @@ public class BoardCommandService {
         }
         boardRepository.delete(board);
     }
+
     @CustomLogTracer
     public void saveImages(List<MultipartFile> images, Board board) {
         if (images != null) {
@@ -114,14 +119,15 @@ public class BoardCommandService {
     }
 
     @CustomLogTracer
-    public void deleteImages(List<MultipartFile> images, Board board) {
-        if (images == null) {
+    public void patchImages(List<MultipartFile> images, Board board) {
+        if (images != null) {
             boardImageRepository.findByBoard(board)
                     .stream()
                     .map(BoardImage::getStoredFileName)
                     .forEach(imageUploader::deleteFile);
         }
     }
+
     @CustomLogTracer
     public Board getBoard(Long boardId) {
         return boardRepository.findById(boardId)

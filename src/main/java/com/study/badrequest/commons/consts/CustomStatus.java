@@ -32,6 +32,7 @@ public enum CustomStatus {
      * 게시판 관련
      */
     NOT_FOUND_BOARD(3000, "존재하지 않는 게시판 입니다."),
+    NOT_MATCH_BOARD_WRITER(3001, "게시판 수정은 작성자만 가능합니다."),
     /**
      * 댓글 관련
      */

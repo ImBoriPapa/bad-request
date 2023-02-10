@@ -1,6 +1,8 @@
 package com.study.badrequest.board.service;
 
 
+import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.entity.Board;
@@ -23,6 +25,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
+
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -34,14 +38,19 @@ class BoardCommandServiceTest {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     @Test
     @DisplayName("board 생성")
     void createBoard() throws Exception {
         //given
+        Member member = memberRepository.findByEmail(SAMPLE_USER_EMAIL).get();
+
         BoardRequest.Create form = BoardRequest.Create
                 .builder()
-                .memberId(1L)
                 .title("제목")
+                .memberId(member.getId())
                 .category(Category.KNOWLEDGE)
                 .contents("내용")
                 .topic(Topic.JAVA)
@@ -60,10 +69,12 @@ class BoardCommandServiceTest {
     @DisplayName("Board 생성 이미지 없이")
     void createBoardWithImage() throws Exception {
         //given
+        Member member = memberRepository.findByEmail(SAMPLE_USER_EMAIL).get();
+
         BoardRequest.Create form = BoardRequest.Create
                 .builder()
-                .memberId(1L)
                 .title("제목")
+                .memberId(member.getId())
                 .category(Category.KNOWLEDGE)
                 .contents("내용")
                 .topic(Topic.JAVA)
@@ -79,9 +90,11 @@ class BoardCommandServiceTest {
     @DisplayName("게시판 수정")
     void updateBoard() throws Exception{
         //given
+        Member member = memberRepository.findByEmail(SAMPLE_USER_EMAIL).get();
         Board board = boardRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException(""));
         BoardRequest.Update newData = BoardRequest.Update
                 .builder()
+                .memberId(member.getId())
                 .title("변경된 제목")
                 .contents("변경된 내용")
                 .build();

@@ -32,6 +32,8 @@ public class BoardRequest {
     @AllArgsConstructor
     @Builder
     public static class Update {
+        @NotNull(message = "회원 식별자는 필수 입니다.")
+        private Long memberId;
         private String title;
         private String contents;
         private Topic topic;

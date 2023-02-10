@@ -70,7 +70,7 @@ public class SecurityConfig {
                 //test
                 .antMatchers("/test/teacher")
                 .hasAuthority("ROLL_TEACHER")
-                .antMatchers("/api/image", "/test")
+                .antMatchers("/api/image", "/test","/graph","/sse")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

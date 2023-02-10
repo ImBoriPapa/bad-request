@@ -34,6 +34,18 @@ public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSu
     /**
      * 게시판 내용 조회 응답
      */
+    public EntityModel<BoardResponse.Update> toModel(BoardResponse.Update result) {
+        return EntityModel.of(result,
+                linkTo(BoardController.class).slash("/board").withRel("POST : 게시판 생성"),
+                linkTo(BoardController.class).slash("/board").slash(result.getBoardId()).withRel("DELETE : 게시판 삭제"),
+                linkTo(BoardController.class).slash("/board").slash(result.getBoardId()).withRel("GET : 게시판 내용"),
+                linkTo(BoardController.class).slash("/board").withRel("GET : 게시판 리스트")
+        );
+    }
+
+    /**
+     * 게시판 내용 조회 응답
+     */
     public EntityModel<BoardDetailDto> toModel(BoardDetailDto result) {
         return EntityModel.of(result,
                 linkTo(BoardController.class).slash("/board").withRel("POST : 게시판 생성"),

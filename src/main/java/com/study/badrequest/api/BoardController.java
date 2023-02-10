@@ -15,11 +15,13 @@ import com.study.badrequest.exception.custom_exception.BoardException;
 import com.study.badrequest.exception.custom_exception.RequestParamException;
 import com.study.badrequest.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
+import com.study.badrequest.utils.validator.BoardValidator;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,8 +41,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 public class BoardController {
     private final BoardCommandService boardCommandService;
     private final BoardQueryRepository boardQueryRepository;
+
+    private final BoardValidator boardValidator;
     private final BoardResponseModelAssembler boardResponseModelAssembler;
 
+    // TODO: 2023/02/09 ReqeustPart는 Valid 작동안됨 -> boardValidator 구현
     @PostMapping("/board")
     @CustomLogTracer
     public ResponseEntity postBoard(@Valid
@@ -61,17 +66,30 @@ public class BoardController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
+    /**
+     * memberId 필수
+     * 각각 수정값이 없을 경우 기존 데이터 유지
+     * title
+     * contents;
+     * topic;
+     * category;
+     * images;
+     */
     @PatchMapping("/board/{boardId}")
     public ResponseEntity patchBoard(
-            @PathVariable(name = "boardId") Long boardId
-            , BoardRequest.Update form
-            , List<MultipartFile> images) {
+                                     @PathVariable(name = "boardId") Long boardId,
+                                     @RequestPart(name = "form") BoardRequest.Update form,
+                                     @RequestPart(name = "images", required = false) List<MultipartFile> images) {
+
+        boardValidator.validateUpdateForm(form);
 
         BoardResponse.Update update = boardCommandService.update(boardId, form, images);
 
+        EntityModel<BoardResponse.Update> entityModel = boardResponseModelAssembler.toModel(update);
+
         return ResponseEntity
                 .ok()
-                .body(update);
+                .body(entityModel);
     }
 
     @GetMapping("/board")
