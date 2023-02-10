@@ -37,8 +37,8 @@
     let systemValue = document.getElementById("systemData");
     let heapValue = document.getElementById("heapData");
 
-    const systemData = new EventSource("http://www.bad-request.co.kr/dashboard/system");
-    const heapData = new EventSource("http://www.bad-request.co.kr/dashboard/heap");
+    const systemData = new EventSource("http://www.bad-request.co.kr/api/v1/dashboard/system");
+    const heapData = new EventSource("http://www.bad-request.co.kr/api/v1/dashboard/heap");
 
     systemData.addEventListener("data", function (event) {
             console.log(event.data);

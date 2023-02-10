@@ -25,12 +25,12 @@ class DashBoardControllerTest {
     @Autowired
     MockMvc mockMvc;
 
-//    @Test
+    @Test
     @DisplayName("SSE system data 테스트")
     void getSystem() throws Exception {
         //given
         //when
-        mockMvc.perform(get(""))
+        mockMvc.perform(get("/dashboard/system"))
                 .andDo(print());
 
         //then

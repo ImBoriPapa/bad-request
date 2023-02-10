@@ -50,7 +50,7 @@ public class DashBoardController {
      * memoryFreeSpace :사용가능한 메모리 공간
      */
 
-    @GetMapping(value = "/dashboard/system", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/api/v1/dashboard/system", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> getSystemData() {
         SseEmitter sseEmitter = monitorService.suppleSystemData();
 

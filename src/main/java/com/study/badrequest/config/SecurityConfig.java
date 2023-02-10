@@ -62,7 +62,7 @@ public class SecurityConfig {
                 .antMatchers(VALUES + "/*")
                 .permitAll()
                 //dashboard
-                .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh")
+                .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh","/api/v1/dashboard/*")
                 .permitAll()
                 //static
                 .antMatchers("/static/**", "/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
