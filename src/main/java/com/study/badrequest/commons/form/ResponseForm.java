@@ -2,12 +2,11 @@ package com.study.badrequest.commons.form;
 
 
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.commons.exception.BasicException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor

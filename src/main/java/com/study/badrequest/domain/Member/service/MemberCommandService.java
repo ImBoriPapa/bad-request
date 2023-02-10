@@ -1,6 +1,5 @@
 package com.study.badrequest.domain.Member.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.domain.Member.entity.Authority;
@@ -10,7 +9,7 @@ import com.study.badrequest.domain.Member.entity.ProfileImage;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.net.URL;
 
 @Service
 @Transactional

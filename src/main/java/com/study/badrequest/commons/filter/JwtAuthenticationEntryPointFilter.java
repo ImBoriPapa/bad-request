@@ -1,4 +1,4 @@
-package com.study.badrequest.filter;
+package com.study.badrequest.commons.filter;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.utils.jwt.JwtAuthenticationFilterResponseFactory;

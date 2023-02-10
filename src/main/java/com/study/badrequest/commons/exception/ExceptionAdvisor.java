@@ -1,9 +1,9 @@
-package com.study.badrequest.exception;
+package com.study.badrequest.commons.exception;
 
+import com.study.badrequest.commons.exception.custom_exception.JwtAuthenticationException;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
-import com.study.badrequest.exception.custom_exception.MemberException;
-import com.study.badrequest.exception.custom_exception.TokenException;
+import com.study.badrequest.commons.exception.custom_exception.TokenException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

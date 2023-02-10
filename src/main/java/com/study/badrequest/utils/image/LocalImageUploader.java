@@ -2,7 +2,7 @@ package com.study.badrequest.utils.image;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
+import com.study.badrequest.commons.exception.custom_exception.ImageFileUploadException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;

@@ -1,4 +1,4 @@
-package com.study.badrequest.config;
+package com.study.badrequest.commons.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

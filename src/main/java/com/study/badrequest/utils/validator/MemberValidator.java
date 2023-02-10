@@ -4,7 +4,7 @@ import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.repository.MemberRepository;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.custom_exception.CustomValidationException;
+import com.study.badrequest.commons.exception.custom_exception.CustomValidationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

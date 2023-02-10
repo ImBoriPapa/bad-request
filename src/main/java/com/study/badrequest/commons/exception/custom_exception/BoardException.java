@@ -1,26 +1,26 @@
-package com.study.badrequest.exception.custom_exception;
+package com.study.badrequest.commons.exception.custom_exception;
 
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.commons.exception.BasicException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class CommentException extends BasicException {
+public class BoardException extends BasicException {
 
-    public CommentException() {
+    public BoardException() {
         super();
     }
 
-    public CommentException(String message) {
+    public BoardException(String message) {
         super(message);
     }
 
-    public CommentException(CustomStatus status) {
+    public BoardException(CustomStatus status) {
         super(status);
     }
 
-    public CommentException(CustomStatus status, BindingResult bindingResult) {
+    public BoardException(CustomStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 

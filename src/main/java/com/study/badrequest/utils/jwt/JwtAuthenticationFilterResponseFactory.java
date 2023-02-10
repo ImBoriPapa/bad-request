@@ -3,7 +3,7 @@ package com.study.badrequest.utils.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
+import com.study.badrequest.commons.exception.custom_exception.JwtAuthenticationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

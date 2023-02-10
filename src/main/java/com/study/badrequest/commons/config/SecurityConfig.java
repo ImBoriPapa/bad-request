@@ -1,8 +1,8 @@
-package com.study.badrequest.config;
+package com.study.badrequest.commons.config;
 
-import com.study.badrequest.filter.JwtAccessDeniedFilter;
-import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
-import com.study.badrequest.filter.JwtAuthenticationFilter;
+import com.study.badrequest.commons.filter.JwtAccessDeniedFilter;
+import com.study.badrequest.commons.filter.JwtAuthenticationEntryPointFilter;
+import com.study.badrequest.commons.filter.JwtAuthenticationFilter;
 import com.study.badrequest.domain.login.service.JwtUserDetailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
-import static com.study.badrequest.health.ValueController.VALUES;
+import static com.study.badrequest.api.ValueController.VALUES;
 
 @Configuration
 @EnableWebSecurity

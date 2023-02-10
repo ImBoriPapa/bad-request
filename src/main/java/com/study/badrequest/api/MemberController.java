@@ -6,8 +6,8 @@ import com.study.badrequest.domain.Member.dto.MemberRequest;
 import com.study.badrequest.domain.Member.dto.MemberResponse;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.exception.custom_exception.CustomValidationException;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.commons.exception.custom_exception.CustomValidationException;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.validator.MemberValidator;

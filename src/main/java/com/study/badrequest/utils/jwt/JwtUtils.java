@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.jwt;
 
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.custom_exception.TokenException;
+import com.study.badrequest.commons.exception.custom_exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

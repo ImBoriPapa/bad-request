@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.board.entity;
 
 
-import com.study.badrequest.exception.custom_exception.RequestParamException;
+import com.study.badrequest.commons.exception.custom_exception.RequestParamException;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 

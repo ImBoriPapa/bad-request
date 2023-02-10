@@ -1,13 +1,13 @@
-package com.study.badrequest.exception.custom_exception;
+package com.study.badrequest.commons.exception.custom_exception;
 
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.commons.exception.BasicException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class ImageFileUploadException extends BasicException {
-    public ImageFileUploadException(String message) {
+public class CustomValidationException extends BasicException {
+    public CustomValidationException(String message) {
         super(message);
     }
 
@@ -26,15 +26,15 @@ public class ImageFileUploadException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public ImageFileUploadException() {
+    public CustomValidationException() {
         super();
     }
 
-    public ImageFileUploadException(CustomStatus status) {
+    public CustomValidationException(CustomStatus status) {
         super(status);
     }
 
-    public ImageFileUploadException(CustomStatus status, BindingResult bindingResult) {
+    public CustomValidationException(CustomStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

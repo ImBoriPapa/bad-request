@@ -1,4 +1,4 @@
-package com.study.badrequest.health;
+package com.study.badrequest.api;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.board.entity.Category;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static com.study.badrequest.health.ValueController.VALUES;
+import static com.study.badrequest.api.ValueController.VALUES;
 
 @RestController
 @Slf4j

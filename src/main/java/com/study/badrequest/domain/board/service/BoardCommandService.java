@@ -12,7 +12,7 @@ import com.study.badrequest.domain.comment.entity.Comment;
 import com.study.badrequest.domain.board.repository.BoardImageRepository;
 import com.study.badrequest.domain.board.repository.BoardRepository;
 import com.study.badrequest.domain.comment.repository.CommentRepository;
-import com.study.badrequest.exception.custom_exception.BoardException;
+import com.study.badrequest.commons.exception.custom_exception.BoardException;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

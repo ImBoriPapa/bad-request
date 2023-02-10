@@ -1,13 +1,14 @@
-package com.study.badrequest.exception.custom_exception;
+package com.study.badrequest.commons.exception.custom_exception;
 
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.commons.exception.BasicException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class JwtAuthenticationException extends BasicException {
-    public JwtAuthenticationException(String message) {
+public class RequestParamException extends BasicException {
+
+    public RequestParamException(String message) {
         super(message);
     }
 
@@ -26,15 +27,15 @@ public class JwtAuthenticationException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public JwtAuthenticationException() {
+    public RequestParamException() {
         super();
     }
 
-    public JwtAuthenticationException(CustomStatus status) {
+    public RequestParamException(CustomStatus status) {
         super(status);
     }
 
-    public JwtAuthenticationException(CustomStatus status, BindingResult bindingResult) {
+    public RequestParamException(CustomStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

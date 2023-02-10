@@ -10,7 +10,7 @@ import com.study.badrequest.domain.Member.service.MemberCommandService;
 
 import com.study.badrequest.domain.Member.dto.MemberRequest;
 
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;

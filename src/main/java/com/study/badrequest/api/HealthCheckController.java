@@ -1,4 +1,4 @@
-package com.study.badrequest.health;
+package com.study.badrequest.api;
 
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.AllArgsConstructor;

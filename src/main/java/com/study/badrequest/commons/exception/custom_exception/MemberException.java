@@ -1,13 +1,14 @@
-package com.study.badrequest.exception.custom_exception;
+package com.study.badrequest.commons.exception.custom_exception;
 
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.commons.exception.BasicException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class CustomValidationException extends BasicException {
-    public CustomValidationException(String message) {
+public class MemberException extends BasicException {
+
+    public MemberException(String message) {
         super(message);
     }
 
@@ -26,15 +27,15 @@ public class CustomValidationException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public CustomValidationException() {
+    public MemberException() {
         super();
     }
 
-    public CustomValidationException(CustomStatus status) {
+    public MemberException(CustomStatus status) {
         super(status);
     }
 
-    public CustomValidationException(CustomStatus status, BindingResult bindingResult) {
+    public MemberException(CustomStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

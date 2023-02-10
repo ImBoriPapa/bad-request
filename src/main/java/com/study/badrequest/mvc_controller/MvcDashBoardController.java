@@ -6,7 +6,7 @@ import com.study.badrequest.domain.log.entity.LogLevel;
 import com.study.badrequest.domain.log.repositoey.LogRepository;
 import com.study.badrequest.domain.log.repositoey.query.LogDto;
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
-import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
+import com.study.badrequest.commons.exception.custom_exception.ImageFileUploadException;
 import com.study.badrequest.utils.monitor.SystemMonitor;
 import com.study.badrequest.utils.monitor.HeapMemoryMonitor;
 

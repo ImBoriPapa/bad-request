@@ -1,4 +1,4 @@
-package com.study.badrequest.filter;
+package com.study.badrequest.commons.filter;
 
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.utils.jwt.JwtStatus;

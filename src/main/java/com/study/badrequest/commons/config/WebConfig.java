@@ -1,4 +1,4 @@
-package com.study.badrequest.config;
+package com.study.badrequest.commons.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.domain.board.entity.Category;
