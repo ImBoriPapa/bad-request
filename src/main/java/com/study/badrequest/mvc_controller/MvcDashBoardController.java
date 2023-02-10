@@ -41,8 +41,7 @@ public class MvcDashBoardController {
     public String sse() {
 
         boolean present = Arrays.stream(environment.getActiveProfiles())
-                .filter(p -> p.equalsIgnoreCase("prod"))
-                .findAny().isPresent();
+                .anyMatch(p -> p.equalsIgnoreCase("prod"));
 
 
         return present ? "dashboard/sse-console-prod" : "dashboard/sse-console";
