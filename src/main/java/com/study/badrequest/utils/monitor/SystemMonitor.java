@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import java.lang.management.ManagementFactory;
 
+import static com.study.badrequest.utils.monitor.SystemMonitor.SystemDataType.*;
+
 @Component
 public class SystemMonitor {
     // CPU 사용량 %
@@ -23,40 +25,68 @@ public class SystemMonitor {
 
     public SystemMonitorDto monitor() {
 
-        cpuUsagePercent = getMemoryUsageSpace();
-        memoryTotalSpace = getTotalMemorySize();
-        memoryUsageSpace = getMemoryUsageSpace();
-        memoryFreeSpace = getFreeMemorySize();
+        cpuUsagePercent = getSystemData(CPU, osBean);
+        memoryTotalSpace = getSystemData(TOTAL, osBean);
+        memoryUsageSpace = getSystemData(USAGE, osBean);
+        memoryFreeSpace = getSystemData(FREE, osBean);
 
 
         return SystemMonitorDto.builder()
-                .cpuUsagePercent(getCpuUsagePercent())
-                .memoryFreeSpace(getFreeMemorySize())
-                .memoryTotalSpace(getTotalMemorySize())
-                .memoryUsageSpace(getMemoryUsageSpace())
+                .cpuUsagePercent(cpuUsagePercent)
+                .memoryTotalSpace(memoryTotalSpace)
+                .memoryUsageSpace(memoryUsageSpace)
+                .memoryFreeSpace(memoryFreeSpace)
                 .build();
     }
 
-    private double getCpuUsagePercent() {
-        return Math.round(osBean.getSystemCpuLoad() * 100);
+    private double getSystemData(SystemDataType type, OperatingSystemMXBean osBean) {
+
+        switch (type) {
+            case CPU:
+                return Math.round(osBean.getSystemCpuLoad() * 100);
+            case TOTAL:
+                return getTotalMemorySize();
+
+            case USAGE:
+                return getMemoryUsageSpace();
+
+            case FREE:
+                return getFreeMemorySize();
+
+            default:
+                return 0.0;
+        }
+
     }
 
-    private double getTotalMemorySize() {
-        return Math.round(byteToGigabyte(osBean.getTotalPhysicalMemorySize()) * 1000) / 1000.0;
-    }
-
+    /**
+     * 메모리 총 사이즈 - 메모리 여유 사이즈
+     */
     private double getMemoryUsageSpace() {
         return getTotalMemorySize() - getFreeMemorySize();
+    }
+    private double getTotalMemorySize() {
+        return Math.round(byteToGigabyte(osBean.getTotalPhysicalMemorySize()) * 1000) / 1000.0;
     }
 
     private double getFreeMemorySize() {
         return Math.round(byteToGigabyte(osBean.getFreePhysicalMemorySize()) * 1000) / 1000.0;
     }
 
+    /**
+     * Byte -> GigaByte
+     */
     private double byteToGigabyte(long b) {
         return (double) b / (1024 * 1024 * 1024);
     }
 
+
+    enum SystemDataType {
+        CPU,
+        TOTAL,
+        USAGE,
+        FREE
+    }
 
     @Getter
     @NoArgsConstructor

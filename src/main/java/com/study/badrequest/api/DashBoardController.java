@@ -37,13 +37,13 @@ public class DashBoardController {
 
     /**
      * SSE Protocol
-     *
-     * GET: System Data
+     * <p>
      * 운영환경 CPU, Memory 사용 정보
      *
-     * @return
-     * ResponseEntity
+     * @return ResponseEntity
+     * <p>
      * Media Type: text/event-stream
+     * <p>
      * cpuUsagePercent : CPU 사용량
      * memoryTotalSpace: 총 메모리 공간
      * memoryUsageSpace: 사용중인 메모리 공간
@@ -62,16 +62,16 @@ public class DashBoardController {
     /**
      * SSE Protocol
      *
-     * GET: System Data
-     * 운영환경 CPU, Memory 사용 정보
+     * JVM heapMemory, nonHeapMemory
      *
-     * @return
-     * ResponseEntity
+     * @return ResponseEntity
+     * <p>
      * Media Type: text/event-stream
-     * cpuUsagePercent : CPU 사용량
-     * memoryTotalSpace: 총 메모리 공간
-     * memoryUsageSpace: 사용중인 메모리 공간
-     * memoryFreeSpace :사용가능한 메모리 공간
+     * <p>
+     * init = 초기 상태의 메모리
+     * used = 현재 사용중인 메모
+     * committed =현재 할당된 메모리(heap 에 JVM 이 할당한)
+     * max = 사용할 수 있는 최대 메모리(heap 에 JVM 이 할당할 수 있는 최대)
      */
 
     @GetMapping(value = "/dashboard/heap", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
