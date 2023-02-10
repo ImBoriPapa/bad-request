@@ -75,7 +75,7 @@ public class DashBoardController {
      * max = 사용할 수 있는 최대 메모리(heap 에 JVM 이 할당할 수 있는 최대)
      */
 
-    @GetMapping(value = "/dashboard/heap", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/api/v1/dashboard/heap", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> getHeapData() {
         SseEmitter sseEmitter = monitorService.suppleHeapData();
 
