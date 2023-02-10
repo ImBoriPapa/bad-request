@@ -287,6 +287,97 @@ include::{snippets}/board_get_detail/http-response.adoc[]
 
 include::{snippets}/board_get_detail/response-fields.adoc[]
 
+== Dashboard
+=== System 정보 (SSE 프로토콜 통신)
+
+==== 연결
+include::{snippets}/dashboard-system/http-request.adoc[]
+==== 응답
+include::{snippets}/dashboard-system/http-response.adoc[]
+
+연결::
+1. 연결시 10초 단위로 데이터가 갱신됩니다.
+2. 응답 Content-Type은 text/event-stream입니다.
+3. 응답 데이터는 key, value 형태의 필드 event,data로 제공됩니다.
+4. 응답 데이터 Client 사용 예시:   new EventSource('url'); 객체로 연결 및 응답 데이터 사용
+5. 브라우저 종료시 연결 종료
+[source,javascript]
+----
+    const systemData = new EventSource(
+        'http://www.bad-request.kr/api/v1/dashboard/system'
+    );
+
+
+    systemData.addEventListener("data", function (event) {
+            console.log(event.data);
+
+            systemValue.innerHTML = event.data;
+        }
+    );
+----
+
+event::
+- Type: String
+- event 이름
+Data::
+- Type: Object
+- 데이터명
+[%header%autowidth]
+|===
+|path|type|description|단위
+|cpuUsagePercent|Number| CPU 사용량| %
+|memoryTotalSpace|Number|전체 메모리 크기|GB
+|memoryUsageSpace|Number|사용중인 메모리 크기|GB
+|memoryFreeSpace|Number|여유 메모리 크기|GB
+|===
+
+=== HeapMemory 정보(SSE 프로토콜 통신)
+==== 요청
+include::{snippets}/dashboard-heap/http-request.adoc[]
+==== 응답
+include::{snippets}/dashboard-heap/http-response.adoc[]
+연결::
+1. 연결시 10초 단위로 데이터가 갱신됩니다.
+2. 응답 Content-Type은 text/event-stream입니다.
+3. 응답 데이터는 key, value 형태의 필드 event,data로 제공됩니다.
+4. 응답 데이터 Client 사용 예시:   new EventSource('url'); 객체로 연결 및 응답 데이터 사용
+5. 브라우저 종료시 연결 종료
+[source,javascript]
+----
+    const heapData = new EventSource(
+        'http://www.bad-request.kr/api/v1/dashboard/heap'
+    );
+
+
+    heapData.addEventListener("data", function (event) {
+            console.log(event.data);
+
+            systemValue.innerHTML = event.data;
+        }
+    );
+----
+
+event::
+- Type: String
+- event 이름
+Data::
+- Type: Object
+- 데이터명
+
+[%header%autowidth]
+|===
+|path|type|description|단위
+|heapMemoryInit|Number| JVM에 할당 받은 메모리| GB
+|heapMemoryUsed|Number| 현재 사용중인 heap 메모리|GB
+|heapMemoryUsageCommitted|Number|현재 할당된 메모리(heap 에 JVM 이 할당한)|GB
+|heapMemoryUsageMax|Number|사용할 수 있는 최대 메모리(heap 에 JVM 이 할당할 수 있는 최대)|GB
+|nonHeapMemoryInit|Number|JVM에 할당 받은 none heap 메모리|GB
+|nonHeapMemoryUsed|Number|여유 none heap 메모리 크기|GB
+|nonHeapMemoryCommitted|Number|여유 none heap 메모리 크기|GB
+|nonHeapMemoryMax|Number|여유 none heap 메모리 크기|GB
+|===
+
+
 == Values
 
 === Custom Status
@@ -300,7 +391,7 @@ include::{snippets}/custom-status/http-request.adoc[]
 include::{snippets}/custom-status/http-response.adoc[]
 include::{snippets}/custom-status/response-fields.adoc[]
 
-== Category
+=== Category
 
 ==== 요청
 
@@ -311,7 +402,7 @@ include::{snippets}/category/http-request.adoc[]
 include::{snippets}/category/http-response.adoc[]
 include::{snippets}/category/response-fields.adoc[]
 
-== Topic
+=== Topic
 
 ==== 요청
 

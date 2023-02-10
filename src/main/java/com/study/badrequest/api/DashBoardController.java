@@ -55,7 +55,7 @@ public class DashBoardController {
         SseEmitter sseEmitter = monitorService.suppleSystemData();
 
         return ResponseEntity.ok()
-                .header(MediaType.TEXT_EVENT_STREAM_VALUE)
+                .contentType(MediaType.TEXT_EVENT_STREAM)
                 .header("X-Accel-Buffering","no")
                 .body(sseEmitter);
     }
@@ -81,7 +81,7 @@ public class DashBoardController {
 
         return ResponseEntity
                 .ok()
-                .header(MediaType.TEXT_EVENT_STREAM_VALUE)
+                .contentType(MediaType.TEXT_EVENT_STREAM)
                 .header("X-Accel-Buffering","no")
                 .body(sseEmitter);
     }

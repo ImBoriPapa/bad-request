@@ -476,21 +476,17 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_게시판_상세_조회">게시판 상세 조회</a></li>
 </ul>
 </li>
+<li><a href="#_dashboard">Dashboard</a>
+<ul class="sectlevel2">
+<li><a href="#_system_정보_sse_프로토콜_통신">System 정보 (SSE 프로토콜 통신)</a></li>
+<li><a href="#_heapmemory_정보sse_프로토콜_통신">HeapMemory 정보(SSE 프로토콜 통신)</a></li>
+</ul>
+</li>
 <li><a href="#_values">Values</a>
 <ul class="sectlevel2">
 <li><a href="#_custom_status">Custom Status</a></li>
-</ul>
-</li>
-<li><a href="#_category">Category</a>
-<ul class="sectlevel3">
-<li><a href="#_요청_14">요청</a></li>
-<li><a href="#_응답_14">응답</a></li>
-</ul>
-</li>
-<li><a href="#_topic">Topic</a>
-<ul class="sectlevel3">
-<li><a href="#_요청_15">요청</a></li>
-<li><a href="#_응답_15">응답</a></li>
+<li><a href="#_category">Category</a></li>
+<li><a href="#_topic">Topic</a></li>
 </ul>
 </li>
 </ul>
@@ -589,7 +585,7 @@ Content-Length: 279
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 7,
-    "createdAt" : "2023-02-08 21:05",
+    "createdAt" : "2023-02-10 21:34",
     "links" : [ {
       "rel" : "POST: 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -733,7 +729,7 @@ Content-Length: 159
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/member/1/contact HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTJ9.vC0uQUM_2v_WEyfiukY59wgM6KzDGxpktPkAs--AmTfzCSLLO-nopuCTOgQ4GWR5VcH1vIiqFnQEo6C5-Exaiw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA
 Content-Length: 33
 Host: localhost:8080
 
@@ -811,7 +807,7 @@ Content-Length: 285
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "updatedAt" : "2023-02-08 21:05",
+    "updatedAt" : "2023-02-10 21:34",
     "links" : [ {
       "rel" : "GET: 회원 정보",
       "href" : "http://localhost:8080/api/v1/member/1"
@@ -884,7 +880,7 @@ Content-Length: 285
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/member/1/password HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTN9.fzrUl3aGM8BPXeJbOM47-Dli-Sn6pxfUdsYZbX2T7QLWdXUZRF35fAeKRJ6VHc6n0sgVOlA_c6lP7ei7sSo0Cw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA
 Content-Length: 74
 Host: localhost:8080
 
@@ -968,7 +964,7 @@ Content-Length: 285
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "updatedAt" : "2023-02-08 21:05",
+    "updatedAt" : "2023-02-10 21:34",
     "links" : [ {
       "rel" : "GET: 회원 정보",
       "href" : "http://localhost:8080/api/v1/member/1"
@@ -1041,7 +1037,7 @@ Content-Length: 285
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/member/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTN9.fzrUl3aGM8BPXeJbOM47-Dli-Sn6pxfUdsYZbX2T7QLWdXUZRF35fAeKRJ6VHc6n0sgVOlA_c6lP7ei7sSo0Cw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA
 Content-Length: 35
 Host: localhost:8080
 
@@ -1119,7 +1115,7 @@ Content-Length: 318
   "message" : "요청에 성공했습니다.",
   "result" : {
     "thanks" : "이용해 주셔서 감사합니다.",
-    "deletedAt" : "2023-02-08 21:05",
+    "deletedAt" : "2023-02-10 21:34",
     "links" : [ {
       "rel" : "POST: 회원가입",
       "href" : "http://localhost:8080/api/v1/member"
@@ -1242,8 +1238,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTF9.0hUTtyMsZ0jug9u8DuSow2HNkgx4WgPd_dtMeJUMuB6aaSpxEXEQXnwKBGpzumn95wWLLnl9k_VcfF-kzIowag
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTJ9.vC0uQUM_2v_WEyfiukY59wgM6KzDGxpktPkAs--AmTfzCSLLO-nopuCTOgQ4GWR5VcH1vIiqFnQEo6C5-Exaiw; Path=/; Max-Age=3288; Expires=Wed, 8 Feb 2023 13:00:36 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA; Path=/; Max-Age=3779; Expires=Fri, 10 Feb 2023 13:37:43 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1258,7 +1254,7 @@ Content-Length: 408
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "accessTokenExpired" : "2023-02-08T12:05:51.000+00:00",
+    "accessTokenExpired" : "2023-02-10T12:34:47.000+00:00",
     "links" : [ {
       "rel" : "POST: 로그아웃",
       "href" : "http://localhost:8080/api/v1/log-out"
@@ -1368,7 +1364,7 @@ Content-Length: 408
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/log-out HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTF9.0hUTtyMsZ0jug9u8DuSow2HNkgx4WgPd_dtMeJUMuB6aaSpxEXEQXnwKBGpzumn95wWLLnl9k_VcfF-kzIowag
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1414,7 +1410,7 @@ Content-Length: 300
   "message" : "로그아웃 요청이 성공했습니다.",
   "result" : {
     "logout" : true,
-    "logoutAt" : "2023-02-08 21:05",
+    "logoutAt" : "2023-02-10 21:34",
     "links" : [ {
       "rel" : "POST : 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -1484,9 +1480,9 @@ Content-Length: 300
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTJ9.vC0uQUM_2v_WEyfiukY59wgM6KzDGxpktPkAs--AmTfzCSLLO-nopuCTOgQ4GWR5VcH1vIiqFnQEo6C5-Exaiw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
 Host: localhost:8080
-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTN9.fzrUl3aGM8BPXeJbOM47-Dli-Sn6pxfUdsYZbX2T7QLWdXUZRF35fAeKRJ6VHc6n0sgVOlA_c6lP7ei7sSo0Cw</code></pre>
+Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA</code></pre>
 </div>
 </div>
 </div>
@@ -1527,8 +1523,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTJ9.vC0uQUM_2v_WEyfiukY59wgM6KzDGxpktPkAs--AmTfzCSLLO-nopuCTOgQ4GWR5VcH1vIiqFnQEo6C5-Exaiw
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTN9.fzrUl3aGM8BPXeJbOM47-Dli-Sn6pxfUdsYZbX2T7QLWdXUZRF35fAeKRJ6VHc6n0sgVOlA_c6lP7ei7sSo0Cw; Path=/; Max-Age=3806; Expires=Wed, 8 Feb 2023 13:09:15 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA; Path=/; Max-Age=3262; Expires=Fri, 10 Feb 2023 13:29:06 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1543,7 +1539,7 @@ Content-Length: 208
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "accessTokenExpired" : "2023-02-08T12:05:52.000+00:00",
+    "accessTokenExpired" : "2023-02-10T12:34:47.000+00:00",
     "links" : [ ]
   }
 }</code></pre>
@@ -1635,7 +1631,7 @@ Content-Length: 208
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTJ9.vC0uQUM_2v_WEyfiukY59wgM6KzDGxpktPkAs--AmTfzCSLLO-nopuCTOgQ4GWR5VcH1vIiqFnQEo6C5-Exaiw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1708,7 +1704,7 @@ Content-Length: 145
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmQzLWJlMDItOWRhYy0zMzRlZjY0N2ViMTAiLCJhdXRoIjoiUk9MTF9NRU1CRVIsUk9MTF9URUFDSEVSIiwiZXhwIjoxNjc1ODU3OTUxfQ.-TuVecuwKZficStfdLdvAuBQcc8jvmDzzjqdDL9QU7bE1sVbMFm8imvGYeDXi38ZbpB0h0n136LuUt7Tq7DRpQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjcyLTc3ZWUtYmE1Ni0xMzc5YTVlMDdkZmEiLCJhdXRoIjoiUk9MTF9NRU1CRVIsUk9MTF9URUFDSEVSIiwiZXhwIjoxNjc2MDMyNDg3fQ.d4GdG93IF-wbKiLmqibjyOUsknQr-6r9Ce83GmQHxWB5VGcTxWg38jepQabgfaRkbR_bQJx0qbUCwphDFTNVsw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1788,7 +1784,7 @@ Content-Length: 161
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmRmLTdkZDMtOWRhYy1lNTUxM2I4ZmE0ZmMiLCJhdXRoIjoiUk9MTF9BRE1JTixST0xMX01FTUJFUixST0xMX1RFQUNIRVIiLCJleHAiOjE2NzU4NTc5NTJ9.RB2XIXb-GnflfPsHAk6VDWg_a71P6hwPEP6E0arMrqdVN9zRj1N2m3MxwSwQsmsFSgAkkm2UHRjsFgMBwJ6ldw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjdlLTM3YmYtYmE1Ni1hYjYwZDZlZmY2YjUiLCJhdXRoIjoiUk9MTF9BRE1JTixST0xMX01FTUJFUixST0xMX1RFQUNIRVIiLCJleHAiOjE2NzYwMzI0ODd9.9eq9y2d4Gb4UQS_NK1k6gvgKYICm1gn7NJcwIouhfKXrZCv1Inh8sRFlqPxhkp1evKynTfshTGdhYEIh-mFLIg
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1873,7 +1869,7 @@ Content-Length: 164
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/board HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTdhOC1lYmM3LWZlMzEtOWRhYy04ZDRlYWRmZTljZTkiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzU4NTc5NTF9.0hUTtyMsZ0jug9u8DuSow2HNkgx4WgPd_dtMeJUMuB6aaSpxEXEQXnwKBGpzumn95wWLLnl9k_VcfF-kzIowag
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YTU2LTBiNmEtYmE1Ni04Nzk3MDY1NDIwMjIiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODV9.cOA6H-yhSQ-cyjc8f4DkPSc9sGs-p7ZWvtCKYsvHuUvwUE28xxDYyZdI-M_cQDESakNiHaVCy8TgQuCqvVUK9A
 Host: localhost:8080
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
@@ -2028,7 +2024,7 @@ Content-Length: 603
   "message" : "요청에 성공했습니다.",
   "result" : {
     "boardId" : 42,
-    "createAt" : "2023-02-08 21:05",
+    "createAt" : "2023-02-10 21:34",
     "links" : [ {
       "rel" : "PUT : 게시판 수정",
       "href" : "http://localhost:8080/api/v1/board/42"
@@ -2152,7 +2148,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/41"
@@ -2167,7 +2163,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/40"
@@ -2182,7 +2178,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/39"
@@ -2197,7 +2193,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/38"
@@ -2212,7 +2208,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/37"
@@ -2227,7 +2223,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/36"
@@ -2242,7 +2238,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/35"
@@ -2257,7 +2253,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/34"
@@ -2272,7 +2268,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/33"
@@ -2287,7 +2283,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/32"
@@ -2530,7 +2526,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/36"
@@ -2545,7 +2541,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/35"
@@ -2560,7 +2556,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/34"
@@ -2575,7 +2571,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/33"
@@ -2590,7 +2586,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-08 21:05",
+      "createdAt" : "2023-02-10 21:34",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/32"
@@ -2650,7 +2646,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 866
+Content-Length: 969
 
 {
   "status" : "SUCCESS",
@@ -2659,6 +2655,7 @@ Content-Length: 866
   "result" : {
     "boardId" : 1,
     "memberId" : 1,
+    "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
     "nickname" : "sampleUser",
     "title" : "Webflux",
     "contents" : "tototototot",
@@ -2666,8 +2663,8 @@ Content-Length: 866
     "category" : "QUESTION",
     "topic" : "JAVA",
     "commentCount" : 0,
-    "createdAt" : "2023-02-08 21:05",
-    "updatedAt" : "2023-02-08 21:05",
+    "createdAt" : "2023-02-10 21:34",
+    "updatedAt" : "2023-02-10 21:34",
     "boardImages" : [ ],
     "links" : [ {
       "rel" : "POST : 게시판 생성",
@@ -2727,6 +2724,11 @@ Content-Length: 866
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.memberId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">작성자 회원 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.profileImage</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">프로필 이미지</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.nickname</code></p></td>
@@ -2795,12 +2797,337 @@ Content-Length: 866
 </div>
 </div>
 <div class="sect1">
+<h2 id="_dashboard"><a class="link" href="#_dashboard">Dashboard</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_system_정보_sse_프로토콜_통신"><a class="link" href="#_system_정보_sse_프로토콜_통신">System 정보 (SSE 프로토콜 통신)</a></h3>
+<div class="sect3">
+<h4 id="_연결"><a class="link" href="#_연결">연결</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/dashboard/system HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_13"><a class="link" href="#_응답_13">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: text/event-stream
+X-Accel-Buffering: no
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 113
+
+event:data
+data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.926,"memoryFreeSpace":0.074}</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">연결</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>연결시 10초 단위로 데이터가 갱신됩니다.</p>
+</li>
+<li>
+<p>응답 Content-Type은 text/event-stream입니다.</p>
+</li>
+<li>
+<p>응답 데이터는 key, value 형태의 필드 event,data로 제공됩니다.</p>
+</li>
+<li>
+<p>응답 데이터 Client 사용 예시:   new EventSource('url'); 객체로 연결 및 응답 데이터 사용</p>
+</li>
+<li>
+<p>브라우저 종료시 연결 종료</p>
+</li>
+</ol>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="javascript" class="language-javascript hljs">    const systemData = new EventSource(
+        'http://www.bad-request.kr/api/v1/dashboard/system'
+    );
+
+
+    systemData.addEventListener("data", function (event) {
+            console.log(event.data);
+
+            systemValue.innerHTML = event.data;
+        }
+    );</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">event</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Type: String</p>
+</li>
+<li>
+<p>event 이름</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Data</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Type: Object</p>
+</li>
+<li>
+<p>데이터명</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">path</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">단위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cpuUsagePercent</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CPU 사용량</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">%</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">memoryTotalSpace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">전체 메모리 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">memoryUsageSpace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용중인 메모리 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">memoryFreeSpace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">여유 메모리 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_heapmemory_정보sse_프로토콜_통신"><a class="link" href="#_heapmemory_정보sse_프로토콜_통신">HeapMemory 정보(SSE 프로토콜 통신)</a></h3>
+<div class="sect3">
+<h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/dashboard/heap HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_14"><a class="link" href="#_응답_14">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: text/event-stream
+X-Accel-Buffering: no
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 257
+
+event:data
+data:{"heapMemoryInit":134217728,"heapMemoryUsed":124613920,"heapMemoryUsageCommitted":161480704,"heapMemoryUsageMax":2147483648,"nonHeapMemoryInit":7667712,"nonHeapMemoryUsed":151878656,"nonHeapMemoryCommitted":157483008,"nonHeapMemoryMax":-1}</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">연결</dt>
+<dd>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>연결시 10초 단위로 데이터가 갱신됩니다.</p>
+</li>
+<li>
+<p>응답 Content-Type은 text/event-stream입니다.</p>
+</li>
+<li>
+<p>응답 데이터는 key, value 형태의 필드 event,data로 제공됩니다.</p>
+</li>
+<li>
+<p>응답 데이터 Client 사용 예시:   new EventSource('url'); 객체로 연결 및 응답 데이터 사용</p>
+</li>
+<li>
+<p>브라우저 종료시 연결 종료</p>
+</li>
+</ol>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="javascript" class="language-javascript hljs">    const heapData = new EventSource(
+        'http://www.bad-request.kr/api/v1/dashboard/heap'
+    );
+
+
+    heapData.addEventListener("data", function (event) {
+            console.log(event.data);
+
+            systemValue.innerHTML = event.data;
+        }
+    );</code></pre>
+</div>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">event</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Type: String</p>
+</li>
+<li>
+<p>event 이름</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Data</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Type: Object</p>
+</li>
+<li>
+<p>데이터명</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">path</th>
+<th class="tableblock halign-left valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">단위</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">heapMemoryInit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JVM에 할당 받은 메모리</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">heapMemoryUsed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 사용중인 heap 메모리</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">heapMemoryUsageCommitted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 할당된 메모리(heap 에 JVM 이 할당한)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">heapMemoryUsageMax</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사용할 수 있는 최대 메모리(heap 에 JVM 이 할당할 수 있는 최대)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nonHeapMemoryInit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JVM에 할당 받은 none heap 메모리</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nonHeapMemoryUsed</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">여유 none heap 메모리 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nonHeapMemoryCommitted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">여유 none heap 메모리 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nonHeapMemoryMax</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">여유 none heap 메모리 크기</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_values"><a class="link" href="#_values">Values</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_custom_status"><a class="link" href="#_custom_status">Custom Status</a></h3>
 <div class="sect3">
-<h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
+<h4 id="_요청_14"><a class="link" href="#_요청_14">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/values/status HTTP/1.1
@@ -2809,7 +3136,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_13"><a class="link" href="#_응답_13">응답</a></h4>
+<h4 id="_응답_15"><a class="link" href="#_응답_15">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -2823,7 +3150,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 2741
+Content-Length: 2868
 
 [ {
   "status" : "SUCCESS",
@@ -2922,6 +3249,10 @@ Content-Length: 2741
   "code" : 3000,
   "message" : "존재하지 않는 게시판 입니다."
 }, {
+  "status" : "NOT_MATCH_BOARD_WRITER",
+  "code" : 3001,
+  "message" : "게시판 수정은 작성자만 가능합니다."
+}, {
   "status" : "NOT_FOUND_COMMENT",
   "code" : 4000,
   "message" : "존재하지 않는 댓글 입니다."
@@ -2961,13 +3292,10 @@ Content-Length: 2741
 </table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_category"><a class="link" href="#_category">Category</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_category"><a class="link" href="#_category">Category</a></h3>
 <div class="sect3">
-<h4 id="_요청_14"><a class="link" href="#_요청_14">요청</a></h4>
+<h4 id="_요청_15"><a class="link" href="#_요청_15">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/values/category HTTP/1.1
@@ -2976,7 +3304,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_14"><a class="link" href="#_응답_14">응답</a></h4>
+<h4 id="_응답_16"><a class="link" href="#_응답_16">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3035,12 +3363,10 @@ Content-Length: 276
 </table>
 </div>
 </div>
-</div>
-<div class="sect1">
-<h2 id="_topic"><a class="link" href="#_topic">Topic</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_topic"><a class="link" href="#_topic">Topic</a></h3>
 <div class="sect3">
-<h4 id="_요청_15"><a class="link" href="#_요청_15">요청</a></h4>
+<h4 id="_요청_16"><a class="link" href="#_요청_16">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/values/topic HTTP/1.1
@@ -3049,7 +3375,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_15"><a class="link" href="#_응답_15">응답</a></h4>
+<h4 id="_응답_17"><a class="link" href="#_응답_17">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3113,10 +3439,11 @@ Content-Length: 269
 </div>
 </div>
 </div>
+</div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-08 16:26:47 +0900
+Last updated 2023-02-10 21:34:23 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
