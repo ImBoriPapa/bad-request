@@ -2,7 +2,7 @@ package com.study.badrequest.api;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.domain.Member.dto.MemberRequest;
+import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.study.badrequest.SampleUserData.*;
-import static com.study.badrequest.TestSampleData.*;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;

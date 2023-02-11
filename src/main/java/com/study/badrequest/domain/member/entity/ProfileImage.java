@@ -1,6 +1,5 @@
-package com.study.badrequest.domain.Member.entity;
+package com.study.badrequest.domain.member.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,14 +1,14 @@
 package com.study.badrequest.Member.service;
 
-import com.study.badrequest.domain.Member.dto.MemberResponse;
-import com.study.badrequest.domain.Member.entity.Authority;
-import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.member.dto.MemberResponse;
+import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
 
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 
-import com.study.badrequest.domain.Member.service.MemberCommandService;
+import com.study.badrequest.domain.member.service.MemberCommandService;
 
-import com.study.badrequest.domain.Member.dto.MemberRequest;
+import com.study.badrequest.domain.member.dto.MemberRequest;
 
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 

@@ -1,9 +1,9 @@
 package com.study.badrequest;
 
-import com.study.badrequest.domain.Member.entity.Authority;
-import com.study.badrequest.domain.Member.entity.Member;
-import com.study.badrequest.domain.Member.entity.ProfileImage;
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.entity.ProfileImage;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;

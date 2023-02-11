@@ -450,6 +450,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_회원가입">회원가입</a></li>
 <li><a href="#_이메일_중복_확인">이메일 중복 확인</a></li>
+<li><a href="#_회원_정보">회원 정보</a></li>
 <li><a href="#_연락처_변경">연락처 변경</a></li>
 <li><a href="#_비밀번호_변경">비밀번호 변경</a></li>
 <li><a href="#_회원_탈퇴">회원 탈퇴</a></li>
@@ -585,7 +586,7 @@ Content-Length: 279
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 7,
-    "createdAt" : "2023-02-10 21:34",
+    "createdAt" : "2023-02-11 18:18",
     "links" : [ {
       "rel" : "POST: 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -722,14 +723,88 @@ Content-Length: 159
 </div>
 </div>
 <div class="sect2">
-<h3 id="_연락처_변경"><a class="link" href="#_연락처_변경">연락처 변경</a></h3>
+<h3 id="_회원_정보"><a class="link" href="#_회원_정보">회원 정보</a></h3>
 <div class="sect3">
 <h4 id="_요청_3"><a class="link" href="#_요청_3">요청</a></h4>
 <div class="listingblock">
 <div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/member/info HTTP/1.1
+Content-Type: application/json;charset=UTF-8
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTd9.3BxODR3CwDjgxLk2fUX_pKGyxbZRWY72DjpcGf_X5_OY4U42mbZsvWc-tQpwS5IfpyKycF38IODZNplWD2coTA
+Host: localhost:8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AccessToken</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_3"><a class="link" href="#_응답_3">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+Pragma: no-cache
+Expires: 0
+X-Frame-Options: DENY
+Content-Length: 151
+
+{
+  "status" : "SUCCESS",
+  "code" : 1000,
+  "message" : "요청에 성공했습니다.",
+  "result" : {
+    "id" : 1,
+    "authority" : "MEMBER"
+  }
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code class="language-none hljs">{
+  "status" : "SUCCESS",
+  "code" : 1000,
+  "message" : "요청에 성공했습니다.",
+  "result" : {
+    "id" : 1,
+    "authority" : "MEMBER"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_연락처_변경"><a class="link" href="#_연락처_변경">연락처 변경</a></h3>
+<div class="sect3">
+<h4 id="_요청_4"><a class="link" href="#_요청_4">요청</a></h4>
+<div class="listingblock">
+<div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/member/1/contact HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTZ9.thXrxm4fEZHXm_dwyoZgdrtyqgqEt7zzFFEOr97BRbldw8Lq7OXfvtuw4bynUBQHUDcZ-v6GNxoNnS3t_S6dlA
 Content-Length: 33
 Host: localhost:8080
 
@@ -785,7 +860,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_3"><a class="link" href="#_응답_3">응답</a></h4>
+<h4 id="_응답_4"><a class="link" href="#_응답_4">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -807,7 +882,7 @@ Content-Length: 285
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "updatedAt" : "2023-02-10 21:34",
+    "updatedAt" : "2023-02-11 18:18",
     "links" : [ {
       "rel" : "GET: 회원 정보",
       "href" : "http://localhost:8080/api/v1/member/1"
@@ -875,12 +950,12 @@ Content-Length: 285
 <div class="sect2">
 <h3 id="_비밀번호_변경"><a class="link" href="#_비밀번호_변경">비밀번호 변경</a></h3>
 <div class="sect3">
-<h4 id="_요청_4"><a class="link" href="#_요청_4">요청</a></h4>
+<h4 id="_요청_5"><a class="link" href="#_요청_5">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/member/1/password HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTZ9.thXrxm4fEZHXm_dwyoZgdrtyqgqEt7zzFFEOr97BRbldw8Lq7OXfvtuw4bynUBQHUDcZ-v6GNxoNnS3t_S6dlA
 Content-Length: 74
 Host: localhost:8080
 
@@ -942,7 +1017,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_4"><a class="link" href="#_응답_4">응답</a></h4>
+<h4 id="_응답_5"><a class="link" href="#_응답_5">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -964,7 +1039,7 @@ Content-Length: 285
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "updatedAt" : "2023-02-10 21:34",
+    "updatedAt" : "2023-02-11 18:18",
     "links" : [ {
       "rel" : "GET: 회원 정보",
       "href" : "http://localhost:8080/api/v1/member/1"
@@ -1032,12 +1107,12 @@ Content-Length: 285
 <div class="sect2">
 <h3 id="_회원_탈퇴"><a class="link" href="#_회원_탈퇴">회원 탈퇴</a></h3>
 <div class="sect3">
-<h4 id="_요청_5"><a class="link" href="#_요청_5">요청</a></h4>
+<h4 id="_요청_6"><a class="link" href="#_요청_6">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/member/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTd9.3BxODR3CwDjgxLk2fUX_pKGyxbZRWY72DjpcGf_X5_OY4U42mbZsvWc-tQpwS5IfpyKycF38IODZNplWD2coTA
 Content-Length: 35
 Host: localhost:8080
 
@@ -1093,7 +1168,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_5"><a class="link" href="#_응답_5">응답</a></h4>
+<h4 id="_응답_6"><a class="link" href="#_응답_6">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1115,7 +1190,7 @@ Content-Length: 318
   "message" : "요청에 성공했습니다.",
   "result" : {
     "thanks" : "이용해 주셔서 감사합니다.",
-    "deletedAt" : "2023-02-10 21:34",
+    "deletedAt" : "2023-02-11 18:18",
     "links" : [ {
       "rel" : "POST: 회원가입",
       "href" : "http://localhost:8080/api/v1/member"
@@ -1188,7 +1263,7 @@ Content-Length: 318
 <div class="sect2">
 <h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
 <div class="sect3">
-<h4 id="_요청_6"><a class="link" href="#_요청_6">요청</a></h4>
+<h4 id="_요청_7"><a class="link" href="#_요청_7">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/login HTTP/1.1
@@ -1230,7 +1305,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_6"><a class="link" href="#_응답_6">응답</a></h4>
+<h4 id="_응답_7"><a class="link" href="#_응답_7">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1238,15 +1313,15 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA; Path=/; Max-Age=3779; Expires=Fri, 10 Feb 2023 13:37:43 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTV9.HjVmz4hBuAs6lDoBfkcUWVF95iIN2F3an0VGanrBbYzMG4qMmih1Kz3CdpIyn_H_dEkBGD_5no6ZvWv5-nFTdQ
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzY3MTE5MTV9.plgzlF5lL1vfowrEfBDnEgpBj8mh-HNj9H7_e_Giwk__Xb0U1Qz9xFZ_j0WOqPxpZR7GZQE0Sv2Sev4qzkSOyQ; Path=/; Max-Age=604799315; Expires=Sat, 12 Apr 2042 09:07:10 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 408
+Content-Length: 395
 
 {
   "status" : "SUCCESS",
@@ -1254,7 +1329,7 @@ Content-Length: 408
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "accessTokenExpired" : "2023-02-10T12:34:47.000+00:00",
+    "accessTokenExpired" : "2023-02-11 18:28",
     "links" : [ {
       "rel" : "POST: 로그아웃",
       "href" : "http://localhost:8080/api/v1/log-out"
@@ -1360,11 +1435,11 @@ Content-Length: 408
 <div class="sect2">
 <h3 id="_로그아웃"><a class="link" href="#_로그아웃">로그아웃</a></h3>
 <div class="sect3">
-<h4 id="_요청_7"><a class="link" href="#_요청_7">요청</a></h4>
+<h4 id="_요청_8"><a class="link" href="#_요청_8">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/log-out HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTV9.HjVmz4hBuAs6lDoBfkcUWVF95iIN2F3an0VGanrBbYzMG4qMmih1Kz3CdpIyn_H_dEkBGD_5no6ZvWv5-nFTdQ
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1388,7 +1463,7 @@ Host: localhost:8080</code></pre>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_7"><a class="link" href="#_응답_7">응답</a></h4>
+<h4 id="_응답_8"><a class="link" href="#_응답_8">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1410,7 +1485,7 @@ Content-Length: 300
   "message" : "로그아웃 요청이 성공했습니다.",
   "result" : {
     "logout" : true,
-    "logoutAt" : "2023-02-10 21:34",
+    "logoutAt" : "2023-02-11 18:18",
     "links" : [ {
       "rel" : "POST : 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -1475,14 +1550,14 @@ Content-Length: 300
 <div class="sect2">
 <h3 id="_토큰_재발급"><a class="link" href="#_토큰_재발급">토큰 재발급</a></h3>
 <div class="sect3">
-<h4 id="_요청_8"><a class="link" href="#_요청_8">요청</a></h4>
+<h4 id="_요청_9"><a class="link" href="#_요청_9">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTV9.HjVmz4hBuAs6lDoBfkcUWVF95iIN2F3an0VGanrBbYzMG4qMmih1Kz3CdpIyn_H_dEkBGD_5no6ZvWv5-nFTdQ
 Host: localhost:8080
-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA</code></pre>
+Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzY3MTE5MTV9.plgzlF5lL1vfowrEfBDnEgpBj8mh-HNj9H7_e_Giwk__Xb0U1Qz9xFZ_j0WOqPxpZR7GZQE0Sv2Sev4qzkSOyQ</code></pre>
 </div>
 </div>
 </div>
@@ -1515,7 +1590,7 @@ Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQt
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_8"><a class="link" href="#_응답_8">응답</a></h4>
+<h4 id="_응답_9"><a class="link" href="#_응답_9">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -1523,15 +1598,15 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODh9.1Ijl_aYR8wXykJogkDyS0C6teXBKwTAqcuZl9wfV3ZCOy4E63dTgs9hu2QAUH0cEnCNBvJhHjI0au-vlqp8nBA; Path=/; Max-Age=3262; Expires=Fri, 10 Feb 2023 13:29:06 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTV9.HjVmz4hBuAs6lDoBfkcUWVF95iIN2F3an0VGanrBbYzMG4qMmih1Kz3CdpIyn_H_dEkBGD_5no6ZvWv5-nFTdQ
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzY3MTE5MTV9.plgzlF5lL1vfowrEfBDnEgpBj8mh-HNj9H7_e_Giwk__Xb0U1Qz9xFZ_j0WOqPxpZR7GZQE0Sv2Sev4qzkSOyQ; Path=/; Max-Age=604799052; Expires=Sat, 12 Apr 2042 09:02:47 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 208
+Content-Length: 195
 
 {
   "status" : "SUCCESS",
@@ -1539,7 +1614,7 @@ Content-Length: 208
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "accessTokenExpired" : "2023-02-10T12:34:47.000+00:00",
+    "accessTokenExpired" : "2023-02-11 18:28",
     "links" : [ ]
   }
 }</code></pre>
@@ -1631,7 +1706,7 @@ Content-Length: 208
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjY2LWI4MWQtYmE1Ni04M2U5OTFhNmJiNzYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODd9.aOPUgz84K0j3KSsD5gAtG44wZZ8mAms9fg-aAe5qTZKx0e-2XhpDXd7twxWcc2ZVD9cGy1tB4ODvaqWxJ8n3zw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZjNmLTNmZjktYjQ1YS0yNTM5M2ZjYzJjNDEiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTZ9.thXrxm4fEZHXm_dwyoZgdrtyqgqEt7zzFFEOr97BRbldw8Lq7OXfvtuw4bynUBQHUDcZ-v6GNxoNnS3t_S6dlA
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1704,7 +1779,7 @@ Content-Length: 145
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjcyLTc3ZWUtYmE1Ni0xMzc5YTVlMDdkZmEiLCJhdXRoIjoiUk9MTF9NRU1CRVIsUk9MTF9URUFDSEVSIiwiZXhwIjoxNjc2MDMyNDg3fQ.d4GdG93IF-wbKiLmqibjyOUsknQr-6r9Ce83GmQHxWB5VGcTxWg38jepQabgfaRkbR_bQJx0qbUCwphDFTNVsw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi02ODk4LWVlYjQtOGEyYy0zMzk0ZDI2ZjIyOTEiLCJhdXRoIjoiUk9MTF9NRU1CRVIsUk9MTF9URUFDSEVSIiwiZXhwIjoxNjc2MDMyNTM2fQ.stBhbQrLbNh7BGxD3CVJM8O0S3FwFDJXONJ_XhO0yNYli4lfPAqV6LTnFnycSsqSBSgl_-9j2WyXqYhiwDnpTw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1784,7 +1859,7 @@ Content-Length: 161
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YjdlLTM3YmYtYmE1Ni1hYjYwZDZlZmY2YjUiLCJhdXRoIjoiUk9MTF9BRE1JTixST0xMX01FTUJFUixST0xMX1RFQUNIRVIiLCJleHAiOjE2NzYwMzI0ODd9.9eq9y2d4Gb4UQS_NK1k6gvgKYICm1gn7NJcwIouhfKXrZCv1Inh8sRFlqPxhkp1evKynTfshTGdhYEIh-mFLIg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi02OGE0LTYwNjUtOGEyYy0yMzJkMWNmMzA5MDIiLCJhdXRoIjoiUk9MTF9BRE1JTixST0xMX01FTUJFUixST0xMX1RFQUNIRVIiLCJleHAiOjE2NzYwMzI1MzZ9._PNDLyt161xLcnHg1RTWUGllxUsOcC1fPzmexrxXF9Zohkp5tWvGYVz9IOmTnvgj9F5ZGWEycmj_LWZnDzVCGw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1869,7 +1944,7 @@ Content-Length: 164
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/board HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi00YTU2LTBiNmEtYmE1Ni04Nzk3MDY1NDIwMjIiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYwMzI0ODV9.cOA6H-yhSQ-cyjc8f4DkPSc9sGs-p7ZWvtCKYsvHuUvwUE28xxDYyZdI-M_cQDESakNiHaVCy8TgQuCqvVUK9A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC0wZTNlLWJmZTYtYjQ1YS1jMWNhYzczYThjMDYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDc3MTR9.VM89qASCOUDu66AavhTeB_N0wm6UKoXzf-ZBI0jniaC44r9TcGSs2DspJFBRJtTwkuE_L5S1Si1uGFNX8_eG7Q
 Host: localhost:8080
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
@@ -1936,7 +2011,7 @@ image2
 </table>
 </div>
 <div class="sect3">
-<h4 id="_요청_9"><a class="link" href="#_요청_9">요청</a></h4>
+<h4 id="_요청_10"><a class="link" href="#_요청_10">요청</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2001,7 +2076,7 @@ image2
 </table>
 </div>
 <div class="sect3">
-<h4 id="_응답_9"><a class="link" href="#_응답_9">응답</a></h4>
+<h4 id="_응답_10"><a class="link" href="#_응답_10">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 201 Created
@@ -2024,7 +2099,7 @@ Content-Length: 603
   "message" : "요청에 성공했습니다.",
   "result" : {
     "boardId" : 42,
-    "createAt" : "2023-02-10 21:34",
+    "createAt" : "2023-02-11 18:18",
     "links" : [ {
       "rel" : "PUT : 게시판 수정",
       "href" : "http://localhost:8080/api/v1/board/42"
@@ -2105,7 +2180,7 @@ Content-Length: 603
 
 </div>
 <div class="sect3">
-<h4 id="_요청_10"><a class="link" href="#_요청_10">요청</a></h4>
+<h4 id="_요청_11"><a class="link" href="#_요청_11">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board HTTP/1.1
@@ -2114,7 +2189,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_10"><a class="link" href="#_응답_10">응답</a></h4>
+<h4 id="_응답_11"><a class="link" href="#_응답_11">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -2148,7 +2223,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/41"
@@ -2163,7 +2238,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/40"
@@ -2178,7 +2253,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/39"
@@ -2193,7 +2268,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/38"
@@ -2208,7 +2283,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/37"
@@ -2223,7 +2298,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/36"
@@ -2238,7 +2313,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/35"
@@ -2253,7 +2328,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/34"
@@ -2268,7 +2343,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/33"
@@ -2283,7 +2358,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/32"
@@ -2483,7 +2558,7 @@ Content-Length: 5265
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_요청_11"><a class="link" href="#_요청_11">요청</a></h4>
+<h4 id="_요청_12"><a class="link" href="#_요청_12">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board?size=5&amp;lastIndex=37&amp;category=question&amp;topic=mysql HTTP/1.1
@@ -2492,7 +2567,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_11"><a class="link" href="#_응답_11">응답</a></h4>
+<h4 id="_응답_12"><a class="link" href="#_응답_12">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -2526,7 +2601,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/36"
@@ -2541,7 +2616,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/35"
@@ -2556,7 +2631,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/34"
@@ -2571,7 +2646,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/33"
@@ -2586,7 +2661,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-10 21:34",
+      "createdAt" : "2023-02-11 18:18",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/32"
@@ -2611,7 +2686,7 @@ Content-Length: 2883
 <div class="sect2">
 <h3 id="_게시판_상세_조회"><a class="link" href="#_게시판_상세_조회">게시판 상세 조회</a></h3>
 <div class="sect3">
-<h4 id="_요청_12"><a class="link" href="#_요청_12">요청</a></h4>
+<h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board/1?category=QUESTION HTTP/1.1
@@ -2632,7 +2707,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_12"><a class="link" href="#_응답_12">응답</a></h4>
+<h4 id="_응답_13"><a class="link" href="#_응답_13">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -2663,8 +2738,8 @@ Content-Length: 969
     "category" : "QUESTION",
     "topic" : "JAVA",
     "commentCount" : 0,
-    "createdAt" : "2023-02-10 21:34",
-    "updatedAt" : "2023-02-10 21:34",
+    "createdAt" : "2023-02-11 18:18",
+    "updatedAt" : "2023-02-11 18:18",
     "boardImages" : [ ],
     "links" : [ {
       "rel" : "POST : 게시판 생성",
@@ -2811,7 +2886,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_13"><a class="link" href="#_응답_13">응답</a></h4>
+<h4 id="_응답_14"><a class="link" href="#_응답_14">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -2829,7 +2904,7 @@ X-Frame-Options: DENY
 Content-Length: 113
 
 event:data
-data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.926,"memoryFreeSpace":0.074}</code></pre>
+data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.944,"memoryFreeSpace":0.056}</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -2921,25 +2996,25 @@ data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.926,"mem
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">cpuUsagePercent</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">CPU 사용량</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">%</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">memoryTotalSpace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">전체 메모리 크기</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">memoryUsageSpace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">사용중인 메모리 크기</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">memoryFreeSpace</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Number</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">여유 메모리 크기</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">GB</p></td>
 </tr>
@@ -2950,7 +3025,7 @@ data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.926,"mem
 <div class="sect2">
 <h3 id="_heapmemory_정보sse_프로토콜_통신"><a class="link" href="#_heapmemory_정보sse_프로토콜_통신">HeapMemory 정보(SSE 프로토콜 통신)</a></h3>
 <div class="sect3">
-<h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
+<h4 id="_요청_14"><a class="link" href="#_요청_14">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/dashboard/heap HTTP/1.1
@@ -2959,7 +3034,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_14"><a class="link" href="#_응답_14">응답</a></h4>
+<h4 id="_응답_15"><a class="link" href="#_응답_15">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3127,7 +3202,7 @@ data:{"heapMemoryInit":134217728,"heapMemoryUsed":124613920,"heapMemoryUsageComm
 <div class="sect2">
 <h3 id="_custom_status"><a class="link" href="#_custom_status">Custom Status</a></h3>
 <div class="sect3">
-<h4 id="_요청_14"><a class="link" href="#_요청_14">요청</a></h4>
+<h4 id="_요청_15"><a class="link" href="#_요청_15">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/values/status HTTP/1.1
@@ -3136,7 +3211,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_15"><a class="link" href="#_응답_15">응답</a></h4>
+<h4 id="_응답_16"><a class="link" href="#_응답_16">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3295,7 +3370,7 @@ Content-Length: 2868
 <div class="sect2">
 <h3 id="_category"><a class="link" href="#_category">Category</a></h3>
 <div class="sect3">
-<h4 id="_요청_15"><a class="link" href="#_요청_15">요청</a></h4>
+<h4 id="_요청_16"><a class="link" href="#_요청_16">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/values/category HTTP/1.1
@@ -3304,7 +3379,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_16"><a class="link" href="#_응답_16">응답</a></h4>
+<h4 id="_응답_17"><a class="link" href="#_응답_17">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3366,7 +3441,7 @@ Content-Length: 276
 <div class="sect2">
 <h3 id="_topic"><a class="link" href="#_topic">Topic</a></h3>
 <div class="sect3">
-<h4 id="_요청_16"><a class="link" href="#_요청_16">요청</a></h4>
+<h4 id="_요청_17"><a class="link" href="#_요청_17">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/values/topic HTTP/1.1
@@ -3375,7 +3450,7 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_17"><a class="link" href="#_응답_17">응답</a></h4>
+<h4 id="_응답_18"><a class="link" href="#_응답_18">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -3443,7 +3518,7 @@ Content-Length: 269
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-10 21:34:23 +0900
+Last updated 2023-02-11 18:18:16 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

@@ -1,7 +1,7 @@
-package com.study.badrequest.domain.Member.repository;
+package com.study.badrequest.domain.member.repository;
 
 
-import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.member.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

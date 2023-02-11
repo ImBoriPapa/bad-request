@@ -1,8 +1,9 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.LoginController;
-import com.study.badrequest.api.MemberController;
-import com.study.badrequest.domain.Member.dto.MemberResponse;
+import com.study.badrequest.api.member.MemberController;
+import com.study.badrequest.api.member.MemberQueryController;
+import com.study.badrequest.domain.member.dto.MemberResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class MemberResponseModelAssembler {
 
     public EntityModel<MemberResponse.UpdateResult> toModel(MemberResponse.UpdateResult result) {
         return EntityModel.of(result)
-                .add(linkTo(methodOn(MemberController.class).getMember(result.getMemberId())).withRel("GET: 회원 정보"));
+                .add(linkTo(methodOn(MemberQueryController.class).getMember(result.getMemberId())).withRel("GET: 회원 정보"));
     }
 
     public EntityModel<MemberResponse.DeleteResult> toModel(MemberResponse.DeleteResult result) {

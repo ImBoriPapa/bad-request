@@ -29,7 +29,6 @@ include::{snippets}/postMember/http-response.adoc[]
 ===== 응답 필드
 
 include::{snippets}/postMember/response-fields.adoc[]
-
 === 이메일 중복 확인
 
 ==== 요청
@@ -45,6 +44,13 @@ include::{snippets}/email_duplicate_success/http-response.adoc[]
 ===== 요청 실패 이메일 중복 O
 
 include::{snippets}/email_duplicate_fail/http-response.adoc[]
+=== 회원 정보
+==== 요청
+include::{snippets}/member-info/http-request.adoc[]
+include::{snippets}/member-info/request-headers.adoc[]
+==== 응답
+include::{snippets}/member-info/http-response.adoc[]
+include::{snippets}/member-info/response-fields.adoc[]
 
 === 연락처 변경
 

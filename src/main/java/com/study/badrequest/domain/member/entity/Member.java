@@ -1,22 +1,20 @@
-package com.study.badrequest.domain.Member.entity;
+package com.study.badrequest.domain.member.entity;
 
 import com.fasterxml.uuid.Generators;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
+@Table(name = "MEMBER", indexes = @Index(name = "MEMBER_AUTHORITY_IDX", columnList = "authority"))
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

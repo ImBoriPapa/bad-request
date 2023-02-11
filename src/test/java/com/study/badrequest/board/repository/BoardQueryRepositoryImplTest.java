@@ -1,7 +1,7 @@
 package com.study.badrequest.board.repository;
 
-import com.study.badrequest.domain.Member.entity.Member;
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardSearchCondition;
 
 import com.study.badrequest.domain.board.entity.Board;

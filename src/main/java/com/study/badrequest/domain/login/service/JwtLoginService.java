@@ -2,10 +2,10 @@ package com.study.badrequest.domain.login.service;
 
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.domain.Member.entity.Member;
-import com.study.badrequest.domain.Member.repository.MemberDtoForLogin;
-import com.study.badrequest.domain.Member.repository.MemberReadOnlyRepository;
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.repository.MemberDtoForLogin;
+import com.study.badrequest.domain.member.repository.MemberQueryRepository;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.commons.exception.custom_exception.JwtAuthenticationException;
@@ -37,7 +37,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_P
 public class JwtLoginService {
     private final MemberRepository memberRepository;
 
-    private final MemberReadOnlyRepository memberReadOnlyRepository;
+    private final MemberQueryRepository memberQueryRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -53,7 +53,7 @@ public class JwtLoginService {
         /**
          * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
          */
-        MemberDtoForLogin memberDtoForLogin = memberReadOnlyRepository.findByEmail(email)
+        MemberDtoForLogin memberDtoForLogin = memberQueryRepository.findByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberDtoForLogin.getUsername(), password);

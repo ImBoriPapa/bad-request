@@ -1,11 +1,14 @@
-package com.study.badrequest.domain.Member.repository;
+package com.study.badrequest.domain.member.repository;
 
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.study.badrequest.domain.Member.entity.Authority;
+import com.study.badrequest.domain.member.dto.MemberDto;
+import com.study.badrequest.domain.member.dto.MemberInfoDto;
+import com.study.badrequest.domain.member.entity.Authority;
 
-import com.study.badrequest.domain.Member.entity.QMember;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.entity.QMember;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +22,26 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberReadOnlyRepository {
+public class MemberQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    public Optional<MemberInfoDto> findIdAndAuthorityByUsername(String username) {
+
+        QMember qMember = QMember.member;
+
+        MemberInfoDto infoDto = jpaQueryFactory
+                .select(
+                        Projections.fields(MemberInfoDto.class,
+                                qMember.member.id.as("id"),
+                                qMember.authority.as("authority"))
+                )
+                .from(qMember)
+                .where(qMember.username.eq(username))
+                .fetchOne();
+
+        return infoDto == null ? Optional.empty() : Optional.of(infoDto);
+    }
 
     public Optional<MemberDtoForLogin> findByEmail(String email) {
 
@@ -45,7 +65,6 @@ public class MemberReadOnlyRepository {
 
         MemberDto memberDto = jpaQueryFactory
                 .select(Projections.fields(MemberDto.class,
-                        qMember.id.as("memberId"),
                         qMember.username.as("username"),
                         qMember.password.as("password"),
                         qMember.authority.as("authority")
@@ -55,21 +74,4 @@ public class MemberReadOnlyRepository {
 
         return memberDto == null ? Optional.empty() : Optional.of(memberDto);
     }
-
-    @Getter
-    @NoArgsConstructor
-    public static class MemberDto {
-        private Long memberId;
-        private String username;
-        private String password;
-        private Authority authority;
-
-        public MemberDto(String username, String password, Authority authority) {
-            this.username = username;
-            this.password = password;
-            this.authority = authority;
-        }
-    }
-
-
 }

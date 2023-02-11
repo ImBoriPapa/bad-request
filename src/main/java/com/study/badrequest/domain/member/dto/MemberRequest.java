@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.Member.dto;
+package com.study.badrequest.domain.member.dto;
 
 
 import lombok.AllArgsConstructor;

@@ -1,8 +1,8 @@
 package com.study.badrequest.login.domain.service;
 
-import com.study.badrequest.domain.Member.entity.Authority;
-import com.study.badrequest.domain.Member.entity.Member;
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;

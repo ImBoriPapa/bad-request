@@ -1,8 +1,8 @@
 package com.study.badrequest.board.service;
 
 
-import com.study.badrequest.domain.Member.entity.Member;
-import com.study.badrequest.domain.Member.repository.MemberRepository;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.entity.Board;

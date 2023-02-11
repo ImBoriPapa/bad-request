@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.comment.entity;
 
-import com.study.badrequest.domain.Member.entity.Member;
+import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.board.entity.Board;
 import lombok.AccessLevel;
 import lombok.Builder;

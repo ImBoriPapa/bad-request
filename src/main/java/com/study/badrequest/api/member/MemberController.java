@@ -1,13 +1,12 @@
-package com.study.badrequest.api;
+package com.study.badrequest.api.member;
 
 
 
 
-import com.study.badrequest.aop.annotation.CurrentUser;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.domain.Member.service.MemberCommandService;
-import com.study.badrequest.domain.Member.dto.MemberRequest;
-import com.study.badrequest.domain.Member.dto.MemberResponse;
+import com.study.badrequest.domain.member.service.MemberCommandService;
+import com.study.badrequest.domain.member.dto.MemberRequest;
+import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.commons.exception.custom_exception.CustomValidationException;
@@ -19,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 
@@ -40,12 +36,7 @@ public class MemberController {
     private final MemberValidator memberValidator;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
-    @GetMapping("/member/info")
-    public void getMemberInfo(@AuthenticationPrincipal User user) {
 
-        log.info("User= {}",user.getUsername());
-        log.info("User= {}",user.getAuthorities());
-    }
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
@@ -105,7 +96,6 @@ public class MemberController {
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.DeleteMember form, BindingResult bindingResult) {
 
-
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
@@ -118,26 +108,5 @@ public class MemberController {
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, deleteResultEntityModel));
     }
 
-    @GetMapping("/member/{memberId}")
-    @CustomLogTracer
-    public ResponseEntity<ResponseForm.Of> getMember(@PathVariable Long memberId) {
 
-
-        return null;
-    }
-
-    @GetMapping("/member/email")
-    @CustomLogTracer
-    public ResponseEntity<ResponseForm.Of> getMemberEmail(@RequestParam(value = "email", defaultValue = "empty") String email) {
-        // TODO: 2023/01/31 이메일 형식 검증 추가
-        if (email.equals("empty")) {
-            throw new IllegalArgumentException("Email Empty");
-        }
-
-        memberValidator.validateEmail(email);
-
-        return ResponseEntity.ok()
-                .body(new ResponseForm
-                        .Of<>(CustomStatus.SUCCESS, new MemberResponse.ValidateEmail(false, email)));
-    }
 }

@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
-import static com.study.badrequest.domain.Member.entity.QMember.member;
+import static com.study.badrequest.domain.member.entity.QMember.member;
 import static com.study.badrequest.domain.comment.entity.QComment.comment;
 import static com.study.badrequest.domain.comment.entity.QSubComment.*;
 

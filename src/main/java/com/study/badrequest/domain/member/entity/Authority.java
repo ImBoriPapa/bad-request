@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.Member.entity;
+package com.study.badrequest.domain.member.entity;
 
 import lombok.Getter;
 

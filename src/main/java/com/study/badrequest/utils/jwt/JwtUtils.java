@@ -88,8 +88,7 @@ public class JwtUtils implements InitializingBean {
     }
 
     private static String getAuthorityString(Authentication authentication) {
-        String collect = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-        return collect;
+        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
     }
 
     // 토큰의 유효성 + 만료일자 확인
