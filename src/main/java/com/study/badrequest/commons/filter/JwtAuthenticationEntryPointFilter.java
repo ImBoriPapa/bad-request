@@ -37,6 +37,7 @@ public class JwtAuthenticationEntryPointFilter implements AuthenticationEntryPoi
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         log.info("[JwtAuthenticationEntryPointFilter]");
+
         JwtStatus jwtStatus = (JwtStatus) request.getAttribute(JWT_STATUS_HEADER);
 
         CustomStatus customStatus = jwtStatusEnumMap.getOrDefault(jwtStatus, CustomStatus.TOKEN_IS_ERROR);

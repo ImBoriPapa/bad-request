@@ -1,5 +1,9 @@
 package com.study.badrequest.api;
 
+
+
+
+import com.study.badrequest.aop.annotation.CurrentUser;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.Member.service.MemberCommandService;
 import com.study.badrequest.domain.Member.dto.MemberRequest;
@@ -8,15 +12,16 @@ import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.commons.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
-
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
-
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 
@@ -24,17 +29,23 @@ import org.springframework.web.bind.annotation.*;
 
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL)
 @Slf4j
 public class MemberController {
-
     private final MemberCommandService memberCommandService;
     private final MemberValidator memberValidator;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
+
+    @GetMapping("/member/info")
+    public void getMemberInfo(@AuthenticationPrincipal User user) {
+
+        log.info("User= {}",user.getUsername());
+        log.info("User= {}",user.getAuthorities());
+    }
 
     @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer

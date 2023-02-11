@@ -45,6 +45,7 @@ public class MemberReadOnlyRepository {
 
         MemberDto memberDto = jpaQueryFactory
                 .select(Projections.fields(MemberDto.class,
+                        qMember.id.as("memberId"),
                         qMember.username.as("username"),
                         qMember.password.as("password"),
                         qMember.authority.as("authority")
@@ -52,14 +53,23 @@ public class MemberReadOnlyRepository {
                 .where(qMember.username.eq(username))
                 .fetchOne();
 
-        return memberDto == null ? Optional.empty() : Optional.ofNullable(memberDto);
+        return memberDto == null ? Optional.empty() : Optional.of(memberDto);
     }
 
     @Getter
     @NoArgsConstructor
     public static class MemberDto {
+        private Long memberId;
         private String username;
         private String password;
         private Authority authority;
+
+        public MemberDto(String username, String password, Authority authority) {
+            this.username = username;
+            this.password = password;
+            this.authority = authority;
+        }
     }
+
+
 }

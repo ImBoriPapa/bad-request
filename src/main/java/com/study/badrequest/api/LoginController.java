@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -66,7 +67,6 @@ public class LoginController {
     @PostMapping(value = "/refresh", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity reIssue(HttpServletRequest request, @CookieValue(value = "Refresh", required = false) Cookie cookie) {
-
 
         String accessToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 

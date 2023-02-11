@@ -62,8 +62,8 @@ message:
 
 token:
   secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
-  access-life: 600
-  refresh-life: 604800
+  access-life: 10
+  refresh-life: 7
 
 cookie-status:
   secure: false

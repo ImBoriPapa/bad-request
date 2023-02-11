@@ -23,15 +23,16 @@ public class JwtUserDetailService implements UserDetailsService {
      *
      * @throws UsernameNotFoundException
      */
+
     @Override
     @CustomLogTracer
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberReadOnlyRepository.findByUsername(username)
                 .map(memberDto -> new User(
-                        memberDto.getUsername(),
-                        memberDto.getPassword(),
-                        Member.getAuthorities(memberDto.getAuthority())))
-                .orElseThrow(() -> new UsernameNotFoundException(CustomStatus.NOTFOUND_MEMBER.getMessage()));
-
+                                memberDto.getUsername(),
+                                memberDto.getPassword(),
+                                Member.getAuthorities(memberDto.getAuthority())
+                        )
+                ).orElseThrow(() -> new UsernameNotFoundException(CustomStatus.NOTFOUND_MEMBER.getMessage()));
     }
 }

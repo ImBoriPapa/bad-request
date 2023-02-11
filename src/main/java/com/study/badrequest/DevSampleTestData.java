@@ -47,7 +47,7 @@ public class DevSampleTestData {
 
     public void sampleMember() {
         ProfileImage defaultProfileImage = ProfileImage.builder()
-                .fullPath("https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG").build();
+                .fullPath("https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg").build();
 
         Member user = Member.createMember()
                 .email(SAMPLE_USER_EMAIL)

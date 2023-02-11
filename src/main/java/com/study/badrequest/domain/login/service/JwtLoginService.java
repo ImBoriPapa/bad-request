@@ -23,6 +23,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,6 @@ public class JwtLoginService {
      * 로그인
      */
     @CustomLogTracer
-
     public LoginResponse.LoginDto loginProcessing(String email, String password) {
         /**
          * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
@@ -72,7 +72,6 @@ public class JwtLoginService {
                 .refreshCookie(cookie)
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
                 .build();
-
     }
 
     /**
@@ -88,8 +87,6 @@ public class JwtLoginService {
                 .build();
 
         return refreshTokenRepository.save(refreshToken);
-
-
     }
 
     /**
@@ -98,10 +95,11 @@ public class JwtLoginService {
      */
     @CustomLogTracer
     private Authentication getAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
-
+        log.info("getAuthentication,authenticationManagerBuilder");
         final Authentication authentication;
         try {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
         } catch (BadCredentialsException e) {
             throw new MemberException(CustomStatus.LOGIN_FAIL);
         }
@@ -129,7 +127,7 @@ public class JwtLoginService {
     @CustomLogTracer
     public LoginResponse.LogoutResult logoutProcessing(String accessToken) {
 
-        checkTokenStatusIsAccess(accessToken);
+        checkTokenIsAccess(accessToken);
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //1.Refresh Token 확인 없다면 인증기간 만료로 인한 로그아웃
@@ -138,6 +136,8 @@ public class JwtLoginService {
         }
         //2.Refresh Token 삭제 Refresh 가 존재하지 않는 다면 로그아웃으로 간주
         refreshTokenRepository.deleteById(authentication.getName());
+        //3.SecurityContext 에서 인증 객체 제거
+        SecurityContextHolder.clearContext();
 
         return new LoginResponse.LogoutResult();
     }
@@ -151,7 +151,7 @@ public class JwtLoginService {
         //1. 토큰 validation
         checkTokenStatusIsDeniedOrError(accessToken);
 
-        checkTokenStatusIsAccess(refreshToken);
+        checkTokenIsAccess(refreshToken);
 
         Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //2. 존재하는 회원인지 확인
@@ -164,7 +164,7 @@ public class JwtLoginService {
         //6. 토큰 생성
         TokenDto tokenDto = jwtUtils.generateToken(authentication);
         //7. 토큰 갱신
-        replaceRefresh(refresh, tokenDto);
+        replaceRefreshToken(refresh, tokenDto);
 
         ResponseCookie responseCookie = generateResponseCookie(refresh);
 
@@ -176,7 +176,7 @@ public class JwtLoginService {
                 .build();
     }
 
-    public void replaceRefresh(RefreshToken refresh, TokenDto tokenDto) {
+    public void replaceRefreshToken(RefreshToken refresh, TokenDto tokenDto) {
         refresh.replaceToken(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiredTime());
         refreshTokenRepository.save(refresh);
     }
@@ -201,7 +201,7 @@ public class JwtLoginService {
         }
     }
 
-    private void checkTokenStatusIsAccess(String refreshToken) {
+    private void checkTokenIsAccess(String refreshToken) {
         log.debug("[JwtLoginService.checkTokenIsAccess]");
         if (jwtUtils.validateToken(refreshToken) != JwtStatus.ACCESS) {
             throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
@@ -213,9 +213,9 @@ public class JwtLoginService {
      * 리프레시 토큰이 존재 한다면 로그인 없다면 로그아웃
      */
     @Transactional(readOnly = true)
-    public boolean loginCheck(String email) {
+    public boolean loginCheck(String username) {
         log.debug("[JwtLoginService.loginCheck]");
-        return refreshTokenRepository.findById(email).isPresent();
+        return refreshTokenRepository.existsById(username);
     }
 
 }

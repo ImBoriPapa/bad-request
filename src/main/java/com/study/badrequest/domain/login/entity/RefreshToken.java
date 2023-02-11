@@ -22,7 +22,6 @@ public class RefreshToken implements Serializable {
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private long expiration;
 
-
     @Builder(builderMethodName = "createRefresh")
     public RefreshToken(String username, String token, Long expiration) {
         this.username = username;

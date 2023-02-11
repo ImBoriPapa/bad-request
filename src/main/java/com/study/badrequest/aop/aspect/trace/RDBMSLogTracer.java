@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class RDBMSLogTracer implements CustomLogTracer {
+public class RDBMSLogTracer implements LogTracer {
     private String className;
     private String methodName;
     private String message;

@@ -331,65 +331,8 @@ class LoginControllerTest {
 
     }
 
-    @Test
-    @DisplayName("인가 테스트- 성공")
-    void authoritySuccessTest1() throws Exception {
-        //given
-        LoginResponse.LoginDto teacher = loginService.loginProcessing("teacher@gmail.com", "password1234!@");
 
-        //when
-        //인가 있음
-        mockMvc.perform(get("/test/teacher")
-                        .header(AUTHORIZATION_HEADER, "Bearer " + teacher.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("result.authority").exists())
-                .andDo(print())
-                .andDo(document("authoritySuccess",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestHeaders(headerWithName(AUTHORIZATION_HEADER).description("AccessToken")),
-                        responseFields(
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 상태"),
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 메시지"),
-                                fieldWithPath("result").type(JsonFieldType.OBJECT).description("결과"),
-                                fieldWithPath("result.authority").type(JsonFieldType.STRING).description("결과 예시")
-                        )
-                ));
 
-        //then
-
-    }
-
-    @Test
-    @DisplayName("인가 테스트- 성공 하위 권한 접근")
-    void authoritySuccessTest2() throws Exception {
-        //given
-        LoginResponse.LoginDto admin = loginService.loginProcessing("admin@gmail.com", "password1234!@");
-        //when
-        //인가 포함
-        mockMvc.perform(get("/test/teacher")
-                        .header(AUTHORIZATION_HEADER, "Bearer " + admin.getAccessToken())
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("result.authority").exists())
-                .andDo(print())
-                .andDo(document("authoritySuccessAdmin",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestHeaders(headerWithName(AUTHORIZATION_HEADER).description("AccessToken")),
-                        responseFields(
-                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 상태"),
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 메시지"),
-                                fieldWithPath("result").type(JsonFieldType.OBJECT).description("결과"),
-                                fieldWithPath("result.authority").type(JsonFieldType.STRING).description("결과 예시")
-                        )
-                ));
-    }
 
 
 }

@@ -4,7 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Before;
 
-public interface CustomLogTracer {
+public interface LogTracer {
     /**
      * 동작 메서드 확인 로그
      */

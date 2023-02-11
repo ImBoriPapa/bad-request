@@ -20,7 +20,8 @@ public class LoginResponse {
         private Long id;
         private String accessToken;
         private ResponseCookie refreshCookie;
-        private Date accessTokenExpired;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime accessTokenExpired;
     }
 
     /**
@@ -34,7 +35,8 @@ public class LoginResponse {
     @AllArgsConstructor
     public static class LoginResult {
         private Long memberId;
-        private Date accessTokenExpired;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime accessTokenExpired;
     }
 
     @Getter
@@ -49,9 +51,10 @@ public class LoginResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class ReIssueResult{
+    public static class ReIssueResult {
         private Long memberId;
-        private Date accessTokenExpired;
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime accessTokenExpired;
     }
 
 

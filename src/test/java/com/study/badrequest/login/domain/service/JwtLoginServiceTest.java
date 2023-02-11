@@ -68,7 +68,7 @@ class JwtLoginServiceTest {
         //then
 
         assertThat(loginResult.getAccessToken()).isNotEmpty();
-        assertThat(loginResult.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDate(loginResult.getAccessToken()));
+        assertThat(loginResult.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDateTime(loginResult.getAccessToken()));
 
     }
 

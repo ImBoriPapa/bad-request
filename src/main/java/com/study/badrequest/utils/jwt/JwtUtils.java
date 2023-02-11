@@ -12,16 +12,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
@@ -33,16 +36,17 @@ public class JwtUtils implements InitializingBean {
 
     private final static String AUTHORITIES_KEY = "auth";
     private final String SECRETE_KEY;
-    private final long ACCESS_TOKEN_LIFE;
-    private final long REFRESH_TOKEN_LIFE;
+    private final int ACCESS_TOKEN_LIFE_MIN;
+    private final int REFRESH_TOKEN_LIFE;
+
     private Key key;
 
     public JwtUtils(@Value("${token.secret-key}") String SECRETE_KEY,
-                    @Value("${token.access-life}") long ACCESS_TOKEN_LIFE,
-                    @Value("${token.refresh-life}") long REFRESH_TOKEN_LIFE) {
+                    @Value("${token.access-life}") int ACCESS_TOKEN_LIFE_MIN,
+                    @Value("${token.refresh-life}") int REFRESH_TOKEN_LIFE_DAY) {
         this.SECRETE_KEY = SECRETE_KEY;
-        this.ACCESS_TOKEN_LIFE = ACCESS_TOKEN_LIFE * 1000;
-        this.REFRESH_TOKEN_LIFE = REFRESH_TOKEN_LIFE * 1000;
+        this.ACCESS_TOKEN_LIFE_MIN = ACCESS_TOKEN_LIFE_MIN;
+        this.REFRESH_TOKEN_LIFE = REFRESH_TOKEN_LIFE_DAY;
     }
 
     @Override
@@ -56,44 +60,37 @@ public class JwtUtils implements InitializingBean {
      */
     public TokenDto generateToken(Authentication authentication) {
 
-        String collect = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-        long now = new Date().getTime();
+        String authorityString = getAuthorityString(authentication);
+        long currentTimeMillis = System.currentTimeMillis();
 
         log.info("[엑세스 토큰생성]");
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, collect)
-                .setExpiration(new Date(now + ACCESS_TOKEN_LIFE))
+                .claim(AUTHORITIES_KEY, authorityString)
+                .setExpiration(new Date(currentTimeMillis + TimeUnit.MINUTES.toMillis(ACCESS_TOKEN_LIFE_MIN)))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
         log.info("[리프레쉬 토큰생성]");
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, collect)
-                .setExpiration(new Date(now + REFRESH_TOKEN_LIFE))
+                .claim(AUTHORITIES_KEY, authorityString)
+                .setExpiration(new Date(currentTimeMillis + TimeUnit.DAYS.toMillis(REFRESH_TOKEN_LIFE)))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
 
         return TokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .accessTokenExpiredAt(getExpirationDate(accessToken))
-                .refreshTokenExpiredTime(getExpirationTime(refreshToken))
+                .accessTokenExpiredAt(getExpirationDateTime(accessToken))
+                .refreshTokenExpiredTime(getExpirationTimeMillis(refreshToken))
                 .build();
     }
 
-    // 토큰에서 회원 정보 추출
-    public String extractUsername(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-
+    private static String getAuthorityString(Authentication authentication) {
+        String collect = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        return collect;
     }
-
 
     // 토큰의 유효성 + 만료일자 확인
     public JwtStatus validateToken(String token) {
@@ -134,15 +131,19 @@ public class JwtUtils implements InitializingBean {
         return null;
     }
 
-    public Date getExpirationDate(String token) {
+    public LocalDateTime getExpirationDateTime(String token) {
         return getClaimsJws(token)
                 .getBody()
-                .getExpiration();
+                .getExpiration()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
-    public long getExpirationTime(String token) {
-        long expiration = getExpirationDate(token).getTime();
-        return (expiration - new Date().getTime());
+    public long getExpirationTimeMillis(String token) {
+        LocalDateTime expirationDate = getExpirationDateTime(token);
+        LocalDateTime currentDate = LocalDateTime.now();
+        return Duration.between(currentDate, expirationDate).toMillis();
     }
 
     private Jws<Claims> getClaimsJws(String token) {
@@ -169,12 +170,12 @@ public class JwtUtils implements InitializingBean {
                         .collect(Collectors.toList());
 
         // UserDetails 객체를 만들어서 Authentication 리턴
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        User user = new User(claims.getSubject(), "", authorities);
+        return new UsernamePasswordAuthenticationToken(user, "", authorities);
     }
 
-    public void checkTokenIsEmpty(String token,CustomStatus status){
-        if(token == null){
+    public void checkTokenIsEmpty(String token, CustomStatus status) {
+        if (token == null) {
             throw new TokenException(status);
         }
     }

@@ -67,6 +67,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.debug("[JwtAuthenticationFilter is DENIED token]");
                 jwtStatus = JwtStatus.DENIED;
                 break;
+            case EMPTY_TOKEN:
+                log.debug("[JwtAuthenticationFilter is EMPTY token]");
+                jwtStatus = JwtStatus.EMPTY_TOKEN;
+                break;
             default:
                 log.debug("[JwtAuthenticationFilter is ERROR token]");
                 jwtStatus = JwtStatus.ERROR;
