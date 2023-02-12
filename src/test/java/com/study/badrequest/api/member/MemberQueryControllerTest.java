@@ -51,13 +51,13 @@ class MemberQueryControllerTest {
         LoginResponse.LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(get("/api/v1/member/info")
+        mockMvc.perform(get("/api/v1/member/auth")
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print())
                 //then
-                .andDo(document("member-info",
+                .andDo(document("member-auth",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         requestHeaders(
@@ -68,7 +68,8 @@ class MemberQueryControllerTest {
                                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
                                 fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("회원 식별 아이디"),
-                                fieldWithPath("result.authority").type(JsonFieldType.STRING).description("회원 권한"))
+                                fieldWithPath("result.authority").type(JsonFieldType.STRING).description("회원 권한"),
+                                fieldWithPath("result.links").type(JsonFieldType.ARRAY).description("링크 정보"))
 //                                fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("링크 정보"),
 //                                fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크"))
                 ));

@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.member.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,7 +41,7 @@ public class MemberResponse {
 
     @NoArgsConstructor
     @Getter
-    public static class DeleteResult{
+    public static class DeleteResult {
         private String thanks = "이용해 주셔서 감사합니다.";
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime deletedAt = LocalDateTime.now();
@@ -49,8 +50,16 @@ public class MemberResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class ValidateEmail{
+    public static class ValidateEmailResult {
         private boolean duplicate;
         private String email;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class AuthResult {
+        private Long id;
+        private Authority authority;
     }
 }

@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberInfoDto {
+public class MemberAuthDto {
 
     private Long id;
     private Authority authority;
