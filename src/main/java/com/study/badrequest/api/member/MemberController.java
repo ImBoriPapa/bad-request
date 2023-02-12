@@ -58,9 +58,9 @@ public class MemberController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
     }
 
-    @PutMapping("/member/{memberId}/password")
+    @PatchMapping("/member/{memberId}/password")
     @CustomLogTracer
-    public ResponseEntity<ResponseForm.Of> putPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> patchPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
@@ -73,10 +73,9 @@ public class MemberController {
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
     }
 
-    @PutMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
-    public ResponseEntity<ResponseForm.Of> putContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.UpdateContact form, BindingResult bindingResult) {
-
+    public ResponseEntity<ResponseForm.Of> patchContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.UpdateContact form, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);

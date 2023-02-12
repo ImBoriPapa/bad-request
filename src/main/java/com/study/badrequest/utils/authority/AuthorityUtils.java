@@ -16,7 +16,6 @@ public class AuthorityUtils {
             throw new MemberException(CustomStatus.PERMISSION_DENIED);
         }
     }
-
     private static boolean isRequestingMemberAuthorized(Long memberId, Long requestMemberId, Authority authority) {
         return memberId.equals(requestMemberId) || authority == Authority.ADMIN;
     }

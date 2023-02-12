@@ -141,12 +141,17 @@ public class S3ImageUploader implements ImageUploader {
 
     public void deleteFile(String storedName) {
         log.info("[deleteFile]");
-        amazonS3Client.deleteObject(new DeleteObjectRequest(path, storedName));
+        if (storedName != null) {
+            amazonS3Client.deleteObject(new DeleteObjectRequest(path, storedName));
+        }
+
     }
 
 
     public void deleteFile(List<String> storedNameList) {
         log.info("[deleteFile]");
-        storedNameList.forEach(list -> new DeleteObjectRequest(bucket, list));
+        if (storedNameList != null) {
+            storedNameList.forEach(list -> new DeleteObjectRequest(bucket, list));
+        }
     }
 }

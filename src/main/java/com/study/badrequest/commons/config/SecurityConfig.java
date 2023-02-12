@@ -60,7 +60,7 @@ public class SecurityConfig {
                 .antMatchers(VALUES + "/*")
                 .permitAll()
                 //dashboard
-                .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh","/api/v1/dashboard/*")
+                .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh", "/api/v1/dashboard/*")
                 .permitAll()
                 //static
                 .antMatchers("/static/**", "/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
@@ -68,7 +68,7 @@ public class SecurityConfig {
                 //test
                 .antMatchers("/test/teacher")
                 .hasAuthority("ROLL_TEACHER")
-                .antMatchers("/api/image", "/test","/graph","/sse")
+                .antMatchers("/api/image", "/test", "/graph", "/sse")
                 .permitAll()
                 .anyRequest().authenticated()
                 .and()

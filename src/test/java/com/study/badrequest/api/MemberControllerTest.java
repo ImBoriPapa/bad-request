@@ -26,9 +26,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_H
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
@@ -182,7 +180,7 @@ class MemberControllerTest {
         LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(put("/api/v1/member/{memberId}/password", loginResult.getId())
+        mockMvc.perform(patch("/api/v1/member/{memberId}/password", loginResult.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
@@ -224,7 +222,7 @@ class MemberControllerTest {
         LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(put("/api/v1/member/{memberId}/contact", loginResult.getId())
+        mockMvc.perform(patch("/api/v1/member/{memberId}/contact", loginResult.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))

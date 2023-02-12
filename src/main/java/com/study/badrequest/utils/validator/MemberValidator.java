@@ -1,10 +1,7 @@
 package com.study.badrequest.utils.validator;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.commons.exception.custom_exception.MemberException;
-import com.study.badrequest.domain.member.dto.MemberAuthDto;
-import com.study.badrequest.domain.member.entity.Authority;
-import com.study.badrequest.domain.member.repository.MemberQueryRepository;
+import com.study.badrequest.domain.member.repository.query.MemberQueryRepositoryImpl;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -21,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberValidator {
 
     private final MemberRepository memberRepository;
-    private final MemberQueryRepository memberQueryRepository;
+    private final MemberQueryRepositoryImpl memberQueryRepositoryImpl;
 
     @CustomLogTracer
     public void validateCreateForm(MemberRequest.CreateMember form) {

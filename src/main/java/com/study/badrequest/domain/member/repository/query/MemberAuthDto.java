@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.member.dto;
+package com.study.badrequest.domain.member.repository.query;
 
 import com.study.badrequest.domain.member.entity.Authority;
 import lombok.Getter;

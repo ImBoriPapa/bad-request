@@ -1,8 +1,8 @@
 package com.study.badrequest.domain.login.service;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberQueryRepository;
+
 import com.study.badrequest.commons.consts.CustomStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtUserDetailService implements UserDetailsService {
-    private final MemberQueryRepository memberQueryRepository;
+    private final MemberQueryRepository memberQueryRepositoryImpl;
 
     /**
      * Member.getUsername = email
@@ -27,7 +27,7 @@ public class JwtUserDetailService implements UserDetailsService {
     @Override
     @CustomLogTracer
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberQueryRepository.findByUsername(username)
+        return memberQueryRepositoryImpl.findByUsername(username)
                 .map(memberDto -> new User(
                                 memberDto.getUsername(),
                                 memberDto.getPassword(),

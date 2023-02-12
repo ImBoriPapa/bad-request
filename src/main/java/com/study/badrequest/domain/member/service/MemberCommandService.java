@@ -31,11 +31,13 @@ public class MemberCommandService {
 
     private final ImageUploader imageUploader;
 
-    // TODO: 2023/01/18 profile image
+
     @CustomLogTracer
     public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
+
         ProfileImage profileImage = ProfileImage.builder()
                 .fullPath(imageUploader.getDefaultProfileImage()).build();
+
         Member member = Member.createMember()
                 .email(form.getEmail())
                 .password(passwordEncoder.encode(form.getPassword()))
