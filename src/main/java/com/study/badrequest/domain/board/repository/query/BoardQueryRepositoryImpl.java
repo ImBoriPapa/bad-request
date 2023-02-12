@@ -8,8 +8,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.domain.board.dto.BoardSearchCondition;
 import com.study.badrequest.domain.board.entity.*;
 
-import com.study.badrequest.domain.comment.entity.QComment;
-import com.study.badrequest.domain.comment.entity.QSubComment;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -61,7 +60,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
     public BoardListDto findBoardList(BoardSearchCondition condition) {
         int limitSize = setSize(condition.getSize());
         long lastIndex = setLastIndex(condition.getLastIndex());
-        int resultSize = 0;
+        int resultSize;
 
         log.info("[findBoardList QUERY START]");
         List<BoardListResult> results = jpaQueryFactory

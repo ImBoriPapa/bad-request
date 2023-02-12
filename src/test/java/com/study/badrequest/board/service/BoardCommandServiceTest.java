@@ -1,6 +1,8 @@
 package com.study.badrequest.board.service;
 
 
+import com.study.badrequest.domain.login.dto.LoginResponse;
+import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
@@ -41,6 +43,9 @@ class BoardCommandServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private JwtLoginService loginService;
+
     @Test
     @DisplayName("board 생성")
     void createBoard() throws Exception {
@@ -50,7 +55,6 @@ class BoardCommandServiceTest {
         BoardRequest.Create form = BoardRequest.Create
                 .builder()
                 .title("제목")
-                .memberId(member.getId())
                 .category(Category.KNOWLEDGE)
                 .contents("내용")
                 .topic(Topic.JAVA)
@@ -58,7 +62,7 @@ class BoardCommandServiceTest {
 
         MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
         //when
-        BoardResponse.Create create = boardCommandService.create(form, List.of(image1));
+        BoardResponse.Create create = boardCommandService.create(member.getUsername(),form, List.of(image1));
         Board board = boardRepository.findById(create.getBoardId()).orElseThrow(() -> new IllegalArgumentException());
         //then
         Assertions.assertThat(board.getId()).isEqualTo(create.getBoardId());
@@ -74,13 +78,12 @@ class BoardCommandServiceTest {
         BoardRequest.Create form = BoardRequest.Create
                 .builder()
                 .title("제목")
-                .memberId(member.getId())
                 .category(Category.KNOWLEDGE)
                 .contents("내용")
                 .topic(Topic.JAVA)
                 .build();
         //when
-        BoardResponse.Create create = boardCommandService.create(form, null);
+        BoardResponse.Create create = boardCommandService.create(member.getUsername(),form, null);
         Board board = boardRepository.findById(create.getBoardId()).orElseThrow(() -> new IllegalArgumentException(""));
         //then
         Assertions.assertThat(board).isNotNull();
@@ -94,13 +97,12 @@ class BoardCommandServiceTest {
         Board board = boardRepository.findById(1L).orElseThrow(() -> new IllegalArgumentException(""));
         BoardRequest.Update newData = BoardRequest.Update
                 .builder()
-                .memberId(member.getId())
                 .title("변경된 제목")
                 .contents("변경된 내용")
                 .build();
         BoardRequest.Update form = newData;
         //when
-        BoardResponse.Update update = boardCommandService.update(board.getId(), newData, null);
+        BoardResponse.Update update = boardCommandService.update(member.getUsername(),board.getId(), newData, null);
         Board findBoard = boardRepository.findById(update.getBoardId()).orElseThrow(() -> new IllegalArgumentException());
         //then
         Assertions.assertThat(findBoard.getTitle()).isEqualTo(newData.getTitle());

@@ -2,6 +2,7 @@ package com.study.badrequest.domain.board.service;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.board.dto.BoardRequest;
@@ -16,6 +17,7 @@ import com.study.badrequest.commons.exception.custom_exception.BoardException;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,10 +41,10 @@ public class BoardCommandService {
      * 게시판 생성
      */
     @CustomLogTracer
-    public BoardResponse.Create create(BoardRequest.Create form, List<MultipartFile> images) {
+    public BoardResponse.Create create(String username, BoardRequest.Create form, List<MultipartFile> images) {
 
-        Member member = memberRepository.findById(form.getMemberId())
-                .orElseThrow(() -> new BoardException(CustomStatus.NOT_FOUND_BOARD));
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
         Board board = Board.createBoard()
                 .title(form.getTitle())
@@ -60,9 +62,9 @@ public class BoardCommandService {
     }
 
     @CustomLogTracer
-    public BoardResponse.Update update(Long boardId, BoardRequest.Update form, List<MultipartFile> images) {
+    public BoardResponse.Update update(String username, Long boardId, BoardRequest.Update form, List<MultipartFile> images) {
 
-        Member member = memberRepository.findById(form.getMemberId())
+        Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new BoardException(CustomStatus.NOT_MATCH_BOARD_WRITER));
 
         Board board = boardRepository.findById(boardId)

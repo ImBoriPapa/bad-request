@@ -20,6 +20,8 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,6 +48,7 @@ public class BoardController {
     @PostMapping("/board")
     @CustomLogTracer
     public ResponseEntity postBoard(@Valid
+                                    @AuthenticationPrincipal User user,
                                     @RequestPart(value = "form", required = true) BoardRequest.Create form,
                                     @RequestPart(value = "images", required = false) List<MultipartFile> images,
                                     BindingResult bindingResult) {
@@ -54,7 +57,7 @@ public class BoardController {
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        BoardResponse.Create create = boardCommandService.create(form, images);
+        BoardResponse.Create create = boardCommandService.create(user.getUsername(), form, images);
 
         EntityModel<BoardResponse.Create> entityModel = boardResponseModelAssembler.toModel(create);
 
@@ -74,13 +77,14 @@ public class BoardController {
      */
     @PatchMapping("/board/{boardId}")
     public ResponseEntity patchBoard(
-                                     @PathVariable(name = "boardId") Long boardId,
-                                     @RequestPart(name = "form") BoardRequest.Update form,
-                                     @RequestPart(name = "images", required = false) List<MultipartFile> images) {
+            @AuthenticationPrincipal User user,
+            @PathVariable(name = "boardId") Long boardId,
+            @RequestPart(name = "form") BoardRequest.Update form,
+            @RequestPart(name = "images", required = false) List<MultipartFile> images) {
 
         boardValidator.validateUpdateForm(form);
 
-        BoardResponse.Update update = boardCommandService.update(boardId, form, images);
+        BoardResponse.Update update = boardCommandService.update(user.getUsername(), boardId, form, images);
 
         EntityModel<BoardResponse.Update> entityModel = boardResponseModelAssembler.toModel(update);
 

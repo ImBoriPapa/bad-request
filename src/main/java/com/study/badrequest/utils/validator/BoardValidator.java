@@ -18,8 +18,6 @@ public class BoardValidator {
 
     @CustomLogTracer
     public void validateUpdateForm(BoardRequest.Update form){
-        if(form.getMemberId() == null){
-            throw new BoardException(CustomStatus.NOTFOUND_MEMBER);
-        }
+
     }
 }

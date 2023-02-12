@@ -64,7 +64,6 @@ class BoardControllerTest {
         LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         BoardRequest.Create form = BoardRequest.Create.builder()
-                .memberId(loginProcessing.getId())
                 .title("제목입니다")
                 .contents("내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.")
                 .topic(Topic.JAVA)
@@ -96,7 +95,6 @@ class BoardControllerTest {
                         ),
 
                         requestPartFields("form",
-                                fieldWithPath("memberId").type(JsonFieldType.NUMBER).description("회원 아이디"),
                                 fieldWithPath("title").type(JsonFieldType.STRING).description("제목"),
                                 fieldWithPath("contents").type(JsonFieldType.STRING).description("본문"),
                                 fieldWithPath("topic").type(JsonFieldType.STRING).description("주제"),
@@ -114,14 +112,13 @@ class BoardControllerTest {
                 ));
     }
 
-//    @Test
+    //    @Test
     @DisplayName("게시판 작성 이미지 첨부")
     void createBoardTest2() throws Exception {
         //given
         LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         BoardRequest.Create form = BoardRequest.Create.builder()
-                .memberId(loginProcessing.getId())
                 .title("제목입니다")
                 .contents("내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.")
                 .topic(Topic.JAVA)
