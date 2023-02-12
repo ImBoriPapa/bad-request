@@ -1,14 +1,16 @@
 package com.study.badrequest.domain.member.entity;
 
 import com.fasterxml.uuid.Generators;
+import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -45,7 +47,7 @@ public class Member {
     private LocalDateTime updatedAt;
 
     @Builder(builderMethodName = "createMember")
-    public Member(String email, String nickname, String aboutMe, String password, String name, String contact,ProfileImage profileImage, Authority authority) {
+    public Member(String email, String nickname, String aboutMe, String password, String name, String contact, ProfileImage profileImage, Authority authority) {
         this.username = generateSequentialUUID();
         this.email = email;
         this.nickname = nickname;
@@ -59,30 +61,11 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-
-        this.getAuthority().getRoleList()
-                .forEach(m -> authorities.add(new SimpleGrantedAuthority(m)));
-
-        return authorities;
-    }
-
-    public static Collection<? extends GrantedAuthority> getAuthorities(Authority authority) {
-
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>();
-
-        authority.getRoleList()
-                .forEach(m -> authorities.add(new SimpleGrantedAuthority(m)));
-
-        return authorities;
-    }
-
     /**
      * 시간순 정렬 UUID
      */
     private String generateSequentialUUID() {
+
         String proto = Generators.timeBasedGenerator().generate().toString();
         String[] array = proto.split("-");
         String sort = array[2] + array[1] + array[0] + array[3] + array[4];

@@ -31,7 +31,7 @@ public class JwtUserDetailService implements UserDetailsService {
                 .map(memberDto -> new User(
                                 memberDto.getUsername(),
                                 memberDto.getPassword(),
-                                Member.getAuthorities(memberDto.getAuthority())
+                                memberDto.getAuthority().getAuthorities()
                         )
                 ).orElseThrow(() -> new UsernameNotFoundException(CustomStatus.NOTFOUND_MEMBER.getMessage()));
     }

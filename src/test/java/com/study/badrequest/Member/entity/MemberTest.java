@@ -3,22 +3,26 @@ package com.study.badrequest.Member.entity;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
+@Slf4j
 class MemberTest {
 
     @Autowired
@@ -66,17 +70,16 @@ class MemberTest {
                 .authority(Authority.ADMIN)
                 .build();
         //when
-        List<SimpleGrantedAuthority> roll_member = List.of(new SimpleGrantedAuthority("ROLL_MEMBER"));
-        List<SimpleGrantedAuthority> roll_teacher = List.of(new SimpleGrantedAuthority("ROLL_MEMBER"), new SimpleGrantedAuthority("ROLL_TEACHER"));
-        List<SimpleGrantedAuthority> roll_admin = List.of(
-                new SimpleGrantedAuthority("ROLL_MEMBER"),
-                new SimpleGrantedAuthority("ROLL_TEACHER")
-                , new SimpleGrantedAuthority("ROLL_ADMIN"));
+        String collect1 = user.getAuthority().getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        String collect2 = teacher.getAuthority().getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+        String collect3 = admin.getAuthority().getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
 
         //then
-        assertThat(user.getAuthorities().containsAll(roll_member)).isTrue();
-        assertThat(teacher.getAuthorities().containsAll(roll_teacher)).isTrue();
-        assertThat(admin.getAuthorities().containsAll(roll_admin)).isTrue();
+        assertThat(collect1).isEqualTo("ROLE_MEMBER");
+        assertThat(collect2).isEqualTo("ROLE_MEMBER,ROLE_TEACHER");
+        assertThat(collect3).isEqualTo("ROLE_MEMBER,ROLL_TEACHER,ROLE_ADMIN");
+
+
 
 
     }

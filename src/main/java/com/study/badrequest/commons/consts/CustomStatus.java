@@ -18,8 +18,6 @@ public enum CustomStatus {
     REFRESH_COOKIE_IS_EMPTY(1505, "리프레시 토큰 쿠키를 찾을 수 없습니다."),
     LOGIN_FAIL(1600, "로그인에 실패했습니다."),
     ALREADY_LOGOUT(1601, "로그아웃된 계정입니다. 다시 로그인 해주세요."),
-    NOTFOUND_MEMBER(2000, "회원정보를 찾을 수 없습니다."),
-    WRONG_PASSWORD(2001, "잘못된 비밀번호입니다."),
     WRONG_FILE_ERROR(2002, "잘못된 파일 형식입니다."),
     UPLOAD_FAIL_ERROR(2003, "파일 업로드에 실패했습니다."),
     NOT_SUPPORT_ERROR(2004, "지원하지 않는 파일 형식입니다."),
@@ -29,12 +27,22 @@ public enum CustomStatus {
     NOT_EXIST_CATEGORY(2008, "존재하지 않는 카테고리 입니다."),
     NOT_EXIST_TOPIC(2009, "존재하지 않는 카테고리 입니다."),
     /**
+     * 회원 관련
+     * code: 2000~
+     */
+    NOTFOUND_MEMBER(2000, "회원정보를 찾을 수 없습니다."),
+    NOTFOUND_AUTHORITY(2001, "권한정보를 찾을 수 없습니다."),
+    WRONG_AUTHORITY(2002, "잘못된 권한정보 입니다."),
+    WRONG_PASSWORD(2003, "잘못된 비밀번호입니다."),
+    /**
      * 게시판 관련
+     * code: 3000~
      */
     NOT_FOUND_BOARD(3000, "존재하지 않는 게시판 입니다."),
     NOT_MATCH_BOARD_WRITER(3001, "게시판 수정은 작성자만 가능합니다."),
     /**
      * 댓글 관련
+     * code: 4000~
      */
     NOT_FOUND_COMMENT(4000, "존재하지 않는 댓글 입니다.");
 

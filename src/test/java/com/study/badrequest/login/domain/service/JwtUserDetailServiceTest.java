@@ -51,7 +51,7 @@ class JwtUserDetailServiceTest {
         //then
         assertThat(userDetails.getUsername()).isEqualTo(saveMember.getUsername());
         assertThat(userDetails.getPassword()).isEqualTo(saveMember.getPassword());
-        assertThat(userDetails.getAuthorities().containsAll(Arrays.asList(saveMember.getAuthorities().toArray()))).isTrue();
+        assertThat(userDetails.getAuthorities().containsAll(Arrays.asList(saveMember.getAuthority().getAuthorities().toArray()))).isTrue();
 
     }
 
