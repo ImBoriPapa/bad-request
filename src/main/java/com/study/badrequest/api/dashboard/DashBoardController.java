@@ -56,13 +56,13 @@ public class DashBoardController {
 
         return ResponseEntity.ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
-                .header("X-Accel-Buffering","no")
+                .header("X-Accel-Buffering", "no")
                 .body(sseEmitter);
     }
 
     /**
      * SSE Protocol
-     *
+     * <p>
      * JVM heapMemory, nonHeapMemory
      *
      * @return ResponseEntity
@@ -82,24 +82,15 @@ public class DashBoardController {
         return ResponseEntity
                 .ok()
                 .contentType(MediaType.TEXT_EVENT_STREAM)
-                .header("X-Accel-Buffering","no")
+                .header("X-Accel-Buffering", "no")
                 .body(sseEmitter);
     }
 
-
-    @GetMapping("/refresh")
-    public List<RefreshToken> getAll() {
-
-        ArrayList<RefreshToken> list = new ArrayList<>();
-        Iterable<RefreshToken> all = refreshTokenService.findAll();
-        if (all.iterator().hasNext()) {
-            list.add(all.iterator().next());
-        }
-
-        return list;
-    }
-
-    @GetMapping("/log")
+    /**
+     * @CustomLogTracer 로 기록된 로그 정보 응답
+     */
+    // TODO: 2023/02/14 문서화
+    @GetMapping("/api/v1/dashboard/log")
     @CustomLogTracer
     public ResponseEntity getLogs(
             @RequestParam(value = "size", defaultValue = "30") int size,
@@ -144,49 +135,6 @@ public class DashBoardController {
 
         public Result(List<LogDto> result) {
             this.result = result;
-        }
-    }
-
-    @GetMapping("/heap")
-    @CustomLogTracer
-    public ResponseEntity getHeap() {
-
-        final long heapSize = Runtime.getRuntime().totalMemory();
-
-        final long heapMaxSize = Runtime.getRuntime().maxMemory();
-
-        final long heapFreeSize = Runtime.getRuntime().freeMemory();
-
-        return ResponseEntity
-                .ok()
-                .body(
-                        PlatFormStatusDto
-                                .builder()
-                                .heapSize(heapSize)
-                                .heapMaxSize(heapMaxSize)
-                                .heapFreeSize(heapFreeSize)
-                                .build()
-                );
-    }
-
-    @Data
-    @NoArgsConstructor
-    @Builder
-    public static class PlatFormStatusDto {
-        private Long heapSize;
-        private Long heapMaxSize;
-        private Long heapFreeSize;
-        private double cpuUsage;
-        private double memoryTotalSpace;
-        private double memoryFreeSpace;
-
-        public PlatFormStatusDto(Long heapSize, Long heapMaxSize, Long heapFreeSize, double cpuUsage, double memoryFreeSpace, double memoryTotalSpace) {
-            this.heapSize = heapSize;
-            this.heapMaxSize = heapMaxSize;
-            this.heapFreeSize = heapFreeSize;
-            this.cpuUsage = cpuUsage;
-            this.memoryFreeSpace = memoryFreeSpace;
-            this.memoryTotalSpace = memoryTotalSpace;
         }
     }
 
