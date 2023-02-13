@@ -178,7 +178,7 @@ class BoardControllerTest {
     void getBoardTest() throws Exception {
         //given
         //when
-        mockMvc.perform(get("/api/v1/board"))
+        mockMvc.perform(get("/api/v1/board?size=3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(CustomStatus.SUCCESS.name()))
                 .andExpect(jsonPath("code").value(CustomStatus.SUCCESS.getCode()))
@@ -242,7 +242,7 @@ class BoardControllerTest {
 
         //when
         mockMvc.perform(get("/api/v1/board")
-                        .param("size", "5")
+                        .param("size", "3")
                         .param("lastIndex", "37")
                         .param("category", "question")
                         .param("topic", "mysql")
@@ -300,7 +300,6 @@ class BoardControllerTest {
                                 fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크")
                         )
                 ));
-
     }
 
     @Test

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>bad-request API</title>
+<title>bad-request API documentation</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -439,18 +439,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>bad-request API</h1>
+<h1>bad-request API documentation</h1>
 <div class="details">
-<span id="revnumber">version 0.0.1-SNAPSHOT</span>
+<span id="revnumber">version 1.0.0-PROD</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_member">Member</a>
+<li><a href="#_members">Members</a>
 <ul class="sectlevel2">
 <li><a href="#_회원가입">회원가입</a></li>
 <li><a href="#_이메일_중복_확인">이메일 중복 확인</a></li>
-<li><a href="#_회원_정보">회원 정보</a></li>
+<li><a href="#_회원_권한_정보">회원 권한 정보</a></li>
 <li><a href="#_연락처_변경">연락처 변경</a></li>
 <li><a href="#_비밀번호_변경">비밀번호 변경</a></li>
 <li><a href="#_회원_탈퇴">회원 탈퇴</a></li>
@@ -461,12 +461,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_로그인">로그인</a></li>
 <li><a href="#_로그아웃">로그아웃</a></li>
 <li><a href="#_토큰_재발급">토큰 재발급</a></li>
-</ul>
-</li>
-<li><a href="#_인증_및_인가">인증 및 인가</a>
-<ul class="sectlevel2">
-<li><a href="#_인증">인증</a></li>
-<li><a href="#_인가">인가</a></li>
 </ul>
 </li>
 <li><a href="#_board">Board</a>
@@ -495,15 +489,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_member"><a class="link" href="#_member">Member</a></h2>
+<h2 id="_members"><a class="link" href="#_members">Members</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_회원가입"><a class="link" href="#_회원가입">회원가입</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/members</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청"><a class="link" href="#_요청">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/member HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 142
 Host: localhost:8080
@@ -586,7 +585,7 @@ Content-Length: 279
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 7,
-    "createdAt" : "2023-02-11 18:23",
+    "createdAt" : "2023-02-13 21:45",
     "links" : [ {
       "rel" : "POST: 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -653,11 +652,16 @@ Content-Length: 279
 </div>
 <div class="sect2">
 <h3 id="_이메일_중복_확인"><a class="link" href="#_이메일_중복_확인">이메일 중복 확인</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/members/email</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_2"><a class="link" href="#_요청_2">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/member/email?email=gdfagsdgs%40email.com HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/members/email?email=gdfagsdgs%40email.com HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
@@ -709,11 +713,11 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 159
+Content-Length: 160
 
 {
   "status" : "DUPLICATE_EMAIL",
-  "requestPath" : "/api/v1/member/email",
+  "requestPath" : "/api/v1/members/email",
   "errorCode" : 2005,
   "message" : [ "이미 사용중인 이메일입니다." ]
 }</code></pre>
@@ -723,17 +727,32 @@ Content-Length: 159
 </div>
 </div>
 <div class="sect2">
-<h3 id="_회원_정보"><a class="link" href="#_회원_정보">회원 정보</a></h3>
+<h3 id="_회원_권한_정보"><a class="link" href="#_회원_권한_정보">회원 권한 정보</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 후 로그인한 회원 권한 정보 요청</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/members/auth</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_3"><a class="link" href="#_요청_3">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/member/info HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/members/auth HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDl9.69bGe-XLnFr5WBQoWoyk6Ed2aQsqKciTmOX_yWCOlHSomDgdYxvfH4ZicKRmrNIHdFSbxOSJnf2jbTFBEdZdeQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTF9.8NWNtIdkX4yuOz-AWsWq0UiOBkoX58_VGWqsEZJg2ZOG9ixDAJanzPmW4WjVeRtPTK_FR7If3ztWMlN58_P7RQ
 Host: localhost:8080</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_요청_헤더"><a class="link" href="#_요청_헤더">요청 헤더</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -768,7 +787,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 151
+Content-Length: 170
 
 {
   "status" : "SUCCESS",
@@ -776,11 +795,15 @@ Content-Length: 151
   "message" : "요청에 성공했습니다.",
   "result" : {
     "id" : 1,
-    "authority" : "MEMBER"
+    "authority" : "MEMBER",
+    "links" : [ ]
   }
 }</code></pre>
 </div>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_응답_필드_2"><a class="link" href="#_응답_필드_2">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -820,19 +843,29 @@ Content-Length: 151
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">회원 권한</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">링크 정보</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_연락처_변경"><a class="link" href="#_연락처_변경">연락처 변경</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/contact</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_4"><a class="link" href="#_요청_4">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/member/1/contact HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/1/contact HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDh9.V97iPkYCXf3BraNO9G1C71uU74nKQzVIc2Fi288FQjhrqNnLkykMaQ3Ycwx-bAKIUpfZO69WCFqkjLQlNGUfdQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTF9.8NWNtIdkX4yuOz-AWsWq0UiOBkoX58_VGWqsEZJg2ZOG9ixDAJanzPmW4WjVeRtPTK_FR7If3ztWMlN58_P7RQ
 Content-Length: 33
 Host: localhost:8080
 
@@ -842,7 +875,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_요청_헤더"><a class="link" href="#_요청_헤더">요청 헤더</a></h5>
+<h5 id="_요청_헤더_2"><a class="link" href="#_요청_헤더_2">요청 헤더</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -902,7 +935,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 285
+Content-Length: 286
 
 {
   "status" : "SUCCESS",
@@ -910,17 +943,17 @@ Content-Length: 285
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "updatedAt" : "2023-02-11 18:23",
+    "updatedAt" : "2023-02-13 21:45",
     "links" : [ {
       "rel" : "GET: 회원 정보",
-      "href" : "http://localhost:8080/api/v1/member/1"
+      "href" : "http://localhost:8080/api/v1/members/1"
     } ]
   }
 }</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_응답_필드_2"><a class="link" href="#_응답_필드_2">응답 필드</a></h5>
+<h5 id="_응답_필드_3"><a class="link" href="#_응답_필드_3">응답 필드</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -977,13 +1010,18 @@ Content-Length: 285
 </div>
 <div class="sect2">
 <h3 id="_비밀번호_변경"><a class="link" href="#_비밀번호_변경">비밀번호 변경</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/password</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_5"><a class="link" href="#_요청_5">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/member/1/password HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/1/password HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDh9.V97iPkYCXf3BraNO9G1C71uU74nKQzVIc2Fi288FQjhrqNnLkykMaQ3Ycwx-bAKIUpfZO69WCFqkjLQlNGUfdQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTF9.8NWNtIdkX4yuOz-AWsWq0UiOBkoX58_VGWqsEZJg2ZOG9ixDAJanzPmW4WjVeRtPTK_FR7If3ztWMlN58_P7RQ
 Content-Length: 74
 Host: localhost:8080
 
@@ -994,7 +1032,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect4">
-<h5 id="_요청_헤더_2"><a class="link" href="#_요청_헤더_2">요청 헤더</a></h5>
+<h5 id="_요청_헤더_3"><a class="link" href="#_요청_헤더_3">요청 헤더</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1059,7 +1097,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 285
+Content-Length: 286
 
 {
   "status" : "SUCCESS",
@@ -1067,17 +1105,17 @@ Content-Length: 285
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "updatedAt" : "2023-02-11 18:23",
+    "updatedAt" : "2023-02-13 21:45",
     "links" : [ {
       "rel" : "GET: 회원 정보",
-      "href" : "http://localhost:8080/api/v1/member/1"
+      "href" : "http://localhost:8080/api/v1/members/1"
     } ]
   }
 }</code></pre>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_응답_필드_3"><a class="link" href="#_응답_필드_3">응답 필드</a></h5>
+<h5 id="_응답_필드_4"><a class="link" href="#_응답_필드_4">응답 필드</a></h5>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1134,13 +1172,18 @@ Content-Length: 285
 </div>
 <div class="sect2">
 <h3 id="_회원_탈퇴"><a class="link" href="#_회원_탈퇴">회원 탈퇴</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>DELETE: http://www.bad-request.kr/api/v1/members/{memberId}</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_6"><a class="link" href="#_요청_6">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/member/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDh9.V97iPkYCXf3BraNO9G1C71uU74nKQzVIc2Fi288FQjhrqNnLkykMaQ3Ycwx-bAKIUpfZO69WCFqkjLQlNGUfdQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTF9.8NWNtIdkX4yuOz-AWsWq0UiOBkoX58_VGWqsEZJg2ZOG9ixDAJanzPmW4WjVeRtPTK_FR7If3ztWMlN58_P7RQ
 Content-Length: 35
 Host: localhost:8080
 
@@ -1151,7 +1194,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_요청_헤더_3"><a class="link" href="#_요청_헤더_3">요청 헤더</a></h4>
+<h4 id="_요청_헤더_4"><a class="link" href="#_요청_헤더_4">요청 헤더</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1210,7 +1253,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 318
+Content-Length: 319
 
 {
   "status" : "SUCCESS",
@@ -1218,10 +1261,10 @@ Content-Length: 318
   "message" : "요청에 성공했습니다.",
   "result" : {
     "thanks" : "이용해 주셔서 감사합니다.",
-    "deletedAt" : "2023-02-11 18:23",
+    "deletedAt" : "2023-02-13 21:45",
     "links" : [ {
       "rel" : "POST: 회원가입",
-      "href" : "http://localhost:8080/api/v1/member"
+      "href" : "http://localhost:8080/api/v1/members"
     } ]
   }
 }</code></pre>
@@ -1229,7 +1272,7 @@ Content-Length: 318
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_4"><a class="link" href="#_응답_필드_4">응답 필드</a></h4>
+<h4 id="_응답_필드_5"><a class="link" href="#_응답_필드_5">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1290,6 +1333,11 @@ Content-Length: 318
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>POST: http://www.bad-request.kr/api/v1/login</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_7"><a class="link" href="#_요청_7">요청</a></h4>
 <div class="listingblock">
@@ -1341,8 +1389,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDd9.tpN5GGOxPyb0QhgZpZPMKWfCtrl-qUjLYJwG0s6K6bNJKaVA_59_VV_4btE8fgvSe8TxlWw34okffkeYlKfHyg
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzY3MTIyMDd9.czC8k75ECZci6ES99q9wxQ-D7dEZ2zhrkMjRSpN2IGr5nRvdpJLSUtxey-ezzbNvP7U6o0tRSfkdCYtZxncYsA; Path=/; Max-Age=604799740; Expires=Sat, 12 Apr 2042 09:19:07 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTB9.ChhefvG43E-A2JXEQZVu5yQlx1p-aqdZmSrUQwruESURC3KawKGB3w2wMHN1j4psNDYLtLKCXArLXPJSibHl0g
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzY4OTcxNTB9.aQyG85xhNZGh5An88CsDoFha1EmoujfiXN7kBddTLrQE-QmiYuYneAL08LMh-kNrBynQo1DOlRHMQAPNxGEG4g; Path=/; Max-Age=604799973; Expires=Mon, 14 Apr 2042 12:45:23 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1357,7 +1405,7 @@ Content-Length: 395
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "accessTokenExpired" : "2023-02-11 18:33",
+    "accessTokenExpired" : "2023-02-13 21:55",
     "links" : [ {
       "rel" : "POST: 로그아웃",
       "href" : "http://localhost:8080/api/v1/log-out"
@@ -1462,12 +1510,17 @@ Content-Length: 395
 </div>
 <div class="sect2">
 <h3 id="_로그아웃"><a class="link" href="#_로그아웃">로그아웃</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>POST: http://www.bad-request.kr/api/v1/logout</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_8"><a class="link" href="#_요청_8">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/log-out HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDd9.tpN5GGOxPyb0QhgZpZPMKWfCtrl-qUjLYJwG0s6K6bNJKaVA_59_VV_4btE8fgvSe8TxlWw34okffkeYlKfHyg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTB9.ChhefvG43E-A2JXEQZVu5yQlx1p-aqdZmSrUQwruESURC3KawKGB3w2wMHN1j4psNDYLtLKCXArLXPJSibHl0g
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1513,7 +1566,7 @@ Content-Length: 300
   "message" : "로그아웃 요청이 성공했습니다.",
   "result" : {
     "logout" : true,
-    "logoutAt" : "2023-02-11 18:23",
+    "logoutAt" : "2023-02-13 21:45",
     "links" : [ {
       "rel" : "POST : 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -1577,27 +1630,25 @@ Content-Length: 300
 </div>
 <div class="sect2">
 <h3 id="_토큰_재발급"><a class="link" href="#_토큰_재발급">토큰 재발급</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>POST: http://www.bad-request.kr/api/v1/refresh</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_9"><a class="link" href="#_요청_9">요청</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDd9.tpN5GGOxPyb0QhgZpZPMKWfCtrl-qUjLYJwG0s6K6bNJKaVA_59_VV_4btE8fgvSe8TxlWw34okffkeYlKfHyg
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTB9.ChhefvG43E-A2JXEQZVu5yQlx1p-aqdZmSrUQwruESURC3KawKGB3w2wMHN1j4psNDYLtLKCXArLXPJSibHl0g
 Host: localhost:8080
-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzY3MTIyMDd9.czC8k75ECZci6ES99q9wxQ-D7dEZ2zhrkMjRSpN2IGr5nRvdpJLSUtxey-ezzbNvP7U6o0tRSfkdCYtZxncYsA</code></pre>
+Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzY4OTcxNTB9.aQyG85xhNZGh5An88CsDoFha1EmoujfiXN7kBddTLrQE-QmiYuYneAL08LMh-kNrBynQo1DOlRHMQAPNxGEG4g</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_요청_헤더_4"><a class="link" href="#_요청_헤더_4">요청 헤더</a></h4>
-<div class="ulist">
-<ul>
-<li>
-<p>Refresh Token Cookie 가 필요합니다.</p>
-</li>
-</ul>
-</div>
+<h4 id="_요청_헤더_5"><a class="link" href="#_요청_헤더_5">요청 헤더</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -1605,14 +1656,18 @@ Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgt
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Header</th>
 <th class="tableblock halign-left valign-top">Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">AccessToken</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Authorization</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cookie</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh= Refresh Token</p></td>
 </tr>
 </tbody>
 </table>
@@ -1626,8 +1681,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDd9.tpN5GGOxPyb0QhgZpZPMKWfCtrl-qUjLYJwG0s6K6bNJKaVA_59_VV_4btE8fgvSe8TxlWw34okffkeYlKfHyg
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzY3MTIyMDd9.czC8k75ECZci6ES99q9wxQ-D7dEZ2zhrkMjRSpN2IGr5nRvdpJLSUtxey-ezzbNvP7U6o0tRSfkdCYtZxncYsA; Path=/; Max-Age=604799469; Expires=Sat, 12 Apr 2042 09:14:36 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NTB9.ChhefvG43E-A2JXEQZVu5yQlx1p-aqdZmSrUQwruESURC3KawKGB3w2wMHN1j4psNDYLtLKCXArLXPJSibHl0g
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzY4OTcxNTB9.aQyG85xhNZGh5An88CsDoFha1EmoujfiXN7kBddTLrQE-QmiYuYneAL08LMh-kNrBynQo1DOlRHMQAPNxGEG4g; Path=/; Max-Age=604799669; Expires=Mon, 14 Apr 2042 12:40:19 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1642,7 +1697,7 @@ Content-Length: 195
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 1,
-    "accessTokenExpired" : "2023-02-11 18:33",
+    "accessTokenExpired" : "2023-02-13 21:55",
     "links" : [ ]
   }
 }</code></pre>
@@ -1650,7 +1705,7 @@ Content-Length: 195
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_5"><a class="link" href="#_응답_필드_5">응답 필드</a></h4>
+<h4 id="_응답_필드_6"><a class="link" href="#_응답_필드_6">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1697,289 +1752,29 @@ Content-Length: 195
 </div>
 </div>
 <div class="sect1">
-<h2 id="_인증_및_인가"><a class="link" href="#_인증_및_인가">인증 및 인가</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_인증"><a class="link" href="#_인증">인증</a></h3>
-
-</div>
-<div class="sect2">
-<h3 id="_인가"><a class="link" href="#_인가">인가</a></h3>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>권한 종류</p>
-<div class="ulist">
-<ul>
-<li>
-<p>MEMBER : 일반 사용자 MEMBER 인가 통과</p>
-</li>
-<li>
-<p>TEACHER : 강사권한, MEMBER, TEACHER 인가 통과</p>
-</li>
-<li>
-<p>ADMIN : 관리자 권한 모든 인가 통과</p>
-</li>
-</ul>
-</div>
-</li>
-</ol>
-</div>
-<div class="sect3">
-<h4 id="_case_인가_실패"><a class="link" href="#_case_인가_실패">Case 인가 실패</a></h4>
-<div class="paragraph">
-<p>MEMBER 권한으로 TEACHER 권한이 필요한 API 호출시 에러</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iZDAyLTQ4NDgtODlmMC05MWQyZTYxNDJkZDMiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDd9.tpN5GGOxPyb0QhgZpZPMKWfCtrl-qUjLYJwG0s6K6bNJKaVA_59_VV_4btE8fgvSe8TxlWw34okffkeYlKfHyg
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 401 Unauthorized
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json;charset=UTF-8
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 145
-
-{
-  "status" : "PERMISSION_DENIED",
-  "requestPath" : "/test/teacher",
-  "errorCode" : 1004,
-  "message" : [ "접근 권한이 없습니다." ]
-}</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 상태</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>requestPath</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">요청 URL</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>errorCode</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 에러 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_case_인가_성공"><a class="link" href="#_case_인가_성공">Case 인가 성공</a></h4>
-<div class="paragraph">
-<p>TEACHER 권한으로 TEACHER 권한이 필요한 API 호출시 성공</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi02ODk4LWVlYjQtOGEyYy0zMzk0ZDI2ZjIyOTEiLCJhdXRoIjoiUk9MTF9NRU1CRVIsUk9MTF9URUFDSEVSIiwiZXhwIjoxNjc2MDMyNTM2fQ.stBhbQrLbNh7BGxD3CVJM8O0S3FwFDJXONJ_XhO0yNYli4lfPAqV6LTnFnycSsqSBSgl_-9j2WyXqYhiwDnpTw
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 161
-
-{
-  "status" : "SUCCESS",
-  "code" : 1000,
-  "message" : "요청에 성공했습니다.",
-  "result" : {
-    "authority" : "강사 권한이 있습니다."
-  }
-}</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 상태</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">결과</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.authority</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">결과 예시</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_case_인가_관리자"><a class="link" href="#_case_인가_관리자">Case 인가 관리자</a></h4>
-<div class="paragraph">
-<p>ADMIN 권한은 모든 인가 통과</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /test/teacher HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTkzZi02OGE0LTYwNjUtOGEyYy0yMzJkMWNmMzA5MDIiLCJhdXRoIjoiUk9MTF9BRE1JTixST0xMX01FTUJFUixST0xMX1RFQUNIRVIiLCJleHAiOjE2NzYwMzI1MzZ9._PNDLyt161xLcnHg1RTWUGllxUsOcC1fPzmexrxXF9Zohkp5tWvGYVz9IOmTnvgj9F5ZGWEycmj_LWZnDzVCGw
-Host: localhost:8080</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
-Vary: Origin
-Vary: Access-Control-Request-Method
-Vary: Access-Control-Request-Headers
-Content-Type: application/json
-X-Content-Type-Options: nosniff
-X-XSS-Protection: 1; mode=block
-Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-Pragma: no-cache
-Expires: 0
-X-Frame-Options: DENY
-Content-Length: 164
-
-{
-  "status" : "SUCCESS",
-  "code" : 1000,
-  "message" : "요청에 성공했습니다.",
-  "result" : {
-    "authority" : "관리자 권한이 있습니다."
-  }
-}</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 상태</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 코드</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 메시지</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Object</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">결과</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.authority</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">결과 예시</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_board"><a class="link" href="#_board">Board</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_게시판_생성"><a class="link" href="#_게시판_생성">게시판 생성</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>POST: http://www.bad-request.kr/api/v1/board</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청1_이미지_없이_생성"><a class="link" href="#_요청1_이미지_없이_생성">요청1 이미지 없이 생성</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/board HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYTllZC1iYmYyLTEwYzUtODlmMC1jZmViNDQ4YmFmNmYiLCJhdXRoIjoiUk9MTF9NRU1CRVIiLCJleHAiOjE2NzYxMDgwMDV9.bVRBPhFvWO_wElXt5EWCjkClVMX-T57W2--SM2YKn57YsWMrGuZZTlYBSyiOM-9bzmmyw31-Wf0F1INKulBS0Q
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWI5Yy01NzAxLWIxYTEtYmRlNi1jOTY5NDg5YWZkYWUiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYyOTI5NDl9.4opQrXr8GfahqkYDN9AKr_1xHA7QHt1AOtm0mIr_zoxC9V7dvSBVXa5J7XjfH34RseyNLLKhQzVez1gfy9YCPg
 Host: localhost:8080
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Content-Disposition: form-data; name=form; filename=form
 Content-Type: application/json
 
-{"memberId":1,"title":"제목입니다","contents":"내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.","topic":"JAVA","category":"KNOWLEDGE"}
+{"title":"제목입니다","contents":"내용입니다 무슨 내용을 넣을까 고민이 되었습니다. 좋은 내용을 찾습니다.","topic":"JAVA","category":"KNOWLEDGE"}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -2024,12 +1819,14 @@ image2
 <col style="width: 33.3333%;">
 <col style="width: 33.3334%;">
 </colgroup>
-<tbody>
+<thead>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Path</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
 </tr>
+</thead>
+<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">images</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">png, jpeg, jpg, gif</p></td>
@@ -2055,11 +1852,6 @@ image2
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>memberId</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">회원 아이디</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>title</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">제목</p></td>
@@ -2083,7 +1875,7 @@ image2
 </table>
 </div>
 <div class="sect3">
-<h4 id="_요청_헤더_5"><a class="link" href="#_요청_헤더_5">요청 헤더</a></h4>
+<h4 id="_요청_헤더_6"><a class="link" href="#_요청_헤더_6">요청 헤더</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -2127,7 +1919,7 @@ Content-Length: 603
   "message" : "요청에 성공했습니다.",
   "result" : {
     "boardId" : 42,
-    "createAt" : "2023-02-11 18:23",
+    "createAt" : "2023-02-13 21:45",
     "links" : [ {
       "rel" : "PUT : 게시판 수정",
       "href" : "http://localhost:8080/api/v1/board/42"
@@ -2147,7 +1939,7 @@ Content-Length: 603
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_6"><a class="link" href="#_응답_필드_6">응답 필드</a></h4>
+<h4 id="_응답_필드_7"><a class="link" href="#_응답_필드_7">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2203,6 +1995,11 @@ Content-Length: 603
 </div>
 <div class="sect2">
 <h3 id="_게시판_리스트_조회"><a class="link" href="#_게시판_리스트_조회">게시판 리스트 조회</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/board</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_검색_조건_없이_검색"><a class="link" href="#_검색_조건_없이_검색">검색 조건 없이 검색</a></h4>
 
@@ -2211,7 +2008,7 @@ Content-Length: 603
 <h4 id="_요청_11"><a class="link" href="#_요청_11">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board?size=3 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2231,16 +2028,16 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 5265
+Content-Length: 1931
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "size" : 10,
+    "size" : 3,
     "hasNext" : true,
-    "lastIndex" : 32,
+    "lastIndex" : 39,
     "results" : [ {
       "boardId" : 41,
       "memberId" : 1,
@@ -2251,7 +2048,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/41"
@@ -2266,7 +2063,7 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/40"
@@ -2281,115 +2078,10 @@ Content-Length: 5265
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/39"
-      } ]
-    }, {
-      "boardId" : 38,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title37",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/38"
-      } ]
-    }, {
-      "boardId" : 37,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title36",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/37"
-      } ]
-    }, {
-      "boardId" : 36,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title35",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/36"
-      } ]
-    }, {
-      "boardId" : 35,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title34",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/35"
-      } ]
-    }, {
-      "boardId" : 34,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title33",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/34"
-      } ]
-    }, {
-      "boardId" : 33,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title32",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/33"
-      } ]
-    }, {
-      "boardId" : 32,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title31",
-      "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
-      "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
-      "links" : [ {
-        "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/32"
       } ]
     } ],
     "links" : [ {
@@ -2397,10 +2089,10 @@ Content-Length: 5265
       "href" : "http://localhost:8080/api/v1/board"
     }, {
       "rel" : "GET : NEXT DATA",
-      "href" : "http://localhost:8080/api/v1/board?lastIndex=32"
+      "href" : "http://localhost:8080/api/v1/board?lastIndex=39"
     }, {
       "rel" : "GET : SEARCH BY SIZE",
-      "href" : "http://localhost:8080/api/v1/board?size=10"
+      "href" : "http://localhost:8080/api/v1/board?size=3"
     } ]
   }
 }</code></pre>
@@ -2408,7 +2100,7 @@ Content-Length: 5265
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_7"><a class="link" href="#_응답_필드_7">응답 필드</a></h4>
+<h4 id="_응답_필드_8"><a class="link" href="#_응답_필드_8">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2629,7 +2321,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/36"
@@ -2644,7 +2336,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/35"
@@ -2659,7 +2351,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/34"
@@ -2674,7 +2366,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/33"
@@ -2689,7 +2381,7 @@ Content-Length: 2883
       "category" : "QUESTION",
       "topic" : "MYSQL",
       "commentCount" : 0,
-      "createdAt" : "2023-02-11 18:23",
+      "createdAt" : "2023-02-13 21:45",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/32"
@@ -2713,6 +2405,11 @@ Content-Length: 2883
 </div>
 <div class="sect2">
 <h3 id="_게시판_상세_조회"><a class="link" href="#_게시판_상세_조회">게시판 상세 조회</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/board/{boardId}</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
 <div class="listingblock">
@@ -2766,8 +2463,8 @@ Content-Length: 969
     "category" : "QUESTION",
     "topic" : "JAVA",
     "commentCount" : 0,
-    "createdAt" : "2023-02-11 18:23",
-    "updatedAt" : "2023-02-11 18:23",
+    "createdAt" : "2023-02-13 21:45",
+    "updatedAt" : "2023-02-13 21:45",
     "boardImages" : [ ],
     "links" : [ {
       "rel" : "POST : 게시판 생성",
@@ -2788,7 +2485,7 @@ Content-Length: 969
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_8"><a class="link" href="#_응답_필드_8">응답 필드</a></h4>
+<h4 id="_응답_필드_9"><a class="link" href="#_응답_필드_9">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -2904,6 +2601,11 @@ Content-Length: 969
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_system_정보_sse_프로토콜_통신"><a class="link" href="#_system_정보_sse_프로토콜_통신">System 정보 (SSE 프로토콜 통신)</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/dashboard/system</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_연결"><a class="link" href="#_연결">연결</a></h4>
 <div class="listingblock">
@@ -2932,7 +2634,7 @@ X-Frame-Options: DENY
 Content-Length: 113
 
 event:data
-data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.915,"memoryFreeSpace":0.085}</code></pre>
+data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.939,"memoryFreeSpace":0.061}</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -2951,7 +2653,7 @@ data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.915,"mem
 <p>응답 데이터는 key, value 형태의 필드 event,data로 제공됩니다.</p>
 </li>
 <li>
-<p>응답 데이터 Client 사용 예시:   new EventSource('url'); 객체로 연결 및 응답 데이터 사용</p>
+<p>응답 데이터 Client 사용 예시: new EventSource('url'); 객체로 연결 및 응답 데이터 사용</p>
 </li>
 <li>
 <p>브라우저 종료시 연결 종료</p>
@@ -3052,6 +2754,11 @@ data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.915,"mem
 </div>
 <div class="sect2">
 <h3 id="_heapmemory_정보sse_프로토콜_통신"><a class="link" href="#_heapmemory_정보sse_프로토콜_통신">HeapMemory 정보(SSE 프로토콜 통신)</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre>GET: http://www.bad-request.kr/api/v1/dashboard/heap</pre>
+</div>
+</div>
 <div class="sect3">
 <h4 id="_요청_14"><a class="link" href="#_요청_14">요청</a></h4>
 <div class="listingblock">
@@ -3099,7 +2806,7 @@ data:{"heapMemoryInit":134217728,"heapMemoryUsed":124613920,"heapMemoryUsageComm
 <p>응답 데이터는 key, value 형태의 필드 event,data로 제공됩니다.</p>
 </li>
 <li>
-<p>응답 데이터 Client 사용 예시:   new EventSource('url'); 객체로 연결 및 응답 데이터 사용</p>
+<p>응답 데이터 Client 사용 예시: new EventSource('url'); 객체로 연결 및 응답 데이터 사용</p>
 </li>
 <li>
 <p>브라우저 종료시 연결 종료</p>
@@ -3253,7 +2960,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 2868
+Content-Length: 3086
 
 [ {
   "status" : "SUCCESS",
@@ -3308,14 +3015,6 @@ Content-Length: 2868
   "code" : 1601,
   "message" : "로그아웃된 계정입니다. 다시 로그인 해주세요."
 }, {
-  "status" : "NOTFOUND_MEMBER",
-  "code" : 2000,
-  "message" : "회원정보를 찾을 수 없습니다."
-}, {
-  "status" : "WRONG_PASSWORD",
-  "code" : 2001,
-  "message" : "잘못된 비밀번호입니다."
-}, {
   "status" : "WRONG_FILE_ERROR",
   "code" : 2002,
   "message" : "잘못된 파일 형식입니다."
@@ -3347,6 +3046,22 @@ Content-Length: 2868
   "status" : "NOT_EXIST_TOPIC",
   "code" : 2009,
   "message" : "존재하지 않는 카테고리 입니다."
+}, {
+  "status" : "NOTFOUND_MEMBER",
+  "code" : 2000,
+  "message" : "회원정보를 찾을 수 없습니다."
+}, {
+  "status" : "NOTFOUND_AUTHORITY",
+  "code" : 2001,
+  "message" : "권한정보를 찾을 수 없습니다."
+}, {
+  "status" : "WRONG_AUTHORITY",
+  "code" : 2002,
+  "message" : "잘못된 권한정보 입니다."
+}, {
+  "status" : "WRONG_PASSWORD",
+  "code" : 2003,
+  "message" : "잘못된 비밀번호입니다."
 }, {
   "status" : "NOT_FOUND_BOARD",
   "code" : 3000,
@@ -3545,8 +3260,8 @@ Content-Length: 269
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.1-SNAPSHOT<br>
-Last updated 2023-02-11 18:23:07 +0900
+Version 1.0.0-PROD<br>
+Last updated 2023-02-13 14:04:31 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

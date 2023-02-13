@@ -47,7 +47,6 @@ public class MvcDashBoardController {
         log.info("activeProfiles= {}",activeProfiles);
 
         return present ? "dashboard/sse-console-prod" : "dashboard/sse-console";
-
     }
 
     // TODO: 2023/01/31 수치 계산해보기

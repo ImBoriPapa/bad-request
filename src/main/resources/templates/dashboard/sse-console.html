@@ -9,47 +9,132 @@
 <table>
     <thead>
     <tr>
-        <th>
-            System Data
-        </th>
-    </tr>
-    <tr>
-        <th>
-            Heap Memory Data
-        </th>
+        <th>CPU USAGE</th>
+        <th>단위</th>
+        <th>MEMORY TOTAL SPACE</th>
+        <th>단위</th>
+        <th>MEMORY USAGE SPACE</th>
+        <th>단위</th>
+        <th>MEMORY FREE SPACE</th>
+        <th>단위</th>
     </tr>
     </thead>
-
     <tbody>
-    <tr>
-        <td id="systemData"></td>
-    </tr>
-    <tr>
-        <td id="heapData">
-
-        </td>
-    </tr>
+    <td id="cpuUsagePercent"></td>
+    <td>%</td>
+    <td id="memoryTotalSpace"></td>
+    <td>GB</td>
+    <td id="memoryUsageSpace"></td>
+    <td>GB</td>
+    <td id="memoryFreeSpace"></td>
+    <td>GB</td>
     </tbody>
 </table>
 
+<table>
+    <thead>
+    <tr>
+        <th>heapMemoryInit</th>
+        <th>단위</th>
+        <th>heapMemoryUsed</th>
+        <th>단위</th>
+        <th>heapMemoryUsageCommitted</th>
+        <th>단위</th>
+        <th>heapMemoryUsageMax</th>
+        <th>단위</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+    <td id="heapMemoryInit"></td>
+    <td>GB</td>
+    <td id="heapMemoryUsed"></td>
+    <td>GB</td>
+    <td id="heapMemoryUsageCommitted"></td>
+    <td>GB</td>
+    <td id="heapMemoryUsageMax"></td>
+    <td>GB</td>
+    </tr>
+    </tbody>
+
+</table>
+<table>
+    <thead>
+    <tr>
+    <th>nonHeapMemoryInit</th>
+    <th>단위</th>
+    <th>nonHeapMemoryUsed</th>
+    <th>단위</th>
+    <th>nonHeapMemoryCommitted</th>
+    <th>단위</th>
+    <th>nonHeapMemoryMax</th>
+    <th>단위</th>
+    </thead>
+    </tr>
+    <tbody>
+    <tr>
+    <td id="nonHeapMemoryInit"></td>
+    <td>GB</td>
+    <td id="nonHeapMemoryUsed"></td>
+    <td>GB</td>
+    <td id="nonHeapMemoryCommitted"></td>
+    <td>GB</td>
+    <td id="nonHeapMemoryMax"></td>
+    <td>GB</td>
+    </tr>
+    </tbody>
+</table>
 <script>
+    let cpu = document.getElementById("cpuUsagePercent");
+    let total = document.getElementById("memoryTotalSpace");
+    let usage = document.getElementById("memoryUsageSpace");
+    let free = document.getElementById("memoryFreeSpace");
 
-    let systemValue = document.getElementById("systemData");
-    let heapValue = document.getElementById("heapData");
+    let heapInit = document.getElementById("heapMemoryInit");
+    let heapUsed = document.getElementById("heapMemoryUsed");
+    let heapCommit = document.getElementById("heapMemoryUsageCommitted");
+    let heapMax = document.getElementById("heapMemoryUsageMax");
+    let nonInit = document.getElementById("nonHeapMemoryInit");
+    let noneUsed = document.getElementById("nonHeapMemoryUsed");
+    let noneCommit = document.getElementById("nonHeapMemoryCommitted");
+    let nonMax = document.getElementById("nonHeapMemoryMax");
 
-    const systemData = new EventSource("http://localhost:8080/api/v1/dashboard/system");
-    const heapData = new EventSource("http://localhost:8080/api/v1/dashboard/heap");
+
+    const systemData = new EventSource(
+        'http://localhost:8080/api/v1/dashboard/system'
+    );
+    const heapData = new EventSource(
+        'http://localhost:8080/api/v1/dashboard/heap'
+    );
 
     systemData.addEventListener("data", function (event) {
-            console.log(event.data);
-
-            systemValue.innerHTML = event.data;
+            const {cpuUsagePercent, memoryTotalSpace, memoryUsageSpace, memoryFreeSpace} = JSON.parse(event.data);
+            cpu.textContent = cpuUsagePercent;
+            total.textContent = memoryTotalSpace;
+            usage.textContent = memoryUsageSpace;
+            free.textContent = memoryFreeSpace;
         }
     );
 
     heapData.addEventListener("data", function (event) {
-            console.log(event.data);
-            heapValue.innerHTML = event.data;
+            const {
+                heapMemoryInit,
+                heapMemoryUsed,
+                heapMemoryUsageCommitted,
+                heapMemoryUsageMax,
+                nonHeapMemoryInit,
+                nonHeapMemoryUsed,
+                nonHeapMemoryCommitted,
+                nonHeapMemoryMax
+            } = JSON.parse(event.data);
+            heapInit.textContent = heapMemoryInit;
+            heapUsed.textContent = heapMemoryUsed;
+            heapCommit.textContent = heapMemoryUsageCommitted;
+            heapMax.textContent = heapMemoryUsageMax;
+            nonInit.textContent = nonHeapMemoryInit;
+            noneUsed.textContent = nonHeapMemoryUsed;
+            noneCommit.textContent = nonHeapMemoryCommitted;
+            nonMax.textContent = nonHeapMemoryMax;
         }
     );
 
