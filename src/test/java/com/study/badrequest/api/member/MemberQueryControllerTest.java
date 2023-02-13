@@ -51,7 +51,7 @@ class MemberQueryControllerTest {
         LoginResponse.LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         //when
-        mockMvc.perform(get("/api/v1/member/auth")
+        mockMvc.perform(get("/api/v1/members/auth")
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())

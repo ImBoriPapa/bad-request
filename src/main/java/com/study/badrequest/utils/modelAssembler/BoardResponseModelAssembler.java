@@ -1,7 +1,8 @@
 package com.study.badrequest.utils.modelAssembler;
 
 
-import com.study.badrequest.api.BoardController;
+import com.study.badrequest.api.board.BoardController;
+import com.study.badrequest.api.board.BoardQueryController;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 import com.study.badrequest.domain.board.repository.query.BoardDetailDto;
 import com.study.badrequest.domain.board.repository.query.BoardListDto;
@@ -19,7 +20,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSupport<BoardResponse.Create, BoardListDto> {
 
-
     /**
      * 게시판 생성 응답
      */
@@ -31,6 +31,7 @@ public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSu
                 linkTo(BoardController.class).slash("/board").withRel("GET : 게시판 리스트")
         );
     }
+
     /**
      * 게시판 내용 조회 응답
      */
@@ -82,15 +83,15 @@ public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSu
     /**
      * Setting Link in addAllIf()
      */
-    private static Supplier<List<Link>> setAddAllIfSupplier(BoardListDto result) {
+    private Supplier<List<Link>> setAddAllIfSupplier(BoardListDto result) {
 
         return () -> List.of(
-                linkTo(methodOn(BoardController.class)
+                linkTo(methodOn(BoardQueryController.class)
                         .getBoardList(null, null))
                         .slash("?lastIndex=" + result.getLastIndex())
                         .withRel("GET : NEXT DATA"),
 
-                linkTo(methodOn(BoardController.class)
+                linkTo(methodOn(BoardQueryController.class)
                         .getBoardList(null, null))
                         .slash("?size=" + result.getSize())
                         .withRel("GET : SEARCH BY SIZE")

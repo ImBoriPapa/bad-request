@@ -9,6 +9,7 @@ import com.study.badrequest.domain.board.dto.BoardSearchCondition;
 import com.study.badrequest.domain.board.entity.*;
 
 
+import com.study.badrequest.domain.board.repository.BoardQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;

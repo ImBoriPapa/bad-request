@@ -38,7 +38,7 @@ public class MemberController {
 
 
 
-    @PostMapping(value = "/member", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/members", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequest.CreateMember form, BindingResult bindingResult) {
 
@@ -58,7 +58,7 @@ public class MemberController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
     }
 
-    @PatchMapping("/member/{memberId}/password")
+    @PatchMapping("/members/{memberId}/password")
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> patchPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -73,7 +73,7 @@ public class MemberController {
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
     }
 
-    @PatchMapping(value = "/member/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PatchMapping(value = "/members/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> patchContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.UpdateContact form, BindingResult bindingResult) {
 
@@ -91,7 +91,7 @@ public class MemberController {
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, updateResultEntityModel));
     }
 
-    @DeleteMapping("/member/{memberId}")
+    @DeleteMapping("/members/{memberId}")
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.DeleteMember form, BindingResult bindingResult) {
 

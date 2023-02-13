@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.modelAssembler;
 
-import com.study.badrequest.api.CommentController;
+import com.study.badrequest.api.comment.CommentController;
 import com.study.badrequest.domain.comment.repository.dto.CommentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;

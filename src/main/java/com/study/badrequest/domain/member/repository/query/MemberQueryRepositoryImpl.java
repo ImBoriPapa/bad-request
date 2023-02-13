@@ -5,9 +5,9 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.QMember;
@@ -58,7 +58,15 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     // TODO: 2023/02/12 "검색 조건 추가"
-    public MemberListDto findMemberList(Long offSet, Long size, Order order) {
+
+    /**
+     * 회원 목록 조회
+     */
+    public MemberListDto findMemberList(MemberSearchCondition condition) {
+
+        Long offSet = condition.getOffset();
+        Long size = condition.getSize();
+        Order order = condition.getOrder();
 
         offSet = Objects.requireNonNullElse(offSet, 0L);
         size = Objects.requireNonNullElse(size, 10L);
