@@ -1,8 +1,8 @@
 package com.study.badrequest.domain.member.repository;
 
-import com.querydsl.core.types.Order;
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.query.*;
 
 
@@ -15,7 +15,9 @@ public interface MemberQueryRepository {
 
     Optional<MemberAuthDto> findIdAndAuthorityByUsername(String username, Authority authority);
 
-    Optional<MemberDtoForLogin> findByEmail(String email);
+    Optional<MemberDtoForLogin> findLoginInfoByEmail(String email);
 
-    Optional<MemberUsernameDetailDto> findByUsername(String username);
+    Optional<MemberUsernameDetailDto> findUserInfoByUsername(String username);
+
+    Optional<MemberProfileDto> findMemberProfileById(Long memberId);
 }

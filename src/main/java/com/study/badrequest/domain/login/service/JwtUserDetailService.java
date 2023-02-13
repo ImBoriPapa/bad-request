@@ -27,7 +27,7 @@ public class JwtUserDetailService implements UserDetailsService {
     @Override
     @CustomLogTracer
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberQueryRepositoryImpl.findByUsername(username)
+        return memberQueryRepositoryImpl.findUserInfoByUsername(username)
                 .map(memberDto -> new User(
                                 memberDto.getUsername(),
                                 memberDto.getPassword(),

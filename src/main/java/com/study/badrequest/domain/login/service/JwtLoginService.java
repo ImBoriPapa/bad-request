@@ -5,7 +5,6 @@ import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberQueryRepository;
 import com.study.badrequest.domain.member.repository.query.MemberDtoForLogin;
-import com.study.badrequest.domain.member.repository.query.MemberQueryRepositoryImpl;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.dto.LoginResponse;
@@ -54,7 +53,7 @@ public class JwtLoginService {
         /**
          * 로그인 실패시 new MemberException(CustomStatus.LOGIN_FAIL) 이메일과 비밀번호중 어느것이 문제인지 숨김
          */
-        MemberDtoForLogin memberDtoForLogin = memberQueryRepositoryImpl.findByEmail(email)
+        MemberDtoForLogin memberDtoForLogin = memberQueryRepositoryImpl.findLoginInfoByEmail(email)
                 .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(memberDtoForLogin.getUsername(), password);

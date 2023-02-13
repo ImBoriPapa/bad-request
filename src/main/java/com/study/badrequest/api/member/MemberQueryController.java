@@ -5,12 +5,14 @@ import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
+import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberQueryRepository;
 import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.repository.query.MemberDetailDto;
 import com.study.badrequest.domain.member.repository.query.MemberListDto;
+import com.study.badrequest.domain.member.repository.query.MemberProfileDto;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +69,20 @@ public class MemberQueryController {
         return ResponseEntity
                 .ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
+    }
+
+    @GetMapping("/members/{memberId}/profile")
+    @CustomLogTracer
+    public ResponseEntity getProfile(@PathVariable Long memberId) {
+
+        MemberProfileDto memberProfileDto = memberQueryRepositoryImpl.findMemberProfileById(memberId)
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
+
+
+
+        return ResponseEntity
+                .ok()
+                .body(memberProfileDto);
     }
 
     /**

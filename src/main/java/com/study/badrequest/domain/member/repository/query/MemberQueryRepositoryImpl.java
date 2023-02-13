@@ -7,6 +7,12 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.study.badrequest.domain.board.entity.Board;
+import com.study.badrequest.domain.board.entity.QBoard;
+import com.study.badrequest.domain.comment.entity.Comment;
+import com.study.badrequest.domain.comment.entity.QComment;
+import com.study.badrequest.domain.comment.entity.QSubComment;
+import com.study.badrequest.domain.comment.entity.SubComment;
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
@@ -22,6 +28,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.study.badrequest.domain.board.entity.QBoard.*;
+import static com.study.badrequest.domain.comment.entity.QComment.*;
+import static com.study.badrequest.domain.comment.entity.QSubComment.*;
 import static com.study.badrequest.domain.member.entity.QMember.*;
 
 
@@ -35,6 +44,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     /**
      * 회원 정보 상세 조회
      */
+    @Override
     public Optional<MemberDetailDto> findMemberDetail(Long memberId) {
         MemberDetailDto memberDetailDto = jpaQueryFactory
                 .select(
@@ -62,6 +72,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     /**
      * 회원 목록 조회
      */
+    @Override
     public MemberListDto findMemberList(MemberSearchCondition condition) {
 
         Long offSet = condition.getOffset();
@@ -117,25 +128,28 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return count == null ? Optional.empty() : Optional.of(count);
     }
 
-    public Optional<Member> findMemberProfileDetail(Long memberId) {
-        Member findMember = jpaQueryFactory.select(member)
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetchOne();
-        return findMember == null ? Optional.empty() : Optional.of(findMember);
-    }
+    @Override
+    public Optional<MemberProfileDto> findMemberProfileById(Long memberId) {
 
-    public Optional<Member> findMemberProfileList(Long memberId) {
-        Member findMember = jpaQueryFactory.select(member)
+        MemberProfileDto memberProfileDto = jpaQueryFactory
+                .select(
+                        Projections.fields(MemberProfileDto.class,
+                                member.id.as("memberId"),
+                                member.nickname.as("nickname"),
+                                member.aboutMe.as("aboutMe"),
+                                member.profileImage.fullPath.as("profileImagePath")
+                        )
+                )
                 .from(member)
                 .where(member.id.eq(memberId))
                 .fetchOne();
-        return findMember == null ? Optional.empty() : Optional.of(findMember);
+        return memberProfileDto == null ? Optional.empty() : Optional.of(memberProfileDto);
     }
 
     /**
      * username 으로 회원 권한 정보 조회
      */
+    @Override
     public Optional<MemberAuthDto> findIdAndAuthorityByUsername(String username, Authority authority) {
 
         MemberAuthDto infoDto = jpaQueryFactory
@@ -156,7 +170,8 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return authority == null ? null : member.authority.eq(authority);
     }
 
-    public Optional<MemberDtoForLogin> findByEmail(String email) {
+    @Override
+    public Optional<MemberDtoForLogin> findLoginInfoByEmail(String email) {
 
         QMember qMember = member;
 
@@ -173,7 +188,8 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return memberDtoForLogin == null ? Optional.empty() : Optional.of(memberDtoForLogin);
     }
 
-    public Optional<MemberUsernameDetailDto> findByUsername(String username) {
+    @Override
+    public Optional<MemberUsernameDetailDto> findUserInfoByUsername(String username) {
         QMember qMember = member;
 
         MemberUsernameDetailDto memberUsernameDetailDto = jpaQueryFactory
