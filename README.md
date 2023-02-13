@@ -1,5 +1,5 @@
-<center>Bad-Request</center>
-==
+Bad-Request
+== 
 ***
 
 ### Bad-Request 프로젝트는 개발자 커뮤니티 REST API Server 입니다.
