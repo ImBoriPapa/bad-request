@@ -2,7 +2,7 @@ ifndef::snippets[]
 :snippets: ./build/generated-snippets
 endif::[]
 
-= bad-request API
+= bad-request API documentation
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -10,12 +10,12 @@ endif::[]
 :toclevels: 2
 :sectlinks:
 
-
-
-== Member
+== Members
 
 === 회원가입
-
+----
+GET: http://www.bad-request.kr/api/v1/members
+----
 ==== 요청
 
 include::{snippets}/postMember/http-request.adoc[]
@@ -32,6 +32,9 @@ include::{snippets}/postMember/response-fields.adoc[]
 
 === 이메일 중복 확인
 
+----
+GET: http://www.bad-request.kr/api/v1/members/email
+----
 ==== 요청
 
 include::{snippets}/email_duplicate_success/http-request.adoc[]
@@ -48,8 +51,10 @@ include::{snippets}/email_duplicate_fail/http-response.adoc[]
 
 === 회원 권한 정보
 
-- 로그인 후 로그인한 회원 권한 정보
-
+- 로그인 후 로그인한 회원 권한 정보 요청
+----
+GET: http://www.bad-request.kr/api/v1/members/auth
+----
 ==== 요청
 
 include::{snippets}/member-auth/http-request.adoc[]
@@ -67,7 +72,9 @@ include::{snippets}/member-auth/http-response.adoc[]
 include::{snippets}/member-auth/response-fields.adoc[]
 
 === 연락처 변경
-
+----
+PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/contact
+----
 ==== 요청
 
 include::{snippets}/putContact/http-request.adoc[]
@@ -87,7 +94,9 @@ include::{snippets}/putContact/http-response.adoc[]
 include::{snippets}/putContact/response-fields.adoc[]
 
 === 비밀번호 변경
-
+----
+PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/password
+----
 ==== 요청
 
 include::{snippets}/putPassword/http-request.adoc[]
@@ -107,6 +116,9 @@ include::{snippets}/putPassword/http-response.adoc[]
 include::{snippets}/putPassword/response-fields.adoc[]
 
 === 회원 탈퇴
+----
+DELETE: http://www.bad-request.kr/api/v1/members/{memberId}
+----
 
 ==== 요청
 
@@ -131,7 +143,9 @@ include::{snippets}/deleteMember/response-fields.adoc[]
 == Login
 
 === 로그인
-
+----
+POST: http://www.bad-request.kr/api/v1/login
+----
 ==== 요청
 
 include::{snippets}/login/http-request.adoc[]
@@ -150,7 +164,9 @@ include::{snippets}/login/response-headers.adoc[]
 include::{snippets}/login/response-fields.adoc[]
 
 === 로그아웃
-
+----
+POST: http://www.bad-request.kr/api/v1/logout
+----
 ==== 요청
 
 include::{snippets}/logout/http-request.adoc[]
@@ -162,15 +178,25 @@ include::{snippets}/logout/http-response.adoc[]
 include::{snippets}/logout/response-fields.adoc[]
 
 === 토큰 재발급
-
+----
+POST: http://www.bad-request.kr/api/v1/refresh
+----
 ==== 요청
 
 include::{snippets}/reissue/http-request.adoc[]
 
 ==== 요청 헤더
 
-- Refresh Token Cookie 가 필요합니다.
-include::{snippets}/reissue/request-headers.adoc[]
+|===
+|Header |Description
+
+|Authorization
+|Access Token
+
+|Cookie
+|Refresh= Refresh Token
+|===
+
 
 ==== 응답
 
@@ -180,45 +206,13 @@ include::{snippets}/reissue/http-response.adoc[]
 
 include::{snippets}/reissue/response-fields.adoc[]
 
-== 인증 및 인가
-
-=== 인증
-
-=== 인가
-
-. 권한 종류
-- MEMBER : 일반 사용자 MEMBER 인가 통과
-- TEACHER : 강사권한, MEMBER, TEACHER 인가 통과
-- ADMIN : 관리자 권한 모든 인가 통과
-
-
-==== Case 인가 실패
-
-MEMBER 권한으로 TEACHER 권한이 필요한 API 호출시 에러
-
-include::{snippets}/authorityFail/http-request.adoc[]
-include::{snippets}/authorityFail/http-response.adoc[]
-include::{snippets}/authorityFail/response-fields.adoc[]
-
-==== Case 인가 성공
-
-TEACHER 권한으로 TEACHER 권한이 필요한 API 호출시 성공
-
-include::{snippets}/authoritySuccess/http-request.adoc[]
-include::{snippets}/authoritySuccess/http-response.adoc[]
-include::{snippets}/authoritySuccess/response-fields.adoc[]
-
-==== Case 인가 관리자
-
-ADMIN 권한은 모든 인가 통과
-
-include::{snippets}/authoritySuccessAdmin/http-request.adoc[]
-include::{snippets}/authoritySuccessAdmin/http-response.adoc[]
-include::{snippets}/authoritySuccessAdmin/response-fields.adoc[]
-
 == Board
 
 === 게시판 생성
+
+----
+POST: http://www.bad-request.kr/api/v1/board
+----
 
 ==== 요청1 이미지 없이 생성
 
@@ -254,7 +248,9 @@ include::{snippets}/board_create/http-response.adoc[]
 include::{snippets}/board_create/response-fields.adoc[]
 
 === 게시판 리스트 조회
-
+----
+GET: http://www.bad-request.kr/api/v1/board
+----
 ==== 검색 조건 없이 검색
 
 ==== 요청
@@ -294,7 +290,9 @@ include::{snippets}/board_getList_with_condition/http-request.adoc[]
 include::{snippets}/board_getList_with_condition/http-response.adoc[]
 
 === 게시판 상세 조회
-
+----
+GET: http://www.bad-request.kr/api/v1/board/{boardId}
+----
 ==== 요청
 
 include::{snippets}/board_get_detail/http-request.adoc[]
@@ -310,8 +308,10 @@ include::{snippets}/board_get_detail/http-response.adoc[]
 include::{snippets}/board_get_detail/response-fields.adoc[]
 
 == Dashboard
-
 === System 정보 (SSE 프로토콜 통신)
+----
+GET: http://www.bad-request.kr/api/v1/dashboard/system
+----
 
 ==== 연결
 
@@ -360,7 +360,9 @@ Data::
 |===
 
 === HeapMemory 정보(SSE 프로토콜 통신)
-
+----
+GET: http://www.bad-request.kr/api/v1/dashboard/heap
+----
 ==== 요청
 
 include::{snippets}/dashboard-heap/http-request.adoc[]

@@ -153,7 +153,6 @@ public class RDBMSLogTracer implements LogTracer {
                     .orElse(ClientIpHeader.UNKNOWN_CLIENT_IP)
                     .getHeaderName();
         }
-
         return ip;
     }
 
