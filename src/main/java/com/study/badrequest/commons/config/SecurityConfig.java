@@ -17,7 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static com.study.badrequest.api.ValueController.VALUES;
+import static com.study.badrequest.api.value.ValueController.VALUES;
 
 @Configuration
 @EnableWebSecurity
@@ -46,9 +46,12 @@ public class SecurityConfig {
                 .userDetailsService(jwtUserDetailService)
 
                 .authorizeRequests()
-                .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html", "/api/v1/member/email")
+                .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/member")
+                //members
+                .antMatchers(HttpMethod.POST, "/api/v1/members")
+                .permitAll()
+                .antMatchers("/api/v1/members", "/api/v1/members/email")
                 .permitAll()
                 //비회원 Board 허용
                 .antMatchers("/api/v1/board", "/api/v1/board/*")
