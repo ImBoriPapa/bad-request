@@ -63,3 +63,8 @@ ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/bad-request.jar"]
 </code>
 </pre>
 
+### SSE Protocol을 활용한 실시간 단방향 시스템 정보 API (5초 간격으로 데이터 갱신)
+#### Exampl
+![sse-sample](https://user-images.githubusercontent.com/98242564/218492461-4b34dc13-a84f-409a-ae45-61ed015c5912.gif)
+
+
