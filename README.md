@@ -1,4 +1,4 @@
-Project Name: Bad-Request
+Bad-Request
 ==
 ***
 Kind : REST API Server
@@ -8,7 +8,6 @@ Topic : 개발자 커뮤니티
 - 개발자들이 자유롭게 질문,지식공유,자유토론을 할 수 있는 게시판 기능 API 제공 서버입니다.
 ***
 ## 개인 프로젝트
-## 2022.12.29 ~
 ***
 ## Current Version: 0.0.1
 
