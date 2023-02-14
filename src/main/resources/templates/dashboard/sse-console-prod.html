@@ -102,10 +102,10 @@
 
 
     const systemData = new EventSource(
-        'http://www.bad-request.kr/api/v1/dashboard/system'
+        'https://www.bad-request.kr/api/v1/dashboard/system'
     );
     const heapData = new EventSource(
-        'http://www.bad-request.kr/api/v1/dashboard/heap'
+        'https://www.bad-request.kr/api/v1/dashboard/heap'
     );
 
     systemData.addEventListener("data", function (event) {

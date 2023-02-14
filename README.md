@@ -65,6 +65,32 @@ ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/bad-request.jar"]
 </code>
 </pre>
 ***
+## API Example
+### 로그인
+POST: <https://www.bad-request.kr/api/v1/login>
+
+- 요청
+
+![스크린샷 2023-02-14 오후 2 50 21 작게](https://user-images.githubusercontent.com/98242564/218651033-7b20b805-6aea-441b-a62a-1a8939a7dc16.png)
+
+- 응답
+
+![스크린샷 2023-02-14 오후 2 52 38](https://user-images.githubusercontent.com/98242564/218651296-7e62466d-a4ba-45cc-a7d7-83755c0d7ae8.png)
+
+***
+### 게시판 목록 조회
+- 요청
+
+![스크린샷 2023-02-14 오후 2 56 13 작게](https://user-images.githubusercontent.com/98242564/218651888-e53d65aa-9c4f-442e-9cc8-a4965749cc61.png)
+
+- 응답
+
+![스크린샷 2023-02-14 오후 2 59 57](https://user-images.githubusercontent.com/98242564/218652474-9263d1a0-3a45-4066-9850-c69ed763ba15.png)
+
+
+***
+### 댓글 조회
+***
 ### SSE Protocol을 활용한 실시간 단방향 시스템 정보 API 제공 (5초 간격으로 데이터 갱신)
 
 #### Example
