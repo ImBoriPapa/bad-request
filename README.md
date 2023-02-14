@@ -1,6 +1,6 @@
 # Bad-Request
 
-### Bad-Request 프로젝트는 개발자 커뮤니티 REST API Server 입니다.
+### Bad-Request 프로젝트는 개발자 커뮤니티 웹 REST API Server 입니다.
 
 ***
 Version: 1.0.0
@@ -14,7 +14,7 @@ Version: 1.0.0
 
 ### 프로젝트 개발 및 운영 인원: 백엔드 1명 프론트엔드 1명
 
-### 클라이언트 서버: <https://not-yet.com>(개발중)
+### 클라이언트 서버: <https://>(개발중)
 
 ***
 
