@@ -53,7 +53,7 @@ class CommentCommendServiceTest {
         CommentRequest.Create create = new CommentRequest.Create();
         create.setText("text1");
         //when
-        CommentResponse.Create saved = commentCommendService.addComment(board.getId(), member.getId(), create);
+        CommentResponse.Create saved = commentCommendService.addComment(board.getId(), member.getUsername(), create);
         Comment findById = commentRepository.findById(saved.getCommentId()).orElseThrow(() -> new IllegalArgumentException(""));
         //then
         assertThat(findById.getId()).isEqualTo(saved.getCommentId());
@@ -83,7 +83,7 @@ class CommentCommendServiceTest {
         CommentRequest.Create create = new CommentRequest.Create();
         create.setText("text1");
 
-        commentCommendService.addComment(board.getId(), member.getId(), create);
+        commentCommendService.addComment(board.getId(), member.getUsername(), create);
 
         Board findBoard = boardRepository.findByTitle("before").orElseThrow(() -> new RuntimeException());
         Comment comment = commentRepository.findByBoard(findBoard).get();
@@ -117,7 +117,7 @@ class CommentCommendServiceTest {
         CommentRequest.Create create = new CommentRequest.Create();
         create.setText("text1");
 
-        CommentResponse.Create saved = commentCommendService.addComment(board.getId(), member.getId(), create);
+        CommentResponse.Create saved = commentCommendService.addComment(board.getId(), member.getUsername(), create);
         //when
         commentCommendService.modifyComment(saved.getCommentId(), "수정");
         Comment findById = commentRepository.findById(saved.getCommentId()).get();

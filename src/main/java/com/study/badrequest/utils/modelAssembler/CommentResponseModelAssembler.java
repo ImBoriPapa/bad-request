@@ -1,6 +1,7 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.comment.CommentController;
+import com.study.badrequest.api.comment.CommentQueryController;
 import com.study.badrequest.domain.comment.repository.dto.CommentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
@@ -29,7 +30,7 @@ public class CommentResponseModelAssembler implements CustomEntityModelAssembler
     public CollectionModel toCollectionModel(List<CommentDto> target) {
 
         return CollectionModel.of(target)
-                .add(linkTo(methodOn(CommentController.class).getComments(null)).withSelfRel());
+                .add(linkTo(methodOn(CommentQueryController.class).getComments(null)).withSelfRel());
     }
 
 }

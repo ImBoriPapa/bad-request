@@ -1,5 +1,9 @@
 package com.study.badrequest;
 
+import com.study.badrequest.domain.comment.entity.Comment;
+import com.study.badrequest.domain.comment.entity.SubComment;
+import com.study.badrequest.domain.comment.repository.CommentRepository;
+import com.study.badrequest.domain.comment.repository.SubCommentRepository;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
@@ -33,16 +37,22 @@ public class DevSampleTestData {
     private final BoardRepository boardRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final CommentRepository commentRepository;
+    private final SubCommentRepository subCommentRepository;
+
     @PostConstruct
     public void init() {
         sampleMember();
         sampleBoardData();
+        initSampleComment();
     }
 
     @PreDestroy
     public void reSet() {
         memberRepository.deleteAll();
         boardRepository.deleteAll();
+        commentRepository.deleteAll();
+        subCommentRepository.deleteAll();
     }
 
     public void sampleMember() {
@@ -140,4 +150,51 @@ public class DevSampleTestData {
         log.info("[INIT SAMPLE BOARD FINISH]");
     }
 
+    @Transactional
+    public void initSampleComment() {
+        log.info("[INIT SAMPLE COMMENT START]");
+
+        Board board = boardRepository.findByTitle("title1").get();
+
+        Comment comment1 = Comment.createComment()
+                .text("text1")
+                .board(board)
+                .member(board.getMember())
+                .build();
+        Comment comment2 = Comment.createComment()
+                .text("text2")
+                .board(board)
+                .member(board.getMember())
+                .build();
+        Comment comment3 = Comment.createComment()
+                .text("text3")
+                .board(board)
+                .member(board.getMember())
+                .build();
+
+        commentRepository.saveAll(List.of(comment1, comment2, comment3));
+        Comment parentComment = commentRepository.findById(comment1.getId()).get();
+        SubComment subComment1 = SubComment.CreateSubComment()
+                .text("sub 1")
+                .board(board)
+                .member(board.getMember())
+                .comment(parentComment)
+                .build();
+
+        SubComment subComment2 = SubComment.CreateSubComment()
+                .text("sub 2")
+                .board(board)
+                .member(board.getMember())
+                .comment(parentComment)
+                .build();
+
+        SubComment subComment3 = SubComment.CreateSubComment()
+                .text("sub 3")
+                .board(board)
+                .member(board.getMember())
+                .comment(parentComment)
+                .build();
+        subCommentRepository.saveAll(List.of(subComment3, subComment2, subComment1));
+        log.info("[INIT SAMPLE COMMENT FINISH]");
+    }
 }

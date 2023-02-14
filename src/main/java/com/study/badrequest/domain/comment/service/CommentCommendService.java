@@ -35,14 +35,14 @@ public class CommentCommendService {
     private final BoardRepository boardRepository;
 
     @CustomLogTracer
-    public CommentResponse.Create addComment(Long boardId, Long memberId, CommentRequest.Create request) {
+    public CommentResponse.Create addComment(Long boardId, String username, CommentRequest.Create request) {
 
         Board board = boardRepository
                 .findById(boardId)
                 .orElseThrow(() -> new BoardException(CustomStatus.NOT_FOUND_BOARD));
 
         Member member = memberRepository
-                .findById(memberId)
+                .findByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
         Comment comment = Comment
