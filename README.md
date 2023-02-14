@@ -90,6 +90,12 @@ POST: <https://www.bad-request.kr/api/v1/login>
 
 ***
 ### 댓글 조회
+- 요청
+
+![스크린샷 2023-02-14 오후 11 08 17](https://user-images.githubusercontent.com/98242564/218762232-99ab3b2c-f379-427a-a090-fb051d06b5d2.png)
+- 응답
+
+![스크린샷 2023-02-14 오후 11 10 35](https://user-images.githubusercontent.com/98242564/218762843-d4725be3-f9a6-4944-867a-29e65f7299b8.png)
 ***
 ### SSE Protocol을 활용한 실시간 단방향 시스템 정보 API 제공 (5초 간격으로 데이터 갱신)
 

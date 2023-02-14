@@ -28,7 +28,6 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     private Board board;
-
     private Integer likeCount;
     private Integer subCommentCount;
     private LocalDateTime createdAt;
@@ -57,8 +56,7 @@ public class Comment {
     }
 
     public void decreaseSubCount() {
+
         --this.subCommentCount;
     }
-
-
 }
