@@ -2,6 +2,7 @@ package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.comment.CommentController;
 import com.study.badrequest.api.comment.CommentQueryController;
+import com.study.badrequest.domain.comment.dto.CommentResponse;
 import com.study.badrequest.domain.comment.repository.dto.CommentDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
@@ -15,16 +16,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 @Slf4j
-public class CommentResponseModelAssembler implements CustomEntityModelAssemblerSupport<Object, List<CommentDto>> {
-    @Override
-    public EntityModel toModel(Object o) {
-        return null;
-    }
+public class CommentResponseModelAssembler  {
 
-    @Override
-    public EntityModel<List<CommentDto>> toListModel(List<CommentDto> target) {
+    private EntityModel<CommentResponse.Create> toModel(CommentResponse.Create target){
 
-        return null;
+        return EntityModel.of(target);
     }
 
     public CollectionModel toCollectionModel(List<CommentDto> target) {

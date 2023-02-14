@@ -154,7 +154,7 @@ public class DevSampleTestData {
     public void initSampleComment() {
         log.info("[INIT SAMPLE COMMENT START]");
 
-        Board board = boardRepository.findByTitle("title1").get();
+        Board board = boardRepository.findByTitle("sample1").get();
 
         Comment comment1 = Comment.createComment()
                 .text("text1")

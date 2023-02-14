@@ -6,6 +6,7 @@ import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 
 import com.study.badrequest.domain.comment.dto.CommentRequest;
+import com.study.badrequest.domain.comment.dto.CommentResponse;
 import com.study.badrequest.domain.comment.repository.dto.CommentDto;
 import com.study.badrequest.domain.comment.repository.CommentQueryRepository;
 import com.study.badrequest.domain.comment.service.CommentCommendService;
@@ -36,11 +37,14 @@ public class CommentController {
     @PostMapping("/board/{boardId}/comments")
     public ResponseEntity postComments(@AuthenticationPrincipal User user,
                                        @PathVariable Long boardId,
-                                       @RequestBody CommentRequest.Create form)
-    {
+                                       @RequestBody CommentRequest.Create form) {
 
-        commentCommendService.addComment(boardId, user.getUsername(), form);
+        CommentResponse.Create create = commentCommendService.addComment(boardId, user.getUsername(), form);
 
-        return null;
+
+
+        return ResponseEntity
+                .ok()
+                .body(create);
     }
 }
