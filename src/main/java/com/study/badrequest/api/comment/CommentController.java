@@ -33,6 +33,7 @@ public class CommentController {
     private final CommentResponseModelAssembler commentResponseModelAssembler;
     private final CommentCommendService commentCommendService;
 
+
     @CustomLogTracer
     @PostMapping("/board/{boardId}/comments")
     public ResponseEntity postComments(@AuthenticationPrincipal User user,
@@ -41,10 +42,52 @@ public class CommentController {
 
         CommentResponse.Create create = commentCommendService.addComment(boardId, user.getUsername(), form);
 
-
-
         return ResponseEntity
                 .ok()
                 .body(create);
+    }
+
+    @CustomLogTracer
+    @PutMapping("/board/{boardId}/comments/{commentId}")
+    public ResponseEntity putComments(@PathVariable Long boardId,
+                                      @PathVariable Long commentId,
+                                      @RequestBody CommentRequest.Update form) {
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    @CustomLogTracer
+    @DeleteMapping("/board/{boardId}/comments/{commentId}")
+    public ResponseEntity deleteComments(@PathVariable Long boardId,
+                                         @PathVariable Long commentId) {
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    @CustomLogTracer
+    @PostMapping("/comments/{commentId}/sub-comments")
+    public ResponseEntity postSubComments(@AuthenticationPrincipal User user,
+                                          @PathVariable Long commentId,
+                                          @RequestBody CommentRequest.Create form) {
+        return ResponseEntity
+                .ok()
+                .body(null);
+    }
+
+    @CustomLogTracer
+    @PostMapping("/comments/{commentId}/sub-comments/{subCommentId}")
+    public ResponseEntity putSubComments(@PathVariable Long commentId,
+                                         @PathVariable Long subCommentId,
+                                         @RequestBody CommentRequest.Update form) {
+
+        return ResponseEntity.ok().body(null);
+    }
+
+    @CustomLogTracer
+    @DeleteMapping("/comments/{commentId}/sub-comments/{subCommentId}")
+    public ResponseEntity deleteSubComments(@PathVariable Long commentId,
+                                            @PathVariable Long subCommentId) {
+
+        return ResponseEntity.ok().body(null);
     }
 }

@@ -45,6 +45,7 @@ public class SubComment {
         this.likeCount = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+
     }
 
     public void modify(String text) {

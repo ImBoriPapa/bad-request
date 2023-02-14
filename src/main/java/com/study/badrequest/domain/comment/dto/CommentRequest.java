@@ -15,4 +15,12 @@ public class CommentRequest {
     public static class Create{
         private String text;
     }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class Update{
+        private String text;
+    }
 }

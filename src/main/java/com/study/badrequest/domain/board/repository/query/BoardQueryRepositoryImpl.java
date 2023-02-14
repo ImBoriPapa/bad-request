@@ -62,6 +62,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
         int limitSize = setSize(condition.getSize());
         long lastIndex = setLastIndex(condition.getLastIndex());
         int resultSize;
+        boolean hasNext;
 
         log.info("[findBoardList QUERY START]");
         List<BoardListResult> results = jpaQueryFactory
@@ -94,7 +95,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
         resultSize = results.size();
         // resultSize > limitSize 다음 데이터 존재
         // resultSize > limitSize 다음 페이터 없음
-        boolean hasNext = resultSize > limitSize;
+        hasNext = resultSize > limitSize;
 
         // 다음 데이터가 있을 경우 1개 조회한 결과에서 마지막 데이터  삭제
         if (hasNext) {

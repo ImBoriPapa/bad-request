@@ -1,9 +1,12 @@
 package com.study.badrequest;
 
+import com.study.badrequest.domain.comment.dto.CommentRequest;
+import com.study.badrequest.domain.comment.dto.CommentResponse;
 import com.study.badrequest.domain.comment.entity.Comment;
 import com.study.badrequest.domain.comment.entity.SubComment;
 import com.study.badrequest.domain.comment.repository.CommentRepository;
 import com.study.badrequest.domain.comment.repository.SubCommentRepository;
+import com.study.badrequest.domain.comment.service.CommentCommendService;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
@@ -15,12 +18,15 @@ import com.study.badrequest.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,9 +42,10 @@ public class DevSampleTestData {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final PasswordEncoder passwordEncoder;
-
     private final CommentRepository commentRepository;
     private final SubCommentRepository subCommentRepository;
+
+    private final CommentCommendService commentCommendService;
 
     @PostConstruct
     public void init() {
@@ -155,46 +162,35 @@ public class DevSampleTestData {
         log.info("[INIT SAMPLE COMMENT START]");
 
         Board board = boardRepository.findByTitle("sample1").get();
+        Member member1 = memberRepository.findByEmail(SAMPLE_USER_EMAIL).get();
+        Member member2 = memberRepository.findByEmail(SAMPLE_TEACHER_EMAIL).get();
+        Member member3 = memberRepository.findByEmail(SAMPLE_ADMIN_EMAIL).get();
 
-        Comment comment1 = Comment.createComment()
-                .text("text1")
-                .board(board)
-                .member(board.getMember())
-                .build();
-        Comment comment2 = Comment.createComment()
-                .text("text2")
-                .board(board)
-                .member(board.getMember())
-                .build();
-        Comment comment3 = Comment.createComment()
-                .text("text3")
-                .board(board)
-                .member(board.getMember())
-                .build();
 
-        commentRepository.saveAll(List.of(comment1, comment2, comment3));
-        Comment parentComment = commentRepository.findById(comment1.getId()).get();
-        SubComment subComment1 = SubComment.CreateSubComment()
-                .text("sub 1")
-                .board(board)
-                .member(board.getMember())
-                .comment(parentComment)
-                .build();
+        CommentRequest.Create create1 = new CommentRequest.Create();
+        create1.setText("댓글1");
+        CommentRequest.Create create2 = new CommentRequest.Create();
+        create2.setText("댓글2");
+        CommentRequest.Create create3 = new CommentRequest.Create();
+        create3.setText("댓글3");
+        CommentResponse.Create create = commentCommendService.addComment(board.getId(), member1.getUsername(), create1);
+        commentCommendService.addComment(board.getId(), member2.getUsername(), create2);
+        commentCommendService.addComment(board.getId(), member3.getUsername(), create3);
 
-        SubComment subComment2 = SubComment.CreateSubComment()
-                .text("sub 2")
-                .board(board)
-                .member(board.getMember())
-                .comment(parentComment)
-                .build();
+        CommentRequest.Create sub1 = new CommentRequest.Create();
+        create1.setText("대댓글1");
+        CommentRequest.Create sub2 = new CommentRequest.Create();
+        create2.setText("대댓글2");
+        CommentRequest.Create sub3 = new CommentRequest.Create();
+        create3.setText("대댓글3");
 
-        SubComment subComment3 = SubComment.CreateSubComment()
-                .text("sub 3")
-                .board(board)
-                .member(board.getMember())
-                .comment(parentComment)
-                .build();
-        subCommentRepository.saveAll(List.of(subComment3, subComment2, subComment1));
+        Comment parentComment = commentRepository.findById(create.getCommentId()).get();
+
+        commentCommendService.addSubComment(create.getCommentId(), member1.getId(), sub1);
+        commentCommendService.addSubComment(create.getCommentId(), member2.getId(), sub2);
+        commentCommendService.addSubComment(create.getCommentId(), member3.getId(), sub3);
+
+
         log.info("[INIT SAMPLE COMMENT FINISH]");
     }
 }

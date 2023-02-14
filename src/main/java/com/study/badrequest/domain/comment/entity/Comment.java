@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 @Entity
 @Getter
@@ -21,7 +22,6 @@ public class Comment {
     @Column(name = "COMMENT_ID")
     private Long id;
     private String text;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
@@ -30,6 +30,7 @@ public class Comment {
     private Board board;
 
     private Integer likeCount;
+    private Integer subCommentCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -39,6 +40,7 @@ public class Comment {
         this.member = member;
         this.board = board;
         this.likeCount = 0;
+        this.subCommentCount = 0;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
@@ -49,4 +51,14 @@ public class Comment {
             this.updatedAt = LocalDateTime.now();
         }
     }
+
+    public void increaseSubCount() {
+        ++this.subCommentCount;
+    }
+
+    public void decreaseSubCount() {
+        --this.subCommentCount;
+    }
+
+
 }

@@ -5,13 +5,14 @@ import com.study.badrequest.domain.comment.entity.SubComment;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SubCommentDto {
+public class SubCommentDto extends RepresentationModel {
 
     private Long subCommentId;
     private Long commentId;

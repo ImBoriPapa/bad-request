@@ -71,7 +71,7 @@ public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSu
 
         return EntityModel.of(result)
                 .add(linkTo(BoardController.class).slash("/board").withSelfRel())
-                .addAllIf(result.getSize() > 0, links);
+                .addAllIf(result.getSize() > 0 && result.getHasNext(), links);
 
     }
 

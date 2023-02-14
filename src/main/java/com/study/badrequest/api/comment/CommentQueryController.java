@@ -4,18 +4,20 @@ import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.comment.repository.CommentQueryRepository;
-import com.study.badrequest.domain.comment.repository.dto.CommentDto;
+import com.study.badrequest.domain.comment.repository.dto.CommentListDto;
+import com.study.badrequest.domain.comment.repository.dto.CommentSearchCondition;
+import com.study.badrequest.domain.comment.repository.dto.SubCommentListDto;
 import com.study.badrequest.utils.modelAssembler.CommentResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.hateoas.CollectionModel;
+
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 
@@ -30,13 +32,26 @@ public class CommentQueryController {
 
     @CustomLogTracer
     @GetMapping("/board/{boardId}/comments")
-    public ResponseEntity getComments(@PathVariable Long boardId) {
+    public ResponseEntity getComments(@PathVariable Long boardId, CommentSearchCondition condition) {
 
-        List<CommentDto> comments = queryRepository.findAllCommentAndSubCommentByBoardId(boardId);
+        CommentListDto commentListDto = queryRepository.findAllCommentByBoardId(boardId, condition);
 
-        CollectionModel collectionModel = commentResponseModelAssembler.toCollectionModel(comments);
+        EntityModel<CommentListDto> entityModel = commentResponseModelAssembler.toListModel(commentListDto);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(CustomStatus.SUCCESS, collectionModel));
+                .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
+    }
+
+    @CustomLogTracer
+    @GetMapping("/comments/{commentId}/sub-comments")
+    public ResponseEntity getSubComments(@PathVariable Long commentId, CommentSearchCondition condition) {
+
+        SubCommentListDto subCommentListDto = queryRepository.findAllSubCommentByCommentId(commentId, condition);
+
+        EntityModel<SubCommentListDto> entityModel = commentResponseModelAssembler.toListModel(subCommentListDto);
+
+        return ResponseEntity
+                .ok()
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 }

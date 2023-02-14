@@ -30,11 +30,10 @@ public class CommentCommendService {
 
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
-
     private final SubCommentRepository subCommentRepository;
     private final BoardRepository boardRepository;
 
-    @CustomLogTracer
+//    @CustomLogTracer
     public CommentResponse.Create addComment(Long boardId, String username, CommentRequest.Create request) {
 
         Board board = boardRepository
@@ -112,7 +111,7 @@ public class CommentCommendService {
     /**
      * 대댓글
      */
-    @CustomLogTracer
+
     public CommentResponse.CreateSub addSubComment(Long commentId, Long memberId, CommentRequest.Create request) {
 
         Member member = memberRepository.findById(memberId)
@@ -121,8 +120,6 @@ public class CommentCommendService {
         Comment findComment = commentRepository
                 .findById(commentId)
                 .orElseThrow(() -> new BoardException(CustomStatus.NOT_FOUND_BOARD));
-
-        findComment.getBoard().increaseCommentCount();
 
         SubComment subComment = SubComment
                 .CreateSubComment()
@@ -133,6 +130,9 @@ public class CommentCommendService {
                 .build();
 
         SubComment save = subCommentRepository.save(subComment);
+
+        save.getBoard().increaseCommentCount();
+        save.getComment().increaseSubCount();
 
         return new CommentResponse.CreateSub(save.getId(), save.getCreatedAt());
     }
@@ -150,6 +150,7 @@ public class CommentCommendService {
                 .orElseThrow(() -> new IllegalArgumentException(""));
 
         subComment.getBoard().decreaseCommentCount();
+        subComment.getComment().decreaseSubCount();
 
         subCommentRepository.delete(subComment);
 
