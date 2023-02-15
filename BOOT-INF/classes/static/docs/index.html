@@ -471,6 +471,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_게시판_상세_조회">게시판 상세 조회</a></li>
 </ul>
 </li>
+<li><a href="#_comments">Comments</a></li>
 <li><a href="#_dashboard">Dashboard</a>
 <ul class="sectlevel2">
 <li><a href="#_system_정보_sse_프로토콜_통신">System 정보 (SSE 프로토콜 통신)</a></li>
@@ -504,15 +505,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/members HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 142
+Content-Length: 118
 Host: localhost:8080
 
 {
   "email" : "tester@test.com",
   "password" : "test1234!@",
-  "name" : "테스터",
   "nickname" : "tester",
-  "contact" : "010-1234-1234"
+  "contact" : "010-1111-1234"
 }</code></pre>
 </div>
 </div>
@@ -543,11 +543,6 @@ Host: localhost:8080
 <td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이름</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">닉네임</p></td>
@@ -569,7 +564,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: http://localhost:8080/login/7
+Location: http://localhost:8080/api/v1/members/25
 Content-Type: application/json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -577,15 +572,15 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 279
+Content-Length: 280
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "memberId" : 7,
-    "createdAt" : "2023-02-14 00:27",
+    "memberId" : 25,
+    "createdAt" : "2023-02-16 00:02",
     "links" : [ {
       "rel" : "POST: 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -661,7 +656,7 @@ Content-Length: 279
 <h4 id="_요청_2"><a class="link" href="#_요청_2">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/members/email?email=gdfagsdgs%40email.com HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/members/email?email=email%40email.com HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Host: localhost:8080</code></pre>
 </div>
@@ -684,7 +679,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 171
+Content-Length: 167
 
 {
   "status" : "SUCCESS",
@@ -692,7 +687,7 @@ Content-Length: 171
   "message" : "요청에 성공했습니다.",
   "result" : {
     "duplicate" : false,
-    "email" : "gdfagsdgs@email.com"
+    "email" : "email@email.com"
   }
 }</code></pre>
 </div>
@@ -746,7 +741,7 @@ Content-Length: 160
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/members/auth HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzZ9.PE4EWK3ZMWuWcr0QHaSbm7FYJzWEo4C-O-xBFvC4pLenR0ylut8UmtwZc_zlaaV-EenjuAZHHDcZ7KMyis275A
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jYWQyLTY5NTQtYjA0MS0zNiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk2MH0.bxzKSc7GdNcjScgyzptHhSZjY_aw_q-qQaNKf53zuRtQpnTLQlkHIt5w_lqcrvnItYilS_vk1NPBm52xbnLdOw
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -787,14 +782,14 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 170
+Content-Length: 171
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "id" : 1,
+    "id" : 18,
     "authority" : "MEMBER",
     "links" : [ ]
   }
@@ -863,9 +858,9 @@ Content-Length: 170
 <h4 id="_요청_4"><a class="link" href="#_요청_4">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/1/contact HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/20/contact HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzV9.mAgaE1KJOcwRGvdBxRWS1EyQCX1e0RkVdTVgkToGEAVfiKr9ETjsCHLINFBQ2mXsdOBYYTFppqTClS1BIvsNog
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jYjJiLTEwYTYtYjA0MS00MCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk2MX0.SfZCTqstAv8-5G4aRbZOFqvf2Kp1wJveme3IHiE1fjZsaehQOxTIEXPWis9SU0psnP_A952cy3VM6YTfKdsQCA
 Content-Length: 33
 Host: localhost:8080
 
@@ -935,18 +930,18 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 286
+Content-Length: 288
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "memberId" : 1,
-    "updatedAt" : "2023-02-14 00:27",
+    "memberId" : 20,
+    "updatedAt" : "2023-02-16 00:02",
     "links" : [ {
       "rel" : "GET: 회원 정보",
-      "href" : "http://localhost:8080/api/v1/members/1"
+      "href" : "http://localhost:8080/api/v1/members/20"
     } ]
   }
 }</code></pre>
@@ -1019,14 +1014,14 @@ Content-Length: 286
 <h4 id="_요청_5"><a class="link" href="#_요청_5">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/1/password HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/22/password HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzV9.mAgaE1KJOcwRGvdBxRWS1EyQCX1e0RkVdTVgkToGEAVfiKr9ETjsCHLINFBQ2mXsdOBYYTFppqTClS1BIvsNog
-Content-Length: 74
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jYjU4LWQ3NjgtYjA0MS00NCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk2MX0.q3iebFLumY5cedWzzNB2dgxPy2s9bmNooGLDCri9vSJvex5tmuzW1K-KYr547YRPJKVKhJ4aBqc6ZsR_bXZhyA
+Content-Length: 72
 Host: localhost:8080
 
 {
-  "password" : "password1234!@",
+  "password" : "sample1234!@",
   "newPassword" : "newPassword1234!@"
 }</code></pre>
 </div>
@@ -1097,18 +1092,18 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 286
+Content-Length: 288
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "memberId" : 1,
-    "updatedAt" : "2023-02-14 00:27",
+    "memberId" : 22,
+    "updatedAt" : "2023-02-16 00:02",
     "links" : [ {
       "rel" : "GET: 회원 정보",
-      "href" : "http://localhost:8080/api/v1/members/1"
+      "href" : "http://localhost:8080/api/v1/members/22"
     } ]
   }
 }</code></pre>
@@ -1181,14 +1176,14 @@ Content-Length: 286
 <h4 id="_요청_6"><a class="link" href="#_요청_6">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members/1 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members/23 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzZ9.PE4EWK3ZMWuWcr0QHaSbm7FYJzWEo4C-O-xBFvC4pLenR0ylut8UmtwZc_zlaaV-EenjuAZHHDcZ7KMyis275A
-Content-Length: 35
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jYjhlLTY2NTktYjA0MS00NiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk2MX0.pFAeldAbPTFCrSdYKB1XhW4ZmhYJ-SYDtHSq6md0AXPD0uzR-rKfa3Qf-_b0yJQKQ6nPDcj1TA7X9dlf_CHcDw
+Content-Length: 33
 Host: localhost:8080
 
 {
-  "password" : "password1234!@"
+  "password" : "sample1234!@"
 }</code></pre>
 </div>
 </div>
@@ -1253,15 +1248,17 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 319
+Content-Length: 337
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "thanks" : "이용해 주셔서 감사합니다.",
-    "deletedAt" : "2023-02-14 00:27",
+    "thanks" : {
+      "thanks" : "그동안 감사했습니다."
+    },
+    "deletedAt" : "2023-02-16 00:02",
     "links" : [ {
       "rel" : "POST: 회원가입",
       "href" : "http://localhost:8080/api/v1/members"
@@ -1303,7 +1300,7 @@ Content-Length: 319
 <td class="tableblock halign-left valign-top"><p class="tableblock">커스텀 응답 메시지</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.thanks</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.thanks.thanks</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">인사</p></td>
 </tr>
@@ -1344,11 +1341,11 @@ Content-Length: 319
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/login HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Content-Length: 65
+Content-Length: 66
 Host: localhost:8080
 
 {
-  "email" : "user@gmail.com",
+  "email" : "tester@test.com",
   "password" : "password1234!@"
 }</code></pre>
 </div>
@@ -1389,8 +1386,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzR9.LnGkly4PikMZDeKkXABQENlpGHYHyEzCEVI5r1gQqDFUB8BOB7BE8YKT6xmqzilS0HvowWYvPdecf3ioqaqGZA
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzY5MDY4MzR9.0gHrNfY_MbeIiExoaXR2whhexUwiWtx2o0DN9HD-rh5Av72IH6x_LT5y7rSfcnM13L69IFCXzAgdAYmA6oO_Rg; Path=/; Max-Age=604799189; Expires=Mon, 14 Apr 2042 15:13:43 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWE3LTJmYjktYjA0MS0xNCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk1OH0.g-6C4zXnOcPoQmDfXS9FkBgrrhSPd8HpRcLgNpzg8GjOzqf9hiVNTrKGrICYAZbpGculF_NJrvMEaxmNphP_vw
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWE3LTJmYjktYjA0MS0xNCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3ODE1OH0.FoJr3MnfipbctWwyYtc_ze3OBd6r43xhy6Igh31dsLSACBd8MkpYZpQ8UUzN7pTZqO43LVPWC2DMa1lF1B55Xw; Path=/; Max-Age=604799303; Expires=Wed, 16 Apr 2042 14:51:01 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1404,8 +1401,8 @@ Content-Length: 395
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "memberId" : 1,
-    "accessTokenExpired" : "2023-02-14 00:37",
+    "memberId" : 7,
+    "accessTokenExpired" : "2023-02-16 00:12",
     "links" : [ {
       "rel" : "POST: 로그아웃",
       "href" : "http://localhost:8080/api/v1/log-out"
@@ -1520,7 +1517,7 @@ Content-Length: 395
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/log-out HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzR9.LnGkly4PikMZDeKkXABQENlpGHYHyEzCEVI5r1gQqDFUB8BOB7BE8YKT6xmqzilS0HvowWYvPdecf3ioqaqGZA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWNhLWJkNGEtYjA0MS0xNiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk1OH0.GJ28K8bjZqWRnUFkOUofGOnyQiPsjEbYnMcHfKaVGj1Xq6RcO3usd8YEZy6wEXg1ZmR87Lnxpbx6s64VzpdELA
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1566,7 +1563,7 @@ Content-Length: 300
   "message" : "로그아웃 요청이 성공했습니다.",
   "result" : {
     "logout" : true,
-    "logoutAt" : "2023-02-14 00:27",
+    "logoutAt" : "2023-02-16 00:02",
     "links" : [ {
       "rel" : "POST : 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -1641,9 +1638,9 @@ Content-Length: 300
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzV9.mAgaE1KJOcwRGvdBxRWS1EyQCX1e0RkVdTVgkToGEAVfiKr9ETjsCHLINFBQ2mXsdOBYYTFppqTClS1BIvsNog
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWViLWIyY2ItYjA0MS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk1OX0.f5pq6glKvxZW3ICogJaJy2dhE5XUME5gtZLCJbJ3BcLdPj_cSOHI-aOr8RpBUr3IBfLxcLPvlFH2U8qSgFaTQA
 Host: localhost:8080
-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzY5MDY4MzV9.5nLa0eZhH7yfpH1pVd6IiOL0MQzlpVTfOVIo2TDebhEuKIG1ocuS-aZFwfnQbsn02XeaGEE2_nEJRHJSe3KbFg</code></pre>
+Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWViLWIyY2ItYjA0MS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3ODE1OX0.JdmZ3vVZHw66RYqVcxgjN9EjcA872EJAQaLfDWoe-MQzeEpcCLJDvVNVVBzMuBjmQ0d_Cg-qaTLH2DGzs6uHiw</code></pre>
 </div>
 </div>
 </div>
@@ -1681,8 +1678,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzV9.mAgaE1KJOcwRGvdBxRWS1EyQCX1e0RkVdTVgkToGEAVfiKr9ETjsCHLINFBQ2mXsdOBYYTFppqTClS1BIvsNog
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzY5MDY4MzV9.5nLa0eZhH7yfpH1pVd6IiOL0MQzlpVTfOVIo2TDebhEuKIG1ocuS-aZFwfnQbsn02XeaGEE2_nEJRHJSe3KbFg; Path=/; Max-Age=604799898; Expires=Mon, 14 Apr 2042 15:25:33 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWViLWIyY2ItYjA0MS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3Mzk1OX0.f5pq6glKvxZW3ICogJaJy2dhE5XUME5gtZLCJbJ3BcLdPj_cSOHI-aOr8RpBUr3IBfLxcLPvlFH2U8qSgFaTQA
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOWViLWIyY2ItYjA0MS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3ODE1OX0.JdmZ3vVZHw66RYqVcxgjN9EjcA872EJAQaLfDWoe-MQzeEpcCLJDvVNVVBzMuBjmQ0d_Cg-qaTLH2DGzs6uHiw; Path=/; Max-Age=604799836; Expires=Wed, 16 Apr 2042 14:59:55 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1696,8 +1693,8 @@ Content-Length: 195
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "memberId" : 1,
-    "accessTokenExpired" : "2023-02-14 00:37",
+    "memberId" : 9,
+    "accessTokenExpired" : "2023-02-16 00:12",
     "links" : [ ]
   }
 }</code></pre>
@@ -1767,7 +1764,7 @@ Content-Length: 195
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/board HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWJiMi1lM2EyLWQwOGEtOTAwMS0yM2RhYThmNGVjOTMiLCJhdXRoIjoiUk9MRV9NRU1CRVIiLCJleHAiOjE2NzYzMDI2MzR9.LnGkly4PikMZDeKkXABQENlpGHYHyEzCEVI5r1gQqDFUB8BOB7BE8YKT6xmqzilS0HvowWYvPdecf3ioqaqGZA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0MS1jOGQ1LWFlZTQtYjA0MS00IiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDczOTU3fQ.GNXVEFxhm3k1j_XYE82MD12cjFhF2ZOr9PT0m9ZcP8oDQ0Zj-s6WtRJVRo-AzvgB2xKM7Jba4RbBR2c4AQemHg
 Host: localhost:8080
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
@@ -1903,7 +1900,7 @@ image2
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
-Location: http://localhost:8080/api/v1/board/42
+Location: http://localhost:8080/api/v1/board/63
 Content-Type: application/json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -1918,17 +1915,17 @@ Content-Length: 603
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "boardId" : 42,
-    "createAt" : "2023-02-14 00:27",
+    "boardId" : 63,
+    "createAt" : "2023-02-16 00:02",
     "links" : [ {
       "rel" : "PUT : 게시판 수정",
-      "href" : "http://localhost:8080/api/v1/board/42"
+      "href" : "http://localhost:8080/api/v1/board/63"
     }, {
       "rel" : "DELETE : 게시판 삭제",
-      "href" : "http://localhost:8080/api/v1/board/42"
+      "href" : "http://localhost:8080/api/v1/board/63"
     }, {
       "rel" : "GET : 게시판 내용",
-      "href" : "http://localhost:8080/api/v1/board/42"
+      "href" : "http://localhost:8080/api/v1/board/63"
     }, {
       "rel" : "GET : 게시판 리스트",
       "href" : "http://localhost:8080/api/v1/board"
@@ -2028,7 +2025,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1931
+Content-Length: 1742
 
 {
   "status" : "SUCCESS",
@@ -2037,51 +2034,51 @@ Content-Length: 1931
   "result" : {
     "size" : 3,
     "hasNext" : true,
-    "lastIndex" : 39,
+    "lastIndex" : 29,
     "results" : [ {
-      "boardId" : 41,
+      "boardId" : 31,
       "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title40",
+      "profileImage" : "기본 이미지",
+      "nickname" : "nickname",
+      "title" : "제목30",
       "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
+      "category" : "KNOWLEDGE",
+      "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-14 00:27",
+      "createdAt" : "2023-02-16 00:02",
       "links" : [ {
         "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/41"
+        "href" : "http://localhost:8080/api/v1/31"
       } ]
     }, {
-      "boardId" : 40,
+      "boardId" : 30,
       "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title39",
+      "profileImage" : "기본 이미지",
+      "nickname" : "nickname",
+      "title" : "제목29",
       "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
+      "category" : "KNOWLEDGE",
+      "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-14 00:27",
+      "createdAt" : "2023-02-16 00:02",
       "links" : [ {
         "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/40"
+        "href" : "http://localhost:8080/api/v1/30"
       } ]
     }, {
-      "boardId" : 39,
+      "boardId" : 29,
       "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title38",
+      "profileImage" : "기본 이미지",
+      "nickname" : "nickname",
+      "title" : "제목28",
       "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
+      "category" : "KNOWLEDGE",
+      "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-14 00:27",
+      "createdAt" : "2023-02-16 00:02",
       "links" : [ {
         "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/39"
+        "href" : "http://localhost:8080/api/v1/29"
       } ]
     } ],
     "links" : [ {
@@ -2089,7 +2086,7 @@ Content-Length: 1931
       "href" : "http://localhost:8080/api/v1/board"
     }, {
       "rel" : "GET : NEXT DATA",
-      "href" : "http://localhost:8080/api/v1/board?lastIndex=39"
+      "href" : "http://localhost:8080/api/v1/board?lastIndex=29"
     }, {
       "rel" : "GET : SEARCH BY SIZE",
       "href" : "http://localhost:8080/api/v1/board?size=3"
@@ -2281,7 +2278,7 @@ Content-Length: 1931
 <h4 id="_요청_12"><a class="link" href="#_요청_12">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board?size=3&amp;lastIndex=37&amp;category=question&amp;topic=mysql HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board?size=3&amp;category=KNOWLEDGE&amp;topic=JAVA HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2301,7 +2298,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 1931
+Content-Length: 1742
 
 {
   "status" : "SUCCESS",
@@ -2310,51 +2307,51 @@ Content-Length: 1931
   "result" : {
     "size" : 3,
     "hasNext" : true,
-    "lastIndex" : 34,
+    "lastIndex" : 92,
     "results" : [ {
-      "boardId" : 36,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title35",
+      "boardId" : 94,
+      "memberId" : 3,
+      "profileImage" : "기본 이미지",
+      "nickname" : "nickname",
+      "title" : "제목30",
       "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
+      "category" : "KNOWLEDGE",
+      "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-14 00:27",
+      "createdAt" : "2023-02-16 00:02",
       "links" : [ {
         "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/36"
+        "href" : "http://localhost:8080/api/v1/94"
       } ]
     }, {
-      "boardId" : 35,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title34",
+      "boardId" : 93,
+      "memberId" : 3,
+      "profileImage" : "기본 이미지",
+      "nickname" : "nickname",
+      "title" : "제목29",
       "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
+      "category" : "KNOWLEDGE",
+      "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-14 00:27",
+      "createdAt" : "2023-02-16 00:02",
       "links" : [ {
         "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/35"
+        "href" : "http://localhost:8080/api/v1/93"
       } ]
     }, {
-      "boardId" : 34,
-      "memberId" : 1,
-      "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-      "nickname" : "sampleUser",
-      "title" : "title33",
+      "boardId" : 92,
+      "memberId" : 3,
+      "profileImage" : "기본 이미지",
+      "nickname" : "nickname",
+      "title" : "제목28",
       "likeCount" : 0,
-      "category" : "QUESTION",
-      "topic" : "MYSQL",
+      "category" : "KNOWLEDGE",
+      "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-14 00:27",
+      "createdAt" : "2023-02-16 00:02",
       "links" : [ {
         "rel" : "GET : DETAIL",
-        "href" : "http://localhost:8080/api/v1/34"
+        "href" : "http://localhost:8080/api/v1/92"
       } ]
     } ],
     "links" : [ {
@@ -2362,7 +2359,7 @@ Content-Length: 1931
       "href" : "http://localhost:8080/api/v1/board"
     }, {
       "rel" : "GET : NEXT DATA",
-      "href" : "http://localhost:8080/api/v1/board?lastIndex=34"
+      "href" : "http://localhost:8080/api/v1/board?lastIndex=92"
     }, {
       "rel" : "GET : SEARCH BY SIZE",
       "href" : "http://localhost:8080/api/v1/board?size=3"
@@ -2384,7 +2381,7 @@ Content-Length: 1931
 <h4 id="_요청_13"><a class="link" href="#_요청_13">요청</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board/1?category=QUESTION HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/board/96?category=KNOWLEDGE HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -2416,35 +2413,35 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 969
+Content-Length: 905
 
 {
   "status" : "SUCCESS",
   "code" : 1000,
   "message" : "요청에 성공했습니다.",
   "result" : {
-    "boardId" : 1,
-    "memberId" : 1,
-    "profileImage" : "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG",
-    "nickname" : "sampleUser",
-    "title" : "Webflux",
-    "contents" : "tototototot",
+    "boardId" : 96,
+    "memberId" : 4,
+    "profileImage" : "기본 이미지",
+    "nickname" : "nickname",
+    "title" : "제목1",
+    "contents" : "내용1",
     "likeCount" : 0,
-    "category" : "QUESTION",
+    "category" : "KNOWLEDGE",
     "topic" : "JAVA",
     "commentCount" : 0,
-    "createdAt" : "2023-02-14 00:27",
-    "updatedAt" : "2023-02-14 00:27",
+    "createdAt" : "2023-02-16 00:02",
+    "updatedAt" : "2023-02-16 00:02",
     "boardImages" : [ ],
     "links" : [ {
       "rel" : "POST : 게시판 생성",
       "href" : "http://localhost:8080/api/v1/board"
     }, {
       "rel" : "PUT : 게시판 수정",
-      "href" : "http://localhost:8080/api/v1/board/1"
+      "href" : "http://localhost:8080/api/v1/board/96"
     }, {
       "rel" : "DELETE : 게시판 삭제",
-      "href" : "http://localhost:8080/api/v1/board/1"
+      "href" : "http://localhost:8080/api/v1/board/96"
     }, {
       "rel" : "GET : 게시판 리스트",
       "href" : "http://localhost:8080/api/v1/board"
@@ -2567,6 +2564,14 @@ Content-Length: 969
 </div>
 </div>
 <div class="sect1">
+<h2 id="_comments"><a class="link" href="#_comments">Comments</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>include::./build/generated-snippets</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_dashboard"><a class="link" href="#_dashboard">Dashboard</a></h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -2604,7 +2609,7 @@ X-Frame-Options: DENY
 Content-Length: 113
 
 event:data
-data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.934,"memoryFreeSpace":0.066}</code></pre>
+data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.924,"memoryFreeSpace":0.076}</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -2930,7 +2935,7 @@ Cache-Control: no-cache, no-store, max-age=0, must-revalidate
 Pragma: no-cache
 Expires: 0
 X-Frame-Options: DENY
-Content-Length: 3086
+Content-Length: 3097
 
 [ {
   "status" : "SUCCESS",
@@ -2947,7 +2952,7 @@ Content-Length: 3086
 }, {
   "status" : "VALIDATION_ERROR",
   "code" : 1003,
-  "message" : "검증에 실패했습니다."
+  "message" : "요청 값 검증에 실패했습니다."
 }, {
   "status" : "PERMISSION_DENIED",
   "code" : 1004,
@@ -3231,7 +3236,7 @@ Content-Length: 269
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0-PROD<br>
-Last updated 2023-02-13 14:04:31 +0900
+Last updated 2023-02-16 00:01:22 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
