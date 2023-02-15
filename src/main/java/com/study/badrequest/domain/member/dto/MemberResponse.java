@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @NoArgsConstructor
@@ -39,12 +41,17 @@ public class MemberResponse {
         }
     }
 
-    @NoArgsConstructor
+
     @Getter
     public static class DeleteResult {
-        private String thanks = "이용해 주셔서 감사합니다.";
+        private Map<String, String> thanks = new HashMap<>();
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-        private LocalDateTime deletedAt = LocalDateTime.now();
+        private LocalDateTime deletedAt;
+
+        public DeleteResult() {
+            this.thanks.put("thanks", "그동안 감사했습니다.");
+            this.deletedAt = LocalDateTime.now();
+        }
     }
 
     @NoArgsConstructor

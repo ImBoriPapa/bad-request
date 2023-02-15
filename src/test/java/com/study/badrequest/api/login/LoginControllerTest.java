@@ -9,6 +9,8 @@ import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,12 +62,34 @@ class LoginControllerTest {
     @Autowired
     JwtLoginService loginService;
 
+    @BeforeEach
+    void beforeEach() {
+        String email = "tester@test.com";
+        String password = "password1234!@";
+        Member member = Member.createMember()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .contact("010-1234-1234")
+                .nickname("nickname")
+                .authority(Authority.MEMBER)
+                .build();
+        memberRepository.save(member);
+
+    }
+
+    @AfterEach
+    void afterEach() {
+        memberRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("로그인 테스트")
     void loginTest() throws Exception {
         //given
+        String email = "tester@test.com";
+        String password = "password1234!@";
 
-        LoginRequest.Login form = new LoginRequest.Login(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginRequest.Login form = new LoginRequest.Login(email, password);
         String content = objectMapper.writeValueAsString(form);
         //when
         mockMvc.perform(post("/api/v1/login")
@@ -117,12 +141,9 @@ class LoginControllerTest {
     @DisplayName("로그인 실패 테스트-잘못된 비밀번호")
     void 로그인실패1() throws Exception {
         //given
-        Member member = Member.createMember()
-                .email("email@email.com")
-                .password(passwordEncoder.encode("password1234!@"))
-                .authority(Authority.MEMBER).build();
-        memberRepository.save(member);
-        LoginRequest.Login form = new LoginRequest.Login("email@email.com", "wrong-password");
+        String email = "tester@test.com";
+        String password = "wrong!@";
+        LoginRequest.Login form = new LoginRequest.Login(email, password);
         String content = objectMapper.writeValueAsString(form);
         //when
         mockMvc.perform(post("/api/v1/login")
@@ -137,12 +158,10 @@ class LoginControllerTest {
     @DisplayName("로그인 실패 테스트-잘못된 이메일")
     void 로그인실패2() throws Exception {
         //given
-        Member member = Member.createMember()
-                .email("email@email.com")
-                .password(passwordEncoder.encode("password1234!@"))
-                .authority(Authority.MEMBER).build();
-        memberRepository.save(member);
-        LoginRequest.Login form = new LoginRequest.Login("wrong@email.com", "password1234!@");
+        String email = "wrong@test.com";
+        String password = "password1234!@";
+
+        LoginRequest.Login form = new LoginRequest.Login(email, password);
         String content = objectMapper.writeValueAsString(form);
         //when
         mockMvc.perform(post("/api/v1/login")
@@ -157,7 +176,9 @@ class LoginControllerTest {
     @DisplayName("로그아웃 테스트")
     void logoutTest() throws Exception {
         //given
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        String email = "tester@test.com";
+        String password = "password1234!@";
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
         //logout 요청
         mockMvc.perform(post("/api/v1/log-out")
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
@@ -189,12 +210,9 @@ class LoginControllerTest {
     @DisplayName("로그아웃 후 요청")
     void afterLogout() throws Exception {
         //logout 후 접근
-        Member member = Member.createMember()
-                .email("email@email.com")
-                .password(passwordEncoder.encode("password1234!@"))
-                .authority(Authority.MEMBER).build();
-        memberRepository.save(member);
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        String email = "tester@test.com";
+        String password = "password1234!@";
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
         loginService.logoutProcessing(loginResult.getAccessToken());
         mockMvc.perform(post("/test/welcome")
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
@@ -214,7 +232,11 @@ class LoginControllerTest {
     @DisplayName("토큰재발급 테스트")
     void reIssuedTest() throws Exception {
         //given
-        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        String email = "tester@test.com";
+        String password = "password1234!@";
+
+        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
+
         ResponseCookie refreshCookie = member.getRefreshCookie();
 
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
@@ -250,7 +272,10 @@ class LoginControllerTest {
     @DisplayName("토큰 재발급 실패1 - 잘못된 AccessToken")
     void failReissue() throws Exception {
         //given
-        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        String email = "tester@test.com";
+        String password = "password1234!@";
+
+        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
         ResponseCookie refreshCookie = member.getRefreshCookie();
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
         cookie.setPath(refreshCookie.getPath());
@@ -272,7 +297,10 @@ class LoginControllerTest {
     @DisplayName("토큰 재발급 실패2 - 잘못된 RefreshToken")
     void failReissue2() throws Exception {
         //given
-        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        String email = "tester@test.com";
+        String password = "password1234!@";
+
+        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
         ResponseCookie refreshCookie = member.getRefreshCookie();
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue() + "wrong");
         cookie.setPath(refreshCookie.getPath());
@@ -293,7 +321,9 @@ class LoginControllerTest {
     @DisplayName("토큰 재발급 실패3 - 잘못된 Refresh 쿠키가 없을 경우")
     void failReissue3() throws Exception {
         //given
-        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        String email = "tester@test.com";
+        String password = "password1234!@";
+        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
         //when
         mockMvc.perform(post("/api/v1/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -307,7 +337,10 @@ class LoginControllerTest {
     @DisplayName("인가 테스트- 실패")
     void authorityFailTest() throws Exception {
         //given
-        LoginResponse.LoginDto member = loginService.loginProcessing("user@gmail.com", "password1234!@");
+        String email = "tester@test.com";
+        String password = "password1234!@";
+
+        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
 
         //인가 없음
         mockMvc.perform(get("/test/teacher")
@@ -330,9 +363,6 @@ class LoginControllerTest {
                 ));
 
     }
-
-
-
 
 
 }

@@ -7,9 +7,16 @@ import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
 import com.study.badrequest.domain.board.repository.BoardRepository;
+import com.study.badrequest.domain.board.service.BoardCommandService;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
+import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.entity.ProfileImage;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +26,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static com.study.badrequest.SampleUserData.SAMPLE_PASSWORD;
 import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
@@ -57,11 +67,52 @@ class BoardControllerTest {
     @Autowired
     BoardRepository boardRepository;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    BoardCommandService boardCommandService;
+    @Autowired
+    MemberRepository memberRepository;
+
+    @BeforeEach
+    void beforeEach() {
+        String email = "tester@test.com";
+        String password = "password1234!@";
+        Member member = Member.createMember()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .contact("010-1234-1234")
+                .profileImage(ProfileImage.builder().fullPath("기본 이미지").build())
+                .nickname("nickname")
+                .authority(Authority.MEMBER)
+                .build();
+        memberRepository.save(member);
+        for (int i = 0; i <= 30; i++) {
+            BoardRequest.Create form = BoardRequest.Create
+                    .builder()
+                    .title("제목" + i)
+                    .category(Category.KNOWLEDGE)
+                    .contents("내용" + i)
+                    .topic(Topic.JAVA)
+                    .build();
+            boardCommandService.create(member.getUsername(), form, null);
+        }
+    }
+
+    @AfterEach
+    void afterEach() {
+        boardRepository.deleteAll();
+        memberRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("게시판 작성 이미지 없이")
     void createBoardTest1() throws Exception {
         //given
-        LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        String email = "tester@test.com";
+        String password = "password1234!@";
+
+        LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(email, password);
 
         BoardRequest.Create form = BoardRequest.Create.builder()
                 .title("제목입니다")
@@ -177,6 +228,7 @@ class BoardControllerTest {
     @DisplayName("게시판 리스트 조회")
     void getBoardTest() throws Exception {
         //given
+
         //when
         mockMvc.perform(get("/api/v1/board?size=3"))
                 .andExpect(status().isOk())
@@ -239,13 +291,11 @@ class BoardControllerTest {
     @DisplayName("게시판 리스트 조회 검색 조건 추가")
     void getBoardTest2() throws Exception {
         //given
-
         //when
         mockMvc.perform(get("/api/v1/board")
                         .param("size", "3")
-                        .param("lastIndex", "37")
-                        .param("category", "question")
-                        .param("topic", "mysql")
+                        .param("category", "KNOWLEDGE")
+                        .param("topic", "JAVA")
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(CustomStatus.SUCCESS.name()))
@@ -306,10 +356,11 @@ class BoardControllerTest {
     @DisplayName("게시판 디테일")
     void getBoardDetailTest() throws Exception {
         //given
-        Board board = boardRepository.findById(1L).get();
+        Board board = boardRepository.findByTitle("제목1").get();
         //when
-        mockMvc.perform(get("/api/v1/board/1")
-                        .param("category", board.getCategory().name()))
+        mockMvc.perform(get("/api/v1/board/{boardId}",board.getId())
+                        .param("category", Category.KNOWLEDGE.name())
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("status").value(CustomStatus.SUCCESS.name()))
                 .andExpect(jsonPath("code").value(CustomStatus.SUCCESS.getCode()))

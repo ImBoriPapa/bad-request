@@ -13,7 +13,6 @@ import javax.validation.constraints.Pattern;
 import static com.study.badrequest.commons.consts.Regex.PASSWORD;
 
 public class MemberRequest {
-
     @NoArgsConstructor
     @Getter
     public static class CreateMember {
@@ -22,18 +21,15 @@ public class MemberRequest {
         private String email;
         @Pattern(regexp = PASSWORD, message = "비밀번호는 숫자,문자,특수문자 포함 8~15자리")
         private String password;
-        @NotEmpty(message = "이름을 입력해주세요")
-        private String name;
         @NotEmpty(message = "닉네임을 입력해주세요")
         private String nickname;
         @NotEmpty(message = "연락처를 입력해주세요")
         private String contact;
 
         @Builder
-        public CreateMember(String email, String password, String name, String nickname, String contact) {
+        public CreateMember(String email, String password, String nickname, String contact) {
             this.email = email;
             this.password = password;
-            this.name = name;
             this.nickname = nickname;
             this.contact = contact;
         }

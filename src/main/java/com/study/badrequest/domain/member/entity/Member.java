@@ -1,16 +1,14 @@
 package com.study.badrequest.domain.member.entity;
 
 import com.fasterxml.uuid.Generators;
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
+
 
 @Entity
 @Getter
@@ -22,23 +20,21 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_ID")
     private Long id;
-    @Column(name = "USER_NAME")
+    @Column(name = "USER_NAME", unique = true, nullable = false)
     private String username;
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true, nullable = false)
     private String email;
     @Column(name = "NICK_NAME")
     private String nickname;
     @Column(name = "ABOUT_ME")
     private String aboutMe;
-    @Column(name = "PASSWORD")
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
-    @Column(name = "NAME")
-    private String name;
-    @Column(name = "CONTACT")
+    @Column(name = "CONTACT", nullable = false)
     private String contact;
     @Embedded
     private ProfileImage profileImage;
-    @Column(name = "AUTHORITY")
+    @Column(name = "AUTHORITY", nullable = false)
     @Enumerated(EnumType.STRING)
     private Authority authority;
     @Column(name = "CREATE_AT")
@@ -47,13 +43,11 @@ public class Member {
     private LocalDateTime updatedAt;
 
     @Builder(builderMethodName = "createMember")
-    public Member(String email, String nickname, String aboutMe, String password, String name, String contact, ProfileImage profileImage, Authority authority) {
-        this.username = generateSequentialUUID();
+    public Member(String email, String nickname, String password, String contact, ProfileImage profileImage, Authority authority) {
         this.email = email;
         this.nickname = nickname;
-        this.aboutMe = aboutMe;
         this.password = password;
-        this.name = name;
+        this.aboutMe = "자기 소개를 등록할 수 있습니다.";
         this.profileImage = profileImage;
         this.contact = contact;
         this.authority = authority;
@@ -62,36 +56,53 @@ public class Member {
     }
 
     /**
+     * ReturnType String SpringSecurity 에서 Type Converting 없이 사용
      * 시간순 정렬 UUID
+     *
+     * 2/15 @PrePersist,AtomicLong 동시성 문제 방지 하기 위해 사용
      */
-    private String generateSequentialUUID() {
+    private final static AtomicLong USERNAME_SEQUENCE = new AtomicLong();
 
+    @PrePersist
+    private void generateSequentialUUID() {
         String proto = Generators.timeBasedGenerator().generate().toString();
         String[] array = proto.split("-");
-        String sort = array[2] + array[1] + array[0] + array[3] + array[4];
-        return new StringBuilder(sort)
+
+        if (USERNAME_SEQUENCE.incrementAndGet() == Long.MAX_VALUE) {
+            USERNAME_SEQUENCE.set(0);
+        }
+
+        String sort = array[2] + array[1] + array[0] + array[3] + USERNAME_SEQUENCE.incrementAndGet();
+        this.username = new StringBuilder(sort)
                 .insert(8, "-")
                 .insert(13, "-")
                 .insert(18, "-")
-                .insert(23, "-").toString();
+                .insert(23, "-")
+                .toString();
     }
 
+    public void replaceUsername() {
+        generateSequentialUUID();
+    }
+
+    /**
+     * Entity 수정시 업데이트
+     */
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 
     public void changePermissions(Authority authority) {
         this.authority = authority;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void changePassword(String password) {
         this.password = password;
-        this.updatedAt = LocalDateTime.now();
     }
 
     public void changeContact(String contact) {
-
         this.contact = contact;
-        this.updatedAt = LocalDateTime.now();
-
     }
 
 }

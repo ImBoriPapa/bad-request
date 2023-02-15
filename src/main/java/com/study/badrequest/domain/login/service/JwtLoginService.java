@@ -97,10 +97,12 @@ public class JwtLoginService {
     private Authentication getAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
         log.info("getAuthentication,authenticationManagerBuilder");
         final Authentication authentication;
+
         try {
             authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         } catch (BadCredentialsException e) {
+
             throw new MemberException(CustomStatus.LOGIN_FAIL);
         }
         return authentication;

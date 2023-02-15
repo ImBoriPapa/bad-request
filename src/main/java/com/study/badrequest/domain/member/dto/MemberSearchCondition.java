@@ -11,6 +11,6 @@ import lombok.Setter;
 public class MemberSearchCondition {
 
     private Long offset;
-    private Long size;
+    private Integer size;
     private Order order;
 }

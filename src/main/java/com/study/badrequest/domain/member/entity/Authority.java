@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public enum Authority {
     MEMBER("ROLE_MEMBER"),
     TEACHER("ROLE_MEMBER,ROLE_TEACHER"),
-    ADMIN("ROLE_MEMBER,ROLL_TEACHER,ROLE_ADMIN");
+    ADMIN("ROLE_MEMBER,ROLE_TEACHER,ROLE_ADMIN");
 
     private final String role;
 

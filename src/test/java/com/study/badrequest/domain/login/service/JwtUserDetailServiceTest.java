@@ -6,6 +6,7 @@ import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.service.JwtUserDetailService;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,17 +35,27 @@ class JwtUserDetailServiceTest {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @AfterEach
+    void afterEach(){
+        memberRepository.deleteAll();
+    }
+
+
+
     @Test
     @DisplayName("인증 객체 생성 테스트")
     void create() throws Exception {
         //given
-        String email = "email@email.com";
+        String email = "tester@test.com";
         String password = "password1234!@";
         Member member = Member.createMember()
                 .email(email)
-                .authority(Authority.MEMBER)
                 .password(passwordEncoder.encode(password))
+                .contact("010-1234-1234")
+                .nickname("nickname")
+                .authority(Authority.MEMBER)
                 .build();
+        memberRepository.save(member);
         //when
         Member saveMember = memberRepository.save(member);
         UserDetails userDetails = detailService.loadUserByUsername(saveMember.getUsername());

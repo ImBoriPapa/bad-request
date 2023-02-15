@@ -5,7 +5,6 @@ import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.commons.form.ResponseForm;
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
-import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberQueryRepository;
 import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
 import com.study.badrequest.domain.member.dto.MemberResponse;
@@ -75,7 +74,7 @@ public class MemberQueryController {
     @CustomLogTracer
     public ResponseEntity getProfile(@PathVariable Long memberId) {
 
-        MemberProfileDto memberProfileDto = memberQueryRepositoryImpl.findMemberProfileById(memberId)
+        MemberProfileDto memberProfileDto = memberQueryRepositoryImpl.findMemberProfileByMemberId(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
 
@@ -111,7 +110,7 @@ public class MemberQueryController {
             throw new IllegalArgumentException("Email Empty");
         }
 
-        validator.validateEmail(email);
+        validator.isExistEmail(email);
 
         return ResponseEntity.ok()
                 .body(new ResponseForm

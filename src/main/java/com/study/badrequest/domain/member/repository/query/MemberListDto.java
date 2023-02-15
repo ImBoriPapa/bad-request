@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberListDto {
     private Long offSet;
-    private Long size;
+    private Integer size;
     private Order order;
     private boolean first;
     private boolean last;
@@ -22,7 +22,7 @@ public class MemberListDto {
     private List<MemberListResult> results;
 
     @Builder
-    public MemberListDto(Long offSet, Long size, Order order, boolean first, boolean last, Long currentPageNumber, Integer totalElements, Long totalMembers, Long totalPages, List<MemberListResult> memberListResults) {
+    public MemberListDto(Long offSet, Integer size, Order order, boolean first, boolean last, Long currentPageNumber, Integer totalElements, Long totalMembers, Long totalPages, List<MemberListResult> memberListResults) {
         this.offSet = offSet;
         this.size = size;
         this.order = order;

@@ -2,7 +2,12 @@ package com.study.badrequest.api.member;
 
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -42,13 +48,39 @@ class MemberQueryControllerTest {
 
     @Autowired
     JwtLoginService loginService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    MemberRepository memberRepository;
+
+    @BeforeEach
+    void beforeEach() {
+        String email = "tester@test.com";
+        String password = "password1234!@";
+        Member member = Member.createMember()
+                .email(email)
+                .password(passwordEncoder.encode(password))
+                .contact("010-1234-1234")
+                .nickname("nickname")
+                .authority(Authority.MEMBER)
+                .build();
+        memberRepository.save(member);
+
+    }
+
+    @AfterEach
+    void afterEach() {
+        memberRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("Member Info 테스트")
     void memberInfoTest() throws Exception {
         //given
+        String email = "tester@test.com";
+        String password = "password1234!@";
 
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
 
         //when
         mockMvc.perform(get("/api/v1/members/auth")

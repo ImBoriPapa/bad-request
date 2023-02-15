@@ -42,15 +42,6 @@ public class TestSampleData {
     private final CommentRepository commentRepository;
     private final SubCommentRepository subCommentRepository;
 
-
-
-    @PostConstruct
-    public void initSampleDataWhenDevelopmentAndTest() {
-        initSampleUser();
-        initSampleBoard();
-        initSampleComment();
-    }
-
     public void initSampleUser() {
         log.info("[INIT SAMPLE USER START]");
         ProfileImage defaultProfileImage = ProfileImage.builder()

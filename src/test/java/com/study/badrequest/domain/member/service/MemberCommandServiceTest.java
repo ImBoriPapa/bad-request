@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.member.service;
 
+import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
@@ -11,6 +12,8 @@ import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,29 +39,37 @@ class MemberCommandServiceTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
+    RefreshTokenRepository tokenRepository;
+    @Autowired
     PasswordEncoder passwordEncoder;
 
     @Autowired
     EntityManager em;
 
+    @AfterEach
+    void afterEach() {
+        memberRepository.deleteAll();
+    }
 
     @Test
-    @DisplayName("회원등록")
+    @DisplayName("회원등록 테스트")
     void signupTest() throws Exception {
         //given
         MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
-                .name("name")
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
-
         //when
-        MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
-        Member findMember = memberRepository.findById(signupResult.getMemberId()).get();
+        MemberResponse.SignupResult result = memberCommandService.signupMember(form);
+        Member findMember = memberRepository.findById(result.getMemberId()).get();
         //then
         assertThat(findMember.getEmail()).isEqualTo(form.getEmail());
+        assertThat(passwordEncoder.matches(form.getPassword(), findMember.getPassword())).isTrue();
+        assertThat(findMember.getNickname()).isEqualTo(form.getNickname());
+        assertThat(findMember.getContact()).isEqualTo(form.getContact());
+        assertThat(findMember.getProfileImage()).isNotNull();
 
     }
 
@@ -65,9 +77,14 @@ class MemberCommandServiceTest {
     @DisplayName("권한 변경 실패")
     void failChangePermissions() throws Exception {
         //given
-
+        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
+                .email("email@email.com")
+                .password("password1234")
+                .nickname("nickname")
+                .contact("01011111234")
+                .build();
         //when
-
+        memberCommandService.signupMember(form);
         //then
         assertThatThrownBy(() -> memberCommandService.changePermissions(100L, Authority.TEACHER))
                 .isInstanceOf(MemberException.class);
@@ -81,16 +98,15 @@ class MemberCommandServiceTest {
         MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
-                .name("name")
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
         //when
-        MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
-        Member member = memberRepository.findById(signupResult.getMemberId()).get();
-        member.changePermissions(Authority.TEACHER);
+        MemberResponse.SignupResult result = memberCommandService.signupMember(form);
+        memberCommandService.changePermissions(result.getMemberId(), Authority.TEACHER);
+        Authority authority = memberRepository.findById(result.getMemberId()).get().getAuthority();
         //then
-        assertThat(member.getAuthority()).isEqualTo(Authority.TEACHER);
+        assertThat(authority).isEqualTo(Authority.TEACHER);
     }
 
     @Test
@@ -100,7 +116,6 @@ class MemberCommandServiceTest {
         MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
-                .name("name")
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
@@ -125,7 +140,6 @@ class MemberCommandServiceTest {
         MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
-                .name("name")
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
@@ -143,7 +157,6 @@ class MemberCommandServiceTest {
 
     }
 
-
     @Test
     @DisplayName("회원탈퇴")
     void resignTest() throws Exception {
@@ -151,17 +164,17 @@ class MemberCommandServiceTest {
         MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
                 .email("email@email.com")
                 .password("password1234")
-                .name("name")
                 .nickname("nickname")
                 .contact("01011111234")
                 .build();
         //when
         MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
         Member member = memberRepository.findById(signupResult.getMemberId()).get();
-        memberCommandService.resignMember(member.getId(), form.getPassword());
 
+        memberCommandService.resignMember(member.getId(), form.getPassword());
         //then
-        assertThat(memberRepository.findById(member.getId()).isEmpty()).isTrue();
+        assertThat(memberRepository.findById(member.getId())).isEmpty();
+        assertThat(tokenRepository.findById(member.getUsername())).isEmpty();
 
     }
 

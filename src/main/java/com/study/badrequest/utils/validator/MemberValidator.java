@@ -1,7 +1,6 @@
 package com.study.badrequest.utils.validator;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.domain.member.repository.query.MemberQueryRepositoryImpl;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -18,23 +17,21 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberValidator {
 
     private final MemberRepository memberRepository;
-    private final MemberQueryRepositoryImpl memberQueryRepositoryImpl;
-
     @CustomLogTracer
     public void validateCreateForm(MemberRequest.CreateMember form) {
 
-        validateEmail(form.getEmail());
+        isExistEmail(form.getEmail());
 
-        validateContact(form.getContact());
+        isExistContact(form.getContact());
     }
 
-    public void validateEmail(String email) {
+    public void isExistEmail(String email) {
         if (memberRepository.existsByEmail(email)) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_EMAIL);
         }
     }
 
-    public void validateContact(String contact) {
+    public void isExistContact(String contact) {
         if (memberRepository.existsByContact(contact)) {
             throw new CustomValidationException(CustomStatus.DUPLICATE_CONTACT);
         }

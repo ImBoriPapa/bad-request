@@ -19,17 +19,24 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class MemberResponseModelAssembler {
-
+    /**
+     * postMember
+     */
     public EntityModel<MemberResponse.SignupResult> toModel(MemberResponse.SignupResult result) {
         return EntityModel.of(result)
                 .add(linkTo(LoginController.class).slash("/login").withRel("POST: 로그인"));
     }
-
+    /**
+     * patchPassword,patchContact
+     */
     public EntityModel<MemberResponse.UpdateResult> toModel(MemberResponse.UpdateResult result) {
         return EntityModel.of(result)
                 .add(linkTo(methodOn(MemberQueryController.class).getMember(null, result.getMemberId())).withRel("GET: 회원 정보"));
     }
 
+    /**
+     * deleteMember
+     */
     public EntityModel<MemberResponse.DeleteResult> toModel(MemberResponse.DeleteResult result) {
         return EntityModel.of(result)
                 .add(linkTo(methodOn(MemberController.class).postMember(null, null)).withRel("POST: 회원가입"));
@@ -41,13 +48,16 @@ public class MemberResponseModelAssembler {
 
     }
 
-    public URI getUri(Long memberId) {
-        return linkTo(MemberResponseModelAssembler.class).slash("/login").slash(memberId).toUri();
+    /**
+     * Member Resource 생성 위치
+     */
+    public URI getLocationUri(Long memberId) {
+        return linkTo(methodOn(MemberQueryController.class).getMember(null, memberId)).toUri();
     }
 
     public EntityModel<MemberDetailDto> toModel(MemberDetailDto memberDetailDto, Authority authority) {
 
-        if(authority == Authority.ADMIN){
+        if (authority == Authority.ADMIN) {
             return EntityModel.of(memberDetailDto)
                     .add(linkTo(methodOn(MemberController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"));
         }
@@ -58,8 +68,7 @@ public class MemberResponseModelAssembler {
                 .add(linkTo(methodOn(MemberController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
     }
 
-    public EntityModel<MemberListDto> toListModel(MemberListDto result){
-
+    public EntityModel<MemberListDto> toListModel(MemberListDto result) {
 
 
         return EntityModel.of(result);

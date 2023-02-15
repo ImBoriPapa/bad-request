@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.member.repository.query;
+package com.study.badrequest.domain.member.repository;
 
 
 import com.querydsl.core.types.Order;
@@ -18,8 +18,10 @@ import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.QMember;
 import com.study.badrequest.domain.member.repository.MemberQueryRepository;
+import com.study.badrequest.domain.member.repository.query.*;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +53,6 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         Projections.fields(MemberDetailDto.class,
                                 member.id.as("id"),
                                 member.email.as("email"),
-                                member.name.as("name"),
                                 member.nickname.as("nickname"),
                                 member.contact.as("contact"),
                                 member.profileImage.fullPath.as("profileImagePath"),
@@ -76,11 +77,11 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     public MemberListDto findMemberList(MemberSearchCondition condition) {
 
         Long offSet = condition.getOffset();
-        Long size = condition.getSize();
+        Integer size = condition.getSize();
         Order order = condition.getOrder();
 
         offSet = Objects.requireNonNullElse(offSet, 0L);
-        size = Objects.requireNonNullElse(size, 10L);
+        size = Objects.requireNonNullElse(size, 10);
         order = Objects.requireNonNullElse(order, Order.DESC);
 
         List<MemberListResult> memberListResults = jpaQueryFactory
@@ -129,7 +130,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     @Override
-    public Optional<MemberProfileDto> findMemberProfileById(Long memberId) {
+    public Optional<MemberProfileDto> findMemberProfileByMemberId(Long memberId) {
 
         MemberProfileDto memberProfileDto = jpaQueryFactory
                 .select(
@@ -170,6 +171,9 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return authority == null ? null : member.authority.eq(authority);
     }
 
+    /**
+     * 로그안 서비스에서 필요한 정보 쿼리 최적화
+     */
     @Override
     public Optional<MemberDtoForLogin> findLoginInfoByEmail(String email) {
 
@@ -188,6 +192,13 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return memberDtoForLogin == null ? Optional.empty() : Optional.of(memberDtoForLogin);
     }
 
+    /**
+     * UsernameDetailService -> User 객체 생성용 쿼리 최적화
+     *
+     * @return String username;
+     * String password;
+     * Authority authority;
+     */
     @Override
     public Optional<MemberUsernameDetailDto> findUserInfoByUsername(String username) {
         QMember qMember = member;
@@ -197,7 +208,8 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         qMember.username.as("username"),
                         qMember.password.as("password"),
                         qMember.authority.as("authority")
-                )).from(qMember)
+                ))
+                .from(qMember)
                 .where(qMember.username.eq(username))
                 .fetchOne();
 

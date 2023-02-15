@@ -6,6 +6,7 @@ import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 
 import com.study.badrequest.domain.member.entity.ProfileImage;
+import com.study.badrequest.domain.member.event.ResignEventDto;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -15,6 +16,7 @@ import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +29,9 @@ public class MemberCommandService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-
     private final ImageUploader imageUploader;
 
+    private final ApplicationEventPublisher eventPublisher;
 
     @CustomLogTracer
     public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
@@ -41,7 +42,6 @@ public class MemberCommandService {
         Member member = Member.createMember()
                 .email(form.getEmail())
                 .password(passwordEncoder.encode(form.getPassword()))
-                .name(form.getName())
                 .nickname(form.getNickname())
                 .contact(form.getContact())
                 .profileImage(profileImage)
@@ -55,7 +55,6 @@ public class MemberCommandService {
 
     @CustomLogTracer
     public void changePermissions(Long memberId, Authority authority) {
-
         memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .changePermissions(authority);
@@ -78,6 +77,7 @@ public class MemberCommandService {
         return new MemberResponse.UpdateResult(member);
     }
 
+    // TODO: 2023/02/15 DeleteEvent 구현
     @CustomLogTracer
     public MemberResponse.DeleteResult resignMember(Long memberId, String password) {
 
@@ -85,9 +85,7 @@ public class MemberCommandService {
 
         passwordCheck(password, member.getPassword());
 
-        refreshTokenRepository
-                .findById(member.getUsername())
-                .ifPresent(refreshTokenRepository::delete);
+        eventPublisher.publishEvent(new ResignEventDto(member.getId(),member.getUsername()));
 
         memberRepository.delete(member);
 
@@ -103,7 +101,6 @@ public class MemberCommandService {
     @CustomLogTracer
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
-
             throw new MemberException(CustomStatus.WRONG_PASSWORD);
         }
     }

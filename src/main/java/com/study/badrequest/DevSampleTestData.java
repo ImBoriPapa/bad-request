@@ -49,17 +49,17 @@ public class DevSampleTestData {
 
     @PostConstruct
     public void init() {
-        sampleMember();
-        sampleBoardData();
-        initSampleComment();
+//        sampleMember();
+//        sampleBoardData();
+//        initSampleComment();
     }
 
     @PreDestroy
     public void reSet() {
-        memberRepository.deleteAll();
-        boardRepository.deleteAll();
-        commentRepository.deleteAll();
-        subCommentRepository.deleteAll();
+//        memberRepository.deleteAll();
+//        boardRepository.deleteAll();
+//        commentRepository.deleteAll();
+//        subCommentRepository.deleteAll();
     }
 
     public void sampleMember() {

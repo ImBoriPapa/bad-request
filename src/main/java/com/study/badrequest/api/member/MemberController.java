@@ -1,8 +1,6 @@
 package com.study.badrequest.api.member;
 
 
-
-
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.domain.member.service.MemberCommandService;
 import com.study.badrequest.domain.member.dto.MemberRequest;
@@ -26,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL)
@@ -36,8 +33,6 @@ public class MemberController {
     private final MemberValidator memberValidator;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
-
-
     @PostMapping(value = "/members", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequest.CreateMember form, BindingResult bindingResult) {
@@ -45,7 +40,6 @@ public class MemberController {
         memberValidator.validateCreateForm(form);
 
         if (bindingResult.hasErrors()) {
-            log.error("[postMember.validation error]");
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
@@ -54,13 +48,14 @@ public class MemberController {
         EntityModel<MemberResponse.SignupResult> signupResultEntityModel = memberResponseModelAssembler.toModel(signupResult);
 
         return ResponseEntity
-                .created(memberResponseModelAssembler.getUri(signupResult.getMemberId()))
+                .created(memberResponseModelAssembler.getLocationUri(signupResult.getMemberId()))
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
     }
 
     @PatchMapping("/members/{memberId}/password")
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> patchPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
@@ -75,13 +70,16 @@ public class MemberController {
 
     @PatchMapping(value = "/members/{memberId}/contact", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
-    public ResponseEntity<ResponseForm.Of> patchContact(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.UpdateContact form, BindingResult bindingResult) {
+    public ResponseEntity<ResponseForm.Of> patchContact(@Validated
+                                                        @PathVariable Long memberId,
+                                                        @RequestBody MemberRequest.UpdateContact form,
+                                                        BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        memberValidator.validateContact(form.getContact());
+        memberValidator.isExistContact(form.getContact());
 
         MemberResponse.UpdateResult updateResult = memberCommandService.updateContact(memberId, form.getContact());
 

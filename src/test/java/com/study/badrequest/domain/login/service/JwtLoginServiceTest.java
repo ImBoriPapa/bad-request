@@ -14,6 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,10 +47,12 @@ class JwtLoginServiceTest {
         Member member = Member.createMember()
                 .email(email)
                 .password(passwordEncoder.encode(password))
+                .contact("010-1234-1234")
+                .nickname("nickname")
                 .authority(Authority.MEMBER)
                 .build();
         memberRepository.save(member);
-        loginService.loginProcessing(email, password);
+
     }
 
     @AfterEach
@@ -62,13 +65,16 @@ class JwtLoginServiceTest {
     @DisplayName("login")
     void 로그인테스트() throws Exception {
         //given
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        String email = "tester@test.com";
+        String password = "password1234!@";
         //when
-
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
+        Member member = memberRepository.findByEmail(email).get();
         //then
-
+        assertThat(loginResult.getId()).isEqualTo(member.getId());
         assertThat(loginResult.getAccessToken()).isNotEmpty();
         assertThat(loginResult.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDateTime(loginResult.getAccessToken()));
+        assertThat(loginResult.getRefreshCookie()).isNotNull();
 
     }
 
@@ -76,36 +82,28 @@ class JwtLoginServiceTest {
     @DisplayName("로그아웃 테스트")
     void logoutTest() throws Exception {
         //given
-        String email = "email@email.com";
+        String email = "tester@test.com";
         String password = "password1234!@";
-        Member member = Member.createMember()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .authority(Authority.MEMBER)
-                .build();
-        memberRepository.save(member);
         //when
-        LoginResponse.LoginDto result = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto result = loginService.loginProcessing(email, password);
         loginService.logoutProcessing(result.getAccessToken());
+        Member member = memberRepository.findByEmail(email).get();
         //then
         assertThat(refreshTokenRepository.findById(member.getUsername())).isEmpty();
+        assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
+
     }
 
     @Test
     @DisplayName("토큰 재발급 테스트")
-    void reissueTest() throws Exception{
+    void reissueTest() throws Exception {
         //given
-        String email = "email@email.com";
+        String email = "tester@test.com";
         String password = "password1234!@";
-        Member member = Member.createMember()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .authority(Authority.MEMBER)
-                .build();
-        memberRepository.save(member);
         //when
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
-        LoginResponse.LoginDto reissueProcessing = loginService.reissueProcessing(loginResult.getAccessToken(), loginResult.getRefreshCookie().getValue().substring(7));
+        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto reissueProcessing = loginService.reissueProcessing(loginResult.getAccessToken(),
+                loginResult.getRefreshCookie().getValue().substring(7));
         //then
         assertThat(reissueProcessing.getAccessToken()).isNotEmpty();
         assertThat(reissueProcessing.getRefreshCookie()).isNotNull();
