@@ -500,7 +500,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h3 id="_회원가입"><a class="link" href="#_회원가입">회원가입</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>GET: http://www.bad-request.kr/api/v1/members</pre>
+<pre>GET: https://www.bad-request.kr/api/v1/members</pre>
 </div>
 </div>
 <div class="sect3">
@@ -584,7 +584,7 @@ Content-Length: 280
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 25,
-    "createdAt" : "2023-02-16 00:13",
+    "createdAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "POST: 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -653,7 +653,7 @@ Content-Length: 280
 <h3 id="_이메일_중복_확인"><a class="link" href="#_이메일_중복_확인">이메일 중복 확인</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>GET: http://www.bad-request.kr/api/v1/members/email</pre>
+<pre>GET: https://www.bad-request.kr/api/v1/members/email</pre>
 </div>
 </div>
 <div class="sect3">
@@ -736,7 +736,7 @@ Content-Length: 160
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>GET: http://www.bad-request.kr/api/v1/members/auth</pre>
+<pre>GET: https://www.bad-request.kr/api/v1/members/auth</pre>
 </div>
 </div>
 <div class="sect3">
@@ -745,7 +745,7 @@ Content-Length: 160
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v1/members/auth HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NzUwLTkxYjYtODdhNS0zNiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5OX0.8MD8FgY9Z3QGUb-uou6Ix2qD5WOCQmeG2TTWScKnum7whxIKdLngaEuLQoUIBuH3g4vLy9JOfq-iNlKo6trxLA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYzZkLTJkY2EtYjRjZi0zNiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0OX0.LaoGxBW_TgPdV8oJlTtiFnXhAQBCamb3TAjIX9ZkEAFZNzCRJk3AgGNf6WwpI28xWTs8V5B60LX4YRxlrmRvbQ
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -855,7 +855,7 @@ Content-Length: 171
 <h3 id="_연락처_변경"><a class="link" href="#_연락처_변경">연락처 변경</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/contact</pre>
+<pre>PATCH: https://www.bad-request.kr/api/v1/members/{memberId}/contact</pre>
 </div>
 </div>
 <div class="sect3">
@@ -864,7 +864,7 @@ Content-Length: 171
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/20/contact HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00N2E2LTUyZDgtODdhNS00MCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5OX0.wrBoH1oc6hOU3bI5dA5nThAbf3i_YXBadYmrCofiw7DUBzN0b6WOOXlr5bvpHANr-ueJ05eE85AAitfrS3V-pw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kY2MwLWNjMGMtYjRjZi00MCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0OX0.44WbIysEcIfWymciQtIoOudBB8vhzC6aw6Xeag6rR-wVyzInApjIg_eIeoLEVt07wC5H57nA4Tz3q-FtUIpEig
 Content-Length: 33
 Host: localhost:8080
 
@@ -942,7 +942,7 @@ Content-Length: 288
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 20,
-    "updatedAt" : "2023-02-16 00:13",
+    "updatedAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "GET: 회원 정보",
       "href" : "http://localhost:8080/api/v1/members/20"
@@ -1011,7 +1011,7 @@ Content-Length: 288
 <h3 id="_비밀번호_변경"><a class="link" href="#_비밀번호_변경">비밀번호 변경</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/password</pre>
+<pre>PATCH: https://www.bad-request.kr/api/v1/members/{memberId}/password</pre>
 </div>
 </div>
 <div class="sect3">
@@ -1020,7 +1020,7 @@ Content-Length: 288
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PATCH /api/v1/members/22/password HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00N2QzLWE0NmEtODdhNS00NCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5OX0.ZkoMzRIy0-nupQZjOEbpu_cnegjYWpq4xFbjrHPc1auURYe7YKlLVQ6b5CHJwG7KOyzRVtAocjP_hoIzDcXpYA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kY2VmLTdkMmUtYjRjZi00NCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg1MH0.2ONDOC-XbjFEIIdzheJk08OXbZt5htyus9HzP00lX1naQpRNvgkDN8w5FQYvyrX_vACY0q19u2YWJ9F61dBhtg
 Content-Length: 72
 Host: localhost:8080
 
@@ -1104,7 +1104,7 @@ Content-Length: 288
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 22,
-    "updatedAt" : "2023-02-16 00:13",
+    "updatedAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "GET: 회원 정보",
       "href" : "http://localhost:8080/api/v1/members/22"
@@ -1173,7 +1173,7 @@ Content-Length: 288
 <h3 id="_회원_탈퇴"><a class="link" href="#_회원_탈퇴">회원 탈퇴</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>DELETE: http://www.bad-request.kr/api/v1/members/{memberId}</pre>
+<pre>DELETE: https://www.bad-request.kr/api/v1/members/{memberId}</pre>
 </div>
 </div>
 <div class="sect3">
@@ -1182,7 +1182,7 @@ Content-Length: 288
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/members/23 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00ODA3LWZhZGItODdhNS00NiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDYwMH0.RUbN5JcH8uOoDbK7fIDuXJ8QA1rJyMc0Y_RitbW36rKamMetHC3Be1MG4F3YdcWH7z4wSm0NVVuO6yFjFRi3sw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kZDIzLWQzOWYtYjRjZi00NiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg1MH0.D0nuq2He21qWVoreYooXNIX3oKIjK-WHoKGjSwe1anREccAyHI8xunCfBX5lq14BRyiJJifUIKmwSiUVUEHdaQ
 Content-Length: 33
 Host: localhost:8080
 
@@ -1262,7 +1262,7 @@ Content-Length: 337
     "thanks" : {
       "thanks" : "그동안 감사했습니다."
     },
-    "deletedAt" : "2023-02-16 00:13",
+    "deletedAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "POST: 회원가입",
       "href" : "http://localhost:8080/api/v1/members"
@@ -1336,7 +1336,7 @@ Content-Length: 337
 <h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>POST: http://www.bad-request.kr/api/v1/login</pre>
+<pre>POST: https://www.bad-request.kr/api/v1/login</pre>
 </div>
 </div>
 <div class="sect3">
@@ -1390,8 +1390,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjMzLTg5ZWItODdhNS0xNCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5N30.daAcFydyPDtCnBM_-NILAc-6_9Z6MVCs-mbHZjK1JmZI9aBudIsA-D8bYjLkBk6h7jU36rUXV_6G8OdMPKv6Fg
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjMzLTg5ZWItODdhNS0xNCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3ODc5N30.s2bR8qOoLPfZNFkfwx3pQRVAseP-ypaj0ZBFpFUJjLVElAgwBwB9iXLrnj4Gwe1WJsuCVG30VnK4keL5GnIigg; Path=/; Max-Age=604799862; Expires=Wed, 16 Apr 2042 15:10:59 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjU4LTg5NmYtYjRjZi0xNCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0N30.Za8GfECjfRI7aW3ZNz5ZIJyLT1niZTpAlA46WNnwY8uQ_aH09mxWX_1Nhnvf9De1dOppquKsHwZfJ8TCE3c-KA
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjU4LTg5NmYtYjRjZi0xNCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3OTA0N30.HDJi2filHMO2H8dacZFRkEEwUX0JGWvjLydi2eB5JJuyfD83kSCBwm1I7gx_XvfNjZm89u31drB_Se1Cuq3gLw; Path=/; Max-Age=604799639; Expires=Wed, 16 Apr 2042 15:11:26 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1406,7 +1406,7 @@ Content-Length: 395
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 7,
-    "accessTokenExpired" : "2023-02-16 00:23",
+    "accessTokenExpired" : "2023-02-16 00:27",
     "links" : [ {
       "rel" : "POST: 로그아웃",
       "href" : "http://localhost:8080/api/v1/log-out"
@@ -1513,7 +1513,7 @@ Content-Length: 395
 <h3 id="_로그아웃"><a class="link" href="#_로그아웃">로그아웃</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>POST: http://www.bad-request.kr/api/v1/logout</pre>
+<pre>POST: https://www.bad-request.kr/api/v1/logout</pre>
 </div>
 </div>
 <div class="sect3">
@@ -1521,7 +1521,7 @@ Content-Length: 395
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/log-out HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjUzLTFmZGMtODdhNS0xNiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5N30.YMR7zVGXrXne4jLXMfU8hDrkPL-LGedBWR22bu5lN6uAP8aqz3-j7KsR_r3WnLeCV3w5oiHAcaxhvwgHWwqgJw
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjc2LWU2ZTAtYjRjZi0xNiIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0N30.8HJZBEPdQZQsxHDQp2V3IJA3boEvkKfLUKHnhWpQYrONWVRlDkGgR5x8gPWQLcrqKKXqukM99f_bXa9E69Hn_w
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -1567,7 +1567,7 @@ Content-Length: 300
   "message" : "로그아웃 요청이 성공했습니다.",
   "result" : {
     "logout" : true,
-    "logoutAt" : "2023-02-16 00:13",
+    "logoutAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "POST : 로그인",
       "href" : "http://localhost:8080/api/v1/login"
@@ -1633,7 +1633,7 @@ Content-Length: 300
 <h3 id="_토큰_재발급"><a class="link" href="#_토큰_재발급">토큰 재발급</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre>POST: http://www.bad-request.kr/api/v1/refresh</pre>
+<pre>POST: https://www.bad-request.kr/api/v1/refresh</pre>
 </div>
 </div>
 <div class="sect3">
@@ -1642,9 +1642,9 @@ Content-Length: 300
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/refresh HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjczLTJhZmQtODdhNS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5N30.iUX1cwHrrqgmmZ5PualCjK2vDIlIXISWYsb6VrwYiXD4X0-sl-oqqp38WEnHukpvKPIiGkJ-uAdyZ6yLSAEWmA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjk1LWI5ODEtYjRjZi0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0N30.PHImqgqL81DUN0ZnF8s0G91HQx7-Tj575sGl_ur2BQbjtcRtDGGL305k-LXcD9SdyZT0BDkeg1P7dXMKiZsgkA
 Host: localhost:8080
-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjczLTJhZmQtODdhNS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3ODc5N30.j_6iPJkzUE4SJQgY6Vt-DcBBKqpGgw2LuasmRFenkSP9o-YdMSZyvFpR8sgF0LgShemXbiMXfPUueG5wAu1igA</code></pre>
+Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjk1LWI5ODEtYjRjZi0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3OTA0N30.eOspovCFOOBicY_HRgQ5IXMXLgB29rnssTmPNdDCXHxQzP7s0JzjiKvuVuOoHDb7DBOQvFr24KwScsNV0-VX4w</code></pre>
 </div>
 </div>
 </div>
@@ -1682,8 +1682,8 @@ Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjczLTJhZmQtODdhNS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5N30.iUX1cwHrrqgmmZ5PualCjK2vDIlIXISWYsb6VrwYiXD4X0-sl-oqqp38WEnHukpvKPIiGkJ-uAdyZ6yLSAEWmA
-Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NjczLTJhZmQtODdhNS0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3ODc5N30.j_6iPJkzUE4SJQgY6Vt-DcBBKqpGgw2LuasmRFenkSP9o-YdMSZyvFpR8sgF0LgShemXbiMXfPUueG5wAu1igA; Path=/; Max-Age=604799418; Expires=Wed, 16 Apr 2042 15:03:35 GMT; HttpOnly; SameSite=None
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjk1LWI5ODEtYjRjZi0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0N30.PHImqgqL81DUN0ZnF8s0G91HQx7-Tj575sGl_ur2BQbjtcRtDGGL305k-LXcD9SdyZT0BDkeg1P7dXMKiZsgkA
+Set-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYjk1LWI5ODEtYjRjZi0xOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NzA3OTA0N30.eOspovCFOOBicY_HRgQ5IXMXLgB29rnssTmPNdDCXHxQzP7s0JzjiKvuVuOoHDb7DBOQvFr24KwScsNV0-VX4w; Path=/; Max-Age=604799214; Expires=Wed, 16 Apr 2042 15:04:21 GMT; HttpOnly; SameSite=None
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate
@@ -1698,7 +1698,7 @@ Content-Length: 195
   "message" : "요청에 성공했습니다.",
   "result" : {
     "memberId" : 9,
-    "accessTokenExpired" : "2023-02-16 00:23",
+    "accessTokenExpired" : "2023-02-16 00:27",
     "links" : [ ]
   }
 }</code></pre>
@@ -1768,7 +1768,7 @@ Content-Length: 195
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/board HTTP/1.1
 Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00NTU2LWJlNzYtODdhNS00IiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDc0NTk1fQ.KXsHK2IPDrgJI291srvXF5opCztjukKqTzchJ9cO3AVJSwNGx4KvCv6t7mjQxSuNw1-IW_QLoq1372Vqh59mQA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYWEyLTdmZGEtYjRjZi00IiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDc0ODQ2fQ.gZOMXt6BAPijkHIJ6-h5NIXgO8wkgB7rdPforx1tVSel-kc_1sGOmvOME8YchsFpEhj1TosoTN-N_AwrcY-uNA
 Host: localhost:8080
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
@@ -1920,7 +1920,7 @@ Content-Length: 603
   "message" : "요청에 성공했습니다.",
   "result" : {
     "boardId" : 63,
-    "createAt" : "2023-02-16 00:13",
+    "createAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "PUT : 게시판 수정",
       "href" : "http://localhost:8080/api/v1/board/63"
@@ -2049,7 +2049,7 @@ Content-Length: 1742
       "category" : "KNOWLEDGE",
       "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-16 00:13",
+      "createdAt" : "2023-02-16 00:17",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/31"
@@ -2064,7 +2064,7 @@ Content-Length: 1742
       "category" : "KNOWLEDGE",
       "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-16 00:13",
+      "createdAt" : "2023-02-16 00:17",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/30"
@@ -2079,7 +2079,7 @@ Content-Length: 1742
       "category" : "KNOWLEDGE",
       "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-16 00:13",
+      "createdAt" : "2023-02-16 00:17",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/29"
@@ -2327,7 +2327,7 @@ Content-Length: 1742
       "category" : "KNOWLEDGE",
       "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-16 00:13",
+      "createdAt" : "2023-02-16 00:17",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/94"
@@ -2342,7 +2342,7 @@ Content-Length: 1742
       "category" : "KNOWLEDGE",
       "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-16 00:13",
+      "createdAt" : "2023-02-16 00:17",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/93"
@@ -2357,7 +2357,7 @@ Content-Length: 1742
       "category" : "KNOWLEDGE",
       "topic" : "JAVA",
       "commentCount" : 0,
-      "createdAt" : "2023-02-16 00:13",
+      "createdAt" : "2023-02-16 00:17",
       "links" : [ {
         "rel" : "GET : DETAIL",
         "href" : "http://localhost:8080/api/v1/92"
@@ -2439,8 +2439,8 @@ Content-Length: 905
     "category" : "KNOWLEDGE",
     "topic" : "JAVA",
     "commentCount" : 0,
-    "createdAt" : "2023-02-16 00:13",
-    "updatedAt" : "2023-02-16 00:13",
+    "createdAt" : "2023-02-16 00:17",
+    "updatedAt" : "2023-02-16 00:17",
     "boardImages" : [ ],
     "links" : [ {
       "rel" : "POST : 게시판 생성",
@@ -2588,7 +2588,7 @@ Content-Length: 905
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/board/126/comments HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My00Nzg0LWMxMTctODdhNS0zOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDU5OX0.Xwk0E8t83xN_jO-CWKjCZAeyAwruaMtN3sBcXKSKAYIv8niKUG0dQSUUEWpX_s2HULDEq6_qNbqb2wREAAmRNQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQ0My1kYzllLWM1MWItYjRjZi0zOCIsImF1dGgiOiJST0xFX01FTUJFUiIsImV4cCI6MTY3NjQ3NDg0OX0.HHMbmY31cTKgCCQo0OkUL8V4UXCqHTBgk6v7IuVWcFBc1PwSiYt4MTHhvrDZ7IzoeemMb7e-7iXHHTlQYwepzQ
 Content-Length: 39
 Host: localhost:8080
 
@@ -2642,7 +2642,7 @@ Content-Length: 628
   "message" : "요청에 성공했습니다.",
   "result" : {
     "commentId" : 1,
-    "createdAt" : "2023-02-16 00:13",
+    "createdAt" : "2023-02-16 00:17",
     "links" : [ {
       "rel" : "self",
       "href" : "http://localhost:8080/api/v1/board/126/comments"
@@ -2756,7 +2756,7 @@ X-Frame-Options: DENY
 Content-Length: 113
 
 event:data
-data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.746,"memoryFreeSpace":0.254}</code></pre>
+data:{"cpuUsagePercent":0.0,"memoryTotalSpace":8.0,"memoryUsageSpace":7.933,"memoryFreeSpace":0.067}</code></pre>
 </div>
 </div>
 <div class="dlist">
@@ -3398,7 +3398,7 @@ Content-Length: 269
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0-PROD<br>
-Last updated 2023-02-16 00:12:12 +0900
+Last updated 2023-02-16 00:16:31 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
