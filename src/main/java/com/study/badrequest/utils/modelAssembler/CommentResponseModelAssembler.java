@@ -24,13 +24,44 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Component
 @Slf4j
 public class CommentResponseModelAssembler {
+    /**
+     * 댓글 삭제
+     */
+    public EntityModel<CommentResponse.Delete> toModel(CommentResponse.Delete target, Long boardId) {
 
-    public EntityModel<CommentResponse.Create> toModel(CommentResponse.Create target) {
-
-        return EntityModel.of(target);
+        return EntityModel.of(target)
+                .add(linkTo(methodOn(CommentController.class).postComments(null, boardId, null, null)).withRel("POST: 댓글 추가"));
     }
 
-    public EntityModel<CommentListDto> toListModel(CommentListDto target) {
+    /**
+     * 댓글 수정 응답
+     */
+    public EntityModel<CommentResponse.Modify> toModel(CommentResponse.Modify target, Long boardId) {
+
+        return EntityModel.of(target)
+                .add(linkTo(methodOn(CommentController.class).postComments(null, boardId, null, null)).withRel("POST: 댓글 추가"))
+                .add(linkTo(methodOn(CommentController.class).putComments(boardId, target.getCommentId(), null,null)).withRel("PUT: 댓글 수정"))
+                .add(linkTo(methodOn(CommentController.class).deleteComments(boardId, target.getCommentId())).withRel("DELETE: 댓글 삭제"))
+                .add(linkTo(methodOn(CommentController.class).postSubComments(null, target.getCommentId(), null)).withRel("POST: 대댓글 추가"));
+
+    }
+
+    /**
+     * 댓글 생성 응답
+     */
+    public EntityModel<CommentResponse.Create> toModel(CommentResponse.Create target, Long boardId) {
+
+        return EntityModel.of(target)
+                .add(linkTo(methodOn(CommentController.class).postComments(null, boardId, null, null)).withSelfRel())
+                .add(linkTo(methodOn(CommentController.class).putComments(boardId, target.getCommentId(), null,null)).withRel("PUT: 댓글 수정"))
+                .add(linkTo(methodOn(CommentController.class).deleteComments(boardId, target.getCommentId())).withRel("DELETE: 댓글 삭제"))
+                .add(linkTo(methodOn(CommentController.class).postSubComments(null, target.getCommentId(), null)).withRel("POST: 대댓글 추가"));
+    }
+
+    /**
+     * getComments Response
+     */
+    public EntityModel<CommentListDto> toListModel(CommentListDto target, Long boardId) {
 
         addAllLinkInBoardListResults(target);
 
@@ -58,21 +89,18 @@ public class CommentResponseModelAssembler {
     }
 
     private void addAllLinkInBoardListResults(CommentListDto entity) {
+        entity.getResults()
+                .forEach(result -> result.add(getLinkList(result.getBoardId(), result.getCommentId())));
+    }
 
-        CommentDto commentDto = entity.getResults().get(0);
-        Long boardId = commentDto.getBoardId();
-        Long commentId = commentDto.getCommentId();
-
+    private static List<Link> getLinkList(Long boardId, Long commentId) {
         List<Link> links = List.of(
-                linkTo(methodOn(CommentController.class).postComments(null, boardId, null)).withRel("POST : Add Comment"),
-                linkTo(methodOn(CommentController.class).putComments(boardId, commentId, null)).withRel("PUT : Put comment"),
+                linkTo(methodOn(CommentController.class).postComments(null, boardId, null, null)).withRel("POST : Add Comment"),
+                linkTo(methodOn(CommentController.class).putComments(boardId, commentId, null,null)).withRel("PUT : Put comment"),
                 linkTo(methodOn(CommentController.class).deleteComments(boardId, commentId)).withRel("DELETE : Delete comment"),
                 linkTo(methodOn(CommentController.class).postSubComments(null, commentId, null)).withRel("POST : Add SubComment")
         );
-
-        entity.getResults()
-                .forEach(result -> result
-                        .add(links));
+        return links;
     }
 
     public EntityModel<SubCommentListDto> toListModel(SubCommentListDto target) {

@@ -33,7 +33,7 @@ public class CommentCommendService {
     private final SubCommentRepository subCommentRepository;
     private final BoardRepository boardRepository;
 
-//    @CustomLogTracer
+    @CustomLogTracer
     public CommentResponse.Create addComment(Long boardId, String username, CommentRequest.Create request) {
 
         Board board = boardRepository
@@ -60,15 +60,15 @@ public class CommentCommendService {
 
     @CustomLogTracer
     public CommentResponse.Modify modifyComment(Long commentId, String text) {
+
         commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_COMMENT))
                 .modify(text);
 
         // TODO: 2023/02/06 쿼리 최적화
-        Comment findComment = commentRepository.findById(commentId)
-                .orElseThrow();
+        Comment findComment = commentRepository.findById(commentId).orElseThrow();
 
-        return new CommentResponse.Modify(commentId, findComment.getUpdatedAt());
+        return new CommentResponse.Modify(findComment.getId(), findComment.getUpdatedAt());
     }
 
     /**

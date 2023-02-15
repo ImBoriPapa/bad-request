@@ -3,24 +3,23 @@ package com.study.badrequest.api.comment;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
+import com.study.badrequest.commons.exception.custom_exception.CommentException;
 import com.study.badrequest.commons.form.ResponseForm;
-
 import com.study.badrequest.domain.comment.dto.CommentRequest;
 import com.study.badrequest.domain.comment.dto.CommentResponse;
-import com.study.badrequest.domain.comment.repository.dto.CommentDto;
-import com.study.badrequest.domain.comment.repository.CommentQueryRepository;
 import com.study.badrequest.domain.comment.service.CommentCommendService;
 import com.study.badrequest.utils.modelAssembler.CommentResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 
@@ -33,27 +32,42 @@ public class CommentController {
     private final CommentResponseModelAssembler commentResponseModelAssembler;
     private final CommentCommendService commentCommendService;
 
-
     @CustomLogTracer
     @PostMapping("/board/{boardId}/comments")
-    public ResponseEntity postComments(@AuthenticationPrincipal User user,
+    public ResponseEntity postComments(@Valid @AuthenticationPrincipal User user,
                                        @PathVariable Long boardId,
-                                       @RequestBody CommentRequest.Create form) {
+                                       @RequestBody CommentRequest.Create form,
+                                       BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            throw new CommentException(CustomStatus.VALIDATION_ERROR, bindingResult);
+        }
 
         CommentResponse.Create create = commentCommendService.addComment(boardId, user.getUsername(), form);
 
+        EntityModel<CommentResponse.Create> entityModel = commentResponseModelAssembler.toModel(create, boardId);
+
         return ResponseEntity
                 .ok()
-                .body(create);
+                .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
     @PutMapping("/board/{boardId}/comments/{commentId}")
-    public ResponseEntity putComments(@PathVariable Long boardId,
+    public ResponseEntity putComments(@Valid
+                                      @PathVariable Long boardId,
                                       @PathVariable Long commentId,
-                                      @RequestBody CommentRequest.Update form) {
+                                      @RequestBody CommentRequest.Update form,
+                                      BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new CommentException(CustomStatus.VALIDATION_ERROR, bindingResult);
+        }
 
-        return ResponseEntity.ok().body(null);
+        CommentResponse.Modify modifyComment = commentCommendService.modifyComment(commentId, form.getText());
+
+        EntityModel<CommentResponse.Modify> entityModel = commentResponseModelAssembler.toModel(modifyComment, boardId);
+
+        return ResponseEntity.ok().body(entityModel);
     }
 
     @CustomLogTracer
@@ -61,7 +75,11 @@ public class CommentController {
     public ResponseEntity deleteComments(@PathVariable Long boardId,
                                          @PathVariable Long commentId) {
 
-        return ResponseEntity.ok().body(null);
+        CommentResponse.Delete deleteComment = commentCommendService.deleteComment(commentId);
+
+        EntityModel<CommentResponse.Delete> entityModel = commentResponseModelAssembler.toModel(deleteComment, boardId);
+
+        return ResponseEntity.ok().body(entityModel);
     }
 
     @CustomLogTracer

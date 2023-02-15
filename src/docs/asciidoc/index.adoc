@@ -211,7 +211,7 @@ include::{snippets}/reissue/response-fields.adoc[]
 === 게시판 생성
 
 ----
-POST: http://www.bad-request.kr/api/v1/board
+POST: https://www.bad-request.kr/api/v1/board
 ----
 
 ==== 요청1 이미지 없이 생성
@@ -249,7 +249,7 @@ include::{snippets}/board_create/response-fields.adoc[]
 
 === 게시판 리스트 조회
 ----
-GET: http://www.bad-request.kr/api/v1/board
+GET: https://www.bad-request.kr/api/v1/board
 ----
 ==== 검색 조건 없이 검색
 
@@ -266,7 +266,9 @@ include::{snippets}/board_getList_no_condition/http-response.adoc[]
 include::{snippets}/board_getList_no_condition/response-fields.adoc[]
 
 === 게시판 리스트 조건 검색
-
+----
+GET: https://www.bad-request.kr/api/v1/board?size={number}&topic={string}
+----
 검색 조건::
 
 [%header%autowidth]
@@ -306,11 +308,24 @@ include::{snippets}/board_get_detail/http-response.adoc[]
 ==== 응답 필드
 
 include::{snippets}/board_get_detail/response-fields.adoc[]
+== Comments
+=== 댓글 등록
+----
+GET: https://www.bad-request.kr/api/v1/board/{boardId}/comments
+----
+==== 요청
+include::{snippets}/comment-create/http-request.adoc[]
+==== 요청 헤더
+include::{snippets}/comment-create/request-headers.adoc[]
+==== 응답
+include::{snippets}/comment-create/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/comment-create/response-fields.adoc[]
 
 == Dashboard
 === System 정보 (SSE 프로토콜 통신)
 ----
-GET: http://www.bad-request.kr/api/v1/dashboard/system
+GET: https://www.bad-request.kr/api/v1/dashboard/system
 ----
 
 ==== 연결
@@ -361,7 +376,7 @@ Data::
 
 === HeapMemory 정보(SSE 프로토콜 통신)
 ----
-GET: http://www.bad-request.kr/api/v1/dashboard/heap
+GET: https://www.bad-request.kr/api/v1/dashboard/heap
 ----
 ==== 요청
 
@@ -415,7 +430,9 @@ Data::
 == Values
 
 === Custom Status
-
+----
+GET: https://www.bad-request.kr/api/v1/values/status
+----
 ==== 요청
 
 include::{snippets}/custom-status/http-request.adoc[]
@@ -426,7 +443,9 @@ include::{snippets}/custom-status/http-response.adoc[]
 include::{snippets}/custom-status/response-fields.adoc[]
 
 === Category
-
+----
+GET: https://www.bad-request.kr/api/v1/values/category
+----
 ==== 요청
 
 include::{snippets}/category/http-request.adoc[]
@@ -437,7 +456,9 @@ include::{snippets}/category/http-response.adoc[]
 include::{snippets}/category/response-fields.adoc[]
 
 === Topic
-
+----
+GET: https://www.bad-request.kr/api/v1/values/topic
+----
 ==== 요청
 
 include::{snippets}/topic/http-request.adoc[]

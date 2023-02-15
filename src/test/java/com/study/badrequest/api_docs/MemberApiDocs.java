@@ -1,4 +1,4 @@
-package com.study.badrequest.api.member;
+package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -59,11 +59,10 @@ public class MemberApiDocs {
     @Autowired
     MemberRepository memberRepository;
 
-    private String sampleEmail = "sample@google.com";
-    private String sampleNickname = "sample";
-    private String sampleContact = "010-1234-1234";
-
-    private String samplePassword = "sample1234!@";
+    private final String sampleEmail = "sample@google.com";
+    private final String sampleNickname = "sample";
+    private final String sampleContact = "010-1234-1234";
+    private final String samplePassword = "sample1234!@";
 
     @BeforeEach
     void beforeEach() {

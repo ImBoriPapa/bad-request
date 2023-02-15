@@ -41,7 +41,6 @@ class CommentCommendServiceTest {
     MemberRepository memberRepository;
     @Autowired
     CommentRepository commentRepository;
-
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired

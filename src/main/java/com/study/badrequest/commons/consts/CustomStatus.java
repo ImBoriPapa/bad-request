@@ -7,7 +7,7 @@ public enum CustomStatus {
     SUCCESS(1000, "요청에 성공했습니다."),
     LOGOUT_SUCCESS(1001, "로그아웃 요청이 성공했습니다."),
     ERROR(1002, "서버에 문제가 발생했습니다."),
-    VALIDATION_ERROR(1003, "검증에 실패했습니다."),
+    VALIDATION_ERROR(1003, "요청 값 검증에 실패했습니다."),
     PERMISSION_DENIED(1004, "접근 권한이 없습니다."),
     //JWT 토큰 관련
     TOKEN_NOT_MATCH(1500, "저장된 토큰과 일치하지 않습니다."),

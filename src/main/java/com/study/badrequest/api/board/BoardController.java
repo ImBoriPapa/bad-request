@@ -1,6 +1,7 @@
 package com.study.badrequest.api.board;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.dto.BoardResponse;
 
@@ -49,6 +50,10 @@ public class BoardController {
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
+        if (user.getUsername() == null) {
+            throw new MemberException(CustomStatus.ALREADY_LOGOUT);
+        }
+
         BoardResponse.Create create = boardCommandService.create(user.getUsername(), form, images);
 
         EntityModel<BoardResponse.Create> entityModel = boardResponseModelAssembler.toModel(create);
@@ -82,8 +87,9 @@ public class BoardController {
 
         return ResponseEntity
                 .ok()
-                .body(entityModel);
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
+    // TODO: 2023/02/15 Delete
 
 }

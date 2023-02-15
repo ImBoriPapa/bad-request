@@ -53,9 +53,11 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers("/api/v1/members", "/api/v1/members/email")
                 .permitAll()
-                //비회원 Board 허용
-                .antMatchers("/api/v1/board", "/api/v1/board/*")
+
+                //비회원 Board 읽기 허용
+                .antMatchers(HttpMethod.GET,"/api/v1/board", "/api/v1/board/*")
                 .permitAll()
+
                 //comment
                 .antMatchers("/api/v1/board/{boardId}/comments")
                 .permitAll()

@@ -36,7 +36,7 @@ public class CommentQueryController {
 
         CommentListDto commentListDto = queryRepository.findAllCommentByBoardId(boardId, condition);
 
-        EntityModel<CommentListDto> entityModel = commentResponseModelAssembler.toListModel(commentListDto);
+        EntityModel<CommentListDto> entityModel = commentResponseModelAssembler.toListModel(commentListDto,boardId);
 
         return ResponseEntity.ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
