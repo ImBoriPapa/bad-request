@@ -14,7 +14,7 @@ endif::[]
 
 === 회원가입
 ----
-GET: http://www.bad-request.kr/api/v1/members
+GET: https://www.bad-request.kr/api/v1/members
 ----
 ==== 요청
 
@@ -33,7 +33,7 @@ include::{snippets}/postMember/response-fields.adoc[]
 === 이메일 중복 확인
 
 ----
-GET: http://www.bad-request.kr/api/v1/members/email
+GET: https://www.bad-request.kr/api/v1/members/email
 ----
 ==== 요청
 
@@ -53,7 +53,7 @@ include::{snippets}/email_duplicate_fail/http-response.adoc[]
 
 - 로그인 후 로그인한 회원 권한 정보 요청
 ----
-GET: http://www.bad-request.kr/api/v1/members/auth
+GET: https://www.bad-request.kr/api/v1/members/auth
 ----
 ==== 요청
 
@@ -73,7 +73,7 @@ include::{snippets}/member-auth/response-fields.adoc[]
 
 === 연락처 변경
 ----
-PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/contact
+PATCH: https://www.bad-request.kr/api/v1/members/{memberId}/contact
 ----
 ==== 요청
 
@@ -95,7 +95,7 @@ include::{snippets}/putContact/response-fields.adoc[]
 
 === 비밀번호 변경
 ----
-PATCH: http://www.bad-request.kr/api/v1/members/{memberId}/password
+PATCH: https://www.bad-request.kr/api/v1/members/{memberId}/password
 ----
 ==== 요청
 
@@ -117,7 +117,7 @@ include::{snippets}/putPassword/response-fields.adoc[]
 
 === 회원 탈퇴
 ----
-DELETE: http://www.bad-request.kr/api/v1/members/{memberId}
+DELETE: https://www.bad-request.kr/api/v1/members/{memberId}
 ----
 
 ==== 요청
@@ -144,7 +144,7 @@ include::{snippets}/deleteMember/response-fields.adoc[]
 
 === 로그인
 ----
-POST: http://www.bad-request.kr/api/v1/login
+POST: https://www.bad-request.kr/api/v1/login
 ----
 ==== 요청
 
@@ -165,7 +165,7 @@ include::{snippets}/login/response-fields.adoc[]
 
 === 로그아웃
 ----
-POST: http://www.bad-request.kr/api/v1/logout
+POST: https://www.bad-request.kr/api/v1/logout
 ----
 ==== 요청
 
@@ -179,7 +179,7 @@ include::{snippets}/logout/response-fields.adoc[]
 
 === 토큰 재발급
 ----
-POST: http://www.bad-request.kr/api/v1/refresh
+POST: https://www.bad-request.kr/api/v1/refresh
 ----
 ==== 요청
 
