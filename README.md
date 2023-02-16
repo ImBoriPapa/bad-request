@@ -33,6 +33,12 @@ Version: 1.0.0
 - jenkins, docker, docker hub
 - Git,GitHub
 - Junit5, testcontainers
+***
+### Project Architecture
+
+![bad-request Project Architecture](https://user-images.githubusercontent.com/98242564/219410077-ff6967bc-be5f-43e8-8f01-2a9b4e294586.png)
+
+***
 
 ### CI/CD
 
