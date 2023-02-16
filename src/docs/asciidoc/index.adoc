@@ -13,9 +13,11 @@ endif::[]
 == Members
 
 === 회원가입
+
 ----
 GET: https://www.bad-request.kr/api/v1/members
 ----
+
 ==== 요청
 
 include::{snippets}/postMember/http-request.adoc[]
@@ -35,6 +37,7 @@ include::{snippets}/postMember/response-fields.adoc[]
 ----
 GET: https://www.bad-request.kr/api/v1/members/email
 ----
+
 ==== 요청
 
 include::{snippets}/email_duplicate_success/http-request.adoc[]
@@ -52,9 +55,11 @@ include::{snippets}/email_duplicate_fail/http-response.adoc[]
 === 회원 권한 정보
 
 - 로그인 후 로그인한 회원 권한 정보 요청
+
 ----
 GET: https://www.bad-request.kr/api/v1/members/auth
 ----
+
 ==== 요청
 
 include::{snippets}/member-auth/http-request.adoc[]
@@ -72,9 +77,11 @@ include::{snippets}/member-auth/http-response.adoc[]
 include::{snippets}/member-auth/response-fields.adoc[]
 
 === 연락처 변경
+
 ----
 PATCH: https://www.bad-request.kr/api/v1/members/{memberId}/contact
 ----
+
 ==== 요청
 
 include::{snippets}/putContact/http-request.adoc[]
@@ -94,9 +101,11 @@ include::{snippets}/putContact/http-response.adoc[]
 include::{snippets}/putContact/response-fields.adoc[]
 
 === 비밀번호 변경
+
 ----
 PATCH: https://www.bad-request.kr/api/v1/members/{memberId}/password
 ----
+
 ==== 요청
 
 include::{snippets}/putPassword/http-request.adoc[]
@@ -116,6 +125,7 @@ include::{snippets}/putPassword/http-response.adoc[]
 include::{snippets}/putPassword/response-fields.adoc[]
 
 === 회원 탈퇴
+
 ----
 DELETE: https://www.bad-request.kr/api/v1/members/{memberId}
 ----
@@ -143,9 +153,11 @@ include::{snippets}/deleteMember/response-fields.adoc[]
 == Login
 
 === 로그인
+
 ----
 POST: https://www.bad-request.kr/api/v1/login
 ----
+
 ==== 요청
 
 include::{snippets}/login/http-request.adoc[]
@@ -164,9 +176,11 @@ include::{snippets}/login/response-headers.adoc[]
 include::{snippets}/login/response-fields.adoc[]
 
 === 로그아웃
+
 ----
 POST: https://www.bad-request.kr/api/v1/logout
 ----
+
 ==== 요청
 
 include::{snippets}/logout/http-request.adoc[]
@@ -178,9 +192,11 @@ include::{snippets}/logout/http-response.adoc[]
 include::{snippets}/logout/response-fields.adoc[]
 
 === 토큰 재발급
+
 ----
 POST: https://www.bad-request.kr/api/v1/refresh
 ----
+
 ==== 요청
 
 include::{snippets}/reissue/http-request.adoc[]
@@ -196,7 +212,6 @@ include::{snippets}/reissue/http-request.adoc[]
 |Cookie
 |Refresh= Refresh Token
 |===
-
 
 ==== 응답
 
@@ -248,9 +263,11 @@ include::{snippets}/board_create/http-response.adoc[]
 include::{snippets}/board_create/response-fields.adoc[]
 
 === 게시판 리스트 조회
+
 ----
 GET: https://www.bad-request.kr/api/v1/board
 ----
+
 ==== 검색 조건 없이 검색
 
 ==== 요청
@@ -266,9 +283,11 @@ include::{snippets}/board_getList_no_condition/http-response.adoc[]
 include::{snippets}/board_getList_no_condition/response-fields.adoc[]
 
 === 게시판 리스트 조건 검색
+
 ----
 GET: https://www.bad-request.kr/api/v1/board?size={number}&topic={string}
 ----
+
 검색 조건::
 
 [%header%autowidth]
@@ -292,9 +311,11 @@ include::{snippets}/board_getList_with_condition/http-request.adoc[]
 include::{snippets}/board_getList_with_condition/http-response.adoc[]
 
 === 게시판 상세 조회
+
 ----
-GET: http://www.bad-request.kr/api/v1/board/{boardId}
+GET: https://www.bad-request.kr/api/v1/board/{boardId}
 ----
+
 ==== 요청
 
 include::{snippets}/board_get_detail/http-request.adoc[]
@@ -308,22 +329,101 @@ include::{snippets}/board_get_detail/http-response.adoc[]
 ==== 응답 필드
 
 include::{snippets}/board_get_detail/response-fields.adoc[]
+
 == Comments
+
 === 댓글 등록
+
 ----
 GET: https://www.bad-request.kr/api/v1/board/{boardId}/comments
 ----
+
 ==== 요청
+
 include::{snippets}/comment-create/http-request.adoc[]
+
 ==== 요청 헤더
+
 include::{snippets}/comment-create/request-headers.adoc[]
+
 ==== 응답
+
 include::{snippets}/comment-create/http-response.adoc[]
+
 ==== 응답 필드
+
 include::{snippets}/comment-create/response-fields.adoc[]
 
+=== 댓글 수정
+
+----
+GET: https://www.bad-request.kr/api/v1/board/{boardId}/comments/{commentId}
+----
+
+==== 요청
+
+include::{snippets}/comment-put/http-request.adoc[]
+
+==== 요청 헤더
+
+include::{snippets}/comment-put/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/comment-put/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/comment-put/response-fields.adoc[]
+
+=== 댓글 삭제
+
+----
+GET: https://www.bad-request.kr/api/v1/board/{boardId}/comments/{commentId}
+----
+
+==== 요청
+
+include::{snippets}/comment-delete/http-request.adoc[]
+
+==== 요청 헤더
+
+include::{snippets}/comment-delete/request-headers.adoc[]
+
+==== 응답
+
+include::{snippets}/comment-delete/http-response.adoc[]
+
+==== 응답 필드
+
+include::{snippets}/comment-delete/response-fields.adoc[]
+=== 댓글 조회
+----
+GET: https://www.bad-request.kr/api/v1/board/{boardId}/comments
+----
+|===
+|Param |Description|default
+
+|size
+|요청할 댓글 개수
+|5
+
+|lastIndex
+|comment 마지막 인덱스 다음 데이터 요청시 필수
+|0
+|===
+
+==== 요청
+include::{snippets}/comment-get/http-request.adoc[]
+==== 응답
+include::{snippets}/comment-get/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/comment-get/response-fields.adoc[]
+
 == Dashboard
+
 === System 정보 (SSE 프로토콜 통신)
+
 ----
 GET: https://www.bad-request.kr/api/v1/dashboard/system
 ----
@@ -375,9 +475,11 @@ Data::
 |===
 
 === HeapMemory 정보(SSE 프로토콜 통신)
+
 ----
 GET: https://www.bad-request.kr/api/v1/dashboard/heap
 ----
+
 ==== 요청
 
 include::{snippets}/dashboard-heap/http-request.adoc[]
@@ -430,9 +532,11 @@ Data::
 == Values
 
 === Custom Status
+
 ----
 GET: https://www.bad-request.kr/api/v1/values/status
 ----
+
 ==== 요청
 
 include::{snippets}/custom-status/http-request.adoc[]
@@ -443,9 +547,11 @@ include::{snippets}/custom-status/http-response.adoc[]
 include::{snippets}/custom-status/response-fields.adoc[]
 
 === Category
+
 ----
 GET: https://www.bad-request.kr/api/v1/values/category
 ----
+
 ==== 요청
 
 include::{snippets}/category/http-request.adoc[]
@@ -456,9 +562,11 @@ include::{snippets}/category/http-response.adoc[]
 include::{snippets}/category/response-fields.adoc[]
 
 === Topic
+
 ----
 GET: https://www.bad-request.kr/api/v1/values/topic
 ----
+
 ==== 요청
 
 include::{snippets}/topic/http-request.adoc[]
