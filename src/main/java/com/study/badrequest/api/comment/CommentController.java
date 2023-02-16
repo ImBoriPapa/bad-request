@@ -67,7 +67,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Modify> entityModel = commentResponseModelAssembler.toModel(modifyComment, boardId);
 
-        return ResponseEntity.ok().body(entityModel);
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -79,7 +79,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Delete> entityModel = commentResponseModelAssembler.toModel(deleteComment, boardId);
 
-        return ResponseEntity.ok().body(entityModel);
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer

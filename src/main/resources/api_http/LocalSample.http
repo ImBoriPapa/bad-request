@@ -10,20 +10,28 @@ Content-Type: application/json
   "password": "password1234!@"
 }
 
+> {%
+client.global.set("access_token", response.headers.valueOf("Authorization"));
+client.global.set("refresh_token", response.headers.valueOf("Set-Cookie").split(";")[0]);
+
+client.log(client.global.get("access_token"));
+client.log(client.global.get("refresh_token"));
+%}
+
 ### 토큰 재발급 OK
 POST http://localhost:8080/api/v1/refresh
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQzOS0yZDJhLTIwY2YtODQ3OS0yIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDcwMjY1fQ.s-tpU_MfYU5k77xHGaIvn_5FLX_PjUHk7KGYpxDdlcRS79KkZGOWAUWDRbbcpXPMdC9xQK-Tus0h5viAvjMLwQ
-Cookie: Refresh=Bearer-eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQzOS0yZDJhLTIwY2YtODQ3OS0yIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc3MDc0NDY1fQ.1uxuV2-8lJQ6nff4RXRJ7xvRsb7X8Cb6r3dU_ohXOOrFlC2o7xLC1f_h5eBGMf0DIxknlJArFKdKyduKZYgxCA; Path=/; Max-Age=604799097; Expires=Wed, 16 Apr 2042 13:46:03 GMT; HttpOnly; SameSite=None
+Authorization: {{access_token}}
+Cookie: {{refresh_token}}
 
 ### 로그 아웃 OK
 POST http://localhost:8080/api/v1/log-out
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQzOS0yZDJhLTIwY2YtODQ3OS0yIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDcwMjY1fQ.s-tpU_MfYU5k77xHGaIvn_5FLX_PjUHk7KGYpxDdlcRS79KkZGOWAUWDRbbcpXPMdC9xQK-Tus0h5viAvjMLwQ
+Authorization: {{access_token}}
 
 ### 게시판 생성 OK
 POST http://localhost:8080/api/v1/board
 Content-Type:multipart/form-data; boundary=boundary
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQzOS0yZDJhLTIwY2YtODQ3OS0yIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDcwMjY1fQ.s-tpU_MfYU5k77xHGaIvn_5FLX_PjUHk7KGYpxDdlcRS79KkZGOWAUWDRbbcpXPMdC9xQK-Tus0h5viAvjMLwQ
+Authorization: {{access_token}}
 
 --boundary
 Content-Disposition:  form-data; name="form"
@@ -46,7 +54,7 @@ GET http://localhost:8080/api/v1/board/1
 ### 게시판 수정 OK
 PATCH http://localhost:8080/api/v1/board/1
 Content-Type:multipart/form-data; boundary=boundary
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQzMy04ZjMzLTE0MmUtOWZhOC0yIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDY3ODYzfQ.dQmUakpsJ8pOBg_LEuBbWKfvRgYpWvTB1myjHYCzVfd9F7kKC1TicGGCpQb185uM8y-YGhLQqgxEa3ntnuNHtQ
+Authorization: {{access_token}}
 
 --boundary
 Content-Disposition:  form-data; name="form"
@@ -62,18 +70,28 @@ Content-Type: application/json
 ### 댓글 생성 OK
 POST http://localhost:8080/api/v1/board/1/comments
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMWVkYWQzMy04ZjMzLTE0MmUtOWZhOC0yIiwiYXV0aCI6IlJPTEVfTUVNQkVSIiwiZXhwIjoxNjc2NDY3ODYzfQ.dQmUakpsJ8pOBg_LEuBbWKfvRgYpWvTB1myjHYCzVfd9F7kKC1TicGGCpQb185uM8y-YGhLQqgxEa3ntnuNHtQ
+Authorization: {{access_token}}
 
 {
-  "text" : "댓글달린다"
+  "text": "댓글달린다"
 }
 
 ### 댓글 조회
 GET http://localhost:8080/api/v1/board/1/comments
+Content-Type: application/json
 
 ### 댓글 수정
+PUT http://localhost:8080/api/v1/board/1/comments/1
+Content-Type: application/json
+Authorization: {{access_token}}
 
+{
+  "text" : "수정된 댓글"
+}
 ### 댓글 삭제
+DELETE http://localhost:8080/api/v1/board/1/comments/1
+Content-Type: application/json
+Authorization: {{access_token}}
 
 ### 대댓글 생성
 

@@ -25,6 +25,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
+
 @Controller
 @RequiredArgsConstructor
 @Slf4j
@@ -87,4 +88,6 @@ public class MvcDashBoardController {
         private Long id;
         private String trace;
     }
+
+
 }

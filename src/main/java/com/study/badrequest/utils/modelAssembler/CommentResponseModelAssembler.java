@@ -66,15 +66,12 @@ public class CommentResponseModelAssembler {
         addAllLinkInBoardListResults(target);
 
         return EntityModel.of(target)
-                .add(linkTo(methodOn(CommentQueryController.class).getComments(target.getResults().get(0).getBoardId(), null)).withSelfRel())
-                .addAllIf(target.getCommentSize() > 0 && target.getHasNext(), setAddAllIfSupplier(target));
+                .add(linkTo(methodOn(CommentQueryController.class).getComments(boardId, null)).withSelfRel())
+                .addAllIf(target.getCommentSize() > 0 && target.getHasNext(), setAddAllIfSupplier(target,boardId));
 
     }
 
-    private Supplier<List<Link>> setAddAllIfSupplier(CommentListDto result) {
-
-        CommentDto commentDto = result.getResults().get(0);
-        Long boardId = commentDto.getBoardId();
+    private Supplier<List<Link>> setAddAllIfSupplier(CommentListDto result,Long boardId) {
 
         return () -> List.of(
                 linkTo(methodOn(CommentQueryController.class)

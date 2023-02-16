@@ -1,5 +1,0 @@
-### 댓글 조회
-GET https://www.bad-request.kr/api/v1/board/1/comments?size=2
-
-### 대댓글 조회
-GET https://www.bad-request.kr/api/v1/comments/1/sub-comments
