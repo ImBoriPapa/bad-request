@@ -3,6 +3,7 @@ package com.study.badrequest.domain.member.entity;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 @Slf4j
+@Transactional
 class MemberTest {
     @Autowired
     MemberRepository memberRepository;
@@ -35,6 +37,8 @@ class MemberTest {
     @AfterEach
     void afterEach() {
         memberRepository.deleteAll();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN MEMBER_ID RESTART WITH 1")
+                .executeUpdate();
     }
 
     @Test
@@ -63,33 +67,23 @@ class MemberTest {
         assertThat(findMember.getUpdatedAt()).isEqualTo(savedMember.getUpdatedAt());
     }
 
-    public void initMember() {
-        Member member = Member.createMember()
-                .email(UUID.randomUUID().toString())
-                .nickname(UUID.randomUUID().toString())
-                .password(UUID.randomUUID().toString())
-                .contact(UUID.randomUUID().toString())
-                .authority(Authority.MEMBER)
-                .build();
-        memberRepository.save(member);
-    }
 
     /**
      * 테스트 보강
-     * @throws InterruptedException
      */
-//    @Test
-//    @Transactional
+    @Test
+    @Transactional
     public void createMember_concurrencyTest() throws InterruptedException {
-
         final int numThreads = 10;
+
+        Set<String> set = new HashSet<String>();
+
         // 동시 요청용 쓰레드풀
         final ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-        Set<String> set = new HashSet<String>();
 
         // replaceUsername() 동시 실행
         for (int i = 0; i < numThreads; i++) {
-            executorService.execute(this::initMember);
+            executorService.execute(() -> set.add(initMember().getUsername()));
         }
 
         List<Member> all = memberRepository.findAll();
@@ -103,8 +97,18 @@ class MemberTest {
         Assertions.assertThat(set.size()).isEqualTo(numThreads);
     }
 
+    private Member initMember() {
+        Member member = Member.createMember()
+                .email(UUID.randomUUID().toString())
+                .nickname(UUID.randomUUID().toString())
+                .password(UUID.randomUUID().toString())
+                .contact(UUID.randomUUID().toString())
+                .authority(Authority.MEMBER)
+                .build();
+        return memberRepository.save(member);
+    }
+
     @Test
-    @Transactional
     public void replaceUsername_concurrencyTest() throws InterruptedException {
         //given
         final int numThreads = 10;
@@ -140,7 +144,7 @@ class MemberTest {
             executorService.execute(() -> {
                 member2.replaceUsername();
                 set.add(member2.getUsername());
-                log.info("Member2 ID= {} Username ={}", member1, member2.getUsername());
+                log.info("Member2 ID= {} Username ={}", member2, member2.getUsername());
             });
         }
         // 쓰레드 작업이 끝날때 까지 대기
@@ -153,7 +157,6 @@ class MemberTest {
 
     @Test
     @DisplayName("Username 데이터베이스 저장 테스트 10000")
-    @Transactional
     void usernameInitTest() throws Exception {
         //given
         int end = 10000;

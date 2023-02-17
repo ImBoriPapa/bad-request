@@ -30,7 +30,6 @@ public class MemberCommandService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final ImageUploader imageUploader;
-
     private final ApplicationEventPublisher eventPublisher;
 
     @CustomLogTracer

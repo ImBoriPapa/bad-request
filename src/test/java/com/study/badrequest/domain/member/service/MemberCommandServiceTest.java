@@ -42,13 +42,14 @@ class MemberCommandServiceTest {
     RefreshTokenRepository tokenRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
-
     @Autowired
     EntityManager em;
 
     @AfterEach
     void afterEach() {
         memberRepository.deleteAll();
+        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN MEMBER_ID RESTART WITH 1")
+                .executeUpdate();
     }
 
     @Test
@@ -64,6 +65,7 @@ class MemberCommandServiceTest {
         //when
         MemberResponse.SignupResult result = memberCommandService.signupMember(form);
         Member findMember = memberRepository.findById(result.getMemberId()).get();
+
         //then
         assertThat(findMember.getEmail()).isEqualTo(form.getEmail());
         assertThat(passwordEncoder.matches(form.getPassword(), findMember.getPassword())).isTrue();
@@ -146,7 +148,6 @@ class MemberCommandServiceTest {
 
         String newPassword = "newPassword1234";
 
-
         //when
         MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
         memberCommandService.resetPassword(signupResult.getMemberId(), form.getPassword(), newPassword);
@@ -172,6 +173,7 @@ class MemberCommandServiceTest {
         Member member = memberRepository.findById(signupResult.getMemberId()).get();
 
         memberCommandService.resignMember(member.getId(), form.getPassword());
+
         //then
         assertThat(memberRepository.findById(member.getId())).isEmpty();
         assertThat(tokenRepository.findById(member.getUsername())).isEmpty();
