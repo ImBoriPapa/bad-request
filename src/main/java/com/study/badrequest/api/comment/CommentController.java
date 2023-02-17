@@ -29,6 +29,7 @@ import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 @RequiredArgsConstructor
 public class CommentController {
 
+    // TODO: 2023/02/17 validation test
     private final CommentResponseModelAssembler commentResponseModelAssembler;
     private final CommentCommendService commentCommendService;
 
@@ -38,6 +39,7 @@ public class CommentController {
                                        @PathVariable Long boardId,
                                        @RequestBody CommentRequest.Create form,
                                        BindingResult bindingResult) {
+        existUsername(user);
 
         if (bindingResult.hasErrors()) {
             throw new CommentException(CustomStatus.VALIDATION_ERROR, bindingResult);
@@ -47,10 +49,12 @@ public class CommentController {
 
         EntityModel<CommentResponse.Create> entityModel = commentResponseModelAssembler.toModel(create, boardId);
 
+
         return ResponseEntity
                 .ok()
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
     }
+
 
     @CustomLogTracer
     @PutMapping("/board/{boardId}/comments/{commentId}")
@@ -87,18 +91,28 @@ public class CommentController {
     public ResponseEntity postSubComments(@AuthenticationPrincipal User user,
                                           @PathVariable Long commentId,
                                           @RequestBody CommentRequest.Create form) {
+        existUsername(user);
+
+        CommentResponse.CreateSub result = commentCommendService.addSubComment(commentId, user.getUsername(), form);
+
+        EntityModel<CommentResponse.CreateSub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
+
         return ResponseEntity
                 .ok()
-                .body(null);
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
-    @PostMapping("/comments/{commentId}/sub-comments/{subCommentId}")
+    @PutMapping("/comments/{commentId}/sub-comments/{subCommentId}")
     public ResponseEntity putSubComments(@PathVariable Long commentId,
                                          @PathVariable Long subCommentId,
                                          @RequestBody CommentRequest.Update form) {
 
-        return ResponseEntity.ok().body(null);
+        CommentResponse.ModifySub result = commentCommendService.modifySubComment(subCommentId, form.getText());
+
+        EntityModel<CommentResponse.ModifySub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
+
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -106,6 +120,19 @@ public class CommentController {
     public ResponseEntity deleteSubComments(@PathVariable Long commentId,
                                             @PathVariable Long subCommentId) {
 
-        return ResponseEntity.ok().body(null);
+        CommentResponse.DeleteSub result = commentCommendService.deleteSubComment(subCommentId);
+
+        EntityModel<CommentResponse.DeleteSub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
+
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+    }
+
+    /**
+     * Username 검증
+     */
+    private void existUsername(User user) {
+        if (user.getUsername() == null || user.getUsername().equals("anonymousUser")) {
+            throw new CommentException(CustomStatus.PERMISSION_DENIED);
+        }
     }
 }

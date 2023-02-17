@@ -45,6 +45,7 @@ public class CommentResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
+
     }
 
     @Getter

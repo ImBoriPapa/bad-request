@@ -48,7 +48,7 @@ public class CommentQueryController {
 
         SubCommentListDto subCommentListDto = queryRepository.findAllSubCommentByCommentId(commentId, condition);
 
-        EntityModel<SubCommentListDto> entityModel = commentResponseModelAssembler.toListModel(subCommentListDto);
+        EntityModel<SubCommentListDto> entityModel = commentResponseModelAssembler.toListModel(subCommentListDto,commentId);
 
         return ResponseEntity
                 .ok()

@@ -40,7 +40,7 @@ Content-Type: application/json
 
 {
     "title":"자바 질문 드립니당",
-    "context":"동시성 문제를 ThreadLocal, Atomic 객체, synchronized를 사용해서 해결하는 예제가 있을까요? ",
+    "contents":"동시성 문제를 ThreadLocal, Atomic 객체, synchronized를 사용해서 해결하는 예제가 있을까요? ",
     "category":"QUESTION",
     "topic": "JAVA"
 }
@@ -93,9 +93,30 @@ DELETE http://localhost:8080/api/v1/board/1/comments/1
 Content-Type: application/json
 Authorization: {{access_token}}
 
+### 대댓글 조회
+GET http://localhost:8080/api/v1/comments/1/sub-comments
+Content-Type: application/json
+
 ### 대댓글 생성
+POST http://localhost:8080/api/v1/comments/1/sub-comments
+Content-Type: application/json
+Authorization: {{access_token}}
+
+{
+  "text" : "대댓글"
+}
 
 ### 대댓글 수정
+PUT http://localhost:8080/api/v1/comments/1/sub-comments/1
+Content-Type: application/json
+Authorization: {{access_token}}
+
+{
+  "test" : "대댓글 수정"
+}
 
 ### 대댓글 삭제
+DELETE http://localhost:8080/api/v1/comments/1/sub-comments/1
+Content-Type: application/json
+Authorization: {{access_token}}
 

@@ -58,6 +58,9 @@ public class CommentCommendService {
         return new CommentResponse.Create(saveComment.getId(), saveComment.getCreatedAt());
     }
 
+    /*
+     * 댓글 수정
+     */
     @CustomLogTracer
     public CommentResponse.Modify modifyComment(Long commentId, String text) {
 
@@ -66,7 +69,7 @@ public class CommentCommendService {
                 .modify(text);
 
         // TODO: 2023/02/06 쿼리 최적화
-        Comment findComment = commentRepository.findById(commentId).orElseThrow();
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_COMMENT));
 
         return new CommentResponse.Modify(findComment.getId(), findComment.getUpdatedAt());
     }
@@ -111,10 +114,10 @@ public class CommentCommendService {
     /**
      * 대댓글
      */
+    @CustomLogTracer
+    public CommentResponse.CreateSub addSubComment(Long commentId, String username, CommentRequest.Create request) {
 
-    public CommentResponse.CreateSub addSubComment(Long commentId, Long memberId, CommentRequest.Create request) {
-
-        Member member = memberRepository.findById(memberId)
+        Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
         Comment findComment = commentRepository
@@ -138,21 +141,26 @@ public class CommentCommendService {
     }
 
     @CustomLogTracer
-    public void modifySubComment(Long subCommentId, String text) {
+    public CommentResponse.ModifySub modifySubComment(Long subCommentId, String text) {
         subCommentRepository.findById(subCommentId)
                 .orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_COMMENT))
                 .modify(text);
+
+        SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_SUB_COMMENT));
+
+        return new CommentResponse.ModifySub(subComment.getId(), subComment.getUpdatedAt());
     }
 
     @CustomLogTracer
-    public void deleteSubComment(Long subCommentId) {
+    public CommentResponse.DeleteSub deleteSubComment(Long subCommentId) {
         SubComment subComment = subCommentRepository.findById(subCommentId)
-                .orElseThrow(() -> new IllegalArgumentException(""));
+                .orElseThrow(() -> new CommentException(CustomStatus.NOT_FOUND_SUB_COMMENT));
 
         subComment.getBoard().decreaseCommentCount();
         subComment.getComment().decreaseSubCount();
 
         subCommentRepository.delete(subComment);
 
+        return new CommentResponse.DeleteSub(true, LocalDateTime.now());
     }
 }

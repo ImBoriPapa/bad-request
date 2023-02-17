@@ -1,10 +1,8 @@
 package com.study.badrequest.domain.comment.repository;
 
 
-import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.domain.comment.repository.dto.*;
 import lombok.*;
@@ -56,7 +54,7 @@ public class CommentQueryRepository {
                 .from(comment)
                 .leftJoin(comment.member, member)
                 .where(comment.board.id.eq(boardId),
-                        cursor(lastIndex)
+                        commentCursor(lastIndex)
                 )
                 .orderBy(comment.id.asc())
                 .limit(limitSize + 1)
@@ -111,7 +109,7 @@ public class CommentQueryRepository {
                 .from(subComment)
                 .leftJoin(subComment.member, member)
                 .where(subComment.comment.id.eq(commentId),
-                        cursor(lastIndex)
+                        subCommentCursor(lastIndex)
                 )
                 .orderBy(subComment.id.asc())
                 .limit(limitSize + 1)
@@ -127,7 +125,7 @@ public class CommentQueryRepository {
         }
 
         OptionalLong resultLastIndex = results.stream()
-                .mapToLong(SubCommentDto::getCommentId)
+                .mapToLong(SubCommentDto::getSubCommentId)
                 .max();
 
         return SubCommentListDto
@@ -147,8 +145,12 @@ public class CommentQueryRepository {
         return size == null ? 5 : size;
     }
 
-    private BooleanExpression cursor(Long lastIndex) {
+    private BooleanExpression commentCursor(Long lastIndex) {
         return lastIndex <= 0 ? null : comment.id.gt(lastIndex);
+    }
+
+    private BooleanExpression subCommentCursor(Long lastIndex) {
+        return lastIndex <= 0 ? null : subComment.id.gt(lastIndex);
     }
 
     /**
