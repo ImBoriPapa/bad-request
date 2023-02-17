@@ -44,7 +44,8 @@ public enum CustomStatus {
      * 댓글 관련
      * code: 4000~
      */
-    NOT_FOUND_COMMENT(4000, "존재하지 않는 댓글 입니다.");
+    NOT_FOUND_COMMENT(4000, "존재하지 않는 댓글 입니다."),
+    NOT_FOUND_SUB_COMMENT(4001, "존재하지 않는 대댓글 입니다.");
 
     private int code;
     private String message;

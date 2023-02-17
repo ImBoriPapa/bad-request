@@ -345,6 +345,8 @@ include::{snippets}/comment-create/http-request.adoc[]
 ==== 요청 헤더
 
 include::{snippets}/comment-create/request-headers.adoc[]
+==== 요청 필드
+include::{snippets}/comment-create/request-fields.adoc[]
 
 ==== 응답
 
@@ -367,6 +369,9 @@ include::{snippets}/comment-put/http-request.adoc[]
 ==== 요청 헤더
 
 include::{snippets}/comment-put/request-headers.adoc[]
+
+==== 요청 필드
+include::{snippets}/comment-put/request-fields.adoc[]
 
 ==== 응답
 
@@ -419,6 +424,77 @@ include::{snippets}/comment-get/http-request.adoc[]
 include::{snippets}/comment-get/http-response.adoc[]
 ==== 응답 필드
 include::{snippets}/comment-get/response-fields.adoc[]
+
+== SubComments
+
+=== 대댓글 등록
+----
+GET: https://www.bad-request.kr/api/v1/comments/{commentId}/sub-comments
+----
+==== 요청
+include::{snippets}/subComment-create/http-request.adoc[]
+==== 요청 헤드
+include::{snippets}/subComment-create/request-headers.adoc[]
+==== 요청 필드
+include::{snippets}/subComment-create/request-fields.adoc[]
+==== 응답
+include::{snippets}/subComment-create/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/subComment-create/response-fields.adoc[]
+
+=== 대댓글 수정
+----
+GET: https://www.bad-request.kr/api/v1/comments/{commentId}/sub-comments/{subCommentId}
+----
+==== 요청
+include::{snippets}/subComment-put/http-request.adoc[]
+==== 요청 헤드
+include::{snippets}/subComment-put/request-headers.adoc[]
+==== 요청 필드
+include::{snippets}/subComment-put/request-fields.adoc[]
+==== 응답
+include::{snippets}/subComment-put/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/subComment-put/response-fields.adoc[]
+
+=== 대댓글 삭제
+----
+GET: https://www.bad-request.kr/api/v1/comments/{commentId}/sub-comments/{subCommentId}
+----
+
+==== 요청
+
+include::{snippets}/comment-delete/http-request.adoc[]
+
+==== 요청 헤더
+include::{snippets}/comment-delete/request-headers.adoc[]
+
+==== 응답
+include::{snippets}/comment-delete/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/comment-delete/response-fields.adoc[]
+
+=== 대댓글 조회
+----
+GET: https://www.bad-request.kr/api/v1/comments/{commentId}/sub-comments
+----
+|===
+|Param |Description|default
+
+|size
+|요청할 댓글 개수
+|5
+
+|lastIndex
+|comment 마지막 인덱스 다음 데이터 요청시 필수
+|0
+|===
+==== 요청
+include::{snippets}/subComment-get/http-request.adoc[]
+==== 응답
+include::{snippets}/subComment-get/http-response.adoc[]
+==== 응답 필드
+include::{snippets}/subComment-get/response-fields.adoc[]
 
 == Dashboard
 
