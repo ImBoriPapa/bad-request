@@ -2,7 +2,7 @@ package com.study.badrequest.api.member;
 
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.domain.member.service.MemberCommandService;
+import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -29,7 +29,7 @@ import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 @RequestMapping(BASE_URL)
 @Slf4j
 public class MemberController {
-    private final MemberCommandService memberCommandService;
+    private final MemberCommandServiceImpl memberCommandService;
     private final MemberValidator memberValidator;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 

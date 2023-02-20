@@ -15,10 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -80,16 +77,18 @@ class MemberTest {
 
         // 동시 요청용 쓰레드풀
         final ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-
+        CountDownLatch countDownLatch = new CountDownLatch(numThreads);
         // replaceUsername() 동시 실행
         for (int i = 0; i < numThreads; i++) {
             executorService.execute(() -> set.add(initMember().getUsername()));
+            countDownLatch.countDown();
         }
 
         List<Member> all = memberRepository.findAll();
         set.addAll(all.stream().map(Member::getUsername).collect(Collectors.toList()));
 
         // 쓰레드 작업이 끝날때 까지 대기
+        countDownLatch.await();
         executorService.shutdown();
         executorService.awaitTermination(1, TimeUnit.MINUTES);
 
