@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.member.event;
 
-import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.domain.comment.service.CommentCommendService;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ResignEvent {
 
-    private final BoardCommandService boardCommandService;
+    private final BoardCommandServiceImpl boardCommandService;
     private final CommentCommendService commentCommendService;
     private final RefreshTokenRepository refreshTokenRepository;
 

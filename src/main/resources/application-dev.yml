@@ -38,10 +38,10 @@ logging:
     name: /Users/leechoongsub/desktop/log/test.log
   level:
     root: INFO
-    org.springframework.orm.jpa: DEBUG
-    org.springframework.transaction: DEBUG
-    org.springframework.data.*.*: DEBUG
-    org.springframework.cache.*: DEBUG
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    org.springframework.data.*.*: INFO
+    org.springframework.cache.*: INFO
   logback:
     rolling policy:
       file-name-pattern: "/Users/leechoongsub/desktop/log/test.log.%d{yyyy-MM-dd}.%i"
