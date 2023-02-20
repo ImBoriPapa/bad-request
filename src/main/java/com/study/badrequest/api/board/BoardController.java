@@ -7,7 +7,7 @@ import com.study.badrequest.domain.board.dto.BoardResponse;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.commons.exception.custom_exception.CustomValidationException;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
 import com.study.badrequest.utils.validator.BoardValidator;
@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -33,7 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL)
 public class BoardController {
-    private final BoardCommandService boardCommandService;
+    private final BoardCommandServiceImpl boardCommandService;
     private final BoardValidator boardValidator;
     private final BoardResponseModelAssembler boardResponseModelAssembler;
 

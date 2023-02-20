@@ -7,14 +7,13 @@ import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
 import com.study.badrequest.domain.board.repository.BoardRepository;
-import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.domain.comment.dto.CommentRequest;
 import com.study.badrequest.domain.comment.dto.CommentResponse;
 import com.study.badrequest.domain.comment.repository.CommentRepository;
 import com.study.badrequest.domain.comment.service.CommentCommendService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.login.service.JwtLoginService;
-import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
@@ -30,7 +29,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -67,7 +65,7 @@ class CommentApiDocs extends BaseMemberTest {
     @Autowired
     BoardRepository boardRepository;
     @Autowired
-    BoardCommandService boardCommandService;
+    BoardCommandServiceImpl boardCommandService;
     @Autowired
     CommentRepository commentRepository;
     @Autowired

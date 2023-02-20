@@ -54,7 +54,6 @@ public class Member {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
     }
-
     /**
      * ReturnType String SpringSecurity 에서 Type Converting 없이 사용
      * 시간순 정렬 UUID
@@ -91,7 +90,6 @@ public class Member {
     public void replaceUsername() {
         generateSequentialUUID();
     }
-
     /**
      * Entity 업데이트 직전 수행
      */

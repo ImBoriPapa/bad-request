@@ -2,7 +2,7 @@ package com.study.badrequest.domain.board.repository;
 
 import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.board.dto.BoardRequest;
-import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
@@ -13,13 +13,9 @@ import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.BoardImage;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
-import com.study.badrequest.domain.board.repository.BoardImageRepository;
-import com.study.badrequest.domain.board.repository.BoardRepository;
 import com.study.badrequest.domain.board.repository.query.*;
 import com.study.badrequest.domain.comment.repository.CommentRepository;
-import com.study.badrequest.domain.comment.entity.Comment;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,9 +27,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
-import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -58,7 +52,7 @@ class BoardQueryRepositoryImplTest extends BaseMemberTest {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
-    BoardCommandService boardCommandService;
+    BoardCommandServiceImpl boardCommandService;
 
     @BeforeEach
     void beforeEach() {

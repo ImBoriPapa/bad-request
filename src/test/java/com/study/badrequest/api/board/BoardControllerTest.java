@@ -8,7 +8,7 @@ import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
 import com.study.badrequest.domain.board.repository.BoardRepository;
-import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.member.entity.Authority;
@@ -31,8 +31,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 import static com.study.badrequest.SampleUserData.SAMPLE_PASSWORD;
 import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
@@ -71,7 +69,7 @@ class BoardControllerTest extends BaseMemberTest {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
-    BoardCommandService boardCommandService;
+    BoardCommandServiceImpl boardCommandService;
     @Autowired
     MemberRepository memberRepository;
 

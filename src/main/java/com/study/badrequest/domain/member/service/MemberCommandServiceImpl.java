@@ -88,6 +88,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     @Override
     public MemberResponse.UpdateResult resetPassword(Long memberId, String password, String newPassword) {
         log.info("==>MemberCommandService-> resetPassword ID= {}", memberId);
+
         Member member = findMemberById(memberId);
 
         passwordCheck(password, member.getPassword());
@@ -98,6 +99,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     }
 
     // TODO: 2023/02/18 DeleteEvent 구현
+
     /**
      * 회원 탈퇴
      * memberEventPublisher 로 이벤트 발행

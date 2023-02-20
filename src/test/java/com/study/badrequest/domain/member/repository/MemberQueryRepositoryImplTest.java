@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 @ActiveProfiles("test")
 class MemberQueryRepositoryImplTest extends BaseMemberTest {
-
     @Autowired
     private MemberQueryRepository memberQueryRepository;
     @Autowired

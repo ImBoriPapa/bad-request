@@ -5,14 +5,14 @@ import com.study.badrequest.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -106,8 +106,18 @@ class MemberTest extends BaseMemberTest {
     public void replaceUsername_concurrencyTest() throws InterruptedException {
         //given
         final int numThreads = 10;
+        ConcurrentLinkedQueue<String> store1 = new ConcurrentLinkedQueue<>();
+        ConcurrentLinkedQueue<String> store2 = new ConcurrentLinkedQueue<>();
 
-        Member member = Member.createMember()
+        Member member1 = Member.createMember()
+                .email(UUID.randomUUID().toString())
+                .nickname(UUID.randomUUID().toString())
+                .password(UUID.randomUUID().toString())
+                .contact(UUID.randomUUID().toString())
+                .authority(Authority.MEMBER)
+                .build();
+
+        Member member2 = Member.createMember()
                 .email(UUID.randomUUID().toString())
                 .nickname(UUID.randomUUID().toString())
                 .password(UUID.randomUUID().toString())
@@ -117,7 +127,7 @@ class MemberTest extends BaseMemberTest {
 
         // 동시 요청용 쓰레드풀
         final ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-        final Set<String> set = new HashSet<String>();
+
 
         CountDownLatch countDownLatch = new CountDownLatch(numThreads);
 
@@ -125,16 +135,20 @@ class MemberTest extends BaseMemberTest {
         for (int i = 1; i <= numThreads; i++) {
 
             executorService.execute(() -> {
-                member.replaceUsername();
-                set.add(member.getUsername());
+                member1.replaceUsername();
+                store1.add(member1.getUsername());
+                member2.replaceUsername();
+                store2.add(member2.getUsername());
                 countDownLatch.countDown();
             });
         }
         // 쓰레드 작업이 끝날때 까지 대기
         countDownLatch.await();
         executorService.shutdown();
+
         //then
-        Assertions.assertThat(set.size()).isEqualTo(numThreads);
+        Assertions.assertThat(store1.size()).isEqualTo(numThreads);
+        Assertions.assertThat(store2.size()).isEqualTo(numThreads);
     }
 
     @Test

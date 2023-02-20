@@ -17,7 +17,6 @@ import com.study.badrequest.commons.exception.custom_exception.BoardException;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +28,7 @@ import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
-public class BoardCommandService {
+public class BoardCommandServiceImpl implements BoardCommendService{
     public static final String BOARD_FOLDER_NAME = "board";
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
@@ -41,8 +40,9 @@ public class BoardCommandService {
      * 게시판 생성
      */
     @CustomLogTracer
+    @Override
     public BoardResponse.Create create(String username, BoardRequest.Create form, List<MultipartFile> images) {
-
+        log.info("BoardCommendService->create");
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
@@ -62,6 +62,7 @@ public class BoardCommandService {
     }
 
     @CustomLogTracer
+    @Override
     public BoardResponse.Update update(String username, Long boardId, BoardRequest.Update form, List<MultipartFile> images) {
 
         Member member = memberRepository.findByUsername(username)
@@ -82,11 +83,13 @@ public class BoardCommandService {
     }
 
     @CustomLogTracer
+    @Override
     public void delete(Long boardId) {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 
         List<BoardImage> images = boardImageRepository.findByBoard(board);
+
         if (!images.isEmpty()) {
             imageUploader.deleteFile(images.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
             boardImageRepository.deleteAll(images);
@@ -99,7 +102,7 @@ public class BoardCommandService {
         boardRepository.delete(board);
     }
 
-    @CustomLogTracer
+
     public void saveImages(List<MultipartFile> images, Board board) {
         if (images != null) {
 
@@ -120,7 +123,7 @@ public class BoardCommandService {
         }
     }
 
-    @CustomLogTracer
+
     public void patchImages(List<MultipartFile> images, Board board) {
         if (images != null) {
             boardImageRepository.findByBoard(board)
@@ -130,12 +133,12 @@ public class BoardCommandService {
         }
     }
 
-    @CustomLogTracer
+
     public Board getBoard(Long boardId) {
         return boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardException(CustomStatus.NOT_FOUND_BOARD));
     }
-
+    @Override
     @CustomLogTracer
     public void deleteAll(List<Long> boardId) {
         boardRepository.findAllById(boardId);

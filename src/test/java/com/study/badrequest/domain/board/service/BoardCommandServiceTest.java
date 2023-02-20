@@ -2,8 +2,6 @@ package com.study.badrequest.domain.board.service;
 
 
 import com.study.badrequest.base.BaseMemberTest;
-import com.study.badrequest.domain.login.dto.LoginResponse;
-import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
@@ -15,7 +13,6 @@ import com.study.badrequest.domain.board.entity.Topic;
 
 
 import com.study.badrequest.domain.board.repository.BoardRepository;
-import com.study.badrequest.domain.board.service.BoardCommandService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
@@ -30,8 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
-
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -39,7 +34,7 @@ import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 @Slf4j
 class BoardCommandServiceTest extends BaseMemberTest {
     @Autowired
-    private BoardCommandService boardCommandService;
+    private BoardCommandServiceImpl boardCommandService;
     @Autowired
     private BoardRepository boardRepository;
 

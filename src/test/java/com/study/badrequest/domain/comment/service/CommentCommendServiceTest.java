@@ -4,7 +4,7 @@ import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
-import com.study.badrequest.domain.board.service.BoardCommandService;
+import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
@@ -45,7 +45,7 @@ class CommentCommendServiceTest extends BaseMemberTest {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
-    BoardCommandService boardCommandService;
+    BoardCommandServiceImpl boardCommandService;
 
     @BeforeEach
     void beforeEach() {
