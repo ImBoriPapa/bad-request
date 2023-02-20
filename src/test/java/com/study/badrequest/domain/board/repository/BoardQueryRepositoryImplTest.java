@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.repository;
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.service.BoardCommandService;
 import com.study.badrequest.domain.member.entity.Authority;
@@ -40,7 +41,7 @@ import static org.assertj.core.api.Assertions.*;
 @Slf4j
 @ActiveProfiles("test")
 @Transactional
-class BoardQueryRepositoryImplTest {
+class BoardQueryRepositoryImplTest extends BaseMemberTest {
 
     @Autowired
     BoardRepository boardRepository;
@@ -67,7 +68,7 @@ class BoardQueryRepositoryImplTest {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .contact("010-1234-1234")
-                .profileImage(ProfileImage.builder().fullPath("기본 이미지").build())
+                .profileImage(ProfileImage.createProfileImage().fullPath("기본 이미지").build())
                 .nickname("nickname")
                 .authority(Authority.MEMBER)
                 .build();
@@ -87,7 +88,6 @@ class BoardQueryRepositoryImplTest {
     @AfterEach
     void afterEach() {
         boardRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.study.badrequest.api.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
@@ -49,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @Transactional
 @ActiveProfiles("test")
-class LoginControllerTest {
+class LoginControllerTest extends BaseMemberTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -77,10 +78,7 @@ class LoginControllerTest {
 
     }
 
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
-    }
+
 
     @Test
     @DisplayName("로그인 테스트")

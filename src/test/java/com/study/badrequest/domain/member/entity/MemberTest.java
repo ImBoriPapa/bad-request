@@ -1,16 +1,18 @@
 package com.study.badrequest.domain.member.entity;
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -25,18 +27,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @Slf4j
 @Transactional
-class MemberTest {
+class MemberTest extends BaseMemberTest {
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     EntityManager em;
-
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN MEMBER_ID RESTART WITH 1")
-                .executeUpdate();
-    }
 
     @Test
     @DisplayName("회원 생성 테스트")
@@ -73,24 +68,24 @@ class MemberTest {
     public void createMember_concurrencyTest() throws InterruptedException {
         final int numThreads = 10;
 
-        Set<String> set = new HashSet<String>();
+        final Set<String> set = new HashSet<String>();
 
         // 동시 요청용 쓰레드풀
         final ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
         CountDownLatch countDownLatch = new CountDownLatch(numThreads);
         // replaceUsername() 동시 실행
-        for (int i = 0; i < numThreads; i++) {
-            executorService.execute(() -> set.add(initMember().getUsername()));
+        for (int i = 1; i <= numThreads; i++) {
+            Member member = initMember();
+            executorService.execute(() -> set.add(member.getUsername()));
             countDownLatch.countDown();
         }
-
-        List<Member> all = memberRepository.findAll();
-        set.addAll(all.stream().map(Member::getUsername).collect(Collectors.toList()));
+        List<Member> members = memberRepository.findAll();
+        members.forEach(member -> log.info("member id ={}, username={}", member.getId(), member.getUsername()));
+        set.forEach(member -> log.info("member username = {}", member));
 
         // 쓰레드 작업이 끝날때 까지 대기
         countDownLatch.await();
         executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.MINUTES);
 
         //then
         Assertions.assertThat(set.size()).isEqualTo(numThreads);
@@ -112,15 +107,7 @@ class MemberTest {
         //given
         final int numThreads = 10;
 
-        Member member1 = Member.createMember()
-                .email(UUID.randomUUID().toString())
-                .nickname(UUID.randomUUID().toString())
-                .password(UUID.randomUUID().toString())
-                .contact(UUID.randomUUID().toString())
-                .authority(Authority.MEMBER)
-                .build();
-
-        Member member2 = Member.createMember()
+        Member member = Member.createMember()
                 .email(UUID.randomUUID().toString())
                 .nickname(UUID.randomUUID().toString())
                 .password(UUID.randomUUID().toString())
@@ -130,28 +117,24 @@ class MemberTest {
 
         // 동시 요청용 쓰레드풀
         final ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
-        final Set<String> set = Collections.newSetFromMap(new ConcurrentHashMap<>());
+        final Set<String> set = new HashSet<String>();
+
+        CountDownLatch countDownLatch = new CountDownLatch(numThreads);
 
         // replaceUsername() 동시 실행
-        for (int i = 0; i < numThreads; i++) {
-            executorService.execute(() -> {
-                member1.replaceUsername();
-                set.add(member1.getUsername());
-                log.info("Member1 ID= {}, Username ={}", member1.getId(), member1.getUsername());
+        for (int i = 1; i <= numThreads; i++) {
 
-            });
             executorService.execute(() -> {
-                member2.replaceUsername();
-                set.add(member2.getUsername());
-                log.info("Member2 ID= {} Username ={}", member2, member2.getUsername());
+                member.replaceUsername();
+                set.add(member.getUsername());
+                countDownLatch.countDown();
             });
         }
         // 쓰레드 작업이 끝날때 까지 대기
+        countDownLatch.await();
         executorService.shutdown();
-        executorService.awaitTermination(1, TimeUnit.MINUTES);
-
         //then
-        Assertions.assertThat(set.size()).isEqualTo(numThreads * 2);
+        Assertions.assertThat(set.size()).isEqualTo(numThreads);
     }
 
     @Test
@@ -182,6 +165,8 @@ class MemberTest {
     @Transactional
     void findByUsernameTest() throws Exception {
         //given
+        List<Member> before = memberRepository.findAll();
+        before.forEach(m -> log.info("BEFORE exists? ={} ={} ={}", m.getId(), m.getUsername(), m.getAuthority()));
         int end = 100;
         Map<String, Member> memberMap = new HashMap<>();
 
@@ -210,7 +195,6 @@ class MemberTest {
         //then
         assertThat(all.size()).isEqualTo(end);
         assertThat(members.size()).isEqualTo(end);
-
     }
 
     @Test

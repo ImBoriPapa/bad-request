@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.login.service;
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
@@ -28,7 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 @Transactional
 @Slf4j
-class JwtLoginServiceTest {
+class JwtLoginServiceTest extends BaseMemberTest {
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
     @Autowired
@@ -57,7 +58,6 @@ class JwtLoginServiceTest {
 
     @AfterEach
     void afterEach() {
-        memberRepository.deleteAll();
         refreshTokenRepository.deleteAll();
     }
 

@@ -1,12 +1,13 @@
 package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.domain.member.repository.MemberRepository;
-import com.study.badrequest.domain.member.service.MemberCommandService;
+import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,9 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
+
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -46,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @Transactional
 @ActiveProfiles("test")
-public class MemberApiDocs {
+public class MemberApiDocs extends BaseMemberTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -55,7 +58,7 @@ public class MemberApiDocs {
     @Autowired
     JwtLoginService loginService;
     @Autowired
-    MemberCommandService memberCommandService;
+    MemberCommandServiceImpl memberCommandService;
     @Autowired
     MemberRepository memberRepository;
 
@@ -73,11 +76,6 @@ public class MemberApiDocs {
                 .contact(sampleContact)
                 .build();
         memberCommandService.signupMember(form);
-    }
-
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
     }
 
     @Test
@@ -291,5 +289,36 @@ public class MemberApiDocs {
                 ));
 
 
+    }
+
+    @Test
+    @DisplayName("Member Info 테스트")
+    void memberInfoTest() throws Exception {
+        //given
+        LoginResponse.LoginDto loginDto = loginService.loginProcessing(sampleEmail, samplePassword);
+
+        //when
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/members/auth")
+                        .header(AUTHORIZATION_HEADER, "Bearer " + loginDto.getAccessToken())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print())
+                //then
+                .andDo(document("member-auth",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("AccessToken")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(JsonFieldType.STRING).description("커스텀 응답상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("커스텀 응답 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("커스텀 응답 메시지"),
+                                fieldWithPath("result.id").type(JsonFieldType.NUMBER).description("회원 식별 아이디"),
+                                fieldWithPath("result.authority").type(JsonFieldType.STRING).description("회원 권한"),
+                                fieldWithPath("result.links").type(JsonFieldType.ARRAY).description("링크 정보")
+//                                fieldWithPath("result.links.[0].rel").type(JsonFieldType.STRING).description("링크 정보"),
+//                                fieldWithPath("result.links.[0].href").type(JsonFieldType.STRING).description("링크")
+                        )));
     }
 }

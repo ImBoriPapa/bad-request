@@ -2,6 +2,7 @@ package com.study.badrequest.api.member;
 
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
+import com.study.badrequest.domain.member.service.MemberCommandService;
 import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.domain.member.dto.MemberResponse;
@@ -28,18 +29,25 @@ import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL)
 @Slf4j
-public class MemberController {
-    private final MemberCommandServiceImpl memberCommandService;
+public class MemberCommendController {
+    private final MemberCommandService memberCommandService;
     private final MemberValidator memberValidator;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
-    @PostMapping(value = "/members", consumes = MediaType.APPLICATION_JSON_VALUE)
+    /**
+     * 회원 가입 요청
+     *
+     * @return 201 create
+     */
+    @PostMapping(value = "/members", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> postMember(@Validated @RequestBody MemberRequest.CreateMember form, BindingResult bindingResult) {
+        log.info("=>MemberCommendController->postMember");
 
         memberValidator.validateCreateForm(form);
 
         if (bindingResult.hasErrors()) {
+            log.error("==>Validation Error");
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
@@ -52,11 +60,13 @@ public class MemberController {
                 .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
     }
 
-    @PatchMapping("/members/{memberId}/password")
+    @PatchMapping(value = "/members/{memberId}/password", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> patchPassword(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.ResetPassword form, BindingResult bindingResult) {
+        log.info("=>MemberCommendController->patchPassword");
 
         if (bindingResult.hasErrors()) {
+            log.error("==>Validation Error");
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
@@ -74,8 +84,10 @@ public class MemberController {
                                                         @PathVariable Long memberId,
                                                         @RequestBody MemberRequest.UpdateContact form,
                                                         BindingResult bindingResult) {
+        log.info("=>MemberCommendController->patchContact");
 
         if (bindingResult.hasErrors()) {
+            log.error("==>Validation Error");
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 
@@ -93,7 +105,9 @@ public class MemberController {
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.DeleteMember form, BindingResult bindingResult) {
 
+        log.info("=>MemberCommendController->deleteMember");
         if (bindingResult.hasErrors()) {
+            log.error("==>Validation Error");
             throw new MemberException(CustomStatus.VALIDATION_ERROR, bindingResult);
         }
 

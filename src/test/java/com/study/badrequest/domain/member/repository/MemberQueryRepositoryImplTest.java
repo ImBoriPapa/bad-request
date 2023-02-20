@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.member.repository;
 
 import com.querydsl.core.types.Order;
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
@@ -32,19 +33,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @Slf4j
 @Transactional
 @ActiveProfiles("test")
-class MemberQueryRepositoryImplTest {
+class MemberQueryRepositoryImplTest extends BaseMemberTest {
 
     @Autowired
     private MemberQueryRepository memberQueryRepository;
     @Autowired
     private MemberRepository memberRepository;
-
-    private String email = "email@email.com";
-
+    private final String email = "email@email.com";
 
     @BeforeEach
     void beforeEach() {
-        ProfileImage profileImage = ProfileImage.builder()
+        ProfileImage profileImage = ProfileImage.createProfileImage()
                 .fullPath("기본 이미지 경로")
                 .build();
 
@@ -74,11 +73,6 @@ class MemberQueryRepositoryImplTest {
                             memberRepository.save(member);
                         }
                 );
-    }
-
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
     }
 
     @Transactional(readOnly = true)

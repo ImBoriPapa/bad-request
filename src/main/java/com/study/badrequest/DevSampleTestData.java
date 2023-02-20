@@ -49,7 +49,7 @@ public class DevSampleTestData {
 
     public void sampleUserData() {
 
-        ProfileImage profileImage = ProfileImage.builder()
+        ProfileImage profileImage = ProfileImage.createProfileImage()
                 .fullPath("https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/default/profile.jpg")
                 .build();
 

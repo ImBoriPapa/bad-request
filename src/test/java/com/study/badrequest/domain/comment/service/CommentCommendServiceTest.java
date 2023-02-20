@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.comment.service;
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
@@ -31,7 +32,7 @@ import static org.assertj.core.api.Assertions.*;
 @Slf4j
 @ActiveProfiles("test")
 @Transactional
-class CommentCommendServiceTest {
+class CommentCommendServiceTest extends BaseMemberTest {
 
     @Autowired
     CommentCommendService commentCommendService;
@@ -54,7 +55,7 @@ class CommentCommendServiceTest {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .contact("010-1234-1234")
-                .profileImage(ProfileImage.builder().fullPath("기본 이미지").build())
+                .profileImage(ProfileImage.createProfileImage().fullPath("기본 이미지").build())
                 .nickname("nickname")
                 .authority(Authority.MEMBER)
                 .build();
@@ -74,7 +75,6 @@ class CommentCommendServiceTest {
     void afterEach() {
         commentRepository.deleteAll();
         boardRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test

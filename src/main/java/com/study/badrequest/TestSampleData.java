@@ -44,7 +44,7 @@ public class TestSampleData {
 
     public void initSampleUser() {
         log.info("[INIT SAMPLE USER START]");
-        ProfileImage defaultProfileImage = ProfileImage.builder()
+        ProfileImage defaultProfileImage = ProfileImage.createProfileImage()
                 .fullPath("https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.JPG").build();
 
         Member user = Member.createMember()
@@ -104,7 +104,7 @@ public class TestSampleData {
         }
 
         for (int i = 21; i <= 40; i++) {
-            ProfileImage profileImage = ProfileImage.builder()
+            ProfileImage profileImage = ProfileImage.createProfileImage()
                     .fullPath("http://localhost:8080/image/image.png")
                     .build();
 

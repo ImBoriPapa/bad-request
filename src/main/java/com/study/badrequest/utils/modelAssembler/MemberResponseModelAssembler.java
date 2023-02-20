@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.login.LoginController;
-import com.study.badrequest.api.member.MemberController;
+import com.study.badrequest.api.member.MemberCommendController;
 import com.study.badrequest.api.member.MemberQueryController;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
@@ -39,7 +39,7 @@ public class MemberResponseModelAssembler {
      */
     public EntityModel<MemberResponse.DeleteResult> toModel(MemberResponse.DeleteResult result) {
         return EntityModel.of(result)
-                .add(linkTo(methodOn(MemberController.class).postMember(null, null)).withRel("POST: 회원가입"));
+                .add(linkTo(methodOn(MemberCommendController.class).postMember(null, null)).withRel("POST: 회원가입"));
     }
 
     // TODO: 2023/02/11 응답값 추가
@@ -59,13 +59,13 @@ public class MemberResponseModelAssembler {
 
         if (authority == Authority.ADMIN) {
             return EntityModel.of(memberDetailDto)
-                    .add(linkTo(methodOn(MemberController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"));
+                    .add(linkTo(methodOn(MemberCommendController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"));
         }
 
         return EntityModel.of(memberDetailDto)
-                .add(linkTo(methodOn(MemberController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"))
-                .add(linkTo(methodOn(MemberController.class).patchPassword(memberDetailDto.getId(), null, null)).withRel("PATCH : 비밀번호 변경"))
-                .add(linkTo(methodOn(MemberController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
+                .add(linkTo(methodOn(MemberCommendController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"))
+                .add(linkTo(methodOn(MemberCommendController.class).patchPassword(memberDetailDto.getId(), null, null)).withRel("PATCH : 비밀번호 변경"))
+                .add(linkTo(methodOn(MemberCommendController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
     }
 
     public EntityModel<MemberListDto> toListModel(MemberListDto result) {

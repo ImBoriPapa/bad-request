@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.board.service;
 
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.member.entity.Authority;
@@ -36,7 +37,7 @@ import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 @ActiveProfiles("test")
 @Transactional
 @Slf4j
-class BoardCommandServiceTest {
+class BoardCommandServiceTest extends BaseMemberTest {
     @Autowired
     private BoardCommandService boardCommandService;
     @Autowired
@@ -74,7 +75,6 @@ class BoardCommandServiceTest {
     @AfterEach
     void afterEach() {
         boardRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class HealthCheckController {
+public class HomeController {
 
     @Value("${message.hello}")
     public String serverKind;

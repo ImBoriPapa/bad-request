@@ -11,7 +11,6 @@ import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
-import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +24,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 @RequiredArgsConstructor
-public class MemberCommandService {
+public class MemberCommandServiceImpl implements MemberCommandService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final ImageUploader imageUploader;
-    private final ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher memberEventPublisher;
 
+    /**
+     * 회원 가입
+     * 회원 가입시 기본 프로필 이미지 경로 저장
+     * 비밀번호 암호화
+     * Authority == MEMBER
+     */
     @CustomLogTracer
+    @Override
     public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
+        log.info("==>MemberCommandService-> signupMember");
 
-        ProfileImage profileImage = ProfileImage.builder()
+        ProfileImage profileImage = ProfileImage.createProfileImage()
                 .fullPath(imageUploader.getDefaultProfileImage()).build();
 
         Member member = Member.createMember()
@@ -52,52 +59,75 @@ public class MemberCommandService {
         return new MemberResponse.SignupResult(savedMember);
     }
 
+    /**
+     * Member 권한 변경
+     */
     @CustomLogTracer
+    @Override
     public void changePermissions(Long memberId, Authority authority) {
-        memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
-                .changePermissions(authority);
+        log.info("==>MemberCommandService-> changePermissions");
+        findMemberById(memberId).changePermissions(authority);
     }
 
+    /**
+     * 연락처 변경
+     */
     @CustomLogTracer
+    @Override
     public MemberResponse.UpdateResult updateContact(Long memberId, String contact) {
+        log.info("==>MemberCommandService-> updateContact ID= {}", memberId);
         Member member = findMemberById(memberId);
         member.changeContact(contact);
         return new MemberResponse.UpdateResult(member);
     }
 
+    /**
+     * 비밀번호 변경
+     */
     @CustomLogTracer
-    public MemberResponse.UpdateResult resetPassword(Long id, String password, String newPassword) {
+    @Override
+    public MemberResponse.UpdateResult resetPassword(Long memberId, String password, String newPassword) {
+        log.info("==>MemberCommandService-> resetPassword ID= {}", memberId);
+        Member member = findMemberById(memberId);
 
-        Member member = findMemberById(id);
         passwordCheck(password, member.getPassword());
+
         member.changePassword(passwordEncoder.encode(newPassword));
 
         return new MemberResponse.UpdateResult(member);
     }
 
-    // TODO: 2023/02/15 DeleteEvent 구현
+    // TODO: 2023/02/18 DeleteEvent 구현
+    /**
+     * 회원 탈퇴
+     * memberEventPublisher 로 이벤트 발행
+     */
     @CustomLogTracer
+    @Override
     public MemberResponse.DeleteResult resignMember(Long memberId, String password) {
-
+        log.info("==>MemberCommandService-> resignMember ID= {}", memberId);
         Member member = findMemberById(memberId);
 
         passwordCheck(password, member.getPassword());
 
-        eventPublisher.publishEvent(new ResignEventDto(member.getId(),member.getUsername()));
+        memberEventPublisher.publishEvent(new ResignEventDto(member.getId(), member.getUsername()));
 
         memberRepository.delete(member);
 
         return new MemberResponse.DeleteResult();
     }
 
-    @CustomLogTracer
+    /**
+     * 회원 조회
+     */
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
     }
 
-    @CustomLogTracer
+    /**
+     * 비밀번호 비교
+     */
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
             throw new MemberException(CustomStatus.WRONG_PASSWORD);

@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.entity;
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
@@ -21,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
-class BoardTest {
+class BoardTest extends BaseMemberTest {
 
     @Autowired
     MemberRepository memberRepository;
@@ -47,7 +48,6 @@ class BoardTest {
 
     @AfterEach
     void afterEach() {
-        memberRepository.deleteAll();
         boardRepository.deleteAll();
     }
 

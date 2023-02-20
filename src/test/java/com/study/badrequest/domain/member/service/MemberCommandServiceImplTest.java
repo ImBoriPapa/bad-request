@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.member.service;
 
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.domain.member.entity.Authority;
@@ -13,7 +14,6 @@ import com.study.badrequest.commons.exception.custom_exception.MemberException;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,25 +31,17 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @ActiveProfiles("test")
 @Transactional
 @Slf4j
-class MemberCommandServiceTest {
+class MemberCommandServiceImplTest extends BaseMemberTest {
 
     @Autowired
-    MemberCommandService memberCommandService;
+    MemberCommandServiceImpl memberCommandService;
     @Autowired
     MemberRepository memberRepository;
     @Autowired
     RefreshTokenRepository tokenRepository;
     @Autowired
     PasswordEncoder passwordEncoder;
-    @Autowired
-    EntityManager em;
 
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
-        em.createNativeQuery("ALTER TABLE MEMBER ALTER COLUMN MEMBER_ID RESTART WITH 1")
-                .executeUpdate();
-    }
 
     @Test
     @DisplayName("회원등록 테스트")
@@ -64,7 +55,8 @@ class MemberCommandServiceTest {
                 .build();
         //when
         MemberResponse.SignupResult result = memberCommandService.signupMember(form);
-        Member findMember = memberRepository.findById(result.getMemberId()).get();
+        Member findMember = memberRepository.findById(result.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 없음"));
 
         //then
         assertThat(findMember.getEmail()).isEqualTo(form.getEmail());
@@ -105,8 +97,12 @@ class MemberCommandServiceTest {
                 .build();
         //when
         MemberResponse.SignupResult result = memberCommandService.signupMember(form);
+
         memberCommandService.changePermissions(result.getMemberId(), Authority.TEACHER);
-        Authority authority = memberRepository.findById(result.getMemberId()).get().getAuthority();
+
+        Authority authority = memberRepository.findById(result.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 조회 실패"))
+                .getAuthority();
         //then
         assertThat(authority).isEqualTo(Authority.TEACHER);
     }
@@ -129,7 +125,8 @@ class MemberCommandServiceTest {
 
         memberCommandService.updateContact(signupResult.getMemberId(), newContact);
 
-        Member findMember = memberRepository.findById(signupResult.getMemberId()).get();
+        Member findMember = memberRepository.findById(signupResult.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 조회 실패"));
         //then
         assertThat(findMember.getContact()).isEqualTo(newContact);
         assertThat(passwordEncoder.matches(form.getPassword(), findMember.getPassword())).isTrue();
@@ -152,7 +149,8 @@ class MemberCommandServiceTest {
         MemberResponse.SignupResult signupResult = memberCommandService.signupMember(form);
         memberCommandService.resetPassword(signupResult.getMemberId(), form.getPassword(), newPassword);
 
-        Member member = memberRepository.findById(signupResult.getMemberId()).get();
+        Member member = memberRepository.findById(signupResult.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("회원 조회 실패"));
         //then
         assertThat(passwordEncoder.matches(newPassword, member.getPassword())).isTrue();
 

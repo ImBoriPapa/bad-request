@@ -32,7 +32,7 @@ spring:
         format_sql: true # log
         show_sql: true
     open-in-view: false
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MariaDB103Dialect
   logging:
     level:
       org.hibernate.SQL:

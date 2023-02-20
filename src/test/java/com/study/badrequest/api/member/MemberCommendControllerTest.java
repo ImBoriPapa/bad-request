@@ -2,9 +2,11 @@ package com.study.badrequest.api.member;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.base.BaseMemberTest;
+import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -12,31 +14,32 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
+
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import javax.persistence.EntityManager;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 @SpringBootTest
-@AutoConfigureRestDocs
-@AutoConfigureMockMvc
 @Slf4j
 @Transactional
+@AutoConfigureMockMvc
 @ActiveProfiles("test")
-class MemberControllerTest {
+class MemberCommendControllerTest extends BaseMemberTest {
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -47,6 +50,8 @@ class MemberControllerTest {
     MemberCommandServiceImpl memberCommandService;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    EntityManager em;
 
     private String sampleEmail = "sample@google.com";
     private String sampleContact = "010-1234-1234";
@@ -60,11 +65,6 @@ class MemberControllerTest {
                 .contact(sampleContact)
                 .build();
         memberCommandService.signupMember(form);
-    }
-
-    @AfterEach
-    void afterEach() {
-        memberRepository.deleteAll();
     }
 
     @Test
@@ -113,6 +113,7 @@ class MemberControllerTest {
                 .andExpect(jsonPath("message").value(CustomStatus.DUPLICATE_CONTACT.getMessage()))
                 .andDo(print());
     }
+
     @Test
     @DisplayName("회원 가입 요청 검증 테스트 - form validation")
     void createValidation3() throws Exception {

@@ -1,6 +1,7 @@
 package com.study.badrequest.api.board;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.entity.Board;
@@ -56,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Slf4j
 @Transactional
 @ActiveProfiles("test")
-class BoardControllerTest {
+class BoardControllerTest extends BaseMemberTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -82,7 +83,7 @@ class BoardControllerTest {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .contact("010-1234-1234")
-                .profileImage(ProfileImage.builder().fullPath("기본 이미지").build())
+                .profileImage(ProfileImage.createProfileImage().fullPath("기본 이미지").build())
                 .nickname("nickname")
                 .authority(Authority.MEMBER)
                 .build();
@@ -102,7 +103,6 @@ class BoardControllerTest {
     @AfterEach
     void afterEach() {
         boardRepository.deleteAll();
-        memberRepository.deleteAll();
     }
 
     @Test

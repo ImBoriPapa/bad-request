@@ -1,6 +1,7 @@
 package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.board.dto.BoardRequest;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.Category;
@@ -51,7 +52,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Slf4j
 @Transactional
 @ActiveProfiles("test")
-class CommentApiDocs {
+class CommentApiDocs extends BaseMemberTest {
 
     @Autowired
     MockMvc mockMvc;
@@ -81,7 +82,7 @@ class CommentApiDocs {
                 .email(email)
                 .password(passwordEncoder.encode(password))
                 .contact("010-1234-1234")
-                .profileImage(ProfileImage.builder().fullPath("기본 이미지").build())
+                .profileImage(ProfileImage.createProfileImage().fullPath("기본 이미지").build())
                 .nickname("nickname")
                 .authority(Authority.MEMBER)
                 .build();
@@ -100,7 +101,6 @@ class CommentApiDocs {
     @AfterEach
     void afterEach() {
         boardRepository.deleteAll();
-        memberRepository.deleteAll();
         commentRepository.deleteAll();
     }
 

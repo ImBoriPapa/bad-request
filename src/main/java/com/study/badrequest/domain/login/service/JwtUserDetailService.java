@@ -16,18 +16,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtUserDetailService implements UserDetailsService {
-    private final MemberQueryRepository memberQueryRepositoryImpl;
+    private final MemberQueryRepository memberQueryRepository;
 
     /**
      * Member.getUsername = email
-     *
-     * @throws UsernameNotFoundException
      */
 
     @Override
     @CustomLogTracer
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberQueryRepositoryImpl.findUserInfoByUsername(username)
+        return memberQueryRepository.findUserInfoByUsername(username)
                 .map(memberDto -> new User(
                                 memberDto.getUsername(),
                                 memberDto.getPassword(),

@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 회원 권한
+ */
 @Getter
 public enum Authority {
     MEMBER("ROLE_MEMBER"),

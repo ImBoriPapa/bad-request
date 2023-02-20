@@ -8,8 +8,8 @@ import javax.persistence.*;
 
 @Embeddable
 @NoArgsConstructor
-@Builder
 @Getter
+@Table(name = "PROFILE_IMAGE")
 public class ProfileImage {
 
     @Column(name = "ORIGINAL_NAME")
@@ -23,10 +23,10 @@ public class ProfileImage {
 
     @Column(name = "SIZE")
     private Long size;
-
     @Column(name = "TYPE")
     private String fileType;
 
+    @Builder(builderMethodName = "createProfileImage")
     public ProfileImage(String originalFileName, String storedFileName, String fullPath, Long size, String fileType) {
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
