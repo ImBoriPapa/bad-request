@@ -10,9 +10,6 @@ public interface ImageUploader {
     List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName);
 
     String getDefaultProfileImage();
-    String createFileName(String originalFileName);
-
-    String getFileExtension(String originalFileName);
 
     void deleteFile(String storedName);
 
