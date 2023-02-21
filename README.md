@@ -18,7 +18,7 @@ Version: 1.0.0
 
 ***
 
-### API 문서: <http://www.bad-request.kr/docs/index.html>
+### API 문서: <https://www.bad-request.kr/docs/index.html>
 
 ***
 

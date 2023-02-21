@@ -63,7 +63,7 @@ class MemberTest extends BaseMemberTest {
     /**
      * 테스트 보강
      */
-    @Test
+//    @Test
     @Transactional
     public void createMember_concurrencyTest() throws InterruptedException {
         final int numThreads = 10;

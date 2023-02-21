@@ -42,6 +42,14 @@ public class Member {
     @Column(name = "UPDATE_AT")
     private LocalDateTime updatedAt;
 
+    /**
+     * ReturnType String SpringSecurity 에서 Type Converting 없이 사용
+     * 시간순 정렬 UUID
+     * <p>
+     * 2/15 @PrePersist,AtomicLong 동시성 문제 방지 하기 위해 사용
+     */
+    private final static AtomicLong USERNAME_SEQUENCE = new AtomicLong();
+
     @Builder(builderMethodName = "createMember")
     public Member(String email, String nickname, String password, String contact, ProfileImage profileImage, Authority authority) {
         this.email = email;
@@ -53,14 +61,8 @@ public class Member {
         this.authority = authority;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+
     }
-    /**
-     * ReturnType String SpringSecurity 에서 Type Converting 없이 사용
-     * 시간순 정렬 UUID
-     * <p>
-     * 2/15 @PrePersist,AtomicLong 동시성 문제 방지 하기 위해 사용
-     */
-    private final static AtomicLong USERNAME_SEQUENCE = new AtomicLong();
 
     /**
      * AtomicLong : USERNAME_SEQUENCE 로 username 생성하고
@@ -90,6 +92,7 @@ public class Member {
     public void replaceUsername() {
         generateSequentialUUID();
     }
+
     /**
      * Entity 업데이트 직전 수행
      */

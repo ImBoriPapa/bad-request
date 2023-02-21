@@ -18,12 +18,8 @@ import java.util.List;
 @Transactional
 @Slf4j
 public abstract class BaseMemberTest {
-
-    @Autowired
-    MemberRepository memberRepository;
     @Autowired
     EntityManager em;
-
     /**
      * Member Entity 초기화
      */
