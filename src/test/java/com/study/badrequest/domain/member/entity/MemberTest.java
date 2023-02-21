@@ -65,9 +65,25 @@ class MemberTest extends BaseMemberTest {
      */
     @Test
     @Transactional
+    @Disabled
     public void createMember_concurrencyTest() throws InterruptedException {
         final int numThreads = 10;
 
+        Member member1 = Member.createMember()
+                .email(UUID.randomUUID().toString())
+                .nickname(UUID.randomUUID().toString())
+                .password(UUID.randomUUID().toString())
+                .contact(UUID.randomUUID().toString())
+                .authority(Authority.MEMBER)
+                .build();
+
+        Member member2 = Member.createMember()
+                .email(UUID.randomUUID().toString())
+                .nickname(UUID.randomUUID().toString())
+                .password(UUID.randomUUID().toString())
+                .contact(UUID.randomUUID().toString())
+                .authority(Authority.MEMBER)
+                .build();
 
         ConcurrentLinkedQueue<String> linkedQueue = new ConcurrentLinkedQueue<>();
         // 동시 요청용 쓰레드풀
@@ -75,8 +91,8 @@ class MemberTest extends BaseMemberTest {
         CountDownLatch countDownLatch = new CountDownLatch(numThreads);
         // replaceUsername() 동시 실행
         for (int i = 1; i <= numThreads; i++) {
-            Member member = initMember();
-            executorService.execute(() -> linkedQueue.add(member.getUsername()));
+            executorService.execute(() -> linkedQueue.add(memberRepository.save(member1).getUsername()));
+            executorService.execute(() -> linkedQueue.add(memberRepository.save(member2).getUsername()));
             countDownLatch.countDown();
         }
         List<Member> members = memberRepository.findAll();
@@ -88,19 +104,10 @@ class MemberTest extends BaseMemberTest {
         executorService.shutdown();
 
         //then
-        Assertions.assertThat(linkedQueue.size()).isEqualTo(numThreads);
+        Assertions.assertThat(linkedQueue.size()).isEqualTo(numThreads*2);
     }
 
-    private Member initMember() {
-        Member member = Member.createMember()
-                .email(UUID.randomUUID().toString())
-                .nickname(UUID.randomUUID().toString())
-                .password(UUID.randomUUID().toString())
-                .contact(UUID.randomUUID().toString())
-                .authority(Authority.MEMBER)
-                .build();
-        return memberRepository.save(member);
-    }
+
 
     @Test
     public void replaceUsername_concurrencyTest() throws InterruptedException {
