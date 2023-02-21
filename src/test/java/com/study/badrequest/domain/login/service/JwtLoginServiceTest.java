@@ -5,7 +5,6 @@ import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
-import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +20,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import static com.study.badrequest.SampleUserData.SAMPLE_PASSWORD;
-import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
 @Transactional
 @Slf4j
-class JwtLoginServiceTest extends BaseMemberTest {
+class JwtLoginServiceTest extends BaseMemberTest{
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
     @Autowired
@@ -40,6 +37,7 @@ class JwtLoginServiceTest extends BaseMemberTest {
     MemberRepository memberRepository;
     @Autowired
     JwtUtils jwtUtils;
+
 
     @BeforeEach
     void beforeEach() {

@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Embeddable
 @NoArgsConstructor
 @Getter
-@Table(name = "PROFILE_IMAGE")
 public class ProfileImage {
 
     @Column(name = "ORIGINAL_NAME")

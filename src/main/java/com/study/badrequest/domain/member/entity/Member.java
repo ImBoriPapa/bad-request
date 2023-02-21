@@ -45,7 +45,7 @@ public class Member {
     /**
      * ReturnType String SpringSecurity 에서 Type Converting 없이 사용
      * 시간순 정렬 UUID
-     * <p>
+     *
      * 2/15 @PrePersist,AtomicLong 동시성 문제 방지 하기 위해 사용
      */
     private final static AtomicLong USERNAME_SEQUENCE = new AtomicLong();
@@ -61,7 +61,6 @@ public class Member {
         this.authority = authority;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-
     }
 
     /**

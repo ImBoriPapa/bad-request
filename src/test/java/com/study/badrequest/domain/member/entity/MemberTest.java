@@ -63,32 +63,32 @@ class MemberTest extends BaseMemberTest {
     /**
      * 테스트 보강
      */
-//    @Test
+    @Test
     @Transactional
     public void createMember_concurrencyTest() throws InterruptedException {
         final int numThreads = 10;
 
-        final Set<String> set = new HashSet<String>();
 
+        ConcurrentLinkedQueue<String> linkedQueue = new ConcurrentLinkedQueue<>();
         // 동시 요청용 쓰레드풀
         final ExecutorService executorService = Executors.newFixedThreadPool(numThreads);
         CountDownLatch countDownLatch = new CountDownLatch(numThreads);
         // replaceUsername() 동시 실행
         for (int i = 1; i <= numThreads; i++) {
             Member member = initMember();
-            executorService.execute(() -> set.add(member.getUsername()));
+            executorService.execute(() -> linkedQueue.add(member.getUsername()));
             countDownLatch.countDown();
         }
         List<Member> members = memberRepository.findAll();
         members.forEach(member -> log.info("member id ={}, username={}", member.getId(), member.getUsername()));
-        set.forEach(member -> log.info("member username = {}", member));
+        linkedQueue.forEach(member -> log.info("member username = {}", member));
 
         // 쓰레드 작업이 끝날때 까지 대기
         countDownLatch.await();
         executorService.shutdown();
 
         //then
-        Assertions.assertThat(set.size()).isEqualTo(numThreads);
+        Assertions.assertThat(linkedQueue.size()).isEqualTo(numThreads);
     }
 
     private Member initMember() {

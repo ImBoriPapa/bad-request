@@ -140,6 +140,10 @@ public class JwtLoginService {
         refreshTokenRepository.deleteById(authentication.getName());
         //3.SecurityContext 에서 인증 객체 제거
         SecurityContextHolder.clearContext();
+        //4.username 교체
+        memberRepository.findByUsername(authentication.getName())
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
+                .replaceUsername();
 
         return new LoginResponse.LogoutResult();
     }

@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -22,46 +23,51 @@ import java.util.*;
 @RequiredArgsConstructor
 public class S3ImageUploader implements ImageUploader {
 
-    private String bucket = "bori-market-bucket";
-    private String path = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
-
-    private String default_profile_image = "default/profile.jpg";
+    private static final String BUCKET_NAME = "bori-market-bucket";
+    private static final String BUCKET_URL = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
+    private static final String DEFAULT_PROFILE_IMAGE = "default/profile.jpg";
     private final AmazonS3Client amazonS3Client;
 
+    /**
+     * uploadFile
+     */
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
-
-        return getImageDetailList(images, folderName);
-    }
-
-    public String getDefaultProfileImage() {
-        return amazonS3Client.getResourceUrl(this.bucket, default_profile_image);
-    }
-
-    private ArrayList<ImageDetailDto> getImageDetailList(List<MultipartFile> images, String folderName) {
-
-        ArrayList<ImageDetailDto> details = new ArrayList<>();
-
-        images.forEach(file -> {
-            String storedName = getStoredName(folderName, file);
-
-            putImage(file, storedName);
-
-            details.add(
-                    ImageDetailDto
-                            .builder()
-                            .originalFileName(file.getOriginalFilename())
-                            .storedFileName(storedName)
-                            .fullPath(path + storedName)
-                            .fileType(file.getContentType())
-                            .size(file.getSize())
-                            .build());
-        });
-        return details;
+        return images.stream()
+                .map(file -> uploadImage(file, folderName))
+                .collect(Collectors.toList());
     }
 
     /**
-     * 폴더 경로 포함 저장 위치
+     * 기본 프로필이미지 반환
+     */
+    public String getDefaultProfileImage() {
+        return amazonS3Client.getResourceUrl(BUCKET_NAME, DEFAULT_PROFILE_IMAGE);
+    }
+
+    /**
+     * 이미지 업로드 후 ImageDto 반환
+     */
+    private ImageDetailDto uploadImage(MultipartFile file, String folderName) {
+
+        String storedName = getStoredName(folderName, file);
+
+        ObjectMetadata objectMetadata = getObjectMetadata(file);
+
+        putImage(file, storedName, objectMetadata);
+
+        return ImageDetailDto.builder()
+                .originalFileName(file.getOriginalFilename())
+                .storedFileName(storedName)
+                .fullPath(BUCKET_URL + storedName)
+                .fileType(file.getContentType())
+                .size(file.getSize())
+                .build();
+    }
+
+
+    /**
+     * 폴더 경로 포함 저장 위치로 저장파일명 생성
      */
     private String getStoredName(String folderName, MultipartFile file) {
         return folderName + File.separator + createFileName(file.getOriginalFilename());
@@ -70,20 +76,10 @@ public class S3ImageUploader implements ImageUploader {
     /**
      * S3 이미지 저장소에 업로드
      */
-    private void putImage(MultipartFile file, String storedName) {
-
-        ObjectMetadata objectMetadata = getObjectMetadata(file);
-
+    private void putImage(MultipartFile file, String storedName, ObjectMetadata objectMetadata) {
         try (InputStream inputStream = file.getInputStream()) {
-            amazonS3Client.putObject(
-                    new PutObjectRequest(
-                            bucket,
-                            storedName,
-                            inputStream,
-                            objectMetadata
-                    )
-                            .withCannedAcl(CannedAccessControlList.PublicRead));
-
+            amazonS3Client.putObject(new PutObjectRequest(BUCKET_NAME, storedName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new ImageFileUploadException(CustomStatus.UPLOAD_FAIL_ERROR);
         }
@@ -99,18 +95,20 @@ public class S3ImageUploader implements ImageUploader {
         return objectMetadata;
     }
 
-
-    public String createFileName(String originalFileName) {
+    /**
+     * UUID 로 파일명 생성
+     */
+    private String createFileName(String originalFileName) {
         return UUID.randomUUID().toString().concat(getFileExtension(originalFileName));
     }
 
-
+    /**
+     * 확장자 소문자로 변경후 추출
+     */
     public String getFileExtension(String originalFileName) {
 
         hasExtension(originalFileName);
-        /**
-         * 확장자 소문자로 변경
-         */
+
         String ext = originalFileName.substring(originalFileName.lastIndexOf(".")).toLowerCase();
 
         isSupportExtension(ext);
@@ -132,26 +130,30 @@ public class S3ImageUploader implements ImageUploader {
      * 지원하는 이미지 형식인지 확인
      */
     private void isSupportExtension(String ext) {
-        Arrays.stream(SupportImageExtension.values())
-                .filter(d -> d.getExtension().equals(ext))
-                .findFirst()
-                .map(SupportImageExtension::getExtension)
-                .orElseThrow(() -> new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR));
+        if (Arrays.stream(SupportImageExtension.values())
+                .noneMatch(d -> d.getExtension().equals(ext))) {
+            throw new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR);
+        }
     }
 
+    /**
+     * 이미지 단건 삭제
+     */
     public void deleteFile(String storedName) {
         log.info("[deleteFile]");
         if (storedName != null) {
-            amazonS3Client.deleteObject(new DeleteObjectRequest(path, storedName));
+            amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName));
         }
 
     }
 
-
+    /**
+     * 이미지 여러건 삭제
+     */
     public void deleteFile(List<String> storedNameList) {
         log.info("[deleteFile]");
         if (storedNameList != null) {
-            storedNameList.forEach(list -> new DeleteObjectRequest(bucket, list));
+            storedNameList.forEach(storedName -> amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName)));
         }
     }
 }
