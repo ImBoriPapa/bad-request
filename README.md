@@ -273,3 +273,6 @@ POST: <https://www.bad-request.kr/api/v1/login>
 </code>
 </pre>
 ***
+
+## ERD
+![Untitled](https://user-images.githubusercontent.com/98242564/220524806-87a011d8-5455-4a99-b09f-a010e889f891.png)
