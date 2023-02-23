@@ -46,8 +46,6 @@ class MemberCommandServiceImplTest {
     MemberCommandServiceImpl memberCommandService;
     @Spy
     MemberRepository memberRepository;
-    @Mock
-    RefreshTokenRepository tokenRepository;
     @Spy
     PasswordEncoder passwordEncoder;
     @Mock

@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberValidator {
-
     private final MemberRepository memberRepository;
     @CustomLogTracer
     public void validateCreateForm(MemberRequest.CreateMember form) {

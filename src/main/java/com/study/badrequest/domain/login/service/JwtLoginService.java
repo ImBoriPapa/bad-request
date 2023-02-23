@@ -36,7 +36,6 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_P
 @Transactional
 public class JwtLoginService {
     private final MemberRepository memberRepository;
-
     private final MemberQueryRepository memberQueryRepositoryImpl;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;

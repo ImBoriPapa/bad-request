@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 public class MemberCommandServiceImpl implements MemberCommandService {
-
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final ImageUploader imageUploader;
@@ -99,7 +98,6 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     }
 
     // TODO: 2023/02/18 DeleteEvent 구현
-
     /**
      * 회원 탈퇴
      * memberEventPublisher 로 이벤트 발행

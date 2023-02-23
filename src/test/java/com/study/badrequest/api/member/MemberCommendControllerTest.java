@@ -7,21 +7,32 @@ import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 
+import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.entity.Member;
+import com.study.badrequest.domain.member.entity.ProfileImage;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
+import com.study.badrequest.utils.jwt.JwtUtils;
+import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
+import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,14 +40,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+/**
+ * 단위테스트를 하기에는 너무 많은 의존성을 가지고 있음
+ */
 @SpringBootTest
 @Slf4j
-@Transactional
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 class MemberCommendControllerTest extends BaseMemberTest {
@@ -47,24 +62,26 @@ class MemberCommendControllerTest extends BaseMemberTest {
     @Autowired
     JwtLoginService loginService;
     @Autowired
-    MemberCommandServiceImpl memberCommandService;
-    @Autowired
     MemberRepository memberRepository;
     @Autowired
-    EntityManager em;
+    PasswordEncoder passwordEncoder;
 
-    private String sampleEmail = "sample@google.com";
-    private String sampleContact = "010-1234-1234";
+    private final String sampleEmail = "sample@google.com";
+    private final String sampleNickname = "nickname";
+    private final String sampleContact = "010-1234-1234";
+    private final String samplePassword = "password1234";
 
     @BeforeEach
     void beforeEach() {
-        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
-                .email("sample@google.com")
-                .nickname("sample")
-                .password("sample1234!@")
+        Member testMember = Member.createMember()
+                .email(sampleEmail)
+                .nickname(sampleNickname)
+                .password(passwordEncoder.encode(samplePassword))
                 .contact(sampleContact)
+                .authority(Authority.MEMBER)
+                .profileImage(ProfileImage.createProfileImage().fullPath("imagePath").build())
                 .build();
-        memberCommandService.signupMember(form);
+        memberRepository.save(testMember);
     }
 
     @Test

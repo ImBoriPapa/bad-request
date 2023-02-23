@@ -8,12 +8,11 @@ import org.junit.jupiter.api.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.test.context.ActiveProfiles;
-
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -23,11 +22,12 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Slf4j
-@Transactional
-class MemberTest extends BaseMemberTest {
+class MemberTest extends BaseMemberTest{
     @Autowired
     MemberRepository memberRepository;
     @Autowired
@@ -35,7 +35,7 @@ class MemberTest extends BaseMemberTest {
 
     @Test
     @DisplayName("회원 생성 테스트")
-    void createMemberTest() throws Exception {
+    void 회원생성() throws Exception {
         //given
         Member member = Member.createMember()
                 .email("member@member.com")
@@ -46,8 +46,8 @@ class MemberTest extends BaseMemberTest {
                 .build();
         //when
         Member savedMember = memberRepository.save(member);
-        Member findMember = memberRepository.findById(savedMember.getId())
-                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+
+        Member findMember = memberRepository.findById(savedMember.getId()).orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
         //then
         assertThat(findMember.getId()).isEqualTo(savedMember.getId());
         assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
@@ -64,7 +64,6 @@ class MemberTest extends BaseMemberTest {
      * 테스트 보강
      */
     @Test
-    @Transactional
     @Disabled
     public void createMember_concurrencyTest() throws InterruptedException {
         final int numThreads = 10;
@@ -104,9 +103,8 @@ class MemberTest extends BaseMemberTest {
         executorService.shutdown();
 
         //then
-        Assertions.assertThat(linkedQueue.size()).isEqualTo(numThreads*2);
+        Assertions.assertThat(linkedQueue.size()).isEqualTo(numThreads * 2);
     }
-
 
 
     @Test
@@ -183,7 +181,6 @@ class MemberTest extends BaseMemberTest {
 
     @Test
     @DisplayName("Username 으로 조회 테스트")
-    @Transactional
     void findByUsernameTest() throws Exception {
         //given
         List<Member> before = memberRepository.findAll();
