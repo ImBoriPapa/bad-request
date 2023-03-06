@@ -23,7 +23,8 @@ import java.util.stream.IntStream;
 public abstract class BaseMemberTest {
     @Autowired
     EntityManager em;
-
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     /**
      * Member Entity 초기화
@@ -43,13 +44,24 @@ public abstract class BaseMemberTest {
     /**
      * 테스트용 Random 회원 데이터
      */
-    protected static Member createRandomMember() {
+    protected Member createRandomMember() {
         return Member.createMember()
                 .email(UUID.randomUUID().toString())
                 .nickname(UUID.randomUUID().toString())
-                .password(UUID.randomUUID().toString())
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                 .contact(UUID.randomUUID().toString())
                 .authority(Authority.MEMBER)
+                .profileImage(ProfileImage.createProfileImage().fullPath("imagePath").build())
+                .build();
+    }
+
+    protected Member createRandomMember(Authority authority) {
+        return Member.createMember()
+                .email(UUID.randomUUID().toString())
+                .nickname(UUID.randomUUID().toString())
+                .password(passwordEncoder.encode(UUID.randomUUID().toString()))
+                .contact(UUID.randomUUID().toString())
+                .authority(authority)
                 .profileImage(ProfileImage.createProfileImage().fullPath("imagePath").build())
                 .build();
     }
@@ -64,5 +76,13 @@ public abstract class BaseMemberTest {
         return list;
     }
 
+    protected List<Member> createRandomMemberList(Integer size, Authority authority) {
+        int end = size;
 
+        ArrayList<Member> list = new ArrayList<>();
+
+        IntStream.rangeClosed(1, end).forEach(i -> list.add(createRandomMember(authority)));
+
+        return list;
+    }
 }

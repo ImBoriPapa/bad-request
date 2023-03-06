@@ -67,11 +67,4 @@ public class MemberResponseModelAssembler {
                 .add(linkTo(methodOn(MemberCommendController.class).patchPassword(memberDetailDto.getId(), null, null)).withRel("PATCH : 비밀번호 변경"))
                 .add(linkTo(methodOn(MemberCommendController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
     }
-
-    public EntityModel<MemberListDto> toListModel(MemberListDto result) {
-
-
-        return EntityModel.of(result);
-    }
-
 }

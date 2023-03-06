@@ -41,15 +41,9 @@ public class MemberQueryController {
     private final MemberQueryRepository memberQueryRepositoryImpl;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
-    @GetMapping("/members")
-    @CustomLogTracer
-    public ResponseEntity getMemberList(MemberSearchCondition searchCondition) {
-
-        MemberListDto memberList = memberQueryRepositoryImpl.findMemberList(searchCondition);
-        // TODO: 2023/02/13 링크 추가
-        return ResponseEntity.ok().body(memberList);
-    }
-
+    /**
+     * 회원 정보 상세 보기
+     */
     @GetMapping("/members/{memberId}")
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> getMember(@AuthenticationPrincipal User user, @PathVariable Long memberId) {
@@ -70,14 +64,15 @@ public class MemberQueryController {
                 .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
     }
 
+    /**
+     * 프로필 정보 보기
+     */
     @GetMapping("/members/{memberId}/profile")
     @CustomLogTracer
     public ResponseEntity getProfile(@PathVariable Long memberId) {
 
         MemberProfileDto memberProfileDto = memberQueryRepositoryImpl.findMemberProfileByMemberId(memberId)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
-
-
 
         return ResponseEntity
                 .ok()

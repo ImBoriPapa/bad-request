@@ -69,7 +69,6 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
     // TODO: 2023/02/12 "검색 조건 추가"
-
     /**
      * 회원 목록 조회
      */

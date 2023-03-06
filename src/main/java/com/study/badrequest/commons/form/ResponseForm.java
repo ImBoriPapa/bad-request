@@ -4,6 +4,7 @@ package com.study.badrequest.commons.form;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.BasicException;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
