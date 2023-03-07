@@ -27,6 +27,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 
@@ -59,7 +61,7 @@ public class JwtLoginService {
 
         Authentication authentication = getAuthentication(authenticationToken);
 
-        TokenDto tokenDto = jwtUtils.generateToken(authentication);
+        TokenDto tokenDto = jwtUtils.generateToken(memberDtoForLogin.getUsername());
 
         RefreshToken refreshToken = saveRefreshToken(memberDtoForLogin.getUsername(), tokenDto);
 
@@ -89,7 +91,7 @@ public class JwtLoginService {
     }
 
     /**
-     * security 인증 실패시 BadCredentialsException -> MemberException throw
+     * loadByUsername() -> 인증 실패시 BadCredentialsException -> MemberException throw
      * LOGIN_FAIL(1501, "로그인에 실패했습니다.") 응답에 로그인 아이디 혹은 비밀번호 중 어떤것이 잘못되었는지 감추기 위해 통일
      */
     @CustomLogTracer
@@ -130,17 +132,17 @@ public class JwtLoginService {
 
         checkTokenIsAccess(accessToken);
 
-        Authentication authentication = jwtUtils.getAuthentication(accessToken);
+        String username = jwtUtils.getUsernameInToken(accessToken);
         //1.Refresh Token 확인 없다면 인증기간 만료로 인한 로그아웃
-        if (!refreshTokenRepository.existsById(authentication.getName())) {
+        if (!refreshTokenRepository.existsById(username)) {
             throw new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT);
         }
         //2.Refresh Token 삭제 Refresh 가 존재하지 않는 다면 로그아웃으로 간주
-        refreshTokenRepository.deleteById(authentication.getName());
+        refreshTokenRepository.deleteById(username);
         //3.SecurityContext 에서 인증 객체 제거
         SecurityContextHolder.clearContext();
         //4.username 교체
-        memberRepository.findByUsername(authentication.getName())
+        memberRepository.findByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .replaceUsername();
 
@@ -158,16 +160,16 @@ public class JwtLoginService {
 
         checkTokenIsAccess(refreshToken);
 
-        Authentication authentication = jwtUtils.getAuthentication(accessToken);
         //2. 존재하는 회원인지 확인
-        Member member = findMemberByUsername(authentication.getName());
+        Member member = findMemberByUsername(jwtUtils.getUsernameInToken(accessToken));
         //3. Refresh 토큰이 존재하지 않으면 로그아웃으로 간주
         RefreshToken refresh = refreshTokenRepository.findById(member.getUsername())
                 .orElseThrow(() -> new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT));
         //4. 저장된 리프레시 토큰과 요청한 토큰을 비교
         compareRefreshWithStored(refresh.getToken(), refreshToken);
         //6. 토큰 생성
-        TokenDto tokenDto = jwtUtils.generateToken(authentication);
+
+        TokenDto tokenDto = jwtUtils.generateToken(member.getUsername());
         //7. 토큰 갱신
         replaceRefreshToken(refresh, tokenDto);
 
@@ -218,9 +220,9 @@ public class JwtLoginService {
      * 리프레시 토큰이 존재 한다면 로그인 없다면 로그아웃
      */
     @Transactional(readOnly = true)
-    public boolean loginCheck(String username) {
+    public Optional<RefreshToken> loginCheckWithUsername(String username) {
         log.debug("[JwtLoginService.loginCheck]");
-        return refreshTokenRepository.existsById(username);
+        return refreshTokenRepository.findById(username);
     }
 
 }

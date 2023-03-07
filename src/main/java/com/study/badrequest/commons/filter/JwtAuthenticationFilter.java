@@ -1,5 +1,6 @@
 package com.study.badrequest.commons.filter;
 
+import com.study.badrequest.domain.login.entity.RefreshToken;
 import com.study.badrequest.domain.login.service.JwtLoginService;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -16,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.JWT_STATUS_HEADER;
@@ -47,10 +49,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void statusJwtHandle(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
         switch (jwtStatus) {
             case ACCESS:
-                Authentication authentication = jwtUtils.getAuthentication(accessToken);
 
-                if (loginCheck(authentication)) {
+                String username = jwtUtils.getUsernameInToken(accessToken);
+
+                Optional<RefreshToken> refreshToken = loginService.loginCheckWithUsername(username);
+
+                if (refreshToken.isPresent()) {
                     log.debug("[JwtAuthenticationFilter Set SecurityContextHolder Context]");
+
+                    Authentication authentication = jwtUtils.generateAuthentication(username, refreshToken.get().getAuthority());
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     break;
                 } else {
@@ -78,10 +86,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         request.setAttribute(JWT_STATUS_HEADER, jwtStatus);
     }
 
-    private boolean loginCheck(Authentication authentication) {
-        log.debug("[JwtAuthenticationFilter.loginCheck]");
-        return loginService.loginCheck(authentication.getName());
-    }
+
 }
 
 

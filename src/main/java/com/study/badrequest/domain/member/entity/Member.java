@@ -66,7 +66,7 @@ public class Member {
     /**
      * AtomicLong : USERNAME_SEQUENCE 로 username 생성하고
      * entity 영속되기 직전에 username 초기화 하여 동시성 이슈 회피
-     * 동시성 문제를 더 테스트해보고 계속 사용해될지 고려
+     * 동시성 문제를 더 테스트해보고 계속 사용해될지 고려 or RANDOM UUID 와 무엇이 더 안전할까에 대한 고민
      */
     @PrePersist
     private void generateSequentialUUID() {

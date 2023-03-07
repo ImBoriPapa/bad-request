@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.login.entity;
 
 
+import com.study.badrequest.domain.member.entity.Authority;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,13 +20,16 @@ public class RefreshToken implements Serializable {
     @Id
     private String username;
     private String token;
+
+    private Authority authority;
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private long expiration;
 
     @Builder(builderMethodName = "createRefresh")
-    public RefreshToken(String username, String token, Long expiration) {
+    public RefreshToken(String username, String token,Authority authority, Long expiration) {
         this.username = username;
         this.token = token;
+        this.authority = authority;
         this.expiration = expiration;
 
     }

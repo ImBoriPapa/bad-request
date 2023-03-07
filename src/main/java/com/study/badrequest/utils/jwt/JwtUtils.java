@@ -2,6 +2,7 @@ package com.study.badrequest.utils.jwt;
 
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.custom_exception.TokenException;
+import com.study.badrequest.domain.member.entity.Authority;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
@@ -20,64 +20,59 @@ import java.security.Key;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.TOKEN_PREFIX;
+import static com.study.badrequest.utils.jwt.JwtStatus.*;
+import static java.util.concurrent.TimeUnit.*;
 
 @Component
 @Slf4j
 public class JwtUtils implements InitializingBean {
-
-    private final static String AUTHORITIES_KEY = "auth";
     private final String SECRETE_KEY;
-    private final int ACCESS_TOKEN_LIFE_MIN;
-    private final int REFRESH_TOKEN_LIFE;
-
+    private final int ACCESS_TOKEN_LIFETIME_MINUTES;
+    private final int REFRESH_TOKEN_LIFE_DAYS;
     private Key key;
 
+    /**
+     * 인스턴스 생성시 변수 초기화
+     *
+     * @param SECRETE_KEY
+     * @param ACCESS_TOKEN_LIFETIME_MINUTES
+     * @param REFRESH_TOKEN_LIFE_DAY
+     */
     public JwtUtils(@Value("${token.secret-key}") String SECRETE_KEY,
-                    @Value("${token.access-life}") int ACCESS_TOKEN_LIFE_MIN,
+                    @Value("${token.access-life}") int ACCESS_TOKEN_LIFETIME_MINUTES,
                     @Value("${token.refresh-life}") int REFRESH_TOKEN_LIFE_DAY) {
         this.SECRETE_KEY = SECRETE_KEY;
-        this.ACCESS_TOKEN_LIFE_MIN = ACCESS_TOKEN_LIFE_MIN;
-        this.REFRESH_TOKEN_LIFE = REFRESH_TOKEN_LIFE_DAY;
+        this.ACCESS_TOKEN_LIFETIME_MINUTES = ACCESS_TOKEN_LIFETIME_MINUTES;
+        this.REFRESH_TOKEN_LIFE_DAYS = REFRESH_TOKEN_LIFE_DAY;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        log.info("[JwtUtils.afterPropertiesSet]");
         key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(SECRETE_KEY.getBytes()).getBytes());
     }
 
     /**
-     * 토큰 생성
+     * 토큰 생성 로직
+     * 2023/03/07
+     * - 토큰에 권한정보(Authority) 제거
+     * - 상수명 변경: ACCESS_TOKEN_LIFETIME_MIN -> ACCESS_TOKEN_LIFETIME_MINUTES, REFRESH_TOKEN_LIFE -> REFRESH_TOKEN_LIFE_DAYS
+     * <p>
+     * Username 으로 TokenDto 생성 후 반환
      */
-    public TokenDto generateToken(Authentication authentication) {
+    public TokenDto generateToken(String username) {
 
-        String authorityString = getAuthorityString(authentication);
-        long currentTimeMillis = System.currentTimeMillis();
+        log.info("[GENERATE ACCESS TOKEN]");
+        String accessToken = createToken(username, MINUTES, ACCESS_TOKEN_LIFETIME_MINUTES);
 
-        log.info("[엑세스 토큰생성]");
-        String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorityString)
-                .setExpiration(new Date(currentTimeMillis + TimeUnit.MINUTES.toMillis(ACCESS_TOKEN_LIFE_MIN)))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-
-        log.info("[리프레쉬 토큰생성]");
-        String refreshToken = Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorityString)
-                .setExpiration(new Date(currentTimeMillis + TimeUnit.DAYS.toMillis(REFRESH_TOKEN_LIFE)))
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
+        log.info("[GENERATE REFRESH TOKEN]");
+        String refreshToken = createToken(username, DAYS, REFRESH_TOKEN_LIFE_DAYS);
 
         return TokenDto.builder()
                 .accessToken(accessToken)
@@ -87,26 +82,50 @@ public class JwtUtils implements InitializingBean {
                 .build();
     }
 
-    private static String getAuthorityString(Authentication authentication) {
-        return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+    /**
+     * 토큰 생성 로직
+     *
+     * @param username
+     * @param timeUnit
+     * @param lifeTime
+     * @return String token
+     */
+    private String createToken(String username, TimeUnit timeUnit, int lifeTime) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setExpiration(new Date(System.currentTimeMillis() + timeUnit.toMillis(lifeTime)))
+                .signWith(this.key, SignatureAlgorithm.HS512)
+                .compact();
     }
 
-    // 토큰의 유효성 + 만료일자 확인
+    /**
+     * 토큰 검증 로직
+     *
+     * @param token
+     * @return JwtStatus
+     */
     public JwtStatus validateToken(String token) {
 
         try {
             getClaimsJws(token);
-            log.info("[JWT_UTILS validateToken= {}]", JwtStatus.ACCESS);
-            return JwtStatus.ACCESS;
+            log.info("[TOKEN VERIFICATION RESULT= {}]", ACCESS);
+            return ACCESS;
         } catch (ExpiredJwtException e) {
-            log.info("[JWT_UTILS validateToken= {}]", JwtStatus.EXPIRED);
-            return JwtStatus.EXPIRED;
+            log.info("[TOKEN VERIFICATION RESULT= {}]", EXPIRED);
+            return EXPIRED;
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("[JWT_UTILS validateToken= {}]", JwtStatus.DENIED);
-            return JwtStatus.DENIED;
+            log.info("[TOKEN VERIFICATION RESULT= {}]", DENIED);
+            return DENIED;
         } catch (Exception e) {
-            return JwtStatus.ERROR;
+            return ERROR;
         }
+    }
+
+    private Jws<Claims> getClaimsJws(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(this.key)
+                .build()
+                .parseClaimsJws(token);
     }
 
     // 헤더에서 토큰 확인
@@ -145,32 +164,25 @@ public class JwtUtils implements InitializingBean {
         return Duration.between(currentDate, expirationDate).toMillis();
     }
 
-    private Jws<Claims> getClaimsJws(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
+
+    /**
+     * 토큰 바디에 저장된 Username 반환
+     * @param token
+     * @return username
+     */
+    public String getUsernameInToken(String token) {
+        return getClaimsJws(token).getBody().getSubject();
     }
 
-    // JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
-    public Authentication getAuthentication(String accessToken) {
+    /**
+     * JWT 토큰을 복호화하여 토큰에 들어있는 정보로 토큰으로 Authentication 인증객체 생성
+     */
+    public Authentication generateAuthentication(String token, Authority authority) {
         log.info("[JwtUtils. getAuthentication]");
-        // 토큰 복호화
-        Claims claims = getClaimsJws(accessToken).getBody();
 
-        if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new TokenException(CustomStatus.TOKEN_IS_DENIED);
-        }
+        Collection<? extends GrantedAuthority> authorities = authority.getAuthorities();
 
-        // 클레임에서 권한 정보 가져오기
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-
-        // UserDetails 객체를 만들어서 Authentication 리턴
-        User user = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(user, "", authorities);
+        return new UsernamePasswordAuthenticationToken(new User(getClaimsJws(token).getBody().getSubject(), "", authorities), "", authorities);
     }
 
     public void checkTokenIsEmpty(String token, CustomStatus status) {
