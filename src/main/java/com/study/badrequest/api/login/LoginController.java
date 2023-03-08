@@ -3,7 +3,7 @@ package com.study.badrequest.api.login;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -14,7 +14,6 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -30,7 +29,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_H
 @RequiredArgsConstructor
 @RequestMapping(BASE_URL)
 public class LoginController {
-    private final JwtLoginService loginService;
+    private final LoginServiceImpl loginServiceImpl;
     private final JwtUtils jwtUtils;
     private final LoginResponseModelAssembler modelAssembler;
 
@@ -39,7 +38,7 @@ public class LoginController {
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody LoginRequest.Login form) {
 
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(form.getEmail(), form.getPassword());
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(form.getEmail(), form.getPassword());
 
         EntityModel<LoginResponse.LoginResult> loginResultEntityModel = modelAssembler
                 .toModel(new LoginResponse.LoginResult(loginResult.getId(), loginResult.getAccessTokenExpired()));
@@ -56,7 +55,7 @@ public class LoginController {
 
         String resolveToken = jwtUtils.resolveToken(request, AUTHORIZATION_HEADER);
 
-        LoginResponse.LogoutResult logoutResult = loginService.logoutProcessing(resolveToken);
+        LoginResponse.LogoutResult logoutResult = loginServiceImpl.logout(resolveToken);
 
         EntityModel<LoginResponse.LogoutResult> logoutResultEntityModel = modelAssembler.toModel(logoutResult);
 
@@ -76,7 +75,7 @@ public class LoginController {
 
         jwtUtils.checkTokenIsEmpty(refreshToken, CustomStatus.REFRESH_COOKIE_IS_EMPTY);
 
-        LoginResponse.LoginDto result = loginService.reissueProcessing(accessToken, refreshToken);
+        LoginResponse.LoginDto result = loginServiceImpl.reissueToken(accessToken, refreshToken);
 
         modelAssembler.toModel(new LoginResponse.ReIssueResult(result.getId(), result.getAccessTokenExpired()));
 

@@ -11,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.shaded.org.apache.commons.lang3.time.StopWatch;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -24,13 +22,13 @@ import static org.assertj.core.api.Assertions.*;
 @DataRedisTest
 @ActiveProfiles("refresh")
 @Slf4j
-class RefreshTokenRepositoryTest extends RedisTestContainers {
+class redisRefreshTokenRepositoryTest extends RedisTestContainers {
     @Autowired
-    RefreshTokenRepository refreshTokenRepository;
+    redisRefreshTokenRepository redisRefreshTokenRepository;
 
     @AfterEach
     void afterEach() {
-        refreshTokenRepository.deleteAll();
+        redisRefreshTokenRepository.deleteAll();
     }
 
     @Test
@@ -46,8 +44,8 @@ class RefreshTokenRepositoryTest extends RedisTestContainers {
                 .authority(Authority.MEMBER)
                 .build();
         //when
-        RefreshToken save = refreshTokenRepository.save(refreshToken);
-        RefreshToken findRefresh = refreshTokenRepository.findById(save.getUsername()).get();
+        RefreshToken save = redisRefreshTokenRepository.save(refreshToken);
+        RefreshToken findRefresh = redisRefreshTokenRepository.findById(save.getUsername()).get();
         //then
         assertThat(findRefresh.getUsername()).isEqualTo(save.getUsername());
     }
@@ -69,11 +67,11 @@ class RefreshTokenRepositoryTest extends RedisTestContainers {
 
 
 
-        refreshTokenRepository.save(refreshToken);
+        redisRefreshTokenRepository.save(refreshToken);
         //when
-        RefreshToken findRefresh = refreshTokenRepository.findById(username).get();
+        RefreshToken findRefresh = redisRefreshTokenRepository.findById(username).get();
         findRefresh.replaceToken(newToken,15000L);
-        RefreshToken replacedRefresh = refreshTokenRepository.save(findRefresh);
+        RefreshToken replacedRefresh = redisRefreshTokenRepository.save(findRefresh);
         //then
 
         assertThat(username).isEqualTo(replacedRefresh.getUsername());
@@ -99,9 +97,9 @@ class RefreshTokenRepositoryTest extends RedisTestContainers {
             list.add(refreshToken);
         });
 
-        refreshTokenRepository.saveAll(list);
+        redisRefreshTokenRepository.saveAll(list);
         //when
-        RefreshToken findById1 = refreshTokenRepository.findById(username+10).get();
+        RefreshToken findById1 = redisRefreshTokenRepository.findById(username+10).get();
         //then
         Assertions.assertThat(findById1.getUsername()).isNotEmpty();
     }

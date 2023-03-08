@@ -9,7 +9,7 @@ import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
 import com.study.badrequest.domain.board.repository.BoardRepository;
 import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
@@ -62,7 +62,7 @@ class BoardControllerTest extends BaseMemberTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    JwtLoginService jwtLoginService;
+    LoginServiceImpl loginServiceImpl;
     @Autowired
     BoardRepository boardRepository;
 
@@ -110,7 +110,7 @@ class BoardControllerTest extends BaseMemberTest {
         String email = "tester@test.com";
         String password = "password1234!@";
 
-        LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginProcessing = loginServiceImpl.login(email, password);
 
         BoardRequest.Create form = BoardRequest.Create.builder()
                 .title("제목입니다")
@@ -165,7 +165,7 @@ class BoardControllerTest extends BaseMemberTest {
     @DisplayName("게시판 작성 이미지 첨부")
     void createBoardTest2() throws Exception {
         //given
-        LoginResponse.LoginDto loginProcessing = jwtLoginService.loginProcessing(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
+        LoginResponse.LoginDto loginProcessing = loginServiceImpl.login(SAMPLE_USER_EMAIL, SAMPLE_PASSWORD);
 
         BoardRequest.Create form = BoardRequest.Create.builder()
                 .title("제목입니다")

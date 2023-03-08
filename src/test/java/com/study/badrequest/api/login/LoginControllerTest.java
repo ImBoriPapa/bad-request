@@ -6,11 +6,10 @@ import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.domain.login.dto.LoginRequest;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,8 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.Cookie;
 
-import static com.study.badrequest.SampleUserData.SAMPLE_PASSWORD;
-import static com.study.badrequest.SampleUserData.SAMPLE_USER_EMAIL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
@@ -61,7 +58,7 @@ class LoginControllerTest extends BaseMemberTest {
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
-    JwtLoginService loginService;
+    LoginServiceImpl loginServiceImpl;
 
     @BeforeEach
     void beforeEach() {
@@ -176,7 +173,7 @@ class LoginControllerTest extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(email, password);
         //logout 요청
         mockMvc.perform(post("/api/v1/log-out")
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
@@ -210,8 +207,8 @@ class LoginControllerTest extends BaseMemberTest {
         //logout 후 접근
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
-        loginService.logoutProcessing(loginResult.getAccessToken());
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(email, password);
+        loginServiceImpl.logout(loginResult.getAccessToken());
         mockMvc.perform(post("/test/welcome")
                         .header(AUTHORIZATION_HEADER, "Bearer " + loginResult.getAccessToken()))
                 .andExpect(status().isUnauthorized())
@@ -233,7 +230,7 @@ class LoginControllerTest extends BaseMemberTest {
         String email = "tester@test.com";
         String password = "password1234!@";
 
-        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto member = loginServiceImpl.login(email, password);
 
         ResponseCookie refreshCookie = member.getRefreshCookie();
 
@@ -273,7 +270,7 @@ class LoginControllerTest extends BaseMemberTest {
         String email = "tester@test.com";
         String password = "password1234!@";
 
-        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto member = loginServiceImpl.login(email, password);
         ResponseCookie refreshCookie = member.getRefreshCookie();
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue());
         cookie.setPath(refreshCookie.getPath());
@@ -298,7 +295,7 @@ class LoginControllerTest extends BaseMemberTest {
         String email = "tester@test.com";
         String password = "password1234!@";
 
-        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto member = loginServiceImpl.login(email, password);
         ResponseCookie refreshCookie = member.getRefreshCookie();
         Cookie cookie = new Cookie(refreshCookie.getName(), refreshCookie.getValue() + "wrong");
         cookie.setPath(refreshCookie.getPath());
@@ -321,7 +318,7 @@ class LoginControllerTest extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto member = loginServiceImpl.login(email, password);
         //when
         mockMvc.perform(post("/api/v1/refresh")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -338,7 +335,7 @@ class LoginControllerTest extends BaseMemberTest {
         String email = "tester@test.com";
         String password = "password1234!@";
 
-        LoginResponse.LoginDto member = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto member = loginServiceImpl.login(email, password);
 
         //인가 없음
         mockMvc.perform(get("/test/teacher")

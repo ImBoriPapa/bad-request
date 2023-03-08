@@ -13,8 +13,6 @@ public interface MemberQueryRepository {
 
     Optional<MemberAuthDto> findIdAndAuthorityByUsername(String username, Authority authority);
 
-    Optional<MemberDtoForLogin> findLoginInfoByEmail(String email);
-
     Optional<MemberUsernameDetailDto> findUserInfoByUsername(String username);
 
     Optional<MemberProfileDto> findMemberProfileByMemberId(Long memberId);

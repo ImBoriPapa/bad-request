@@ -7,8 +7,6 @@ import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.query.*;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,10 +22,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 
 import javax.persistence.EntityManager;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Slf4j
@@ -179,16 +175,16 @@ class MemberQueryRepositoryImplTest extends BaseMemberTest {
         Member member = memberRepository.findById(savedMemberId).orElseThrow(() -> new IllegalArgumentException(""));
         //when
         log.info("========================QUERY START=======================");
-        MemberDtoForLogin memberDtoForLogin = memberQueryRepository
-                .findLoginInfoByEmail(member.getEmail())
+        MemberSimpleInformation memberSimpleInformation = memberRepository
+                .findByUsernameAndAuthority(member.getEmail(),member.getAuthority())
                 .orElseThrow(() -> new IllegalArgumentException(""));
         log.info("========================QUERY FINISH=======================");
         //then
         assertThat(TransactionSynchronizationManager.isCurrentTransactionReadOnly()).isTrue();
-        assertThat(memberDtoForLogin.getId()).isEqualTo(member.getId());
-        assertThat(memberDtoForLogin.getEmail()).isEqualTo(member.getEmail());
-        assertThat(memberDtoForLogin.getUsername()).isEqualTo(member.getUsername());
-        assertThat(memberDtoForLogin.getPassword()).isEqualTo(member.getPassword());
+        assertThat(memberSimpleInformation.getId()).isEqualTo(member.getId());
+
+        assertThat(memberSimpleInformation.getUsername()).isEqualTo(member.getUsername());
+
     }
 
 

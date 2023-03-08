@@ -1,14 +1,14 @@
 package com.study.badrequest.domain.member.repository.query;
 
+import com.study.badrequest.domain.member.entity.Authority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberDtoForLogin {
+public class MemberSimpleInformation {
     private Long id;
-    private String email;
     private String username;
-    private String password;
+    private Authority authority;
 
 }

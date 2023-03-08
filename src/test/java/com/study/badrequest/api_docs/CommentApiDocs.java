@@ -13,7 +13,7 @@ import com.study.badrequest.domain.comment.dto.CommentResponse;
 import com.study.badrequest.domain.comment.repository.CommentRepository;
 import com.study.badrequest.domain.comment.service.CommentCommendService;
 import com.study.badrequest.domain.login.dto.LoginResponse;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
@@ -57,7 +57,7 @@ class CommentApiDocs extends BaseMemberTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    JwtLoginService loginService;
+    LoginServiceImpl loginServiceImpl;
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -108,7 +108,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Board board = boardRepository.findByTitle("제목").get();
 
@@ -149,7 +149,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Member member = memberRepository.findById(loginDto.getId()).get();
         Board board = boardRepository.findByTitle("제목").get();
@@ -192,7 +192,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Member member = memberRepository.findById(loginDto.getId()).get();
         Board board = boardRepository.findByTitle("제목").get();
@@ -284,7 +284,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Board board = boardRepository.findByTitle("제목").get();
 
@@ -330,7 +330,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Board board = boardRepository.findByTitle("제목").get();
 
@@ -378,7 +378,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Board board = boardRepository.findByTitle("제목").get();
 
@@ -426,7 +426,7 @@ class CommentApiDocs extends BaseMemberTest {
         //given
         String email = "tester@test.com";
         String password = "password1234!@";
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(email, password);
 
         Board board = boardRepository.findByTitle("제목").get();
 

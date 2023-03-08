@@ -1,10 +1,9 @@
 package com.study.badrequest.domain.login.service;
 
-import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
-import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.repository.redisRefreshTokenRepository;
 import com.study.badrequest.domain.login.dto.LoginResponse;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -12,32 +11,31 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-@Transactional
 @Slf4j
-class JwtLoginServiceTest extends BaseMemberTest{
-    @Autowired
-    RefreshTokenRepository refreshTokenRepository;
-    @Autowired
-    JwtLoginService loginService;
-    @Autowired
+class LoginServiceImplTest {
+    @InjectMocks
+    LoginServiceImpl loginServiceImpl;
+    @Mock
+    redisRefreshTokenRepository redisRefreshTokenRepository;
+    @Mock
     PasswordEncoder passwordEncoder;
-    @Autowired
+    @Mock
     MemberRepository memberRepository;
-    @Autowired
+    @Mock
     JwtUtils jwtUtils;
-
 
     @BeforeEach
     void beforeEach() {
@@ -56,7 +54,7 @@ class JwtLoginServiceTest extends BaseMemberTest{
 
     @AfterEach
     void afterEach() {
-        refreshTokenRepository.deleteAll();
+        redisRefreshTokenRepository.deleteAll();
     }
 
     @Test
@@ -66,7 +64,7 @@ class JwtLoginServiceTest extends BaseMemberTest{
         String email = "tester@test.com";
         String password = "password1234!@";
         //when
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(email, password);
         Member member = memberRepository.findByEmail(email).get();
         //then
         assertThat(loginResult.getId()).isEqualTo(member.getId());
@@ -83,11 +81,11 @@ class JwtLoginServiceTest extends BaseMemberTest{
         String email = "tester@test.com";
         String password = "password1234!@";
         //when
-        LoginResponse.LoginDto result = loginService.loginProcessing(email, password);
-        loginService.logoutProcessing(result.getAccessToken());
+        LoginResponse.LoginDto result = loginServiceImpl.login(email, password);
+        loginServiceImpl.logout(result.getAccessToken());
         Member member = memberRepository.findByEmail(email).get();
         //then
-        assertThat(refreshTokenRepository.findById(member.getUsername())).isEmpty();
+        assertThat(redisRefreshTokenRepository.findById(member.getUsername())).isEmpty();
         assertThat(SecurityContextHolder.getContext().getAuthentication()).isNull();
 
     }
@@ -99,8 +97,8 @@ class JwtLoginServiceTest extends BaseMemberTest{
         String email = "tester@test.com";
         String password = "password1234!@";
         //when
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(email, password);
-        LoginResponse.LoginDto reissueProcessing = loginService.reissueProcessing(loginResult.getAccessToken(),
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(email, password);
+        LoginResponse.LoginDto reissueProcessing = loginServiceImpl.reissueToken(loginResult.getAccessToken(),
                 loginResult.getRefreshCookie().getValue().substring(7));
         //then
         assertThat(reissueProcessing.getAccessToken()).isNotEmpty();

@@ -1,7 +1,7 @@
 package com.study.badrequest.commons.filter;
 
 import com.study.badrequest.domain.login.entity.RefreshToken;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ import static com.study.badrequest.commons.consts.JwtTokenHeader.JWT_STATUS_HEAD
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
-    private final JwtLoginService loginService;
+    private final LoginServiceImpl loginServiceImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -52,7 +52,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                 String username = jwtUtils.getUsernameInToken(accessToken);
 
-                Optional<RefreshToken> refreshToken = loginService.loginCheckWithUsername(username);
+                Optional<RefreshToken> refreshToken = loginServiceImpl.loginCheckWithUsername(username);
 
                 if (refreshToken.isPresent()) {
                     log.debug("[JwtAuthenticationFilter Set SecurityContextHolder Context]");

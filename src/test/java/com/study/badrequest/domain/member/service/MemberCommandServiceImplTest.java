@@ -1,8 +1,6 @@
 package com.study.badrequest.domain.member.service;
 
-import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;

@@ -3,7 +3,7 @@ package com.study.badrequest.api.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.base.BaseMemberTest;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
 
@@ -11,37 +11,22 @@ import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
 import com.study.badrequest.domain.member.repository.MemberRepository;
-import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
-import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
-import com.study.badrequest.utils.validator.MemberValidator;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-
-import java.util.Optional;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -60,7 +45,7 @@ class MemberCommendControllerTest extends BaseMemberTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    JwtLoginService loginService;
+    LoginServiceImpl loginServiceImpl;
     @Autowired
     MemberRepository memberRepository;
     @Autowired

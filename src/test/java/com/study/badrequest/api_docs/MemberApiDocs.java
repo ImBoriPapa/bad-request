@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.base.BaseMemberTest;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.domain.login.dto.LoginResponse;
-import com.study.badrequest.domain.login.service.JwtLoginService;
+import com.study.badrequest.domain.login.service.LoginServiceImpl;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.service.MemberCommandServiceImpl;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class MemberApiDocs extends BaseMemberTest {
     @Autowired
     ObjectMapper objectMapper;
     @Autowired
-    JwtLoginService loginService;
+    LoginServiceImpl loginServiceImpl;
     @Autowired
     MemberCommandServiceImpl memberCommandService;
     @Autowired
@@ -133,7 +132,7 @@ public class MemberApiDocs extends BaseMemberTest {
         MemberRequest.ResetPassword resetForm = new MemberRequest.ResetPassword(samplePassword, newPassword);
         String content = objectMapper.writeValueAsString(resetForm);
 
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(sampleEmail, samplePassword);
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(sampleEmail, samplePassword);
 
         //when
         mockMvc.perform(patch("/api/v1/members/{memberId}/password", loginResult.getId())
@@ -175,7 +174,7 @@ public class MemberApiDocs extends BaseMemberTest {
         MemberRequest.UpdateContact contact = new MemberRequest.UpdateContact(newContact);
         String content = objectMapper.writeValueAsString(contact);
 
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(sampleEmail, samplePassword);
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(sampleEmail, samplePassword);
 
         //when
         mockMvc.perform(patch("/api/v1/members/{memberId}/contact", loginResult.getId())
@@ -215,7 +214,7 @@ public class MemberApiDocs extends BaseMemberTest {
         MemberRequest.DeleteMember password = new MemberRequest.DeleteMember(samplePassword);
         String content = objectMapper.writeValueAsString(password);
 
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(sampleEmail, samplePassword);
+        LoginResponse.LoginDto loginResult = loginServiceImpl.login(sampleEmail, samplePassword);
 
         //when
         mockMvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/members/{memberId}", loginResult.getId())
@@ -295,7 +294,7 @@ public class MemberApiDocs extends BaseMemberTest {
     @DisplayName("Member Info 테스트")
     void memberInfoTest() throws Exception {
         //given
-        LoginResponse.LoginDto loginDto = loginService.loginProcessing(sampleEmail, samplePassword);
+        LoginResponse.LoginDto loginDto = loginServiceImpl.login(sampleEmail, samplePassword);
 
         //when
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/members/auth")

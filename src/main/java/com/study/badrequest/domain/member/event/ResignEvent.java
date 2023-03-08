@@ -2,7 +2,7 @@ package com.study.badrequest.domain.member.event;
 
 import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
 import com.study.badrequest.domain.comment.service.CommentCommendService;
-import com.study.badrequest.domain.login.repository.RefreshTokenRepository;
+import com.study.badrequest.domain.login.repository.redisRefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -17,7 +17,7 @@ public class ResignEvent {
 
     private final BoardCommandServiceImpl boardCommandService;
     private final CommentCommendService commentCommendService;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private final redisRefreshTokenRepository redisRefreshTokenRepository;
 
     /**
      * refreshTokenRepository 와 MemberCommandService 분리
@@ -26,6 +26,6 @@ public class ResignEvent {
     @EventListener
     private void noticeDelete(ResignEventDto dto) {
         log.info("MEMBER DELETE EVENT!!");
-        refreshTokenRepository.findById(dto.getUsername()).ifPresent(refreshTokenRepository::delete);
+        redisRefreshTokenRepository.findById(dto.getUsername()).ifPresent(redisRefreshTokenRepository::delete);
     }
 }

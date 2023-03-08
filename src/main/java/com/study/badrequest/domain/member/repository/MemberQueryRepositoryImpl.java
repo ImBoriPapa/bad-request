@@ -7,21 +7,12 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import com.study.badrequest.domain.board.entity.Board;
-import com.study.badrequest.domain.board.entity.QBoard;
-import com.study.badrequest.domain.comment.entity.Comment;
-import com.study.badrequest.domain.comment.entity.QComment;
-import com.study.badrequest.domain.comment.entity.QSubComment;
-import com.study.badrequest.domain.comment.entity.SubComment;
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Authority;
-import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.QMember;
-import com.study.badrequest.domain.member.repository.MemberQueryRepository;
 import com.study.badrequest.domain.member.repository.query.*;
 import lombok.RequiredArgsConstructor;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +21,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.study.badrequest.domain.board.entity.QBoard.*;
-import static com.study.badrequest.domain.comment.entity.QComment.*;
-import static com.study.badrequest.domain.comment.entity.QSubComment.*;
 import static com.study.badrequest.domain.member.entity.QMember.*;
 
 
@@ -170,26 +158,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
         return authority == null ? null : member.authority.eq(authority);
     }
 
-    /**
-     * 로그안 서비스에서 필요한 정보 쿼리 최적화
-     */
-    @Override
-    public Optional<MemberDtoForLogin> findLoginInfoByEmail(String email) {
 
-        QMember qMember = member;
-
-        MemberDtoForLogin memberDtoForLogin = jpaQueryFactory
-                .select(Projections.fields(MemberDtoForLogin.class,
-                        qMember.id.as("id"),
-                        qMember.email.as("email"),
-                        qMember.username.as("username"),
-                        qMember.password.as("password")
-                ))
-                .from(qMember)
-                .where(qMember.email.eq(email))
-                .fetchOne();
-        return memberDtoForLogin == null ? Optional.empty() : Optional.of(memberDtoForLogin);
-    }
 
     /**
      * UsernameDetailService -> User 객체 생성용 쿼리 최적화
