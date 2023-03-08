@@ -42,10 +42,11 @@ spring:
 logging:
   level:
     root: info
-    org.springframework.orm.jpa: DEBUG
-    org.springframework.transaction: DEBUG
-    org.springframework.data.*.*: DEBUG
-    org.springframework.cache.*: DEBUG
+    org.springframework.orm.jpa: trace
+    org.springframework.transaction: trace
+    org.springframework.data.*.*: trace
+    org.springframework.cache.*: trace
+
 
 cloud:
   aws:
