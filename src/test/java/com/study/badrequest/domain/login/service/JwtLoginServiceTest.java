@@ -71,7 +71,7 @@ class JwtLoginServiceTest extends BaseMemberTest{
         //then
         assertThat(loginResult.getId()).isEqualTo(member.getId());
         assertThat(loginResult.getAccessToken()).isNotEmpty();
-        assertThat(loginResult.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationDateTime(loginResult.getAccessToken()));
+        assertThat(loginResult.getAccessTokenExpired()).isEqualTo(jwtUtils.getExpirationLocalDateTime(loginResult.getAccessToken()));
         assertThat(loginResult.getRefreshCookie()).isNotNull();
 
     }

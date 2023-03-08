@@ -84,7 +84,7 @@ public class JwtLoginService {
         RefreshToken refreshToken = RefreshToken.createRefresh()
                 .username(username)
                 .token(tokenDto.getRefreshToken())
-                .expiration(tokenDto.getRefreshTokenExpiredTime())
+                .expiration(tokenDto.getRefreshTokenExpirationMill())
                 .build();
 
         return refreshTokenRepository.save(refreshToken);
@@ -184,7 +184,7 @@ public class JwtLoginService {
     }
 
     public void replaceRefreshToken(RefreshToken refresh, TokenDto tokenDto) {
-        refresh.replaceToken(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpiredTime());
+        refresh.replaceToken(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpirationMill());
         refreshTokenRepository.save(refresh);
     }
 

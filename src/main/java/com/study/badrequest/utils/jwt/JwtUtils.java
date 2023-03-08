@@ -6,7 +6,6 @@ import com.study.badrequest.domain.member.entity.Authority;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +31,7 @@ import static java.util.concurrent.TimeUnit.*;
 
 @Component
 @Slf4j
-public class JwtUtils implements InitializingBean {
+public class JwtUtils {
     private final String SECRETE_KEY;
     private final int ACCESS_TOKEN_LIFETIME_MINUTES;
     private final int REFRESH_TOKEN_LIFE_DAYS;
@@ -51,11 +50,7 @@ public class JwtUtils implements InitializingBean {
         this.SECRETE_KEY = SECRETE_KEY;
         this.ACCESS_TOKEN_LIFETIME_MINUTES = ACCESS_TOKEN_LIFETIME_MINUTES;
         this.REFRESH_TOKEN_LIFE_DAYS = REFRESH_TOKEN_LIFE_DAY;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(SECRETE_KEY.getBytes()).getBytes());
+        this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(SECRETE_KEY.getBytes()).getBytes());
     }
 
     /**
@@ -77,8 +72,8 @@ public class JwtUtils implements InitializingBean {
         return TokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
-                .accessTokenExpiredAt(getExpirationDateTime(accessToken))
-                .refreshTokenExpiredTime(getExpirationTimeMillis(refreshToken))
+                .accessTokenExpiredAt(getExpirationLocalDateTime(accessToken))
+                .refreshTokenExpirationMill(getExpirationTimeMillis(refreshToken))
                 .build();
     }
 
@@ -140,8 +135,10 @@ public class JwtUtils implements InitializingBean {
         return null;
     }
 
+    /**
+     * 쿠키에 저장된 토큰 확인
+     */
     public String resolveTokenInRefreshCookie(Cookie cookie) {
-
         if (cookie != null && cookie.getValue() != null && cookie.getValue().startsWith(REFRESH_TOKEN_PREFIX)) {
             log.info("[JWT_UTILS resolveRefreshCookie ={}]", cookie.getValue());
             return cookie.getValue().substring(7);
@@ -149,7 +146,11 @@ public class JwtUtils implements InitializingBean {
         return null;
     }
 
-    public LocalDateTime getExpirationDateTime(String token) {
+    /**
+     * 토큰에 저장된 토큰 만료 시간
+     * @Return LocalDateTime
+     */
+    public LocalDateTime getExpirationLocalDateTime(String token) {
         return getClaimsJws(token)
                 .getBody()
                 .getExpiration()
@@ -158,8 +159,12 @@ public class JwtUtils implements InitializingBean {
                 .toLocalDateTime();
     }
 
+    /**
+     * Refresh 토큰 만료까지 남은 시간
+     * @return long
+     */
     public long getExpirationTimeMillis(String token) {
-        LocalDateTime expirationDate = getExpirationDateTime(token);
+        LocalDateTime expirationDate = getExpirationLocalDateTime(token);
         LocalDateTime currentDate = LocalDateTime.now();
         return Duration.between(currentDate, expirationDate).toMillis();
     }
@@ -167,6 +172,7 @@ public class JwtUtils implements InitializingBean {
 
     /**
      * 토큰 바디에 저장된 Username 반환
+     *
      * @param token
      * @return username
      */
