@@ -22,6 +22,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 
 import javax.persistence.EntityManager;
+import javax.sql.DataSource;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

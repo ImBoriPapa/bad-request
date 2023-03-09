@@ -1,33 +1,17 @@
 package com.study.badrequest;
 
-import com.study.badrequest.domain.comment.dto.CommentRequest;
-import com.study.badrequest.domain.comment.dto.CommentResponse;
-import com.study.badrequest.domain.comment.entity.Comment;
-import com.study.badrequest.domain.comment.entity.SubComment;
-import com.study.badrequest.domain.comment.repository.CommentRepository;
-import com.study.badrequest.domain.comment.repository.SubCommentRepository;
-import com.study.badrequest.domain.comment.service.CommentCommendService;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.entity.ProfileImage;
 import com.study.badrequest.domain.member.repository.MemberRepository;
-import com.study.badrequest.domain.board.entity.Board;
-import com.study.badrequest.domain.board.entity.Category;
-import com.study.badrequest.domain.board.entity.Topic;
-import com.study.badrequest.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.study.badrequest.SampleUserData.*;
@@ -35,9 +19,9 @@ import static com.study.badrequest.SampleUserData.*;
 @Component
 @RequiredArgsConstructor
 @Transactional
-@Profile({"dev", "prod"})
+@Profile("prod")
 @Slf4j
-public class DevSampleTestData {
+public class ProdSampleTestData {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;

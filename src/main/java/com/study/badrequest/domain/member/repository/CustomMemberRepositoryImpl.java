@@ -11,8 +11,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+
+
 import java.util.Optional;
 
+import static com.study.badrequest.domain.member.entity.Member.extractDomainFromEmail;
 import static com.study.badrequest.domain.member.entity.QMember.member;
 
 @Repository
@@ -22,7 +25,6 @@ import static com.study.badrequest.domain.member.entity.QMember.member;
 public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
-
     @Override
     public Optional<MemberSimpleInformation> findByUsernameAndAuthority(String username, Authority authority) {
 
@@ -39,8 +41,15 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 .findFirst();
     }
 
+    /**
+     * 이메일로 검색시
+     * 인덱싱된 email 도메인으로 검색
+     */
     @Override
     public Optional<MemberLoginInformation> findLoginInformationByEmail(String email) {
+
+        String domain = extractDomainFromEmail(email);
+
         return jpaQueryFactory
                 .select(Projections.fields(MemberLoginInformation.class,
                         member.id.as("id"),
@@ -50,7 +59,7 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                         member.authority.as("authority")
                 ))
                 .from(member)
-                .where(member.email.eq(email))
+                .where(member.email.eq(email).and(member.domain.eq(domain)))
                 .fetch()
                 .stream()
                 .findFirst();

@@ -1,20 +1,24 @@
 package com.study.badrequest.domain.member.entity;
 
-import com.fasterxml.uuid.Generators;
+import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import lombok.*;
 
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
+
+import static com.study.badrequest.commons.consts.CustomStatus.WRONG_EMAIL_PATTERN;
 
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
-@Table(name = "MEMBER", indexes = @Index(name = "MEMBER_AUTHORITY_IDX", columnList = "authority"))
+@Table(name = "MEMBER", indexes = {
+        @Index(name = "MEMBER_AUTHORITY_IDX", columnList = "authority"),
+        @Index(name = "MEMBER_EMAIL_DOMAIN", columnList = "domain")
+})
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,14 +45,11 @@ public class Member {
     private LocalDateTime createdAt;
     @Column(name = "UPDATE_AT")
     private LocalDateTime updatedAt;
-
     /**
-     * ReturnType String SpringSecurity 에서 Type Converting 없이 사용
-     * 시간순 정렬 UUID
-     * <p>
-     * 2/15 @PrePersist,AtomicLong 동시성 문제 방지 하기 위해 사용
+     * 인덱싱용 이메일 도메인 필드
      */
-    private final static AtomicLong USERNAME_SEQUENCE = new AtomicLong();
+    @Column(name = "DOMAIN")
+    private String domain;
 
     @Builder(builderMethodName = "createMember")
     public Member(String email, String nickname, String password, String contact, ProfileImage profileImage, Authority authority) {
@@ -61,36 +62,37 @@ public class Member {
         this.authority = authority;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.domain = extractDomainFromEmail(email);
+    }
+
+    public static String extractDomainFromEmail(String email) {
+
+        String[] parts = email.split("@");
+
+        if (parts.length != 2) {
+            throw new MemberException(WRONG_EMAIL_PATTERN);
+        }
+        String[] domainParts = parts[1].split("\\.");
+
+        if (domainParts.length < 2) {
+            throw new MemberException(WRONG_EMAIL_PATTERN);
+        }
+        return domainParts[0];
     }
 
     /**
-     * AtomicLong : USERNAME_SEQUENCE 로 username 생성하고
-     * entity 영속되기 직전에 username 초기화 하여 동시성 이슈 회피
-     * 동시성 문제를 더 테스트해보고 계속 사용해될지 고려 or RANDOM UUID 와 무엇이 더 안전할까에 대한 고민
+     * username 생성
      */
     @PrePersist
-    private void generateSequentialUUID() {
-        String proto = Generators.timeBasedGenerator().generate().toString();
-        String[] array = proto.split("-");
-
-        if (USERNAME_SEQUENCE.incrementAndGet() == Long.MAX_VALUE) {
-            USERNAME_SEQUENCE.set(0);
-        }
-
-        String sort = array[2] + array[1] + array[0] + array[3] + USERNAME_SEQUENCE.incrementAndGet();
-        this.username = new StringBuilder(sort)
-                .insert(8, "-")
-                .insert(13, "-")
-                .insert(18, "-")
-                .insert(23, "-")
-                .toString();
+    private void generateUsernameWithUUID() {
+        this.username = UUID.randomUUID().toString();
     }
 
     /**
      * username 변경
      */
     public void replaceUsername() {
-        generateSequentialUUID();
+        generateUsernameWithUUID();
     }
 
     /**

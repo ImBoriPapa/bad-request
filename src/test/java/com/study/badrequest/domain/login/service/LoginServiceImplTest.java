@@ -111,12 +111,17 @@ class LoginServiceImplTest {
         //given
         String accessToken = "accessToken";
         String username = UUID.randomUUID().toString();
-
+        Member member = Member.createMember()
+                .email("dasdsa@gmail.com")
+                .nickname(UUID.randomUUID().toString())
+                .contact(UUID.randomUUID().toString())
+                .password(UUID.randomUUID().toString())
+                .authority(Authority.MEMBER).build();
         //when
         when(jwtUtils.getUsernameInToken(accessToken)).thenReturn(username);
         when(jwtUtils.validateToken(accessToken)).thenReturn(JwtStatus.ACCESS);
         when(redisRefreshTokenRepository.existsById(username)).thenReturn(true);
-        when(memberRepository.findByUsername(username)).thenReturn(Optional.of(Member.createMember().build()));
+        when(memberRepository.findByUsername(username)).thenReturn(Optional.of(member));
         LoginResponse.LogoutResult logout = loginService.logout(accessToken);
         //then
         verify(jwtUtils).getUsernameInToken(accessToken);

@@ -168,7 +168,7 @@ class MemberCommandServiceImplTest {
         Long memberId = 1L;
 
         Member member = Member.createMember()
-                .email("")
+                .email("email@email.com")
                 .password(passwordEncoder.encode(currentPassword))
                 .nickname("")
                 .contact("")

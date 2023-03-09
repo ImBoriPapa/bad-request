@@ -34,6 +34,7 @@ public enum CustomStatus {
     NOTFOUND_AUTHORITY(2001, "권한정보를 찾을 수 없습니다."),
     WRONG_AUTHORITY(2002, "잘못된 권한정보 입니다."),
     WRONG_PASSWORD(2003, "잘못된 비밀번호입니다."),
+    WRONG_EMAIL_PATTERN(2004, "잘못된 이메일 형식입니다."),
     /**
      * 게시판 관련
      * code: 3000~
