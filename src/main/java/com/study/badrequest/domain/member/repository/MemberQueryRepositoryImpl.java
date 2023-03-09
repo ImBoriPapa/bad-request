@@ -159,28 +159,4 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     }
 
 
-
-    /**
-     * UsernameDetailService -> User 객체 생성용 쿼리 최적화
-     *
-     * @return String username;
-     * String password;
-     * Authority authority;
-     */
-    @Override
-    public Optional<MemberUsernameDetailDto> findUserInfoByUsername(String username) {
-        QMember qMember = member;
-
-        MemberUsernameDetailDto memberUsernameDetailDto = jpaQueryFactory
-                .select(Projections.fields(MemberUsernameDetailDto.class,
-                        qMember.username.as("username"),
-                        qMember.password.as("password"),
-                        qMember.authority.as("authority")
-                ))
-                .from(qMember)
-                .where(qMember.username.eq(username))
-                .fetchOne();
-
-        return memberUsernameDetailDto == null ? Optional.empty() : Optional.of(memberUsernameDetailDto);
-    }
 }

@@ -6,12 +6,12 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MemberUsernameDetailDto {
+public class MemberUserDetailDto {
     private String username;
     private String password;
     private Authority authority;
 
-    public MemberUsernameDetailDto(String username, String password, Authority authority) {
+    public MemberUserDetailDto(String username, String password, Authority authority) {
         this.username = username;
         this.password = password;
         this.authority = authority;

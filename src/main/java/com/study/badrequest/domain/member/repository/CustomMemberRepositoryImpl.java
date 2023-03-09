@@ -5,15 +5,20 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.repository.query.MemberLoginInformation;
 import com.study.badrequest.domain.member.repository.query.MemberSimpleInformation;
+import com.study.badrequest.domain.member.repository.query.MemberUserDetailDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static com.study.badrequest.domain.member.entity.QMember.member;
 
 @Repository
+@Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CustomMemberRepositoryImpl implements CustomMemberRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -49,6 +54,30 @@ public class CustomMemberRepositoryImpl implements CustomMemberRepository {
                 .fetch()
                 .stream()
                 .findFirst();
+    }
+
+    /**
+     * UsernameDetailService -> User 객체 생성용 쿼리 최적화
+     *
+     * @return String username;
+     * String password;
+     * Authority authority;
+     */
+    @Override
+    public Optional<MemberUserDetailDto> findUserDetailByUsername(String username) {
+
+        return jpaQueryFactory
+                .select(Projections.fields(MemberUserDetailDto.class,
+                        member.username.as("username"),
+                        member.password.as("password"),
+                        member.authority.as("authority")
+                ))
+                .from(member)
+                .where(member.username.eq(username))
+                .fetch()
+                .stream()
+                .findFirst();
+
     }
 
 }

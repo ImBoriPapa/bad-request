@@ -154,8 +154,8 @@ class MemberQueryRepositoryImplTest extends BaseMemberTest {
         Member member = memberRepository.findById(savedMemberId).orElseThrow(() -> new IllegalArgumentException(""));
         //when
         log.info("========================QUERY START=======================");
-        MemberUsernameDetailDto usernameDetailDto = memberQueryRepository
-                .findUserInfoByUsername(member.getUsername())
+        MemberUserDetailDto usernameDetailDto = memberRepository
+                .findUserDetailByUsername(member.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException(""));
         log.info("========================QUERY FINISH=======================");
         //then
