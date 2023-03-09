@@ -9,7 +9,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,7 @@ class JwtUtilsTest {
     @DisplayName("토큰 검증 테스트")
     void tokenValidateTest() throws Exception{
         //given
-        TokenDto tokenDto = jwtUtils.generateToken(username);
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
 
         String expiredToken = Jwts.builder()
                 .setSubject(username)
@@ -71,7 +70,7 @@ class JwtUtilsTest {
     @DisplayName("access 토큰 생성 테스트")
     void accessTokenCreateTest() throws Exception{
         //given
-        TokenDto tokenDto = jwtUtils.generateToken(username);
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
         String accessToken = tokenDto.getAccessToken();
         //when
         Claims claims = Jwts.parserBuilder()
@@ -92,7 +91,7 @@ class JwtUtilsTest {
     @DisplayName("refresh 토큰 생성 테스트")
     void refreshTokenCreateTest() throws Exception{
         //given
-        TokenDto tokenDto = jwtUtils.generateToken(username);
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
         String refreshToken = tokenDto.getRefreshToken();
         //when
         Claims claims = Jwts.parserBuilder()
@@ -115,7 +114,7 @@ class JwtUtilsTest {
     void createTokenDtoTest() throws Exception {
         //given
         //when
-        TokenDto tokenDto = jwtUtils.generateToken(username);
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
         //then
         assertThat(tokenDto.getAccessToken()).isNotNull();
         assertThat(tokenDto.getRefreshToken()).isNotNull();

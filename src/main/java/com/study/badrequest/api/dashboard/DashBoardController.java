@@ -8,8 +8,7 @@ import com.study.badrequest.domain.log.repositoey.query.LogDto;
 
 import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
 
-import com.study.badrequest.domain.login.entity.RefreshToken;
-import com.study.badrequest.domain.login.service.RefreshTokenService;
+
 import lombok.*;
 
 
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class DashBoardController {
     private final LogQueryRepositoryImpl logQueryRepository;
-    private final RefreshTokenService refreshTokenService;
     private final MonitorService monitorService;
 
     /**

@@ -1,9 +1,6 @@
 package com.study.badrequest.api;
 
-import com.study.badrequest.domain.admin.MonitorService;
-import com.study.badrequest.domain.log.repositoey.query.LogQueryRepositoryImpl;
-import com.study.badrequest.domain.login.service.RefreshTokenService;
-import lombok.RequiredArgsConstructor;
+
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +11,10 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
+
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
 
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

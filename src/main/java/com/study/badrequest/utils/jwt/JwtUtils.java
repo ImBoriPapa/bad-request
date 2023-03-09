@@ -61,7 +61,7 @@ public class JwtUtils {
      * <p>
      * Username 으로 TokenDto 생성 후 반환
      */
-    public TokenDto generateToken(String username) {
+    public TokenDto generateJwtTokens(String username) {
 
         log.info("[GENERATE ACCESS TOKEN]");
         String accessToken = createToken(username, MINUTES, ACCESS_TOKEN_LIFETIME_MINUTES);
@@ -148,6 +148,7 @@ public class JwtUtils {
 
     /**
      * 토큰에 저장된 토큰 만료 시간
+     *
      * @Return LocalDateTime
      */
     public LocalDateTime getExpirationLocalDateTime(String token) {
@@ -161,6 +162,7 @@ public class JwtUtils {
 
     /**
      * Refresh 토큰 만료까지 남은 시간
+     *
      * @return long
      */
     public long getExpirationTimeMillis(String token) {
@@ -183,12 +185,16 @@ public class JwtUtils {
     /**
      * JWT 토큰을 복호화하여 토큰에 들어있는 정보로 토큰으로 Authentication 인증객체 생성
      */
-    public Authentication generateAuthentication(String token, Authority authority) {
+    public Authentication generateAuthentication(String username, Authority authority) {
         log.info("[JwtUtils. getAuthentication]");
 
         Collection<? extends GrantedAuthority> authorities = authority.getAuthorities();
 
-        return new UsernamePasswordAuthenticationToken(new User(getClaimsJws(token).getBody().getSubject(), "", authorities), "", authorities);
+        return new UsernamePasswordAuthenticationToken(
+                new User(username, "", authorities),
+                "",
+                authorities
+        );
     }
 
     public void checkTokenIsEmpty(String token, CustomStatus status) {

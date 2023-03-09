@@ -10,6 +10,7 @@ import com.study.badrequest.commons.exception.custom_exception.JwtAuthentication
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.domain.login.entity.RefreshToken;
 import com.study.badrequest.domain.login.repository.redisRefreshTokenRepository;
+import com.study.badrequest.domain.member.repository.query.MemberLoginInformation;
 import com.study.badrequest.domain.member.repository.query.MemberSimpleInformation;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -18,11 +19,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +37,7 @@ public class LoginServiceImpl implements LoginService {
     private final MemberRepository memberRepository;
     private final redisRefreshTokenRepository redisRefreshTokenRepository;
     private final JwtUtils jwtUtils;
-    private final AuthenticationManagerBuilder authManagerBuilder;
+    private final PasswordEncoder passwordEncoder;
     @Value("${cookie-status.secure}")
     private boolean isSecure;
 
@@ -48,34 +46,111 @@ public class LoginServiceImpl implements LoginService {
     @Override
     @Transactional
     public LoginResponse.LoginDto login(String email, String password) {
-        log.info("loginProcessing email= {}", email);
-        return createResponseDto(doAuthentication(new UsernamePasswordAuthenticationToken(email, password)));
+        log.info("Login Request Email= {}, Password= Protected", email);
+        return createLoginDto(email, password);
     }
 
-    private LoginResponse.LoginDto createResponseDto(Authentication authentication) {
-        MemberSimpleInformation loginInformation = findMemberInformation(
-                authentication.getName(),
-                Authority.getAuthorityByAuthorities(authentication.getAuthorities()),
-                CustomStatus.LOGIN_FAIL);
-        //토큰 생성
-        TokenDto tokenDto = jwtUtils.generateToken(loginInformation.getUsername());
+
+    @CustomLogTracer
+    @Override
+    @Transactional
+    public LoginResponse.LogoutResult logout(String accessToken) {
+        log.info("logoutProcessing accessToken= {}", accessToken);
+
+        String username = jwtUtils.getUsernameInToken(accessToken);
+
+        throwExceptionIfTokenIsNotAccess(accessToken);
+
+        removeRefreshToken(username);
+
+        removeSpringSecuritySession();
+
+        replaceUsername(username);
+
+        return new LoginResponse.LogoutResult();
+    }
+
+    private void throwExceptionIfTokenIsNotAccess(String accessToken) {
+        if (jwtUtils.validateToken(accessToken) != JwtStatus.ACCESS) {
+            throw new JwtAuthenticationException(CustomStatus.PERMISSION_DENIED);
+        }
+    }
+
+    @CustomLogTracer
+    @Override
+    @Transactional
+    public LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken) {
+        log.info("reissueProcessing accessToken={}, refreshToken= {}", accessToken, refreshToken);
+        //1. 토큰 상태가 Access or Expired 가 아니면 exception
+        throwExceptionIfTokenIsNotAccessOrExpired(accessToken, refreshToken);
+
+        //2. Refresh 토큰이 존재하지 않으면 로그아웃 처리
+        RefreshToken refresh = findRefreshByAccessToken(accessToken);
+
+        //3. 저장된 리프레시 토큰과 요청한 토큰을 비교
+        compareRefreshTokenRequestedWithStored(refresh.getToken(), refreshToken);
+
+        //4. 존재하는 회원인지 확인
+        MemberSimpleInformation loginInformation = findMemberInformation(refresh.getUsername(), refresh.getAuthority());
+
+        //6. 토큰 생성
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(loginInformation.getUsername());
+
+        //7. 토큰 갱신
+        replaceRefreshToken(refresh, tokenDto);
 
         return LoginResponse.LoginDto.builder()
                 .id(loginInformation.getId())
                 .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(createResponseCookie(storeRefreshToken(loginInformation.getUsername(), loginInformation.getAuthority(), tokenDto)))
+                .refreshCookie(createResponseCookie(refresh))
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
                 .build();
+    }
+
+    private RefreshToken findRefreshByAccessToken(String accessToken) {
+        return redisRefreshTokenRepository.findById(jwtUtils.getUsernameInToken(accessToken))
+                .orElseThrow(() -> new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT));
+    }
+
+
+    private LoginResponse.LoginDto createLoginDto(String email, String password) {
+
+        MemberLoginInformation information = findMemberInformationEmail(email);
+
+        comparePasswordRequestedWithStored(password, information.getPassword());
+
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(information.getUsername());
+
+        RefreshToken refreshToken = storeRefreshToken(information.getUsername(), information.getAuthority(), tokenDto);
+
+        return LoginResponse.LoginDto.builder()
+                .id(information.getId())
+                .accessToken(tokenDto.getAccessToken())
+                .refreshCookie(createResponseCookie(refreshToken))
+                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
+                .build();
+    }
+
+    private void comparePasswordRequestedWithStored(String requestedPassword, String storedPassword) {
+        if (!passwordEncoder.matches(requestedPassword, storedPassword)) {
+            throw new MemberException(CustomStatus.LOGIN_FAIL);
+        }
+    }
+
+    private MemberLoginInformation findMemberInformationEmail(String email) {
+        return memberRepository.findLoginInformationByEmail(email)
+                .orElseThrow(() -> new MemberException(CustomStatus.LOGIN_FAIL));
     }
 
     /**
      * 회원 식별자, username, 권한 정보만 조회
      * 조회시 권한정보로 인덱싱
      */
-    private MemberSimpleInformation findMemberInformation(String username, Authority authority, CustomStatus exception) {
+    private MemberSimpleInformation findMemberInformation(String username, Authority authority) {
+        log.info("findMemberInformation {}, {}", username, authority);
         return memberRepository
                 .findByUsernameAndAuthority(username, authority)
-                .orElseThrow(() -> new MemberException(exception));
+                .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
     }
 
     /**
@@ -96,22 +171,6 @@ public class LoginServiceImpl implements LoginService {
         return redisRefreshTokenRepository.save(refreshToken);
     }
 
-    /**
-     * loadByUsername() -> 인증 실패시 BadCredentialsException -> MemberException throw
-     * LOGIN_FAIL(1501, "로그인에 실패했습니다.") 응답에 로그인 아이디 혹은 비밀번호 중 어떤것이 잘못되었는지 감추기 위해 통일
-     */
-    private Authentication doAuthentication(UsernamePasswordAuthenticationToken authenticationToken) {
-        log.info("createAuthenticationByManger");
-        final Authentication authentication;
-
-        try {
-            authentication = authManagerBuilder.getObject().authenticate(authenticationToken);
-        } catch (BadCredentialsException e) {
-            log.info("로그인 인증 실패");
-            throw new MemberException(CustomStatus.LOGIN_FAIL);
-        }
-        return authentication;
-    }
 
     /**
      * Https 적용 후 secure false -> true
@@ -128,31 +187,11 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
-    @CustomLogTracer
-    @Override
-    @Transactional
-    public LoginResponse.LogoutResult logout(String accessToken) {
-        log.info("logoutProcessing accessToken= {}", accessToken);
-
-        String username = jwtUtils.getUsernameInToken(accessToken);
-
-        throwExceptionIfTokenIsNotAccessOrExpired(accessToken);
-
-        removeRefreshToken(username);
-        //3.SecurityContext 에서 인증 객체 제거
-        removeSpringSecuritySession();
-        //4. 로그아웃 성공시 username 교체
-        replaceUsername(username);
-
-        return new LoginResponse.LogoutResult();
-    }
-
-    private static void removeSpringSecuritySession() {
+    private void removeSpringSecuritySession() {
         SecurityContextHolder.clearContext();
     }
 
     private void replaceUsername(String username) {
-
         memberRepository.findByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .replaceUsername();
@@ -170,43 +209,19 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    @CustomLogTracer
-    @Override
-    @Transactional
-    public LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken) {
-        log.info("reissueProcessing accessToken={}, refreshToken= {}", accessToken, refreshToken);
-        //1. 토큰 상태가 Access or Expired 가 아니면 exception
-        throwExceptionIfTokenIsNotAccessOrExpired(accessToken);
-        throwExceptionIfTokenIsNotAccessOrExpired(refreshToken);
-
-        //2. Refresh 토큰이 존재하지 않으면 로그아웃 처리
-        RefreshToken refresh = redisRefreshTokenRepository.findById(jwtUtils.getUsernameInToken(accessToken))
-                .orElseThrow(() -> new JwtAuthenticationException(CustomStatus.ALREADY_LOGOUT));
-
-        //3. 저장된 리프레시 토큰과 요청한 토큰을 비교
-        compareRefreshTokenRequestedWithStored(refresh.getToken(), refreshToken);
-
-        //4. 존재하는 회원인지 확인
-        MemberSimpleInformation loginInformation = findMemberInformation(refresh.getUsername(), refresh.getAuthority(), CustomStatus.NOTFOUND_MEMBER);
-
-        //6. 토큰 생성
-        TokenDto tokenDto = jwtUtils.generateToken(loginInformation.getUsername());
-
-        //7. 토큰 갱신
-        replaceRefreshToken(refresh, tokenDto);
-
-        return LoginResponse.LoginDto.builder()
-                .id(loginInformation.getId())
-                .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(createResponseCookie(refresh))
-                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
-                .build();
-    }
-
-    private void throwExceptionIfTokenIsNotAccessOrExpired(String token) {
-        JwtStatus status = jwtUtils.validateToken(token);
-        if (status == JwtStatus.DENIED || status == JwtStatus.ERROR || status != JwtStatus.ACCESS) {
+    private void throwExceptionIfTokenIsNotAccessOrExpired(String accessToken, String refreshToken) {
+        JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
+        if (accessStatus == JwtStatus.DENIED || accessStatus == JwtStatus.ERROR) {
             throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
+        }
+
+        JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
+        if (refreshStatus == JwtStatus.DENIED || refreshStatus == JwtStatus.ERROR) {
+            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
+        }
+
+        if (refreshStatus == JwtStatus.EXPIRED) {
+            throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_EXPIRED);
         }
     }
 
@@ -216,7 +231,7 @@ public class LoginServiceImpl implements LoginService {
         redisRefreshTokenRepository.save(refresh);
     }
 
-    private static void compareRefreshTokenRequestedWithStored(String StoredRefreshToken, String refreshToken) {
+    private  void compareRefreshTokenRequestedWithStored(String StoredRefreshToken, String refreshToken) {
         if (!StoredRefreshToken.equals(refreshToken)) {
             throw new JwtAuthenticationException(CustomStatus.TOKEN_IS_DENIED);
         }
