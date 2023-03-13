@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-@Profile("prod")
 @RequiredArgsConstructor
 public class S3ImageUploader implements ImageUploader {
 
@@ -28,12 +27,17 @@ public class S3ImageUploader implements ImageUploader {
     private static final String DEFAULT_PROFILE_IMAGE = "default/profile.jpg";
     private final AmazonS3Client amazonS3Client;
 
+    public ImageDetailDto uploadFile(MultipartFile image, String folderName) {
+        return uploadImage(image, folderName);
+    }
+
     /**
-     * uploadFile
+     * upload File List
      */
     public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
-        return images.stream()
+        return images
+                .stream()
                 .map(file -> uploadImage(file, folderName))
                 .collect(Collectors.toList());
     }
@@ -56,7 +60,8 @@ public class S3ImageUploader implements ImageUploader {
 
         putImage(file, storedName, objectMetadata);
 
-        return ImageDetailDto.builder()
+        return ImageDetailDto
+                .builder()
                 .originalFileName(file.getOriginalFilename())
                 .storedFileName(storedName)
                 .fullPath(BUCKET_URL + storedName)

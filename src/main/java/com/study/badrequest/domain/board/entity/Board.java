@@ -6,11 +6,10 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 
 @Entity
@@ -45,9 +44,6 @@ public class Board {
     @Column(name = "UPDATE_AT")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-    private List<BoardImage> boardImages = new ArrayList<>();
-
     @Builder(builderMethodName = "createBoard")
     public Board(Member member, String title, String contents, Category category, Topic topic) {
         this.member = member;
@@ -58,47 +54,51 @@ public class Board {
         this.topic = topic;
         this.commentCount = 0;
         this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        modifyUpdateTime();
     }
 
-    public void update(String title, String contents, Category category, Topic topic) {
-        ifHasTitleUpdate(title);
-        ifHasContents(contents);
-        ifHasCategory(category);
-        ifHasTopic(topic);
-        this.updatedAt = LocalDateTime.now();
-    }
 
-    private void ifHasTitleUpdate(String title) {
-        if (title != null) {
+    public void titleUpdateIfHasChange(String title) {
+        // 제목 수정시 null, 공백 허용값은 수정에 반영 x
+        if (StringUtils.hasText(title)) {
             this.title = title;
         }
+        modifyUpdateTime();
     }
 
-    private void ifHasContents(String contents) {
+    public void contentsUpdateIfNotNull(String contents) {
+        // 내용 수정은 공백 허용
         if (contents != null) {
             this.contents = contents;
         }
+        modifyUpdateTime();
     }
 
-    private void ifHasCategory(Category category) {
+    public void categoryUpdateIfNotNull(Category category) {
         if (category != null) {
             this.category = category;
         }
+        modifyUpdateTime();
     }
 
-    private void ifHasTopic(Topic topic) {
+    public void topicUpdateIfNotNull(Topic topic) {
         if (topic != null) {
             this.topic = topic;
         }
+        modifyUpdateTime();
+    }
+
+    private void modifyUpdateTime() {
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void increaseCommentCount() {
-        ++this.commentCount;
+        this.commentCount++;
     }
 
     public void decreaseCommentCount() {
-        --this.commentCount;
+        if (this.commentCount >= 1) {
+            this.commentCount--;
+        }
     }
-
 }

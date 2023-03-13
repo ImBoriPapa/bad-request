@@ -13,7 +13,7 @@ import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 
 
-import com.study.badrequest.utils.image.LocalImageUploader;
+import com.study.badrequest.utils.image.ImageUploader;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ class MemberCommandServiceImplTest {
     @Spy
     PasswordEncoder passwordEncoder;
     @Mock
-    LocalImageUploader imageUploader;
+    ImageUploader imageUploader;
 
 
     @Test

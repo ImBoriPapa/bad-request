@@ -31,7 +31,7 @@ public class BoardDetailDto {
     private LocalDateTime createdAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime updatedAt;
-    private List<String> boardImages = new ArrayList<>();
+
 
     @Builder
     public BoardDetailDto(Board board, List<BoardImage> boardImages) {
@@ -47,7 +47,5 @@ public class BoardDetailDto {
         this.commentCount = board.getCommentCount();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
-        this.boardImages = boardImages.stream().map(BoardImage::getFullPath).collect(Collectors.toList());
-
     }
 }

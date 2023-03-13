@@ -192,7 +192,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private void replaceUsername(String username) {
-        memberRepository.findByUsername(username)
+        memberRepository.findMemberByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER))
                 .replaceUsername();
     }

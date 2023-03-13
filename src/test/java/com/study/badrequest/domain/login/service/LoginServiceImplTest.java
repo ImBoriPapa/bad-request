@@ -21,7 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -121,13 +120,13 @@ class LoginServiceImplTest {
         when(jwtUtils.getUsernameInToken(accessToken)).thenReturn(username);
         when(jwtUtils.validateToken(accessToken)).thenReturn(JwtStatus.ACCESS);
         when(redisRefreshTokenRepository.existsById(username)).thenReturn(true);
-        when(memberRepository.findByUsername(username)).thenReturn(Optional.of(member));
+        when(memberRepository.findMemberByUsername(username)).thenReturn(Optional.of(member));
         LoginResponse.LogoutResult logout = loginService.logout(accessToken);
         //then
         verify(jwtUtils).getUsernameInToken(accessToken);
         verify(jwtUtils).validateToken(accessToken);
         verify(redisRefreshTokenRepository).existsById(username);
-        verify(memberRepository).findByUsername(username);
+        verify(memberRepository).findMemberByUsername(username);
 
         assertThat(logout.getLogout()).isTrue();
         assertThat(logout.getLogoutAt()).isNotNull();

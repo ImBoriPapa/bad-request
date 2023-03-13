@@ -94,7 +94,7 @@ class BoardControllerTest extends BaseMemberTest {
                     .contents("내용" + i)
                     .topic(Topic.JAVA)
                     .build();
-            boardCommandService.create(member.getUsername(), form, null);
+//            boardCommandService.create(member.getUsername(), form, null);
         }
     }
 

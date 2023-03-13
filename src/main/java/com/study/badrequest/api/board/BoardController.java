@@ -41,9 +41,7 @@ public class BoardController {
     @CustomLogTracer
     public ResponseEntity postBoard(@Valid
                                     @AuthenticationPrincipal User user,
-                                    @RequestPart(value = "form", required = true) BoardRequest.Create form,
-                                    @RequestPart(value = "images", required = false) List<MultipartFile> images,
-                                    BindingResult bindingResult) {
+                                    @RequestPart(value = "form", required = true) BoardRequest.Create form, BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
@@ -53,7 +51,7 @@ public class BoardController {
             throw new MemberException(CustomStatus.ALREADY_LOGOUT);
         }
 
-        BoardResponse.Create create = boardCommandService.create(user.getUsername(), form, images);
+        BoardResponse.Create create = boardCommandService.create(user, form);
 
         EntityModel<BoardResponse.Create> entityModel = boardResponseModelAssembler.toModel(create);
 
@@ -75,12 +73,11 @@ public class BoardController {
     public ResponseEntity patchBoard(
             @AuthenticationPrincipal User user,
             @PathVariable(name = "boardId") Long boardId,
-            @RequestPart(name = "form") BoardRequest.Update form,
-            @RequestPart(name = "images", required = false) List<MultipartFile> images) {
+            @RequestPart(name = "form") BoardRequest.Update form) {
 
         boardValidator.validateUpdateForm(form);
 
-        BoardResponse.Update update = boardCommandService.update(user.getUsername(), boardId, form, images);
+        BoardResponse.Update update = boardCommandService.update(user, boardId, form);
 
         EntityModel<BoardResponse.Update> entityModel = boardResponseModelAssembler.toModel(update);
 
@@ -90,5 +87,11 @@ public class BoardController {
     }
 
     // TODO: 2023/02/15 Delete
+    @DeleteMapping("/board/{boardId}")
+    public void delete(@AuthenticationPrincipal User user,@PathVariable(name = "boardId")Long boardId){
+
+        boardCommandService.delete(user, boardId);
+
+    }
 
 }

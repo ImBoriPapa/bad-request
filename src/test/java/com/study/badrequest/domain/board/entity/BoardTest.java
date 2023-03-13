@@ -1,81 +1,66 @@
 package com.study.badrequest.domain.board.entity;
 
-import com.study.badrequest.base.BaseMemberTest;
-import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
-import com.study.badrequest.domain.member.repository.MemberRepository;
-import com.study.badrequest.domain.board.entity.Board;
-import com.study.badrequest.domain.board.entity.Category;
-import com.study.badrequest.domain.board.repository.BoardRepository;
-
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
-class BoardTest extends BaseMemberTest {
+import static org.assertj.core.api.Assertions.*;
 
-    @Autowired
-    MemberRepository memberRepository;
-    @Autowired
-    BoardRepository boardRepository;
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @BeforeEach
-    void beforeEach() {
-        String email = "tester@test.com";
-        String password = "password1234!@";
-        Member member = Member.createMember()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .contact("010-1234-1234")
-                .nickname("nickname")
-                .authority(Authority.MEMBER)
-                .build();
-        memberRepository.save(member);
-
-    }
-
-    @AfterEach
-    void afterEach() {
-        boardRepository.deleteAll();
-    }
+class BoardTest {
 
 
     @Test
-    @DisplayName("create")
-    void board() throws Exception {
+    @DisplayName("Board 생성")
+    void createBoardTest() throws Exception {
         //given
-        String email = "tester@test.com";
+        String title = "title";
 
-        Member member = memberRepository.findByEmail(email).get();
+        String contents = "내용내용내용내용내용";
 
+        Category category = Category.KNOWLEDGE;
+        Topic topic = Topic.JAVA;
+
+        Member member = Member.createMember().email("email@email.com").build();
+
+        //when
         Board board = Board.createBoard()
-                .title("title")
-                .contents("내용내용내용내용내용")
-                .category(Category.KNOWLEDGE)
-                .topic(Topic.JAVA)
+                .title(title)
+                .contents(contents)
+                .category(category)
+                .topic(topic)
                 .member(member)
                 .build();
-        //when
-        Board saved = boardRepository.save(board);
-        Board findBoard = boardRepository.findById(saved.getId()).get();
         //then
-        Assertions.assertThat(findBoard.getId()).isEqualTo(saved.getId());
-        Assertions.assertThat(findBoard.getTitle()).isEqualTo(saved.getTitle());
-        Assertions.assertThat(findBoard.getContents()).isEqualTo(saved.getContents());
-        Assertions.assertThat(findBoard.getCategory()).isEqualTo(saved.getCategory());
-        Assertions.assertThat(findBoard.getTopic()).isEqualTo(saved.getTopic());
+        assertThat(board.getTitle()).isEqualTo(title);
+        assertThat(board.getContents()).isEqualTo(contents);
+        assertThat(board.getCategory()).isEqualTo(category);
+        assertThat(board.getTopic()).isEqualTo(topic);
+    }
+
+    @Test
+    @DisplayName("Board 수정")
+    void updateBoardTest() throws Exception {
+        //given
+        String title = "title";
+
+        String contents = "내용내용내용내용내용";
+
+        Category category = Category.KNOWLEDGE;
+        Topic topic = Topic.JAVA;
+
+        Board board = Board.createBoard()
+                .title(title)
+                .contents(contents)
+                .category(category)
+                .topic(topic)
+                .build();
+        //when
+        board.titleUpdateIfHasChange(""); // 제목에 공백 입력시 수정 반영 x
+        board.contentsUpdateIfNotNull(null); // 내용에 null 입력시 수정 반영 x
+        //then
+        assertThat(board.getTitle()).isEqualTo(title);
+        assertThat(board.getContents()).isEqualTo(contents);
     }
 
 }

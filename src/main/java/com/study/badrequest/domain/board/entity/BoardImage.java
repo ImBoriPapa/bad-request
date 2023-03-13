@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.entity;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,27 +8,37 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "BOARD_IMAGE")
 @Getter
 public class BoardImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private String originalFileName;
+    private String storedFileName;
+    private String imageLocation;
+    private Long size;
+    private String fileType;
+    private BoardImageStatus status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     private Board board;
-    private String originalFileName;
-    private String storedFileName;
-    private String fullPath;
-    private Long size;
-    private String fileType;
-    @Builder
-    public BoardImage(Board board, String originalFileName, String storedFileName, String fullPath, Long size, String fileType) {
-        this.board = board;
+
+    @Builder(builderMethodName = "createBoardImage")
+    public BoardImage(String originalFileName, String storedFileName, String imageLocation, Long size, String fileType) {
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
-        this.fullPath = fullPath;
+        this.imageLocation = imageLocation;
         this.size = size;
         this.fileType = fileType;
+        this.status = BoardImageStatus.TEMPORARY;
     }
+
+    public void changeImageStatus(Board board, BoardImageStatus status) {
+        this.board = board;
+        this.status = status;
+    }
+
 }

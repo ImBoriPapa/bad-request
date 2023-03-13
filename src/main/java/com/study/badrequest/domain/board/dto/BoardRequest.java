@@ -7,6 +7,7 @@ import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @NoArgsConstructor
 public class BoardRequest {
@@ -24,6 +25,7 @@ public class BoardRequest {
         private Topic topic;
         @EnumValid(message = "카테고리는 필수입니다.", enumClass = Category.class)
         private Category category;
+        private List<Long> imageId;
     }
 
     @Getter
@@ -36,5 +38,7 @@ public class BoardRequest {
         private String contents;
         private Topic topic;
         private Category category;
+        private List<Long> imageId;
+
     }
 }

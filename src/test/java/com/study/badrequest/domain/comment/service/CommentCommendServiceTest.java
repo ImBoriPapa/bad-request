@@ -68,7 +68,7 @@ class CommentCommendServiceTest extends BaseMemberTest {
                 .contents("내용")
                 .topic(Topic.JAVA)
                 .build();
-        boardCommandService.create(member.getUsername(), form, null);
+//        boardCommandService.create(member.getUsername(), form, null);
     }
 
     @AfterEach

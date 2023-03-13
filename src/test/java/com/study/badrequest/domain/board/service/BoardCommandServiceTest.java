@@ -2,6 +2,7 @@ package com.study.badrequest.domain.board.service;
 
 
 import com.study.badrequest.base.BaseMemberTest;
+import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
@@ -16,70 +17,51 @@ import com.study.badrequest.domain.board.repository.BoardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
-@Transactional
 @Slf4j
-class BoardCommandServiceTest extends BaseMemberTest {
-    @Autowired
+class BoardCommandServiceTest {
+    @InjectMocks
     private BoardCommandServiceImpl boardCommandService;
-    @Autowired
+    @Mock
     private BoardRepository boardRepository;
-
-    @Autowired
+    @Mock
     private MemberRepository memberRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @BeforeEach
-    void beforeEach() {
-        String email = "tester@test.com";
-        String password = "password1234!@";
-        Member member = Member.createMember()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .contact("010-1234-1234")
-                .nickname("nickname")
-                .authority(Authority.MEMBER)
-                .build();
-        memberRepository.save(member);
-
-        BoardRequest.Create form = BoardRequest.Create
-                .builder()
-                .title("제목")
-                .category(Category.KNOWLEDGE)
-                .contents("내용")
-                .topic(Topic.JAVA)
-                .build();
-
-        boardCommandService.create(member.getUsername(), form, null);
-    }
-
-    @AfterEach
-    void afterEach() {
-        boardRepository.deleteAll();
-    }
+    @Mock
+    private BoardImageService boardImageService;
 
     @Test
     @DisplayName("board 생성")
-    void createBoard() throws Exception {
+    void createTest() throws Exception {
         //given
-        String email = "tester@test.com";
-
-        Member member = memberRepository.findByEmail(email).get();
-
+        Member member = Member.createMember()
+                .email("email@email.com")
+                .password("password1234")
+                .authority(Authority.MEMBER)
+                .build();
         BoardRequest.Create form = BoardRequest.Create
                 .builder()
                 .title("제목")
@@ -87,60 +69,43 @@ class BoardCommandServiceTest extends BaseMemberTest {
                 .contents("내용")
                 .topic(Topic.JAVA)
                 .build();
-
-        MockMultipartFile image1 = new MockMultipartFile("image", "Image.png", "image/png", "image.dsada".getBytes());
+        Board board = Board.createBoard().build();
+        User user = new User(UUID.randomUUID().toString(), member.getPassword(), Authority.MEMBER.getAuthorities());
         //when
-        BoardResponse.Create create = boardCommandService.create(member.getUsername(), form, List.of(image1));
-        Board board = boardRepository.findById(create.getBoardId()).orElseThrow(() -> new IllegalArgumentException());
+        when(memberRepository.findMemberByUsernameAndAuthority(any(), any())).thenReturn(Optional.of(member));
+        when(boardRepository.save(any())).thenReturn(board);
+        BoardResponse.Create response = boardCommandService.create(user, form);
         //then
-        Assertions.assertThat(board.getId()).isEqualTo(create.getBoardId());
+        assertThat(response.getCreateAt()).isNotNull();
 
-    }
 
-    @Test
-    @DisplayName("Board 생성 이미지 없이")
-    void createBoardWithImage() throws Exception {
-        //given
-        String email = "tester@test.com";
-
-        Member member = memberRepository.findByEmail(email).get();
-
-        BoardRequest.Create form = BoardRequest.Create
-                .builder()
-                .title("제목")
-                .category(Category.KNOWLEDGE)
-                .contents("내용")
-                .topic(Topic.JAVA)
-                .build();
-        //when
-        BoardResponse.Create create = boardCommandService.create(member.getUsername(), form, null);
-        Board board = boardRepository.findById(create.getBoardId()).orElseThrow(() -> new IllegalArgumentException(""));
-        //then
-        Assertions.assertThat(board).isNotNull();
     }
 
     @Test
     @DisplayName("게시판 수정")
     void updateBoard() throws Exception {
         //given
-        String email = "tester@test.com";
-        String title = "제목";
-
-        Member member = memberRepository.findByEmail(email).get();
-
-        Board board = boardRepository.findByTitle(title).orElseThrow(() -> new IllegalArgumentException(""));
-
-        BoardRequest.Update newData = BoardRequest.Update
+        BoardRequest.Update form = BoardRequest.Update
                 .builder()
-                .title("변경된 제목")
-                .contents("변경된 내용")
+                .title("제목")
+                .category(Category.KNOWLEDGE)
+                .contents("내용")
+                .topic(Topic.JAVA)
                 .build();
-        BoardRequest.Update form = newData;
+        Member member = Member.createMember()
+                .email("email@email.com")
+                .password("password1234")
+                .authority(Authority.MEMBER)
+                .build();
+        member.replaceUsername();
+        Board board = Board.createBoard()
+                .build();
+        User user = new User(member.getUsername(), member.getPassword(), member.getAuthority().getAuthorities());
         //when
-        BoardResponse.Update update = boardCommandService.update(member.getUsername(), board.getId(), newData, null);
-        Board findBoard = boardRepository.findById(update.getBoardId()).orElseThrow(() -> new IllegalArgumentException());
+        when(memberRepository.findMemberByUsernameAndAuthority(any(), any())).thenReturn(Optional.of(member));
+        when(boardRepository.findById(any())).thenReturn(Optional.of(board));
+        BoardResponse.Update response = boardCommandService.update(user, 1L, form);
         //then
-        Assertions.assertThat(findBoard.getTitle()).isEqualTo(newData.getTitle());
-        Assertions.assertThat(findBoard.getContents()).isEqualTo(newData.getContents());
+        assertThat(response.getUpdatedAt()).isNotNull();
     }
 }

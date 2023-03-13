@@ -53,7 +53,6 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
         return findBoard == null ? Optional.empty() : Optional
                 .ofNullable(BoardDetailDto.builder()
                         .board(findBoard)
-                        .boardImages(findBoard.getBoardImages())
                         .build());
     }
 

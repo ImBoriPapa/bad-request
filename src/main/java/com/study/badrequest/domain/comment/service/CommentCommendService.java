@@ -41,7 +41,7 @@ public class CommentCommendService {
                 .orElseThrow(() -> new BoardException(CustomStatus.NOT_FOUND_BOARD));
 
         Member member = memberRepository
-                .findByUsername(username)
+                .findMemberByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
         Comment comment = Comment
@@ -117,7 +117,7 @@ public class CommentCommendService {
     @CustomLogTracer
     public CommentResponse.CreateSub addSubComment(Long commentId, String username, CommentRequest.Create request) {
 
-        Member member = memberRepository.findByUsername(username)
+        Member member = memberRepository.findMemberByUsername(username)
                 .orElseThrow(() -> new MemberException(CustomStatus.NOTFOUND_MEMBER));
 
         Comment findComment = commentRepository

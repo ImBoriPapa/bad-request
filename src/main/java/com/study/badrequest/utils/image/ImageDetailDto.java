@@ -29,7 +29,7 @@ public class ImageDetailDto {
     public ImageDetailDto(BoardImage boardImage) {
         this.originalFileName = boardImage.getOriginalFileName();
         this.storedFileName = boardImage.getStoredFileName();
-        this.fullPath = boardImage.getFullPath();
+        this.fullPath = boardImage.getImageLocation();
         this.size = boardImage.getSize();
         this.fileType = boardImage.getFileType();
     }
