@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.board.service;
 
+import com.study.badrequest.domain.board.dto.BoardImageResponse;
 import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.BoardImage;
 import com.study.badrequest.domain.board.entity.BoardImageStatus;
@@ -20,12 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class BoardImageServiceImpl implements BoardImageService {
-    
     private final ImageUploader imageUploader;
     private final BoardImageRepository boardImageRepository;
 
     @Override
-    public BoardImage save(MultipartFile image) {
+    public BoardImageResponse.Create save(MultipartFile image) {
 
         final String FOLDER_NAME = "board";
 
@@ -39,7 +39,8 @@ public class BoardImageServiceImpl implements BoardImageService {
                 .size(imageDetailDto.getSize())
                 .build();
 
-        return boardImageRepository.save(boardImage);
+        BoardImage save = boardImageRepository.save(boardImage);
+        return new BoardImageResponse.Create(save.getId(), save.getImageLocation());
     }
 
     @Override
