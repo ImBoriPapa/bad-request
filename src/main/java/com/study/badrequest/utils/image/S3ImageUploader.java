@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class S3ImageUploader implements ImageUploader {
 
-    private static final String BUCKET_NAME = "bori-market-bucket";
+    private static final  String BUCKET_NAME = "bori-market-bucket";
     private static final String BUCKET_URL = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
     private static final String DEFAULT_PROFILE_IMAGE = "default/profile.jpg";
     private final AmazonS3Client amazonS3Client;

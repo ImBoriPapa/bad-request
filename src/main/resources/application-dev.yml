@@ -2,6 +2,8 @@ server:
   port: 8080
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   redis:
     host: localhost
     port: 6379
@@ -51,11 +53,8 @@ cloud:
   aws:
     region:
       static: ap-northeast-2
-      auto: false
     stack:
       auto: false
-
-
 
 message:
   hello: This is test dev

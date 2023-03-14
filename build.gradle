@@ -66,10 +66,18 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     //UUID
     implementation 'com.fasterxml.uuid:java-uuid-generator:4.1.0'
-    //mock s3
-    testImplementation 'io.findify:s3mock_2.12:0.2.4'
-    // test-containers
+
+    // test-containers for redis
     testImplementation group: 'org.testcontainers', name: 'testcontainers', version: '1.17.2'
+    // test-container
+    testImplementation 'org.testcontainers:junit-jupiter'
+    //localstack
+    testImplementation 'org.testcontainers:localstack'
+    //localstack for local run
+    implementation "org.testcontainers:localstack:1.16.3"
+
+
+
     //lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
