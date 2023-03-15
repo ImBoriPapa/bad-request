@@ -4,13 +4,11 @@ import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.consts.CustomStatus;
 import com.study.badrequest.commons.exception.custom_exception.MemberException;
 import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.member.dto.MemberSearchCondition;
-import com.study.badrequest.domain.member.repository.MemberQueryRepository;
-import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.domain.member.repository.MemberQueryRepository;
+import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
 import com.study.badrequest.domain.member.repository.query.MemberDetailDto;
-import com.study.badrequest.domain.member.repository.query.MemberListDto;
 import com.study.badrequest.domain.member.repository.query.MemberProfileDto;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.validator.MemberValidator;
@@ -18,16 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-
 import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
-
 import static com.study.badrequest.domain.member.entity.Authority.getAuthorityByAuthorities;
 import static com.study.badrequest.utils.authority.AuthorityUtils.restrictAccessIfNotYouAndAdmin;
 

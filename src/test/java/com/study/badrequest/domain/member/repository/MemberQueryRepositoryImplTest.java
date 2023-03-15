@@ -1,15 +1,16 @@
 package com.study.badrequest.domain.member.repository;
 
 import com.querydsl.core.types.Order;
-import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import com.study.badrequest.TestConfig;
-import com.study.badrequest.base.BaseMemberTest;
+
 import com.study.badrequest.domain.member.dto.MemberSearchCondition;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
+
 import com.study.badrequest.domain.member.repository.query.*;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -44,11 +45,14 @@ class MemberQueryRepositoryImplTest {
     @DisplayName("회원 상세 정보 테스트")
     void findMemberDetailTest() throws Exception {
         //given
+
+
         Member member = Member.createMember()
                 .email("email@email.com")
                 .password("1234")
                 .contact("12321321")
                 .authority(Authority.MEMBER)
+
                 .build();
         Member save = memberRepository.save(member);
         //when

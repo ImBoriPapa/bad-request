@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface BoardQueryRepository {
 
-    Optional<BoardDetailDto> findBoardDetail(Long boardId, Category category);
+    Optional<BoardDetailDto> findBoardDetailByIdAndCategory(Long boardId , Category category);
 
     BoardListDto findBoardList(BoardSearchCondition condition);
 }

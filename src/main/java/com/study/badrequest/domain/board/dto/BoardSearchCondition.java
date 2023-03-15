@@ -2,12 +2,10 @@ package com.study.badrequest.domain.board.dto;
 
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
 @Getter
-@Setter
+@Setter  //파라미터 바인딩을 위해 필요
 @NoArgsConstructor
 @AllArgsConstructor
 public class BoardSearchCondition {

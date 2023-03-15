@@ -1,8 +1,7 @@
 package com.study.badrequest.domain.board.service;
 
 
-import com.study.badrequest.base.BaseMemberTest;
-import com.study.badrequest.domain.member.dto.MemberRequest;
+
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 import com.study.badrequest.domain.member.repository.MemberRepository;
@@ -21,15 +20,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+
 
 import java.util.List;
 import java.util.Optional;

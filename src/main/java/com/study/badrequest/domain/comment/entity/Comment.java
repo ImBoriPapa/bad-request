@@ -15,12 +15,13 @@ import java.util.Collection;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "COMMENT")
 public class Comment {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COMMENT_ID")
     private Long id;
+    @Column(name = "TEXT")
     private String text;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
@@ -28,9 +29,13 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     private Board board;
+    @Column(name = "LIKE_COUNT")
     private Integer likeCount;
+    @Column(name = "SUB_COMMENT_COUNT")
     private Integer subCommentCount;
+    @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
+    @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
     @Builder(builderMethodName = "createComment")

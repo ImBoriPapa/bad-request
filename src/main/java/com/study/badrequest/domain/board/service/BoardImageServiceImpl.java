@@ -9,10 +9,12 @@ import com.study.badrequest.utils.image.ImageDetailDto;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,8 @@ public class BoardImageServiceImpl implements BoardImageService {
 
         ImageDetailDto imageDetailDto = imageUploader.uploadFile(image, FOLDER_NAME);
 
-        BoardImage boardImage = BoardImage.createBoardImage()
+        BoardImage boardImage = BoardImage
+                .createBoardImage()
                 .originalFileName(imageDetailDto.getOriginalFileName())
                 .storedFileName(imageDetailDto.getStoredFileName())
                 .imageLocation(imageDetailDto.getFullPath())
@@ -83,9 +86,23 @@ public class BoardImageServiceImpl implements BoardImageService {
 
         findRequestedImage.forEach(image -> image.changeImageStatus(board, BoardImageStatus.SAVED));
     }
+
     @Override
     public void deleteByBoard(Board board) {
         List<BoardImage> imageList = boardImageRepository.findByBoard(board);
         imageUploader.deleteFile(imageList.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
+    }
+    @Override
+    @Scheduled(cron = "0 0 5 * * *")
+    public void clearTemporaryImage() {
+        log.info("[Clear Temporary Image START AT ={}]", LocalDateTime.now());
+        List<BoardImage> boardImages = boardImageRepository.findByStatus(BoardImageStatus.TEMPORARY);
+
+        if (!boardImages.isEmpty()) {
+            imageUploader.deleteFile(boardImages.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
+            boardImageRepository.deleteAll(boardImages);
+        }
+
+        log.info("[Clear Temporary Image FINISH AT ={}]", LocalDateTime.now());
     }
 }

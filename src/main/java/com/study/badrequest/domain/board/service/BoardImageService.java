@@ -18,4 +18,6 @@ public interface BoardImageService {
 
     void deleteByBoard(Board board);
 
+    void clearTemporaryImage();
+
 }

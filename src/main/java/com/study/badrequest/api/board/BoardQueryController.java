@@ -36,7 +36,7 @@ public class BoardQueryController {
     public ResponseEntity getBoard(@PathVariable("boardId") Long id,
                                    @RequestParam(name = "category", required = false) Category category) {
 
-        Optional<BoardDetailDto> boardDetail = boardQueryRepository.findBoardDetail(id, category);
+        Optional<BoardDetailDto> boardDetail = boardQueryRepository.findBoardDetailByIdAndCategory(id,category);
 
         if (boardDetail.isEmpty()) {
             throw new BoardException(CustomStatus.NOT_FOUND_BOARD);

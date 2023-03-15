@@ -1,7 +1,9 @@
 package com.study.badrequest.domain.board.repository.query;
 
+
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 
@@ -10,8 +12,10 @@ import com.study.badrequest.domain.board.entity.*;
 
 
 import com.study.badrequest.domain.board.repository.BoardQueryRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,24 +40,29 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
      * Category 검색조건에 카테고리가 없으면 게시판 아이디로만 검색 인덱스 사용 x
      */
     @Override
-    public Optional<BoardDetailDto> findBoardDetail(Long boardId, Category category) {
-        log.info("[fetchOneBoard QUERY START]");
-        Board findBoard = jpaQueryFactory
-                .select(board)
+    public Optional<BoardDetailDto> findBoardDetailByIdAndCategory(Long boardId, Category category) {
+        return jpaQueryFactory
+                .select(
+                        Projections.fields(BoardDetailDto.class,
+                                board.id.as("id"),
+                                board.member.id.as("memberId"),
+                                board.member.profileImage.fullPath.as("profileImage"),
+                                board.member.nickname.as("nickname"),
+                                board.title.as("title"),
+                                board.contents.as("contents"),
+                                board.likeCount.as("likeCount"),
+                                board.category.as("category"),
+                                board.topic.as("topic"),
+                                board.commentCount.as("commentCount"),
+                                board.createdAt.as("createdAt"),
+                                board.updatedAt.as("updatedAt"))
+                )
                 .from(board)
                 .join(board.member)
-                .fetchJoin()
-                .leftJoin(board.boardImages)
-                .fetchJoin()
                 .where(board.id.eq(boardId), eqCategory(category))
-                .distinct()
-                .fetchOne();
-        log.info("[findBoardDetail QUERY FINISH]");
-
-        return findBoard == null ? Optional.empty() : Optional
-                .ofNullable(BoardDetailDto.builder()
-                        .board(findBoard)
-                        .build());
+                .fetch()
+                .stream()
+                .findFirst();
     }
 
     @Override
@@ -80,7 +89,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                 .from(board)
                 .where(cursor(lastIndex),
                         eqCategory(condition.getCategory()),
-                        title(condition.getTitle()),
+                        containsTitle(condition.getTitle()),
                         eqTopic(condition.getTopic()),
                         eqNickname(condition.getNickname()),
                         eqMember(condition.getMemberId())
@@ -111,7 +120,6 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
 
         return new BoardListDto(resultSize, hasNext, resultLastIndex.orElse(0L), results);
     }
-
     private Integer setSize(Integer size) {
         return size == null ? 10 : size;
     }
@@ -127,8 +135,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
     private BooleanExpression eqCategory(Category category) {
         return category != null ? board.category.eq(category) : null;
     }
-
-    private BooleanExpression title(String keyword) {
+    private BooleanExpression containsTitle(String keyword) {
         return keyword != null ? board.title.contains(keyword) : null;
     }
 
@@ -139,7 +146,6 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
     private BooleanExpression eqNickname(String nickname) {
         return nickname != null ? board.member.nickname.eq(nickname) : null;
     }
-
     private BooleanExpression eqMember(Long memberId) {
         return memberId != null ? board.member.id.eq(memberId) : null;
     }

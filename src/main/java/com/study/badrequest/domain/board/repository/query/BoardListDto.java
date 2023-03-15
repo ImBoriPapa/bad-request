@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardListDto {
 
-    public Integer size;
+    private Integer size;
     private Boolean hasNext;
     private Long lastIndex;
     private List<BoardListResult> results = new ArrayList<>();

@@ -50,8 +50,8 @@ public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSu
     public EntityModel<BoardDetailDto> toModel(BoardDetailDto result) {
         return EntityModel.of(result,
                 linkTo(BoardController.class).slash("/board").withRel("POST : 게시판 생성"),
-                linkTo(BoardController.class).slash("/board").slash(result.getBoardId()).withRel("PUT : 게시판 수정"),
-                linkTo(BoardController.class).slash("/board").slash(result.getBoardId()).withRel("DELETE : 게시판 삭제"),
+                linkTo(BoardController.class).slash("/board").slash(result.getId()).withRel("PUT : 게시판 수정"),
+                linkTo(BoardController.class).slash("/board").slash(result.getId()).withRel("DELETE : 게시판 삭제"),
                 linkTo(BoardController.class).slash("/board").withRel("GET : 게시판 리스트")
         );
     }
