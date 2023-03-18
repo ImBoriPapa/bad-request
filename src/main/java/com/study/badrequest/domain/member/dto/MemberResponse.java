@@ -17,12 +17,12 @@ public class MemberResponse {
 
     @NoArgsConstructor
     @Getter
-    public static class SignupResult {
+    public static class Create {
         private Long memberId;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        public SignupResult(Member member) {
+        public Create(Member member) {
             this.memberId = member.getId();
             this.createdAt = member.getCreatedAt();
         }

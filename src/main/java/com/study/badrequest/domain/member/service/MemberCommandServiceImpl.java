@@ -38,7 +38,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
      */
     @CustomLogTracer
     @Override
-    public MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form) {
+    public MemberResponse.Create signupMember(MemberRequest.CreateMember form) {
         log.info("==>MemberCommandService-> signupMember");
 
         ProfileImage profileImage = ProfileImage.createProfileImage()
@@ -55,7 +55,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         Member savedMember = memberRepository.save(member);
 
-        return new MemberResponse.SignupResult(savedMember);
+        return new MemberResponse.Create(savedMember);
     }
 
     /**

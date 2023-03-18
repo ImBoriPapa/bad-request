@@ -17,6 +17,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import static com.study.badrequest.api.member.MemberCommandController.POST_MEMBER_URL;
 import static com.study.badrequest.api.value.ValueController.VALUES;
 
 @Configuration
@@ -49,10 +50,7 @@ public class SecurityConfig {
                 .antMatchers("/", "/api/v1/login", "/api/v1/log-out", "/api/v1/refresh", "/docs/index.html")
                 .permitAll()
                 //members
-                .antMatchers(HttpMethod.POST, "/api/v1/members")
-                .permitAll()
-                .antMatchers("/api/v1/members", "/api/v1/members/email")
-                .permitAll()
+                .antMatchers(HttpMethod.POST, POST_MEMBER_URL).permitAll()
 
                 //비회원 Board 읽기 허용
                 .antMatchers(HttpMethod.GET, "/api/v1/board", "/api/v1/board/*")
@@ -71,6 +69,9 @@ public class SecurityConfig {
                 .permitAll()
                 //dashboard
                 .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh", "/api/v1/dashboard/*")
+                .permitAll()
+                //booking
+                .antMatchers("/api/v1/booking")
                 .permitAll()
                 //static
                 .antMatchers("/static/**", "/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")

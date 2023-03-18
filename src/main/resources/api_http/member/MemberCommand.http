@@ -1,0 +1,10 @@
+# 회원가입
+POST http://localhost:8080/api/v1/members
+Content-Type: application/json
+
+{
+  "email": "email2@email.com",
+  "password": "password1234!@",
+  "nickname": "nickname",
+  "contact" : "010-1214-0090"
+}

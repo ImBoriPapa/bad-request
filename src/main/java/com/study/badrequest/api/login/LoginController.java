@@ -20,19 +20,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.study.badrequest.commons.consts.CustomStatus.LOGOUT_SUCCESS;
-import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
+import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 import static com.study.badrequest.commons.consts.JwtTokenHeader.AUTHORIZATION_HEADER;
-
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(BASE_URL)
+@RequestMapping(BASE_API_VERSION_URL)
 public class LoginController {
     private final LoginServiceImpl loginServiceImpl;
     private final JwtUtils jwtUtils;
     private final LoginResponseModelAssembler modelAssembler;
-
 
     @CustomLogTracer
     @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

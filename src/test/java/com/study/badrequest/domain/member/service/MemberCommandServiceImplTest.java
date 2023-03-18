@@ -54,12 +54,7 @@ class MemberCommandServiceImplTest {
     @DisplayName("회원등록 테스트")
     void 회원등록() throws Exception {
         //given
-        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
-                .email("email@email.com")
-                .password("password1234")
-                .nickname("nickname")
-                .contact("01011111234")
-                .build();
+        MemberRequest.CreateMember form = new MemberRequest.CreateMember("email@email.com", "password1234", "nickname", "01011111234");
 
         ProfileImage profileImage = ProfileImage.createProfileImage()
                 .fullPath(imageUploader.getDefaultProfileImage()).build();
@@ -78,7 +73,7 @@ class MemberCommandServiceImplTest {
         when(memberRepository.save(any(Member.class))).thenReturn(member);
 
         //when
-        MemberResponse.SignupResult result = memberCommandService.signupMember(form);
+        MemberResponse.Create result = memberCommandService.signupMember(form);
 
         //then
         assertThat(result.getCreatedAt()).isNotNull();
@@ -103,12 +98,7 @@ class MemberCommandServiceImplTest {
     @DisplayName("권한 변경 성공")
     void successChangePermissions() throws Exception {
         //given
-        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
-                .email("email@email.com")
-                .password("password1234")
-                .nickname("nickname")
-                .contact("01011111234")
-                .build();
+        MemberRequest.CreateMember form = new MemberRequest.CreateMember("email@email.com", "password1234", "nickname", "01011111234");
 
         Member member = Member.createMember()
                 .email(form.getEmail())
@@ -131,12 +121,7 @@ class MemberCommandServiceImplTest {
     @DisplayName("연락처 변경")
     void changeContactTest() throws Exception {
         //given
-        MemberRequest.CreateMember form = MemberRequest.CreateMember.builder()
-                .email("email@email.com")
-                .password("password1234")
-                .nickname("nickname")
-                .contact("01011111234")
-                .build();
+        MemberRequest.CreateMember form = new MemberRequest.CreateMember("email@email.com", "password1234", "nickname", "01011111234");
 
         String newContact = "01012341111";
 

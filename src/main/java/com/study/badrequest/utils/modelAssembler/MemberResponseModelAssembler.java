@@ -1,13 +1,12 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.login.LoginController;
-import com.study.badrequest.api.member.MemberCommendController;
+import com.study.badrequest.api.member.MemberCommandController;
 import com.study.badrequest.api.member.MemberQueryController;
 import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
 import com.study.badrequest.domain.member.dto.MemberResponse;
 import com.study.badrequest.domain.member.repository.query.MemberDetailDto;
-import com.study.badrequest.domain.member.repository.query.MemberListDto;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +21,7 @@ public class MemberResponseModelAssembler {
     /**
      * postMember
      */
-    public EntityModel<MemberResponse.SignupResult> toModel(MemberResponse.SignupResult result) {
+    public EntityModel<MemberResponse.Create> toModel(MemberResponse.Create result) {
         return EntityModel.of(result)
                 .add(linkTo(LoginController.class).slash("/login").withRel("POST: 로그인"));
     }
@@ -39,7 +38,7 @@ public class MemberResponseModelAssembler {
      */
     public EntityModel<MemberResponse.DeleteResult> toModel(MemberResponse.DeleteResult result) {
         return EntityModel.of(result)
-                .add(linkTo(methodOn(MemberCommendController.class).postMember(null, null)).withRel("POST: 회원가입"));
+                .add(linkTo(methodOn(MemberCommandController.class).createMember(null, null)).withRel("POST: 회원가입"));
     }
 
     // TODO: 2023/02/11 응답값 추가
@@ -59,12 +58,12 @@ public class MemberResponseModelAssembler {
 
         if (authority == Authority.ADMIN) {
             return EntityModel.of(memberDetailDto)
-                    .add(linkTo(methodOn(MemberCommendController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"));
+                    .add(linkTo(methodOn(MemberCommandController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"));
         }
 
         return EntityModel.of(memberDetailDto)
-                .add(linkTo(methodOn(MemberCommendController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"))
-                .add(linkTo(methodOn(MemberCommendController.class).patchPassword(memberDetailDto.getId(), null, null)).withRel("PATCH : 비밀번호 변경"))
-                .add(linkTo(methodOn(MemberCommendController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
+                .add(linkTo(methodOn(MemberCommandController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"))
+                .add(linkTo(methodOn(MemberCommandController.class).patchPassword(memberDetailDto.getId(), null, null)).withRel("PATCH : 비밀번호 변경"))
+                .add(linkTo(methodOn(MemberCommandController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
     }
 }

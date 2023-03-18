@@ -11,7 +11,7 @@ import com.study.badrequest.domain.member.entity.Authority;
  *  Delete(resignMember)
  */
 public interface MemberCommandService {
-    MemberResponse.SignupResult signupMember(MemberRequest.CreateMember form);
+    MemberResponse.Create signupMember(MemberRequest.CreateMember form);
 
     void changePermissions(Long memberId, Authority authority);
 

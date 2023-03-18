@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
+import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 
 @RestController
 @Slf4j
-@RequestMapping(BASE_URL)
+@RequestMapping(BASE_API_VERSION_URL)
 @RequiredArgsConstructor
 public class CommentController {
 

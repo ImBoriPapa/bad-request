@@ -20,12 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
+import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(BASE_URL)
+@RequestMapping(BASE_API_VERSION_URL)
 public class BoardQueryController {
 
     private final BoardQueryRepository boardQueryRepository;

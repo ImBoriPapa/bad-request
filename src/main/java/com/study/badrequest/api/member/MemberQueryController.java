@@ -20,7 +20,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
+import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 import static com.study.badrequest.domain.member.entity.Authority.getAuthorityByAuthorities;
 import static com.study.badrequest.utils.authority.AuthorityUtils.restrictAccessIfNotYouAndAdmin;
 
@@ -28,7 +28,7 @@ import static com.study.badrequest.utils.authority.AuthorityUtils.restrictAccess
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(BASE_URL)
+@RequestMapping(BASE_API_VERSION_URL)
 public class MemberQueryController {
     private final MemberValidator validator;
     private final MemberQueryRepository memberQueryRepositoryImpl;
@@ -70,39 +70,6 @@ public class MemberQueryController {
         return ResponseEntity
                 .ok()
                 .body(memberProfileDto);
-    }
-
-    /**
-     * 클라이언트에서 로그인 상태 확인용 API 데이터
-     */
-    @GetMapping("/members/auth")
-    @CustomLogTracer
-    public ResponseEntity getMemberInfo(@AuthenticationPrincipal User user) {
-        //user.getAuthorities() -> Authority
-        Authority authority = getAuthorityByAuthorities(user.getAuthorities());
-
-        MemberAuthDto memberAuthDto = getMemberAuthDto(user, authority);
-
-        EntityModel<MemberResponse.AuthResult> entityModel = memberResponseModelAssembler.toModel(memberAuthDto);
-
-        return ResponseEntity
-                .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
-    }
-
-    @GetMapping("/members/email")
-    @CustomLogTracer
-    public ResponseEntity<ResponseForm.Of> getMemberEmail(@RequestParam(value = "email", defaultValue = "empty") String email) {
-        // TODO: 2023/01/31 이메일 형식 검증 추가
-        if (email.equals("empty")) {
-            throw new IllegalArgumentException("Email Empty");
-        }
-
-        validator.isExistEmail(email);
-
-        return ResponseEntity.ok()
-                .body(new ResponseForm
-                        .Of<>(CustomStatus.SUCCESS, new MemberResponse.ValidateEmailResult(false, email)));
     }
 
     /**

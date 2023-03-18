@@ -14,6 +14,7 @@ import static com.study.badrequest.commons.consts.Regex.PASSWORD;
 
 public class MemberRequest {
     @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
     public static class CreateMember {
         @Email(message = "형식에 맞지 않는 이메일입니다.")
@@ -25,14 +26,6 @@ public class MemberRequest {
         private String nickname;
         @NotEmpty(message = "연락처를 입력해주세요")
         private String contact;
-
-        @Builder
-        public CreateMember(String email, String password, String nickname, String contact) {
-            this.email = email;
-            this.password = password;
-            this.nickname = nickname;
-            this.contact = contact;
-        }
     }
 
     @NoArgsConstructor

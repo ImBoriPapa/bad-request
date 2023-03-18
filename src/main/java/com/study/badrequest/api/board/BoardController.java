@@ -19,18 +19,16 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_URL;
+import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(BASE_URL)
+@RequestMapping(BASE_API_VERSION_URL)
 public class BoardController {
     private final BoardCommandServiceImpl boardCommandService;
     private final BoardValidator boardValidator;

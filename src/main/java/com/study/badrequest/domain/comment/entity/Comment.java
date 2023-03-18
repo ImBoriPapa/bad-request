@@ -10,7 +10,7 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
+
 
 @Entity
 @Getter
@@ -61,7 +61,6 @@ public class Comment {
     }
 
     public void decreaseSubCount() {
-
         --this.subCommentCount;
     }
 }
