@@ -6,7 +6,6 @@ import com.study.badrequest.domain.member.entity.Authority;
 import com.study.badrequest.domain.member.entity.Member;
 
 import com.study.badrequest.domain.member.entity.ProfileImage;
-import com.study.badrequest.domain.member.event.ResignEventDto;
 import com.study.badrequest.domain.member.repository.MemberRepository;
 import com.study.badrequest.domain.member.dto.MemberRequest;
 import com.study.badrequest.commons.consts.CustomStatus;
@@ -110,7 +109,6 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
         passwordCheck(password, member.getPassword());
 
-        memberEventPublisher.publishEvent(new ResignEventDto(member.getId(), member.getUsername()));
 
         memberRepository.delete(member);
 

@@ -23,14 +23,15 @@ public class MemberResponseModelAssembler {
      */
     public EntityModel<MemberResponse.Create> toModel(MemberResponse.Create result) {
         return EntityModel.of(result)
-                .add(linkTo(LoginController.class).slash("/login").withRel("POST: 로그인"));
+                .add(linkTo(LoginController.class).slash("/login").withRel("Login"));
     }
+
     /**
      * patchPassword,patchContact
      */
     public EntityModel<MemberResponse.UpdateResult> toModel(MemberResponse.UpdateResult result) {
         return EntityModel.of(result)
-                .add(linkTo(methodOn(MemberQueryController.class).getMember(null, result.getMemberId())).withRel("GET: 회원 정보"));
+                .add(linkTo(methodOn(MemberQueryController.class).getMember(null, result.getId())).withRel("GET: 회원 정보"));
     }
 
     /**
@@ -44,7 +45,6 @@ public class MemberResponseModelAssembler {
     // TODO: 2023/02/11 응답값 추가
     public EntityModel<MemberResponse.AuthResult> toModel(MemberAuthDto result) {
         return EntityModel.of(new MemberResponse.AuthResult(result.getId(), result.getAuthority()));
-
     }
 
     /**

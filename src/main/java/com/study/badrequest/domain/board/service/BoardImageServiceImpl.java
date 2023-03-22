@@ -5,10 +5,11 @@ import com.study.badrequest.domain.board.entity.Board;
 import com.study.badrequest.domain.board.entity.BoardImage;
 import com.study.badrequest.domain.board.entity.BoardImageStatus;
 import com.study.badrequest.domain.board.repository.BoardImageRepository;
-import com.study.badrequest.utils.image.ImageDetailDto;
+import com.study.badrequest.utils.image.ImageUplaodDto;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,15 +32,15 @@ public class BoardImageServiceImpl implements BoardImageService {
 
         final String FOLDER_NAME = "board";
 
-        ImageDetailDto imageDetailDto = imageUploader.uploadFile(image, FOLDER_NAME);
+        ImageUplaodDto imageUplaodDto = imageUploader.uploadFile(image, FOLDER_NAME);
 
         BoardImage boardImage = BoardImage
                 .createBoardImage()
-                .originalFileName(imageDetailDto.getOriginalFileName())
-                .storedFileName(imageDetailDto.getStoredFileName())
-                .imageLocation(imageDetailDto.getFullPath())
-                .fileType(imageDetailDto.getFileType())
-                .size(imageDetailDto.getSize())
+                .originalFileName(imageUplaodDto.getOriginalFileName())
+                .storedFileName(imageUplaodDto.getStoredFileName())
+                .imageLocation(imageUplaodDto.getImageLocation())
+                .fileType(imageUplaodDto.getFileType())
+                .size(imageUplaodDto.getSize())
                 .build();
 
         BoardImage save = boardImageRepository.save(boardImage);
@@ -54,44 +55,74 @@ public class BoardImageServiceImpl implements BoardImageService {
     }
 
     @Override
-    public void update(List<Long> imageIds, Board board) {
+    public void update(List<Long> idsToModified, Board board) {
 
-        if (imageIds == null) {
-            // 요청에 이미지 아이디가 없으면 해당 게시물 이미지 전체 삭제
-            boardImageRepository.findByBoard(board).forEach(image -> {
-                imageUploader.deleteFile(image.getStoredFileName());
-                boardImageRepository.delete(image);
-            });
-            return;
-        }
+        //수정 요청된 이미지가 없을 경우 게시판의 이미지 전체 삭제
+        if (deleteIfNoImageRequested(idsToModified, board)) return;
+        //해당 게시판의 이미 저장된 이미지 조회
+        List<BoardImage> imagesAlreadySaved = getBoardImageListAlreadySaved(board);
+        //이미 저장된 이미지가 없다면 수정 요청된 상태가 변경되지 않은 이미지를 SAVED 로 상태 변경
+        if (statusToSavedIfEmptyAlreadySaved(idsToModified, board, imagesAlreadySaved)) return;
 
-        List<BoardImage> savedInBoard = boardImageRepository.findByBoard(board);
+        List<BoardImage> imagesNewlySaved = getBoardImageListIsTemporary(idsToModified);
 
-        List<BoardImage> findRequestedImage = boardImageRepository.findAllById(imageIds);
+        List<BoardImage> imagesToDelete = findImageToDelete(idsToModified, imagesAlreadySaved);
 
-        List<BoardImage> targetToDelete = new ArrayList<>();
+        boardImageRepository.deleteAll(imagesToDelete);
 
-        savedInBoard.forEach(saved -> {
-
-            if (!imageIds.contains(saved.getId())) {
-                // 저장된 이미지 중에 요청된 이미지와 일치하지 않는 것은 삭제
-                imageUploader.deleteFile(saved.getStoredFileName());
-                targetToDelete.add(saved);
-            }
-        });
-
-        boardImageRepository.deleteAll(targetToDelete);
-
-        findRequestedImage.removeAll(targetToDelete); // 차집합
-
-        findRequestedImage.forEach(image -> image.changeImageStatus(board, BoardImageStatus.SAVED));
+        imagesNewlySaved.removeAll(imagesToDelete);
+        //이미지 상태 변경 -> SAVED
+        imagesNewlySaved.forEach(image -> image.changeImageStatus(board, BoardImageStatus.SAVED));
     }
+
+    private List<BoardImage> findImageToDelete(List<Long> idsToModified, List<BoardImage> imagesAlreadySaved) {
+        return imagesAlreadySaved.stream()
+                .filter(image -> !idsToModified.contains(image.getId()))
+                .peek(image -> imageUploader.deleteFileByStoredNames(image.getStoredFileName()))
+                .collect(Collectors.toList());
+    }
+
+    private List<BoardImage> getBoardImageListIsTemporary(List<Long> imageIds) {
+        return boardImageRepository.findAllByIdInAndStatus(imageIds, BoardImageStatus.TEMPORARY);
+    }
+
+    private boolean statusToSavedIfEmptyAlreadySaved(List<Long> imageIds, Board board, List<BoardImage> imagesAlreadySaved) {
+        if (imagesAlreadySaved.isEmpty()) {
+            List<BoardImage> imageList = getBoardImageListIsTemporary(imageIds);
+            imageList.forEach(image -> image.changeImageStatus(board, BoardImageStatus.SAVED));
+            return true;
+        }
+        return false;
+    }
+
+    private List<BoardImage> getBoardImageListAlreadySaved(Board board) {
+        return boardImageRepository.findAllByBoardAndStatus(board, BoardImageStatus.SAVED);
+    }
+
+    private boolean deleteIfNoImageRequested(List<Long> imageIds, Board board) {
+        if (imageIds.isEmpty()) {
+            // 요청에 이미지 아이디가 없으면 해당 게시물 이미지 전체 삭제
+            deleteAllImageInBoard(board);
+            return true;
+        }
+        return false;
+    }
+
+    private void deleteAllImageInBoard(Board board) {
+        boardImageRepository.findAllByBoardAndStatus(board, BoardImageStatus.SAVED)
+                .forEach(image -> {
+                    imageUploader.deleteFileByStoredNames(image.getStoredFileName());
+                    boardImageRepository.delete(image);
+                });
+    }
+
 
     @Override
     public void deleteByBoard(Board board) {
-        List<BoardImage> imageList = boardImageRepository.findByBoard(board);
-        imageUploader.deleteFile(imageList.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
+        List<BoardImage> imageList = getBoardImageListAlreadySaved(board);
+        imageUploader.deleteFileByStoredNames(imageList.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
     }
+
     @Override
     @Scheduled(cron = "0 0 5 * * *")
     public void clearTemporaryImage() {
@@ -99,7 +130,7 @@ public class BoardImageServiceImpl implements BoardImageService {
         List<BoardImage> boardImages = boardImageRepository.findByStatus(BoardImageStatus.TEMPORARY);
 
         if (!boardImages.isEmpty()) {
-            imageUploader.deleteFile(boardImages.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
+            imageUploader.deleteFileByStoredNames(boardImages.stream().map(BoardImage::getStoredFileName).collect(Collectors.toList()));
             boardImageRepository.deleteAll(boardImages);
         }
 

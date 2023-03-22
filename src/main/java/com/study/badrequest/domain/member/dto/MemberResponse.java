@@ -18,12 +18,12 @@ public class MemberResponse {
     @NoArgsConstructor
     @Getter
     public static class Create {
-        private Long memberId;
+        private Long id;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
         public Create(Member member) {
-            this.memberId = member.getId();
+            this.id = member.getId();
             this.createdAt = member.getCreatedAt();
         }
     }
@@ -31,12 +31,12 @@ public class MemberResponse {
     @NoArgsConstructor
     @Getter
     public static class UpdateResult {
-        private Long memberId;
+        private Long id;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime updatedAt;
 
         public UpdateResult(Member member) {
-            this.memberId = member.getId();
+            this.id = member.getId();
             this.updatedAt = member.getUpdatedAt();
         }
     }

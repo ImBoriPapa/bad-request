@@ -7,7 +7,6 @@ import com.study.badrequest.commons.exception.custom_exception.ImageFileUploadEx
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,7 +24,7 @@ public class S3ImageUploader implements ImageUploader {
     private final String BUCKET_NAME = "bori-market-bucket";
     private final AmazonS3Client amazonS3Client;
 
-    public ImageDetailDto uploadFile(MultipartFile image, String folderName) {
+    public ImageUplaodDto uploadFile(MultipartFile image, String folderName) {
 
         String storedName = getStoredName(folderName, image);
 
@@ -33,11 +32,11 @@ public class S3ImageUploader implements ImageUploader {
 
         final String BUCKET_URL = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
 
-        return ImageDetailDto
+        return ImageUplaodDto
                 .builder()
                 .originalFileName(image.getOriginalFilename())
                 .storedFileName(storedName)
-                .fullPath(BUCKET_URL + storedName)
+                .imageLocation(BUCKET_URL + storedName)
                 .fileType(image.getContentType())
                 .size(image.getSize())
                 .build();
@@ -46,7 +45,7 @@ public class S3ImageUploader implements ImageUploader {
     /**
      * upload File List
      */
-    public List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName) {
+    public List<ImageUplaodDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
         return images
                 .stream()
@@ -57,7 +56,7 @@ public class S3ImageUploader implements ImageUploader {
     /**
      * 이미지 단건 삭제
      */
-    public void deleteFile(String storedName) {
+    public void deleteFileByStoredNames(String storedName) {
         log.info("[deleteFile]");
         if (storedName != null) {
             amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName));
@@ -68,7 +67,7 @@ public class S3ImageUploader implements ImageUploader {
     /**
      * 이미지 여러건 삭제
      */
-    public void deleteFile(List<String> storedNameList) {
+    public void deleteFileByStoredNames(List<String> storedNameList) {
         log.info("[deleteFile]");
         if (storedNameList != null) {
             storedNameList.forEach(storedName -> amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName)));

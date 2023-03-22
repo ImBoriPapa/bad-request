@@ -23,7 +23,6 @@ public class LocalStackConfig {
         return new LocalStackContainer(LOCALSTACK_NAME).withServices(S3);
     }
 
-
     @Bean
     public AmazonS3Client amazonS3Client(LocalStackContainer localStackContainer) {
         System.out.println("================Local Stack Start======================");

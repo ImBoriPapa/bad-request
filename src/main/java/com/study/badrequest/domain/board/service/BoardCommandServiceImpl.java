@@ -40,7 +40,7 @@ public class BoardCommandServiceImpl implements BoardCommendService {
 
         Board savedBoard = saveBoard(user, form);
 
-        boardImageService.changeStatus(form.getImageId(), savedBoard, BoardImageStatus.SAVED);
+        boardImageService.changeStatus(form.getImageIds(), savedBoard, BoardImageStatus.SAVED);
 
         return new BoardResponse.Create(savedBoard.getId(), savedBoard.getCreatedAt());
     }

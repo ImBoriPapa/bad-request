@@ -4,9 +4,11 @@ import com.study.badrequest.aop.annotation.EnumValid;
 import com.study.badrequest.domain.board.entity.Category;
 import com.study.badrequest.domain.board.entity.Topic;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -25,7 +27,7 @@ public class BoardRequest {
         private Topic topic;
         @EnumValid(message = "카테고리는 필수입니다.", enumClass = Category.class)
         private Category category;
-        private List<Long> imageId;
+        private List<Long> imageIds = new ArrayList<>();
     }
 
     @Getter

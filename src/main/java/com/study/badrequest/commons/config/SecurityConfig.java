@@ -64,6 +64,9 @@ public class SecurityConfig {
                 //subComment
                 .antMatchers("/api/v1/comments/{commentId}/sub-comments")
                 .permitAll()
+                //image
+                .antMatchers("/api/v1/image/board-image")
+                .permitAll()
                 //values
                 .antMatchers(VALUES + "/*")
                 .permitAll()

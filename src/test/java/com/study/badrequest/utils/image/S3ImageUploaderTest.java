@@ -2,7 +2,6 @@ package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.study.badrequest.commons.exception.custom_exception.ImageFileUploadException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,11 +33,11 @@ class S3ImageUploaderTest {
         String folderName = "board";
 
         //when
-        ImageDetailDto imageDetailDto = imageUploader.uploadFile(file, folderName);
+        ImageUplaodDto imageUplaodDto = imageUploader.uploadFile(file, folderName);
         //then
-        assertThat(imageDetailDto.getOriginalFileName()).isEqualTo(file.getOriginalFilename());
-        assertThat(imageDetailDto.getStoredFileName()).isNotNull();
-        assertThat(imageDetailDto.getSize()).isEqualTo(file.getSize());
+        assertThat(imageUplaodDto.getOriginalFileName()).isEqualTo(file.getOriginalFilename());
+        assertThat(imageUplaodDto.getStoredFileName()).isNotNull();
+        assertThat(imageUplaodDto.getSize()).isEqualTo(file.getSize());
     }
 
     @Test

@@ -34,12 +34,13 @@ public class BoardController {
     private final BoardValidator boardValidator;
     private final BoardResponseModelAssembler boardResponseModelAssembler;
 
-    // TODO: 2023/02/09 ReqeustPart는 Valid 작동안됨 -> boardValidator 구현
+
     @PostMapping("/board")
     @CustomLogTracer
     public ResponseEntity postBoard(@Valid
                                     @AuthenticationPrincipal User user,
-                                    @RequestPart(value = "form", required = true) BoardRequest.Create form, BindingResult bindingResult) {
+                                    @RequestBody BoardRequest.Create form,
+                                    BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
             throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
@@ -86,7 +87,7 @@ public class BoardController {
 
     // TODO: 2023/02/15 Delete
     @DeleteMapping("/board/{boardId}")
-    public void delete(@AuthenticationPrincipal User user,@PathVariable(name = "boardId")Long boardId){
+    public void delete(@AuthenticationPrincipal User user, @PathVariable(name = "boardId") Long boardId) {
 
         boardCommandService.delete(user, boardId);
 

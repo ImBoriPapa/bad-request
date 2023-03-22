@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class MemberValidator {
     private final MemberRepository memberRepository;
-    public void validateCreateForm(MemberRequest.CreateMember form) {
+    public void emailAndContactDuplicateChack(MemberRequest.CreateMember form) {
 
         existEmail(form.getEmail());
 

@@ -7,12 +7,12 @@ import java.util.List;
 
 public interface ImageUploader {
 
-    ImageDetailDto uploadFile(MultipartFile image, String folderName);
-    List<ImageDetailDto> uploadFile(List<MultipartFile> images, String folderName);
+    ImageUplaodDto uploadFile(MultipartFile image, String folderName);
+    List<ImageUplaodDto> uploadFile(List<MultipartFile> images, String folderName);
 
     String getDefaultProfileImage();
 
-    void deleteFile(String storedName);
+    void deleteFileByStoredNames(String storedName);
 
-    void deleteFile(List<String> storedNameList);
+    void deleteFileByStoredNames(List<String> storedNameList);
 }

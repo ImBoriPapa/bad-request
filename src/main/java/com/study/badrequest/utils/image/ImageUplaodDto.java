@@ -7,18 +7,18 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class ImageDetailDto {
+public class ImageUplaodDto {
     private String originalFileName;
     private String storedFileName;
-    private String fullPath;
+    private String imageLocation;
     private Long size;
     private String fileType;
 
     @Builder
-    public ImageDetailDto(String originalFileName, String storedFileName, String fullPath, Long size, String fileType) {
+    public ImageUplaodDto(String originalFileName, String storedFileName, String imageLocation, Long size, String fileType) {
         this.originalFileName = originalFileName;
         this.storedFileName = storedFileName;
-        this.fullPath = fullPath;
+        this.imageLocation = imageLocation;
         this.size = size;
         this.fileType = fileType;
     }
@@ -26,10 +26,10 @@ public class ImageDetailDto {
     /**
      * Entity -> DTO
      */
-    public ImageDetailDto(BoardImage boardImage) {
+    public ImageUplaodDto(BoardImage boardImage) {
         this.originalFileName = boardImage.getOriginalFileName();
         this.storedFileName = boardImage.getStoredFileName();
-        this.fullPath = boardImage.getImageLocation();
+        this.imageLocation = boardImage.getImageLocation();
         this.size = boardImage.getSize();
         this.fileType = boardImage.getFileType();
     }

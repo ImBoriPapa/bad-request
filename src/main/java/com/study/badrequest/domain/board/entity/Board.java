@@ -57,7 +57,6 @@ public class Board {
         modifyUpdateTime();
     }
 
-
     public void titleUpdateIfHasChange(String title) {
         // 제목 수정시 null, 공백 허용값은 수정에 반영 x
         if (StringUtils.hasText(title)) {

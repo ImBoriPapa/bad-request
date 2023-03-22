@@ -24,6 +24,7 @@ public class BoardImage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
+    @org.hibernate.annotations.Index(name = "BOARD_IDX_IMAGE_BOARD")
     private Board board;
 
     @Builder(builderMethodName = "createBoardImage")

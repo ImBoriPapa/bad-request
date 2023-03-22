@@ -23,9 +23,9 @@ import org.springframework.web.bind.annotation.*;
 
 import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(BASE_API_VERSION_URL)
 @Slf4j
 public class MemberCommandController {
     private final MemberCommandService memberCommandService;
@@ -36,26 +36,24 @@ public class MemberCommandController {
     public final static String PATCH_MEMBER_CONTACT_URL = BASE_API_VERSION_URL + "/members/{memberId}/contact";
     public final static String DELETE_MEMBER_URL = BASE_API_VERSION_URL + "/members/{memberId}";
 
-
     /**
-     * 회원 가입 요청
-     *
-     * @return 201 create
+     * @param form: String email, String password, String nickname, String contact
+     * @return 201 created, memberId, createdAt
      */
-    @PostMapping(value = "/members", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = POST_MEMBER_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @CustomLogTracer
     public ResponseEntity<ResponseForm.Of> createMember(@Validated @RequestBody MemberRequest.CreateMember form, BindingResult bindingResult) {
         log.info("Create Member");
 
-        memberValidator.validateCreateForm(form);
+        memberValidator.emailAndContactDuplicateChack(form);
 
         throwValidationExceptionIfErrors(bindingResult);
 
-        EntityModel<MemberResponse.Create> signupResultEntityModel = memberResponseModelAssembler.toModel(memberCommandService.signupMember(form));
+        EntityModel<MemberResponse.Create> model = memberResponseModelAssembler.toModel(memberCommandService.signupMember(form));
 
         return ResponseEntity
-                .created(memberResponseModelAssembler.getLocationUri(signupResultEntityModel.getContent().getMemberId()))
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, signupResultEntityModel));
+                .created(memberResponseModelAssembler.getLocationUri(model.getContent().getId()))
+                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, model));
     }
 
     @PatchMapping(value = PATCH_MEMBER_PASSWORD_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
