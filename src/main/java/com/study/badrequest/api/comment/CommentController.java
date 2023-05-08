@@ -2,18 +2,17 @@ package com.study.badrequest.api.comment;
 
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.custom_exception.CommentException;
-import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.comment.dto.CommentRequest;
-import com.study.badrequest.domain.comment.dto.CommentResponse;
-import com.study.badrequest.domain.comment.service.CommentCommendService;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.dto.comment.CommentRequest;
+import com.study.badrequest.dto.comment.CommentResponse;
+import com.study.badrequest.exception.custom_exception.CommentException;
+import com.study.badrequest.service.comment.CommentCommendService;
 import com.study.badrequest.utils.modelAssembler.CommentResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.validation.BindingResult;
@@ -21,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
+import static com.study.badrequest.commons.constants.ApiURL.BASE_API_VERSION_URL;
 
 @RestController
 @Slf4j
@@ -42,7 +41,7 @@ public class CommentController {
         existUsername(user);
 
         if (bindingResult.hasErrors()) {
-            throw new CommentException(CustomStatus.VALIDATION_ERROR, bindingResult);
+            throw new CommentException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
         }
 
         CommentResponse.Create create = commentCommendService.addComment(boardId, user.getUsername(), form);
@@ -52,7 +51,7 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of(ApiResponseStatus.SUCCESS, entityModel));
     }
 
 
@@ -64,14 +63,14 @@ public class CommentController {
                                       @RequestBody CommentRequest.Update form,
                                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new CommentException(CustomStatus.VALIDATION_ERROR, bindingResult);
+            throw new CommentException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
         }
 
         CommentResponse.Modify modifyComment = commentCommendService.modifyComment(commentId, form.getText());
 
         EntityModel<CommentResponse.Modify> entityModel = commentResponseModelAssembler.toModel(modifyComment, boardId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -83,7 +82,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Delete> entityModel = commentResponseModelAssembler.toModel(deleteComment, boardId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -99,7 +98,7 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -112,7 +111,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.ModifySub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -124,7 +123,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.DeleteSub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
@@ -132,7 +131,7 @@ public class CommentController {
      */
     private void existUsername(User user) {
         if (user.getUsername() == null || user.getUsername().equals("anonymousUser")) {
-            throw new CommentException(CustomStatus.PERMISSION_DENIED);
+            throw new CommentException(ApiResponseStatus.PERMISSION_DENIED);
         }
     }
 }

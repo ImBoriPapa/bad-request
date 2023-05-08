@@ -1,6 +1,7 @@
 package com.study.badrequest.utils.converter;
 
-import com.study.badrequest.domain.log.entity.LogLevel;
+
+import com.study.badrequest.domain.log.LogLevel;
 import org.springframework.core.convert.converter.Converter;
 
 public class LogLevelConverter implements Converter<String, LogLevel> {

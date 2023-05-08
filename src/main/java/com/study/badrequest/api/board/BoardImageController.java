@@ -1,10 +1,9 @@
 package com.study.badrequest.api.board;
 
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.board.dto.BoardImageResponse;
-import com.study.badrequest.domain.board.entity.BoardImage;
-import com.study.badrequest.domain.board.service.BoardImageService;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.dto.board.BoardImageResponse;
+import com.study.badrequest.service.board.BoardImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +23,6 @@ public class BoardImageController {
         BoardImageResponse.Create response = boardImageService.save(image);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, response));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, response));
     }
 }

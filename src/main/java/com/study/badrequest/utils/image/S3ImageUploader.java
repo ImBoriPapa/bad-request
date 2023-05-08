@@ -1,19 +1,24 @@
 package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.*;
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.custom_exception.ImageFileUploadException;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -21,18 +26,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class S3ImageUploader implements ImageUploader {
 
-    private final String BUCKET_NAME = "bori-market-bucket";
     private final AmazonS3Client amazonS3Client;
+    @Value("${s3-image.bucket-name}")
+    public String BUCKET_NAME;
+    @Value("${s3-image.bucket-url}")
+    public String BUCKET_URL;
+    @Value("${s3-image.default-profile-image}")
+    public String DEFAULT_PROFILE_IMAGE;
 
-    public ImageUplaodDto uploadFile(MultipartFile image, String folderName) {
+    public ImageUploadDto uploadFile(MultipartFile image, String folderName) {
 
         String storedName = getStoredName(folderName, image);
 
         putImageToStorage(image, storedName, getObjectMetadata(image));
 
-        final String BUCKET_URL = "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/";
-
-        return ImageUplaodDto
+        return ImageUploadDto
                 .builder()
                 .originalFileName(image.getOriginalFilename())
                 .storedFileName(storedName)
@@ -45,7 +53,7 @@ public class S3ImageUploader implements ImageUploader {
     /**
      * upload File List
      */
-    public List<ImageUplaodDto> uploadFile(List<MultipartFile> images, String folderName) {
+    public List<ImageUploadDto> uploadFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
         return images
                 .stream()
@@ -61,7 +69,6 @@ public class S3ImageUploader implements ImageUploader {
         if (storedName != null) {
             amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName));
         }
-
     }
 
     /**
@@ -79,8 +86,7 @@ public class S3ImageUploader implements ImageUploader {
      * 기본 프로필이미지 반환
      */
     public String getDefaultProfileImage() {
-        final String DEFAULT_PROFILE_IMAGE = "default/profile.jpg";
-        return amazonS3Client.getResourceUrl(BUCKET_NAME, DEFAULT_PROFILE_IMAGE);
+        return DEFAULT_PROFILE_IMAGE;
     }
 
     /**
@@ -108,7 +114,7 @@ public class S3ImageUploader implements ImageUploader {
                             objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ImageFileUploadException(CustomStatus.UPLOAD_FAIL_ERROR);
+            throw new ImageFileUploadException(ApiResponseStatus.UPLOAD_FAIL_ERROR);
         }
     }
 
@@ -154,7 +160,7 @@ public class S3ImageUploader implements ImageUploader {
     private void validateExtension(String originalFileName) {
         if (originalFileName.lastIndexOf(".") < 0) {
             log.info("[확장자가 없는 파일명={}]", originalFileName);
-            throw new ImageFileUploadException(CustomStatus.WRONG_FILE_ERROR);
+            throw new ImageFileUploadException(ApiResponseStatus.WRONG_FILE_ERROR);
         }
     }
 
@@ -164,7 +170,7 @@ public class S3ImageUploader implements ImageUploader {
     private void validateIsSupportExtension(String ext) {
         if (Arrays.stream(SupportImageExtension.values())
                 .noneMatch(imageExtension -> imageExtension.getExtension().equals(ext))) {
-            throw new ImageFileUploadException(CustomStatus.NOT_SUPPORT_ERROR);
+            throw new ImageFileUploadException(ApiResponseStatus.NOT_SUPPORT_ERROR);
         }
     }
 

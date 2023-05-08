@@ -1,33 +1,25 @@
 package com.study.badrequest.utils.jwt;
 
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.custom_exception.TokenException;
-import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.exception.custom_exception.TokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.study.badrequest.commons.consts.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
-import static com.study.badrequest.commons.consts.JwtTokenHeader.TOKEN_PREFIX;
-import static com.study.badrequest.utils.jwt.JwtStatus.*;
-import static java.util.concurrent.TimeUnit.*;
+import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Component
 @Slf4j
@@ -103,16 +95,16 @@ public class JwtUtils {
 
         try {
             getClaimsJws(token);
-            log.info("[TOKEN VERIFICATION RESULT= {}]", ACCESS);
-            return ACCESS;
+            log.info("[TOKEN VERIFICATION RESULT= {}]", JwtStatus.ACCESS);
+            return JwtStatus.ACCESS;
         } catch (ExpiredJwtException e) {
-            log.info("[TOKEN VERIFICATION RESULT= {}]", EXPIRED);
-            return EXPIRED;
+            log.info("[TOKEN VERIFICATION RESULT= {}]", JwtStatus.EXPIRED);
+            return JwtStatus.EXPIRED;
         } catch (JwtException | IllegalArgumentException e) {
-            log.info("[TOKEN VERIFICATION RESULT= {}]", DENIED);
-            return DENIED;
+            log.info("[TOKEN VERIFICATION RESULT= {}]", JwtStatus.DENIED);
+            return JwtStatus.DENIED;
         } catch (Exception e) {
-            return ERROR;
+            return JwtStatus.ERROR;
         }
     }
 
@@ -121,18 +113,6 @@ public class JwtUtils {
                 .setSigningKey(this.key)
                 .build()
                 .parseClaimsJws(token);
-    }
-
-    // 헤더에서 토큰 확인
-    public String resolveToken(HttpServletRequest request, String header) {
-        String bearerToken = request.getHeader(header);
-
-        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
-            log.info("[JWT_UTILS resolveToken ={}]", bearerToken);
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 
     /**
@@ -182,22 +162,7 @@ public class JwtUtils {
         return getClaimsJws(token).getBody().getSubject();
     }
 
-    /**
-     * JWT 토큰을 복호화하여 토큰에 들어있는 정보로 토큰으로 Authentication 인증객체 생성
-     */
-    public Authentication generateAuthentication(String username, Authority authority) {
-        log.info("[JwtUtils. getAuthentication]");
-
-        Collection<? extends GrantedAuthority> authorities = authority.getAuthorities();
-
-        return new UsernamePasswordAuthenticationToken(
-                new User(username, "", authorities),
-                "",
-                authorities
-        );
-    }
-
-    public void checkTokenIsEmpty(String token, CustomStatus status) {
+    public void checkTokenIsEmpty(String token, ApiResponseStatus status) {
         if (token == null) {
             throw new TokenException(status);
         }

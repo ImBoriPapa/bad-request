@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to the Greeting Page</title>
+    <style>
+        body {
+            background-color: #1c1c1c;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 3em;
+            text-align: center;
+        }
+        span {
+            font-size: 1.5em;
+            display: block;
+            text-align: center;
+            margin-top: 1em;
+        }
+    </style>
+</head>
+<body>
+<h1>Welcome!!</h1>
+<span>this server is</span>
+<span th:text="${serverKind}">serverKind</span>
+<span th:text="${version}">version</span>
+</body>
+</html>

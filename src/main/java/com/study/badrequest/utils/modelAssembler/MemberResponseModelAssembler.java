@@ -1,69 +1,107 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.login.LoginController;
-import com.study.badrequest.api.member.MemberCommandController;
-import com.study.badrequest.api.member.MemberQueryController;
-import com.study.badrequest.domain.member.entity.Authority;
-import com.study.badrequest.domain.member.repository.query.MemberAuthDto;
-import com.study.badrequest.domain.member.dto.MemberResponse;
-import com.study.badrequest.domain.member.repository.query.MemberDetailDto;
+import com.study.badrequest.api.member.MemberApiController;
+import com.study.badrequest.api.member.MemberQueryApiController;
+import com.study.badrequest.commons.hateoas.ResponseModelAssembler;
+import com.study.badrequest.dto.member.MemberResponse;
+import com.study.badrequest.repository.member.query.MemberDetailDto;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @Component
-public class MemberResponseModelAssembler {
-    /**
-     * postMember
-     */
-    public EntityModel<MemberResponse.Create> toModel(MemberResponse.Create result) {
-        return EntityModel.of(result)
-                .add(linkTo(LoginController.class).slash("/login").withRel("Login"));
+public class MemberResponseModelAssembler extends ResponseModelAssembler {
+    public EntityModel<MemberResponse.Create> createMemberModel(MemberResponse.Create create) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).createMember(null, null)).withSelfRel(),
+                linkTo(methodOn(LoginController.class).login(null, null)).withRel("Login")
+        );
+
+        return createEntityModel(create, links);
     }
 
-    /**
-     * patchPassword,patchContact
-     */
-    public EntityModel<MemberResponse.UpdateResult> toModel(MemberResponse.UpdateResult result) {
-        return EntityModel.of(result)
-                .add(linkTo(methodOn(MemberQueryController.class).getMember(null, result.getId())).withRel("GET: 회원 정보"));
+    public EntityModel<MemberResponse.Update> changeNicknameModel(MemberResponse.Update form) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).changeNickname(form.getId(), null,null)).withSelfRel()
+        );
+
+        return createEntityModel(form,links);
+    }
+    public EntityModel<MemberResponse.SendAuthenticationEmail> getSendAuthenticationMail(MemberResponse.SendAuthenticationEmail email) {
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).sendAuthenticationEmail(null, null)).withSelfRel()
+        );
+        return createEntityModel(email, links);
     }
 
-    /**
-     * deleteMember
-     */
-    public EntityModel<MemberResponse.DeleteResult> toModel(MemberResponse.DeleteResult result) {
-        return EntityModel.of(result)
-                .add(linkTo(methodOn(MemberCommandController.class).createMember(null, null)).withRel("POST: 회원가입"));
+    public EntityModel<MemberResponse.Update> getChangePasswordModel(MemberResponse.Update update) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).patchPassword(update.getId(), null, null, null)).withSelfRel(),
+                linkTo(methodOn(MemberQueryApiController.class).getProfile(null,null)).withRel("Profile")
+        );
+
+        return createEntityModel(update, links);
     }
 
-    // TODO: 2023/02/11 응답값 추가
-    public EntityModel<MemberResponse.AuthResult> toModel(MemberAuthDto result) {
-        return EntityModel.of(new MemberResponse.AuthResult(result.getId(), result.getAuthority()));
+    public EntityModel<MemberResponse.Update> getChangeContactModel(MemberResponse.Update update) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).patchContact(update.getId(), null, null, null)).withSelfRel(),
+                linkTo(methodOn(MemberQueryApiController.class).getProfile(null,null)).withRel("Profile")
+        );
+
+        return createEntityModel(update, links);
+    }
+
+
+    public EntityModel<MemberResponse.Delete> getDeleteModel(MemberResponse.Delete result) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).deleteMember(null, null, null, null)).withSelfRel(),
+                linkTo(methodOn(MemberApiController.class).createMember(null, null)).withRel("Signup Member")
+        );
+
+        return createEntityModel(result, links);
+    }
+
+    public EntityModel<MemberResponse.TemporaryPassword> getIssuePasswordModel(MemberResponse.TemporaryPassword password) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberApiController.class).issueTemporaryPassword(null, null)).withSelfRel(),
+                linkTo(methodOn(LoginController.class).login(null, null)).withRel("Login")
+        );
+
+        return createEntityModel(password, links);
     }
 
     /**
      * Member Resource 생성 위치
      */
     public URI getLocationUri(Long memberId) {
-        return linkTo(methodOn(MemberQueryController.class).getMember(null, memberId)).toUri();
+        return linkTo(methodOn(MemberQueryApiController.class).retrieveMemberAccount(null, memberId)).toUri();
     }
 
-    public EntityModel<MemberDetailDto> toModel(MemberDetailDto memberDetailDto, Authority authority) {
-
-        if (authority == Authority.ADMIN) {
-            return EntityModel.of(memberDetailDto)
-                    .add(linkTo(methodOn(MemberCommandController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"));
-        }
+    public EntityModel<MemberDetailDto> retrieveMemberModel(MemberDetailDto memberDetailDto) {
 
         return EntityModel.of(memberDetailDto)
-                .add(linkTo(methodOn(MemberCommandController.class).patchContact(memberDetailDto.getId(), null, null)).withRel("PATCH : 연락처 변경"))
-                .add(linkTo(methodOn(MemberCommandController.class).patchPassword(memberDetailDto.getId(), null, null)).withRel("PATCH : 비밀번호 변경"))
-                .add(linkTo(methodOn(MemberCommandController.class).deleteMember(memberDetailDto.getId(), null, null)).withRel("DELETE : 회원 탈퇴"));
+                .add(linkTo(methodOn(MemberQueryApiController.class).retrieveMemberAccount(null, memberDetailDto.getId())).withSelfRel())
+                .add(linkTo(methodOn(MemberApiController.class).changeNickname(memberDetailDto.getId(),null, null)).withRel("Change Nickname"))
+                .add(linkTo(methodOn(MemberApiController.class).patchContact(memberDetailDto.getId(), null, null, null)).withRel("Change Contact"))
+                .add(linkTo(methodOn(MemberApiController.class).changeIntroduce(memberDetailDto.getId(), null)).withRel("Change Self-Introduce"))
+                .add(linkTo(methodOn(MemberApiController.class).changeProfileImage(memberDetailDto.getId(), null)).withRel("Change Profile Image"))
+                .add(linkTo(methodOn(MemberApiController.class).changeProfileImageToDefault(memberDetailDto.getId())).withRel("Change Profile Image To Default"))
+                .add(linkTo(methodOn(MemberApiController.class).patchPassword(memberDetailDto.getId(), null, null, null)).withRel("Change Password"))
+                .add(linkTo(methodOn(MemberApiController.class).deleteMember(memberDetailDto.getId(), null, null, null)).withRel("Withdrawing Member"));
     }
 }

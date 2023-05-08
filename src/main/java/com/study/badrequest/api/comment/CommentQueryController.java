@@ -1,16 +1,16 @@
 package com.study.badrequest.api.comment;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.comment.repository.CommentQueryRepository;
-import com.study.badrequest.domain.comment.repository.dto.CommentListDto;
-import com.study.badrequest.domain.comment.repository.dto.CommentSearchCondition;
-import com.study.badrequest.domain.comment.repository.dto.SubCommentListDto;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.repository.comment.query.CommentListDto;
+import com.study.badrequest.repository.comment.CommentQueryRepository;
+
+import com.study.badrequest.repository.comment.CommentSearchCondition;
+import com.study.badrequest.repository.comment.query.SubCommentListDto;
 import com.study.badrequest.utils.modelAssembler.CommentResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.study.badrequest.commons.constants.ApiURL.BASE_API_VERSION_URL;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
 
 @RestController
 @Slf4j
@@ -39,7 +39,7 @@ public class CommentQueryController {
         EntityModel<CommentListDto> entityModel = commentResponseModelAssembler.toListModel(commentListDto,boardId);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -52,6 +52,6 @@ public class CommentQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 }

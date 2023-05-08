@@ -27,7 +27,8 @@ repositories {
 }
 
 dependencies {
-
+    //oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     //jwt
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5', 'io.jsonwebtoken:jjwt-jackson:0.11.5'
@@ -45,9 +46,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     //security
     implementation 'org.springframework.boot:spring-boot-starter-security'
-
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-//    implementation 'org.springframework.boot:spring-boot-starter-oauth2-jose'
+    //mail
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
     //web
     implementation 'org.springframework.boot:spring-boot-starter-web'
     //validation
@@ -57,8 +57,10 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     //h2
     runtimeOnly 'com.h2database:h2'
-    //client
+    //mariadb
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+    //sql log
+    implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 
     //thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'

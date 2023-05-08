@@ -1,6 +1,7 @@
 package com.study.badrequest.utils.converter;
 
-import com.study.badrequest.domain.board.entity.Topic;
+
+import com.study.badrequest.domain.board.Topic;
 import org.springframework.core.convert.converter.Converter;
 
 public class BindingParamToTopic implements Converter<String, Topic> {

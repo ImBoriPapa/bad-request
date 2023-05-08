@@ -3,9 +3,9 @@ package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.board.BoardController;
 import com.study.badrequest.api.board.BoardQueryController;
-import com.study.badrequest.domain.board.dto.BoardResponse;
-import com.study.badrequest.domain.board.repository.query.BoardDetailDto;
-import com.study.badrequest.domain.board.repository.query.BoardListDto;
+import com.study.badrequest.dto.board.BoardResponse;
+import com.study.badrequest.repository.board.query.BoardDetailDto;
+import com.study.badrequest.repository.board.query.BoardListDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
@@ -103,7 +103,7 @@ public class BoardResponseModelAssembler implements CustomEntityModelAssemblerSu
         entity.getResults()
                 .forEach(result -> result
                         .add(linkTo(BoardController.class)
-                                .slash(result.getBoardId())
+                                .slash(result.getId())
                                 .withRel("GET : DETAIL")));
     }
 

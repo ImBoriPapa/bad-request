@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.validator;
 
-import com.study.badrequest.aop.annotation.EnumValid;
+import com.study.badrequest.commons.annotation.EnumValid;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

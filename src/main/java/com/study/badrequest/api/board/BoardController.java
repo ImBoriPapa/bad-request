@@ -1,17 +1,18 @@
 package com.study.badrequest.api.board;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.commons.exception.custom_exception.MemberException;
-import com.study.badrequest.domain.board.dto.BoardRequest;
-import com.study.badrequest.domain.board.dto.BoardResponse;
-
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.board.service.BoardCommandServiceImpl;
-import com.study.badrequest.commons.exception.custom_exception.CustomValidationException;
+import com.study.badrequest.commons.annotation.LoggedInMember;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.dto.board.BoardRequest;
+import com.study.badrequest.dto.board.BoardResponse;
+import com.study.badrequest.exception.custom_exception.CustomValidationException;
+import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.service.board.BoardCommandServiceImpl;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
 import com.study.badrequest.utils.validator.BoardValidator;
-import lombok.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
+import static com.study.badrequest.commons.constants.ApiURL.BASE_API_VERSION_URL;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
@@ -38,25 +39,21 @@ public class BoardController {
     @PostMapping("/board")
     @CustomLogTracer
     public ResponseEntity postBoard(@Valid
-                                    @AuthenticationPrincipal User user,
+                                    @LoggedInMember CurrentLoggedInMember.Information information,
                                     @RequestBody BoardRequest.Create form,
                                     BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            throw new CustomValidationException(CustomStatus.VALIDATION_ERROR, bindingResult);
+            throw new CustomValidationException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
         }
 
-        if (user.getUsername() == null) {
-            throw new MemberException(CustomStatus.ALREADY_LOGOUT);
-        }
-
-        BoardResponse.Create create = boardCommandService.create(user, form);
+        BoardResponse.Create create = boardCommandService.create(information.getId(),information.getAuthority() ,form);
 
         EntityModel<BoardResponse.Create> entityModel = boardResponseModelAssembler.toModel(create);
 
         return ResponseEntity
                 .created(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).toUri())
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
@@ -82,7 +79,7 @@ public class BoardController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     // TODO: 2023/02/15 Delete

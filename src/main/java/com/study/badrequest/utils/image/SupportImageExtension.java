@@ -10,7 +10,7 @@ public enum SupportImageExtension {
     JPG(".jpg"),
     GIF(".gif");
 
-    private String extension;
+    private final String extension;
 
     SupportImageExtension(String extension) {
         this.extension = extension;

@@ -1,9 +1,9 @@
 package com.study.badrequest.utils.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.commons.exception.custom_exception.JwtAuthenticationException;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class JwtAuthenticationFilterResponseFactory {
 
     private final ObjectMapper objectMapper;
 
-    public void setErrorResponse(HttpServletRequest request, HttpServletResponse response, CustomStatus status) throws IOException {
+    public void setErrorResponse(HttpServletRequest request, HttpServletResponse response, ApiResponseStatus status) throws IOException {
         log.info("[JwtAuthenticationFilterResponseFactory. response error status={}]", status);
         setResponseHeader(response);
         response.getWriter().write(objectMapper.writeValueAsString(getErrorResponse(request, status)));
@@ -33,7 +33,7 @@ public class JwtAuthenticationFilterResponseFactory {
         response.setCharacterEncoding("UTF-8");
     }
 
-    private ResponseForm.Error getErrorResponse(HttpServletRequest request, CustomStatus status) {
+    private ResponseForm.Error getErrorResponse(HttpServletRequest request, ApiResponseStatus status) {
         return new ResponseForm.Error(new JwtAuthenticationException(status), request.getRequestURI());
 
     }

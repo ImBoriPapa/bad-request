@@ -1,68 +1,72 @@
 package com.study.badrequest.api.board;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.custom_exception.BoardException;
-import com.study.badrequest.commons.exception.custom_exception.RequestParamException;
-import com.study.badrequest.commons.form.ResponseForm;
-import com.study.badrequest.domain.board.dto.BoardSearchCondition;
-import com.study.badrequest.domain.board.entity.Category;
-import com.study.badrequest.domain.board.repository.query.BoardDetailDto;
-import com.study.badrequest.domain.board.repository.query.BoardListDto;
-import com.study.badrequest.domain.board.repository.BoardQueryRepository;
+import com.study.badrequest.commons.annotation.LoggedInMember;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.domain.board.Category;
+import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.dto.board.BoardSearchCondition;
+import com.study.badrequest.exception.custom_exception.BoardException;
+import com.study.badrequest.exception.custom_exception.RequestParamException;
+import com.study.badrequest.repository.board.query.BoardDetailDto;
+import com.study.badrequest.repository.board.query.BoardListDto;
+import com.study.badrequest.repository.board.BoardQueryRepository;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-import static com.study.badrequest.commons.consts.CustomURL.BASE_API_VERSION_URL;
+import static com.study.badrequest.commons.constants.ApiURL.*;
 
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping(BASE_API_VERSION_URL)
 public class BoardQueryController {
 
     private final BoardQueryRepository boardQueryRepository;
     private final BoardResponseModelAssembler boardResponseModelAssembler;
 
-    @GetMapping("/board/{boardId}")
+    @GetMapping(BOARD_DETAIL_URL)
     @CustomLogTracer
     public ResponseEntity getBoard(@PathVariable("boardId") Long id,
                                    @RequestParam(name = "category", required = false) Category category) {
 
-        Optional<BoardDetailDto> boardDetail = boardQueryRepository.findBoardDetailByIdAndCategory(id,category);
+        Optional<BoardDetailDto> boardDetail = boardQueryRepository.findBoardDetailByIdAndCategory(id, category);
 
         if (boardDetail.isEmpty()) {
-            throw new BoardException(CustomStatus.NOT_FOUND_BOARD);
+            throw new BoardException(ApiResponseStatus.NOT_FOUND_BOARD);
         }
 
         EntityModel<BoardDetailDto> entityModel = boardResponseModelAssembler.toModel(boardDetail.get());
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
-    @GetMapping("/board")
-    @CustomLogTracer
-    public ResponseEntity getBoardList(BoardSearchCondition condition, BindingResult bindingResult) {
+    @GetMapping(BOARD_LIST_URL)
+    public ResponseEntity getBoardList(BoardSearchCondition condition, @LoggedInMember CurrentLoggedInMember.Information information) {
+        log.info("게시판 목록 조회:");
 
-        if (bindingResult.hasErrors()) {
-            throw new RequestParamException(CustomStatus.WRONG_PARAMETER, bindingResult);
+        Long loginMemberId = null;
+
+        if (information != null) {
+            loginMemberId = information.getId();
         }
 
-        BoardListDto boardList = boardQueryRepository.findBoardList(condition);
+        BoardListDto boardList = boardQueryRepository.findBoardList(condition, loginMemberId);
 
         EntityModel<BoardListDto> entityModel = boardResponseModelAssembler.toListModel(boardList);
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(CustomStatus.SUCCESS, entityModel));
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 }

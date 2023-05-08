@@ -1,10 +1,110 @@
-# 회원가입
+### 이메일 인증 코드 요청
+POST http://localhost:8080/api/v2/members/email-authentication
+Content-Type: application/json
+
+{
+  "email": "cszzang89@gmail.com"
+}
+
+### 회원가입
 POST http://localhost:8080/api/v2/members
 Content-Type: application/json
 
 {
-  "email": "email2@email.com",
-  "password": "password1234!@",
+  "email": "cszzang89@gmail.com",
+  "password": "member1!@#",
   "nickname": "nickname",
-  "contact" : "010-1214-0090"
+  "contact": "010-1214-234543",
+  "authenticationCode": "714411"
 }
+
+### 메일 인증
+PATCH http://localhost:8080/api/v2/members/1/email?authenticationCode=bffbedb2-be83-457e-976f-4c839d032b27
+
+### 임시비밀번호 발급
+POST http://localhost:8080/api/v2/members/temporary-password
+Content-Type: application/json
+
+{
+  "email": "cszzang89@gmail.com"
+}
+
+### 로그인
+POST http://localhost:8080/api/v2/login
+Content-Type: application/json
+
+{
+  "email": "sample@gmail.com",
+  "password": "sample1234!@"
+}
+
+> {%
+    client.global.set("access_token", response.headers.valueOf("Authorization"));
+    client.global.set("refresh_token", response.headers.valueOf("Set-Cookie").split(";")[0]);
+
+    client.log(client.global.get("access_token"));
+    client.log(client.global.get("refresh_token"));
+%}
+
+### 토큰 재발급 OK
+POST http://localhost:8080/api/v2/refresh
+Content-Type: application/json
+Authorization: {{access_token}}
+Cookie: {{refresh_token}}
+
+### 계정 정보 조회
+GET http://localhost:8080/api/v2/members/1
+Authorization: {{access_token}}
+Cookie: {{refresh_token}}
+
+### 프로필 정보 조회
+GET http://localhost:8080/api/v2/members/1/profile
+
+
+### 비밀번호 변경
+PATCH http://localhost:8080/api/v2/members/1/password
+Content-Type: application/json
+Authorization: {{access_token}}
+
+{
+  "currentPassword": "member1!@#",
+  "newPassword": "newPassword1234!@"
+}
+
+### 로그인한 회원 정보
+GET http://localhost:8080/api/v2/members/1/loggedInMember
+Content-Type: application/json
+Authorization: {{access_token}}
+
+### 질문 게시판 리스트 조회
+GET http://localhost:8080/api/v2/questions?lastIndex=5000
+
+### 질문 게시판 리스트 조회 + 정렬 view
+GET http://localhost:8080/api/v2/questions?size=5&sort=view
+
+### 질문 게시판 리스트 조회 + 정렬 recommend
+GET http://localhost:8080/api/v2/questions?size=5&sort=recommend&isAnswered=false
+
+### 질문 상세 보기
+GET http://localhost:8080/api/v2/questions/10
+### 질문 답변 목록
+GET http://localhost:8080/api/v2/questions/3/answers
+
+### 질문 등록
+POST http://localhost:8080/api/v2/questions
+Content-Type: application/json
+
+{
+  "title": "제목",
+  "contents": "내용",
+  "tags": [
+    "tag1",
+    "tag2"
+  ]
+}
+
+### 질문 추천
+POST http://localhost:8080/api/v2/questions/20/recommendations?recommend=true
+
+### 질문 추천 취소
+DELETE http://localhost:8080/api/v2/questions/10/recommendations

@@ -2,9 +2,9 @@ package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.comment.CommentController;
 import com.study.badrequest.api.comment.CommentQueryController;
-import com.study.badrequest.domain.comment.dto.CommentResponse;
-import com.study.badrequest.domain.comment.repository.dto.CommentListDto;
-import com.study.badrequest.domain.comment.repository.dto.SubCommentListDto;
+import com.study.badrequest.dto.comment.CommentResponse;
+import com.study.badrequest.repository.comment.query.CommentListDto;
+import com.study.badrequest.repository.comment.query.SubCommentListDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

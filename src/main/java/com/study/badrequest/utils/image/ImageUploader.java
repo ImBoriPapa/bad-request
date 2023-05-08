@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface ImageUploader {
 
-    ImageUplaodDto uploadFile(MultipartFile image, String folderName);
-    List<ImageUplaodDto> uploadFile(List<MultipartFile> images, String folderName);
+    ImageUploadDto uploadFile(MultipartFile image, String folderName);
+    List<ImageUploadDto> uploadFile(List<MultipartFile> images, String folderName);
 
     String getDefaultProfileImage();
 

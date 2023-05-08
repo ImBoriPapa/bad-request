@@ -1,7 +1,8 @@
 package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.study.badrequest.commons.exception.custom_exception.ImageFileUploadException;
+
+import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.study.badrequest.commons.consts.CustomStatus.NOT_SUPPORT_ERROR;
-import static com.study.badrequest.commons.consts.CustomStatus.WRONG_FILE_ERROR;
+import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_SUPPORT_ERROR;
+import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_FILE_ERROR;
 import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,11 +34,11 @@ class S3ImageUploaderTest {
         String folderName = "board";
 
         //when
-        ImageUplaodDto imageUplaodDto = imageUploader.uploadFile(file, folderName);
+        ImageUploadDto imageUploadDto = imageUploader.uploadFile(file, folderName);
         //then
-        assertThat(imageUplaodDto.getOriginalFileName()).isEqualTo(file.getOriginalFilename());
-        assertThat(imageUplaodDto.getStoredFileName()).isNotNull();
-        assertThat(imageUplaodDto.getSize()).isEqualTo(file.getSize());
+        assertThat(imageUploadDto.getOriginalFileName()).isEqualTo(file.getOriginalFilename());
+        assertThat(imageUploadDto.getStoredFileName()).isNotNull();
+        assertThat(imageUploadDto.getSize()).isEqualTo(file.getSize());
     }
 
     @Test

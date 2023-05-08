@@ -28,11 +28,72 @@ spring:
       hibernate:
         format_sql: true # log
         show_sql: true
+        default_batch_fetch_size: 100
     open-in-view: false
     database: mysql
 
-logging:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${mail.username}
+    password: ${mail.password}
+    properties:
+      mail:
+        mime.charset=UTF-8:
+        transport.protocol: smtp
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls.enable: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${google.client-id}
+            client-secret: ${google.client-secrete}
+            redirect-uri: http://localhost:8080/api/v2/oauth/client/google
+            scope:
+              - email
+              - profile
+          kakao:
+            client-id: ${kakao.client-id}
+            client-secret: ${kakao.client-secrete}
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/api/v2/oauth/client/kakao
+            scope:
+              - profile_nickname
+              - account_email
+            client-name: Kakao
+            client-authentication-method: client_secret_post
+          github:
+            client-id: ${github.client-id}
+            client-secret: ${github.client-secrete}
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8080/api/v2/oauth/client/github
+            scope:
+              - user:email
+              - read:user
+            client-name: GitHub
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://accounts.google.com/o/oauth2/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: login
 
+
+logging:
   pattern:
     #    file: "[%d{HH:mm:ss.SSS}][%-5level][%logger.%method:line%line] - %msg%n"
     file: "[%d{yyyy-MM-dd-HH:mm}][%-5level][%thread][%logger] - %msg%n"
@@ -44,6 +105,9 @@ logging:
     org.springframework.transaction: INFO
     org.springframework.data.*.*: INFO
     org.springframework.cache.*: INFO
+#    org.hibernate:
+#      SQL: debug
+#      type: Trace
   logback:
     rolling policy:
       file-name-pattern: "/Users/leechoongsub/desktop/log/test.log.%d{yyyy-MM-dd}.%i"
@@ -56,9 +120,6 @@ cloud:
     stack:
       auto: false
 
-message:
-  hello: This is test dev
-
 token:
   secret-key: thisIsVeryVeryVeryImportantSecretKeySoMustHideThisKey
   access-life: 10
@@ -66,3 +127,17 @@ token:
 
 cookie-status:
   secure: false
+
+mail:
+  authentication-subject: Bad-Request 인증
+  temporary-password: Bad-Request 임시 비밀번호 발급
+
+s3-image:
+  bucket-name: this-is-my-bucket
+  bucket-url: https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/
+  default-profile-image: https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg
+
+greeting:
+  server_kind: dev
+  version: v2
+  rest_docs: http//:localhost:8080/docs/index.html

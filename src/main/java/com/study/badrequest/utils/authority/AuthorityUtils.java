@@ -1,8 +1,8 @@
 package com.study.badrequest.utils.authority;
 
-import com.study.badrequest.commons.consts.CustomStatus;
-import com.study.badrequest.commons.exception.custom_exception.MemberException;
-import com.study.badrequest.domain.member.entity.Authority;
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.domain.member.Authority;
+import com.study.badrequest.exception.custom_exception.MemberException;
 
 import java.util.Random;
 
@@ -16,7 +16,7 @@ public class AuthorityUtils {
      */
     public static void restrictAccessIfNotYouAndAdmin(Long memberId, Long requestMemberId, Authority authority) {
         if (!isRequestingMemberAuthorized(memberId, requestMemberId, authority)) {
-            throw new MemberException(CustomStatus.PERMISSION_DENIED);
+            throw new MemberException(ApiResponseStatus.PERMISSION_DENIED);
         }
     }
     private static boolean isRequestingMemberAuthorized(Long memberId, Long requestMemberId, Authority authority) {

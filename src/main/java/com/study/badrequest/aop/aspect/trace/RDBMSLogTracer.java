@@ -1,9 +1,9 @@
 package com.study.badrequest.aop.aspect.trace;
 
-import com.study.badrequest.domain.log.entity.Log;
-import com.study.badrequest.domain.log.entity.LogLevel;
-import com.study.badrequest.domain.log.repositoey.LogRepository;
-import lombok.Getter;
+import com.study.badrequest.domain.log.Log;
+import com.study.badrequest.domain.log.LogLevel;
+import com.study.badrequest.repository.log.LogRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -17,8 +17,10 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import static com.study.badrequest.utils.header.IpAddressResolver.ipAddressResolver;
 
 
 @Slf4j
@@ -69,7 +71,7 @@ public class RDBMSLogTracer implements LogTracer {
                 .message(Arrays.toString(joinPoint.getArgs()))
                 .requestURI(getRequest().getRequestURI())
                 .username(getAuthentication())
-                .clientIp(resolveClientIp(getRequest()))
+                .clientIp(ipAddressResolver(getRequest()))
                 .stackTrace("NO TRACE")
                 .build();
     }
@@ -87,7 +89,7 @@ public class RDBMSLogTracer implements LogTracer {
                 .message(exception.getMessage())
                 .requestURI(getRequest().getRequestURI())
                 .username(getAuthentication())
-                .clientIp(resolveClientIp(getRequest()))
+                .clientIp(ipAddressResolver(getRequest()))
                 .stackTrace(stringBuilder.toString())
                 .build();
     }
@@ -126,37 +128,5 @@ public class RDBMSLogTracer implements LogTracer {
     }
 
 
-    private String resolveClientIp(HttpServletRequest request) {
 
-        String ip = matchClientIpPattern(request.getRemoteAddr());
-
-        if (ip == null) {
-            return Arrays.stream(ClientIpHeader.values())
-                    .filter(v -> matchClientIpPattern(request.getHeader(v.getHeaderName())) != null)
-                    .findFirst()
-                    .orElse(ClientIpHeader.UNKNOWN_CLIENT_IP)
-                    .getHeaderName();
-        }
-        return ip;
-    }
-
-    private String matchClientIpPattern(String ip) {
-        return ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip) ? null : ip;
-    }
-
-    @Getter
-    public enum ClientIpHeader {
-        X_FORWARDED_FOR("X-Forwarded-For"),
-        PROXY_CLIENT_IP("Proxy-Client-IP"),
-        WL_PROXY_CLIENT_IP("WL-Proxy-Client-IP"),
-        HTTP_CLIENT_IP("HTTP_CLIENT_IP"),
-        HTTP_X_FORWARDED_FOR("HTTP_X_FORWARDED_FOR"),
-        UNKNOWN_CLIENT_IP("UNKNOWN_CLIENT_IP");
-
-        private final String headerName;
-
-        ClientIpHeader(String headerName) {
-            this.headerName = headerName;
-        }
-    }
 }
