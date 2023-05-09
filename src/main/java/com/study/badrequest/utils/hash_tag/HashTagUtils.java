@@ -7,4 +7,8 @@ public class HashTagUtils {
         return "#"+string.toLowerCase().trim().replace(" ","-");
     }
 
+    public static String hashTagToTag(String hashTag) {
+        return hashTag.replace("#", "");
+    }
+
 }

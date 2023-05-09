@@ -32,7 +32,7 @@ public class QuestionHashTagService {
         Set<String> hashTags = tags.stream().map(HashTagUtils::stringToHashTag)
                 .collect(Collectors.toSet());
 
-        List<HashTag> alreadySaved = hashTagRepository.findAllByTagNameIn(hashTags);
+        List<HashTag> alreadySaved = hashTagRepository.findAllByHashTagNameIn(hashTags);
 
         //새로운 해시태그 생성
         for (HashTag hashTag : alreadySaved) {
@@ -40,7 +40,7 @@ public class QuestionHashTagService {
         }
 
         List<String> strings = alreadySaved.stream()
-                .map(HashTag::getTagName)
+                .map(HashTag::getHashTagName)
                 .collect(Collectors.toList());
 
         Set<HashTag> newHashTags = hashTags.stream()

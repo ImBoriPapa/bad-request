@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class HashTagDto {
     private Long id;
-    private String tagName;
+    private String hashTagName;
 }

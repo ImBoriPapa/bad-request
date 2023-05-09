@@ -7,6 +7,7 @@ import com.study.badrequest.repository.question.query.*;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,6 @@ import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.ApiURL.QUESTION_LIST_URL;
 import static com.study.badrequest.commons.response.ApiResponseStatus.SUCCESS;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.http.MediaType.*;
 
 @RestController
@@ -29,12 +29,12 @@ public class QuestionQueryApiController {
 
     @GetMapping(value = QUESTION_LIST_URL, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getQuestions(QuestionSearchCondition searchCondition) {
-
+        log.info("질문 목록 조회");
         QuestionListResult result = questionQueryRepository.findQuestionListByCondition(searchCondition);
 
-        questionModelAssembler.getQuestionListModel(result, searchCondition);
+        EntityModel<QuestionListResult> entityModel = questionModelAssembler.getQuestionListModel(result, searchCondition);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of(SUCCESS, result));
+        return ResponseEntity.ok().body(new ResponseForm.Of(SUCCESS, entityModel));
     }
 
     @GetMapping("/api/v2/questions/tagged/{tagName}")

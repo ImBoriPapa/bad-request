@@ -140,7 +140,7 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.results.[0].questioner.activityScore").type(NUMBER).description("활동점수"),
                                 fieldWithPath("result.results.[0].hashTag").type(ARRAY).description("해시 태그"),
                                 fieldWithPath("result.results.[0].hashTag.[0].id").type(NUMBER).description("해시태그 식별아이디"),
-                                fieldWithPath("result.results.[0].hashTag.[0].tagName").type(STRING).description("해시태그네임"),
+                                fieldWithPath("result.results.[0].hashTag.[0].hashTagName").type(STRING).description("해시태그네임"),
                                 fieldWithPath("result.results.[0].links.[0].rel").type(STRING).description("rel"),
                                 fieldWithPath("result.results.[0].links.[0].href").type(STRING).description("href")
                         )

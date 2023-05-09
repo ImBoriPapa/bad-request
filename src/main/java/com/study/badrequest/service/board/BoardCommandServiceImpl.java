@@ -1,6 +1,5 @@
 package com.study.badrequest.service.board;
 
-import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.board.Board;
 import com.study.badrequest.domain.board.BoardImageStatus;
@@ -23,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -59,11 +57,11 @@ public class BoardCommandServiceImpl implements BoardCommendService {
 
             Set<String> requestedHashTag = new HashSet<>(form.getHashTags());
             //이미 저장된 HashTag
-            List<HashTag> findSavedTag = hashTagRepository.findAllByTagNameIn(requestedHashTag.stream().map(t -> "#" + t).collect(Collectors.toSet()));
+            List<HashTag> findSavedTag = hashTagRepository.findAllByHashTagNameIn(requestedHashTag.stream().map(t -> "#" + t).collect(Collectors.toSet()));
             //데이터베이스에 저장된 테그는 BoardTag 에 저장
             findSavedTag.forEach(tag -> BoardTag.createBoardTag(savedBoard, tag));
             //저장된 해시태그의 태그네임 추출
-            Set<String> existingTags = findSavedTag.stream().map(HashTag::getTagName).collect(Collectors.toSet());
+            Set<String> existingTags = findSavedTag.stream().map(HashTag::getHashTagName).collect(Collectors.toSet());
             //저장된 해시태그에 포함되지 않는 요청된 태그를 추출해서 새로운 해시태그 엔티티 생성
             Set<HashTag> newTags = requestedHashTag.stream()
                     .filter(tag -> !existingTags.contains("#" + tag))

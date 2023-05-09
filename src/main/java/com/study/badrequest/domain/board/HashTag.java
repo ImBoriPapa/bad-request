@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id", "tagName"})
+@EqualsAndHashCode(of = {"id", "hashTagName"})
 @Getter
 public class HashTag {
     @Id
@@ -19,9 +19,9 @@ public class HashTag {
     @Column(name = "HASHTAG_ID")
     private Long id;
     @Column(name = "TAG_NAME")
-    private String tagName;
+    private String hashTagName;
 
-    public HashTag(String tagName) {
-        this.tagName = tagName;
+    public HashTag(String hashTagName) {
+        this.hashTagName = hashTagName;
     }
 }

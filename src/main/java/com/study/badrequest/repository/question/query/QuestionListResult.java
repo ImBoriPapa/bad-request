@@ -3,14 +3,14 @@ package com.study.badrequest.repository.question.query;
 import com.study.badrequest.domain.question.QuestionSort;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.hateoas.EntityModel;
+
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class QuestionListResult extends EntityModel {
+public class QuestionListResult {
     private Integer size;
     private Boolean hasNext;
     private QuestionSort sortBy;

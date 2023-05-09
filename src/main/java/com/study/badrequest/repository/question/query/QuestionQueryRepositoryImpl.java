@@ -9,9 +9,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.study.badrequest.domain.question.*;
 import com.study.badrequest.event.question.QuestionEventDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -83,7 +81,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                     .where(questionTag.question.id.eq(detailOptional.get().getId()))
                     .fetch();
 
-            List<HashTagDto> hashTagDtos = questionTags.stream().map(tag -> new HashTagDto(tag.getId(), tag.getHashTag().getTagName())).collect(Collectors.toList());
+            List<HashTagDto> hashTagDtos = questionTags.stream().map(tag -> new HashTagDto(tag.getId(), tag.getHashTag().getHashTagName())).collect(Collectors.toList());
 
             detailOptional.get().addHashTag(hashTagDtos);
 
@@ -324,7 +322,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .fetch();
     }
 
-    private List<QuestionTagDtos> findQuestionTag(List<Long> ids) {
+    private List<QuestionTagDto> findQuestionTag(List<Long> ids) {
         /**
          *1,SIMPLE,questionta0_,range,"PRIMARY,FKkt90ri7g7j1a9dd4ol9gns2ek",PRIMARY,8,null,10,Using where
          * 1,SIMPLE,hashtag1_,eq_ref,PRIMARY,PRIMARY,8,bad_request.questionta0_.hashtag_id,1,Using index
@@ -337,10 +335,11 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         return jpaQueryFactory
                 .select(
-                        Projections.fields(QuestionTagDtos.class,
+                        Projections.fields(QuestionTagDto.class,
+                                questionTag.id.as("id"),
                                 questionTag.question.id.as("questionId"),
                                 hashTag.id.as("hashTagId"),
-                                hashTag.tagName.as("tagName")
+                                hashTag.hashTagName.as("hashTagName")
                         ))
                 .from(questionTag)
                 .join(questionTag.hashTag, hashTag)
@@ -355,9 +354,9 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         List<Long> questionsIds = getQuestionsIds(questionListDto);
 
-        List<QuestionTagDtos> questionTagDtos = findQuestionTag(questionsIds);
+        List<QuestionTagDto> questionTagDtos = findQuestionTag(questionsIds);
 
-        Map<Long, List<QuestionTagDtos>> longListMap = groupQuestionTagsByQuestionId(questionTagDtos);
+        Map<Long, List<QuestionTagDto>> longListMap = groupQuestionTagsByQuestionId(questionTagDtos);
 
         addGroupedQuestionTagsToQuestionDto(questionListDto, longListMap);
     }
@@ -379,13 +378,13 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .collect(Collectors.toList());
     }
 
-    private void addGroupedQuestionTagsToQuestionDto(List<QuestionDto> questionListDto, Map<Long, List<QuestionTagDtos>> questionTagMap) {
+    private void addGroupedQuestionTagsToQuestionDto(List<QuestionDto> questionListDto, Map<Long, List<QuestionTagDto>> questionTagMap) {
         if (questionTagMap != null && !questionTagMap.isEmpty()) {
             questionListDto.forEach(
                     dto -> dto.addHashTag(
                             questionTagMap.get(dto.getId())
                                     .stream()
-                                    .map(t -> new HashTagDto(t.getHashTagId(), t.getTagName()))
+                                    .map(t -> new HashTagDto(t.getHashTagId(), t.getHashTagName()))
                                     .collect(Collectors.toList())
                     ));
         }
@@ -407,9 +406,9 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return status == null ? question.exposure.eq(PUBLIC) : question.exposure.eq(status);
     }
 
-    private Map<Long, List<QuestionTagDtos>> groupQuestionTagsByQuestionId(List<QuestionTagDtos> questionTagList) {
+    private Map<Long, List<QuestionTagDto>> groupQuestionTagsByQuestionId(List<QuestionTagDto> questionTagList) {
         return questionTagList.stream()
-                .collect(Collectors.groupingBy(QuestionTagDtos::getQuestionId));
+                .collect(Collectors.groupingBy(QuestionTagDto::getQuestionId));
     }
 
     private BooleanExpression lastIndexCursor(Long questionId) {
@@ -439,11 +438,11 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private Predicate eqTagName(String hashTag) {
-        return questionTag.hashTag.tagName.eq(hashTag);
+        return questionTag.hashTag.hashTagName.eq(hashTag);
     }
 
     private Predicate tagNamesIn(List<String> extractedTags) {
-        return questionTag.hashTag.tagName.in(extractedTags);
+        return questionTag.hashTag.hashTagName.in(extractedTags);
     }
 
     private List<String> getExtractedTags(String searchWord) {
@@ -451,14 +450,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return collect.subList(1, collect.size()).stream().map(tag -> "#" + tag.toLowerCase()).collect(Collectors.toList());
     }
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    public static class QuestionTagDtos {
-        private Long questionId;
-        private Long hashTagId;
-        private String tagName;
-    }
 
 
 }

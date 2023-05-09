@@ -5,8 +5,6 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.domain.board.*;
-import com.study.badrequest.domain.member.QMember;
-import com.study.badrequest.domain.member.QMemberProfile;
 import com.study.badrequest.dto.board.BoardSearchCondition;
 import com.study.badrequest.repository.board.query.BoardDetailDto;
 import com.study.badrequest.repository.board.query.BoardListDto;
@@ -28,7 +26,6 @@ import static com.study.badrequest.domain.board.QBoard.board;
 
 import static com.study.badrequest.domain.board.QBoardTag.*;
 import static com.study.badrequest.domain.board.QHashTag.*;
-import static com.study.badrequest.domain.comment.QComment.comment;
 import static com.study.badrequest.domain.member.QMember.*;
 import static com.study.badrequest.domain.member.QMemberProfile.*;
 
@@ -136,7 +133,7 @@ public class BoardQueryRepositoryImpl implements BoardQueryRepository {
                             listMap.get(boardListResult.getId()).stream()
                             .map(boardTag-> new TagDto(
                                     boardTag.getId(),
-                                    boardTag.getHashTag().getTagName()
+                                    boardTag.getHashTag().getHashTagName()
                             )).collect(Collectors.toList()))
                 );
 
