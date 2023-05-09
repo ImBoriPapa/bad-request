@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class QuestionDtoListResult extends EntityModel {
+public class QuestionListResult extends EntityModel {
     private Integer size;
     private Boolean hasNext;
     private QuestionSort sortBy;
@@ -19,7 +19,7 @@ public class QuestionDtoListResult extends EntityModel {
     private Integer lastOfRecommend;
     private List<QuestionDto> results = new ArrayList<>();
 
-    public QuestionDtoListResult(Integer size, Boolean hasNext, QuestionSort sortBy, Long lastOfIndex, Integer lastOfView, Integer lastOfRecommend, List<QuestionDto> results) {
+    public QuestionListResult(Integer size, Boolean hasNext, QuestionSort sortBy, Long lastOfIndex, Integer lastOfView, Integer lastOfRecommend, List<QuestionDto> results) {
         this.size = size;
         this.hasNext = hasNext;
         this.sortBy = sortBy;

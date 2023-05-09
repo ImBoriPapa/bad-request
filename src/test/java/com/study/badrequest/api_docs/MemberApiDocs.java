@@ -8,7 +8,7 @@ import com.study.badrequest.api.member.MemberApiController;
 import com.study.badrequest.api.member.MemberQueryApiController;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.domain.login.OauthProvider;
-import com.study.badrequest.domain.member.Authority;
+
 
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
@@ -38,7 +38,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 
 
-import org.springframework.restdocs.payload.JsonFieldType;
+
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;

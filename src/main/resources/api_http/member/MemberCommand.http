@@ -77,13 +77,13 @@ Content-Type: application/json
 Authorization: {{access_token}}
 
 ### 질문 게시판 리스트 조회
-GET http://localhost:8080/api/v2/questions?lastIndex=5000
+GET http://localhost:8080/api/v2/questions
 
 ### 질문 게시판 리스트 조회 + 정렬 view
 GET http://localhost:8080/api/v2/questions?size=5&sort=view
 
 ### 질문 게시판 리스트 조회 + 정렬 recommend
-GET http://localhost:8080/api/v2/questions?size=5&sort=recommend&isAnswered=false
+GET http://localhost:8080/api/v2/questions?size=5&sort=recommend
 
 ### 질문 상세 보기
 GET http://localhost:8080/api/v2/questions/10

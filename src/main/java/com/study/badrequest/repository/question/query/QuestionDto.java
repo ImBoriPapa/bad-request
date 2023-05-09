@@ -5,19 +5,21 @@ import lombok.AllArgsConstructor;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.hateoas.EntityModel;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-public class QuestionDto {
+public class QuestionDto extends EntityModel {
     private Long id;
     private String title;
     private String preview;
     private Boolean isAnswered;
-    private QuestionMetrics metrics;
+    private Metrics metrics;
     private Questioner questioner;
     private List<HashTagDto> hashTag = new ArrayList<>();
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
@@ -28,7 +30,7 @@ public class QuestionDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class QuestionMetrics {
+    public static class Metrics {
         private Integer countOfRecommend;
         private Integer countOfView;
 
@@ -40,7 +42,6 @@ public class QuestionDto {
         private Long id;
         private String nickname;
         private String profileImage;
-
         private Integer activityScore;
 
     }

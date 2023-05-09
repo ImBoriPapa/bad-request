@@ -113,11 +113,11 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     @Override
-    public QuestionDtoListResult findQuestionListByCondition(QuestionSearchCondition condition) {
+    public QuestionListResult findQuestionListByCondition(QuestionSearchCondition condition) {
 
         final int limitSize = setLimitSize(condition.getSize());
 
-        List<Long> questionIdList = selectQuestionIdList(condition.getLastIndex(), condition.getLastOfView(), condition.getLastOfRecommend(), limitSize, PUBLIC, condition.getIsAnswered(), condition.getSort());
+        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfIndex(), condition.getLastOfView(), condition.getLastOfRecommend(), limitSize, PUBLIC, condition.getIsAnswered(), condition.getSort());
 
         List<QuestionDto> questionListDto = selelctQuestionFieldsByIdListAsQuestionDto(questionIdList);
 
@@ -166,7 +166,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 break;
         }
 
-        return new QuestionDtoListResult(resultSize, hasNext, sortBy, lastIndex, lastView, lastRecommend, questionListDto);
+        return new QuestionListResult(resultSize, hasNext, sortBy, lastIndex, lastView, lastRecommend, questionListDto);
 
     }
 
@@ -175,7 +175,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         CompletableFuture.runAsync(() -> applicationEventPublisher.publishEvent(new QuestionEventDto.View(questionId, isAnswered, PUBLIC)));
     }
 
-    public QuestionDtoListResult findQuestionListByHashTag(QuestionSearchConditionWithHashTag condition) {
+    public QuestionListResult findQuestionListByHashTag(QuestionSearchConditionWithHashTag condition) {
 
         int limitSize = setLimitSize(condition.getSize());
 
@@ -203,7 +203,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         questionListDto.sort(Comparator.comparing(QuestionDto::getAskedAt));
 
-        return new QuestionDtoListResult();
+        return new QuestionListResult();
     }
 
     /*
@@ -304,7 +304,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                         question.title.as("title"),
                         question.preview.as("preview"),
                         question.isAnswered.as("isAnswered"),
-                        Projections.fields(QuestionDto.QuestionMetrics.class,
+                        Projections.fields(QuestionDto.Metrics.class,
                                 questionMetrics.countOfRecommend.as("countOfRecommend"),
                                 questionMetrics.countOfView.as("countOfView")
                         ).as("metrics"),
