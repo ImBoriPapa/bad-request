@@ -127,8 +127,7 @@ public class JwtUtils {
     }
 
     /**
-     * 토큰에 저장된 토큰 만료 시간
-     *
+     * 토큰에 저장된 토큰 만료 시간*
      * @Return LocalDateTime
      */
     public LocalDateTime getExpirationLocalDateTime(String token) {
@@ -161,7 +160,6 @@ public class JwtUtils {
     public String getUsernameInToken(String token) {
         return getClaimsJws(token).getBody().getSubject();
     }
-
     public void checkTokenIsEmpty(String token, ApiResponseStatus status) {
         if (token == null) {
             throw new TokenException(status);

@@ -21,7 +21,6 @@ public class BoardImage {
     private Long size;
     private String fileType;
     private BoardImageStatus status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BOARD_ID")
     @org.hibernate.annotations.Index(name = "BOARD_IDX_IMAGE_BOARD")

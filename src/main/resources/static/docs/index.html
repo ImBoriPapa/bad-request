@@ -526,7 +526,7 @@ Content-Length: 334
   "message" : "요청에 성공했습니다.",
   "result" : {
     "email" : "member1@gmail.com",
-    "startedAt" : "2023-05-09 18:12",
+    "startedAt" : "2023-05-10 23:13",
     "expiredIn" : 500,
     "links" : [ {
       "rel" : "self",
@@ -681,7 +681,7 @@ Content-Length: 362
   "message" : "요청에 성공했습니다.",
   "result" : {
     "id" : 12324,
-    "createdAt" : "2023-05-09 18:12",
+    "createdAt" : "2023-05-10 23:13",
     "links" : [ {
       "rel" : "self",
       "href" : "https://www.bad-request.kr/api/v2/members"
@@ -765,7 +765,7 @@ Content-Length: 362
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v2/members/2341/loggedInMember HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer 635d378e-e5f2-4ff5-a093-fce2e04cb2b8
+Authorization: Bearer bf04dff4-c735-4d0c-a849-4c3840dcc020
 Host: www.bad-request.kr</code></pre>
 </div>
 </div>
@@ -905,17 +905,56 @@ Content-Length: 684
 <dl>
 <dt class="hdlist1">Google 로그인</dt>
 <dd>
-<p><a href="https://www.bad-request.kr/api/v2/oauth/client/google" class="bare">https://www.bad-request.kr/api/v2/oauth/client/google</a></p>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_uri=http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_uri=http://localhost:3000/redirect</a></p>
 </dd>
 <dt class="hdlist1">Kakao 로그인</dt>
 <dd>
-<p><a href="https://www.bad-request.kr/api/v2/oauth/client/kakao" class="bare">https://www.bad-request.kr/api/v2/oauth/client/kakao</a></p>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/client/kakao?redirect_uri=http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/client/kakao?redirect_uri=http://localhost:3000/redirect</a></p>
 </dd>
 <dt class="hdlist1">Github 로그인</dt>
 <dd>
-<p><a href="https://www.bad-request.kr/api/v2/oauth/client/github" class="bare">https://www.bad-request.kr/api/v2/oauth/client/github</a></p>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/client/github?redirect_uri=http:http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/client/github?redirect_uri=http:http://localhost:3000/redirect</a></p>
+</dd>
+<dt class="hdlist1">note</dt>
+<dd>
+<p>redirect_uri= 의 리다이렉트되기를 원하는 위치를 지정해야합니다.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>인증이 완료되면 리다이렉트 URL로 로그인(Access-Token,Refresh-Token)을 할 수 있는 일회용 인증 코드가 파라미터로 응답됩니다.</p>
+</li>
+<li>
+<p>일회용 인증 코드는 1회만 사용할 수 있습니다.</p>
+</li>
+</ul>
+</div>
 </dd>
 </dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="http" class="language-http hljs">http://localhost:3000/redirect?authentication-code=a5372ebf-5e56-4b78-9900-0b2b2520eff3</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 이후 Authorization 헤더에 Access-token 으로 인증 및 인가를 실행합니다.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhNTE1MzA3ZC00NmI5LTRhYmYtOTFlNS00YTgxYjY5ZTQzYTEiLCJleHAiOjE2ODM3Mjg0NzR9.cdQidJOe0xJpm9QpDSBi_efvPAXqC3OI1IQodVI6HSN5-VbOj1atLWof6nkdrz-Nyt8_vz1GVaKLiSXWPQlNEg</pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_이_후_일회용_인증_코드를_이용한_로그인_요청"><a class="link" href="#_이_후_일회용_인증_코드를_이용한_로그인_요청">이 후 일회용 인증 코드를 이용한 로그인 요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="http" class="language-http hljs">https://www.bad-request.kr/api/v2/login/authentication-code?code=a5372ebf-5e56-4b78-9900-0b2b2520eff3</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -975,7 +1014,7 @@ Content-Length: 4268
         "id" : 34,
         "hashTagName" : "#spring"
       } ],
-      "askedAt" : "2023-05-09 18:12",
+      "askedAt" : "2023-05-10 23:13",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/99"
@@ -1011,7 +1050,7 @@ Content-Length: 4268
         "id" : 14,
         "hashTagName" : "#react"
       } ],
-      "askedAt" : "2023-05-09 18:12",
+      "askedAt" : "2023-05-10 23:13",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/98"
@@ -1047,7 +1086,7 @@ Content-Length: 4268
         "id" : 7,
         "hashTagName" : "#database"
       } ],
-      "askedAt" : "2023-05-09 18:12",
+      "askedAt" : "2023-05-10 23:13",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/97"
@@ -1425,7 +1464,7 @@ Host: www.bad-request.kr</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0-PROD<br>
-Last updated 2023-05-09 16:48:09 +0900
+Last updated 2023-05-10 23:12:21 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

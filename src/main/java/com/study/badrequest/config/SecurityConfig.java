@@ -3,6 +3,8 @@ package com.study.badrequest.config;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
+import com.study.badrequest.handler.Oauth2AuthenticationSuccessHandler;
+import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
 import com.study.badrequest.service.login.JwtUserDetailService;
 import com.study.badrequest.service.login.OauthUserDetailService;
 import com.study.badrequest.utils.authentication.Oauth2AuthenticationFailHandler;
@@ -34,6 +36,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedFilter accessDeniedFilter;
     private final OauthUserDetailService oauthUserDetailService;
     private final Oauth2AuthenticationFailHandler oauth2AuthenticationFailHandler;
+    private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+    private final CustomAuthorizationRequestRepository authorizationRequestRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
@@ -47,7 +51,7 @@ public class SecurityConfig {
 
                 .cors()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
                 .and()
                 .exceptionHandling()
@@ -62,15 +66,16 @@ public class SecurityConfig {
                 //REST Docs
                 .antMatchers("/docs/index.html").permitAll()
                 //login
-                .antMatchers("/", LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN_URL)
+                .antMatchers("/", LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN_URL,"/api/v2/login/authentication-code")
                 .permitAll()
-                //oauth login
-                .antMatchers(HttpMethod.GET, "/oauth", "/api/v2/oauth/authorization/*", "/api/v2/oauth/client/*", OAUTH2_LOGIN_SUCCESS_URL, OAUTH2_LOGIN_FAILURE_URL).permitAll()
+                //login by one time code
+                //oauth2
+                .antMatchers(HttpMethod.GET, "/oauth", "/api/v2/oauth/authorization/*", "/api/v2/oauth/client/*").permitAll()
                 //members
                 .antMatchers(HttpMethod.POST, POST_MEMBER_URL, POST_MEMBER_TEMPORARY_PASSWORD_ISSUE_URL, POST_MEMBER_SEND_EMAIL_AUTHENTICATION_CODE).permitAll()
                 .antMatchers(HttpMethod.GET, GET_MEMBER_PROFILE).permitAll()
                 //Question
-                .antMatchers("/api/v2/questions", "/api/v2/questions/hashTags", "/api/v2/questions/{questionId}")
+                .antMatchers(HttpMethod.GET, "/api/v2/questions", "/api/v2/questions/hashTags", "/api/v2/questions/{questionId}")
                 .permitAll()
                 //Recommendation
                 .antMatchers("/api/v2/questions/{questionId}/recommendations")
@@ -110,6 +115,7 @@ public class SecurityConfig {
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri(OAUTH2_LOGIN_URL)
+                .authorizationRequestRepository(authorizationRequestRepository)
                 .and()
                 .redirectionEndpoint()
                 .baseUri(OAUTH2_REDIRECT_URL)
@@ -117,8 +123,7 @@ public class SecurityConfig {
                 .userInfoEndpoint()
                 .userService(oauthUserDetailService)
                 .and()
-                .defaultSuccessUrl(OAUTH2_LOGIN_SUCCESS_URL)
-                .failureUrl(OAUTH2_LOGIN_FAILURE_URL)
+                .successHandler(oauth2AuthenticationSuccessHandler)
                 .failureHandler(oauth2AuthenticationFailHandler)
                 .and()
                 .logout()
@@ -126,6 +131,7 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
                 .deleteCookies("Refresh")
                 .permitAll();
+
 
         return security.build();
     }

@@ -144,7 +144,7 @@ public class SampleData {
 
         createForms.forEach(form -> {
             Member member = memberList.get(new Random().nextInt(10) + 1);
-            QuestionResponse.Create create = questionService.creteQuestion(member.getId(), member.getAuthority(), form);
+            QuestionResponse.Create create = questionService.creteQuestion(member.getId(), form);
             ids.add(create.getId());
         });
 

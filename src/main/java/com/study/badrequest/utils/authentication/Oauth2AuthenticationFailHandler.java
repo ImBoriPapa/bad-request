@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.study.badrequest.commons.constants.ApiURL.OAUTH2_LOGIN_FAILURE_WITH_CODE;
+
 
 @Component
 @Slf4j
@@ -23,6 +23,5 @@ public class Oauth2AuthenticationFailHandler extends SimpleUrlAuthenticationFail
 
         ApiResponseStatus apiResponseStatus = ((CustomOauth2LoginException) exception).getApiResponseStatus();
 
-        response.sendRedirect(OAUTH2_LOGIN_FAILURE_WITH_CODE + apiResponseStatus.getCode());
     }
 }

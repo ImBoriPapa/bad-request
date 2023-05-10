@@ -1,7 +1,6 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.login.MemberPrincipal;
 import com.study.badrequest.domain.login.RefreshToken;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
@@ -12,6 +11,7 @@ import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.repository.member.MemberRepository;
 
 import com.study.badrequest.repository.member.query.MemberSimpleInformation;
+import com.study.badrequest.utils.cookie.CookieFactory;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,9 +29,8 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
+
 
 @Service
 @Slf4j
@@ -73,35 +71,7 @@ public class LoginServiceImpl implements LoginService {
         return LoginResponse.LoginDto.builder()
                 .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(createResponseCookie(refreshToken))
-                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
-                .build();
-    }
-
-    @Override
-    @Transactional
-    public LoginResponse.LoginDto oauth2LoginProcessing(MemberPrincipal memberPrincipal, String ipAddress) {
-        log.info("Start JWT Token Issue By Oauth2 memberId: {}", memberPrincipal.getMemberId());
-
-        Member member = memberRepository.findById(memberPrincipal.getMemberId())
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
-
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
-
-        RefreshToken refreshToken = storeRefreshToken(
-                member.getUsername(),
-                member.getId(),
-                Authority.getAuthorityByAuthorities(memberPrincipal.getAuthorities()),
-                tokenDto);
-
-        member.setLastLoginIP(ipAddress);
-
-        eventPublisher.publishEvent(new MemberEventDto.Login(member, "Oauth2 로그인", LocalDateTime.now()));
-
-        return LoginResponse.LoginDto.builder()
-                .id(memberPrincipal.getMemberId())
-                .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(createResponseCookie(refreshToken))
+                .refreshCookie(CookieFactory.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
                 .build();
     }
@@ -116,7 +86,6 @@ public class LoginServiceImpl implements LoginService {
         throwExceptionIfTokenIsNotAccess(accessToken);
 
         removeRefreshToken(username);
-
 
         removeSpringSecuritySession();
 
@@ -159,7 +128,49 @@ public class LoginServiceImpl implements LoginService {
         return LoginResponse.LoginDto.builder()
                 .id(loginInformation.getId())
                 .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(createResponseCookie(refresh))
+                .refreshCookie(CookieFactory.createRefreshTokenCookie(refresh.getToken(), refresh.getExpiration()))
+                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public String getTemporaryAuthenticationCode(Long memberId) {
+        log.info("일회용 인증 코드 생성");
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+        return member.createOneTimeAuthenticationCode();
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse.LoginDto loginByTemporaryAuthenticationCode(String code, String ipAddress) {
+        Member member = memberRepository.findByOneTimeAuthenticationCode(code)
+                .orElseThrow(() -> new IllegalArgumentException("인증 정보를 찾을 수 없습니다. 다시 로그인해 주세요"));
+
+        if (!member.getOneTimeAuthenticationCode().equals(code)) {
+            SecurityContextHolder.clearContext();
+            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+        }
+
+        if (member.getAbleUseOneTimeAuthenticationCode()) {
+            SecurityContextHolder.clearContext();
+            throw new IllegalArgumentException("만료된 인증 코드입니다. 사용하실 수 없습니다.");
+        }
+
+        member.useOneTimeAuthenticationCode();
+
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
+        //RefreshToken 저장
+        RefreshToken refreshToken = storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto);
+
+        member.setLastLoginIP(ipAddress);
+
+        eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
+        //응답 객체 생성
+        return LoginResponse.LoginDto.builder()
+                .id(member.getId())
+                .accessToken(tokenDto.getAccessToken())
+                .refreshCookie(CookieFactory.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
                 .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
                 .build();
     }
@@ -204,21 +215,6 @@ public class LoginServiceImpl implements LoginService {
                 .expiration(tokenDto.getRefreshTokenExpirationMill())
                 .build();
         return redisRefreshTokenRepository.save(refreshToken);
-    }
-
-
-    /**
-     * Https 적용 후 secure false -> true
-     * ResponseCookie 생성 운영 환경별로 secure 설정
-     */
-    private ResponseCookie createResponseCookie(RefreshToken refreshToken) {
-        return ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + refreshToken.getToken())
-                .maxAge(refreshToken.getExpiration())
-                .path("/")
-                .secure(isSecure)
-                .sameSite("None")
-                .httpOnly(true)
-                .build();
     }
 
     private void removeSpringSecuritySession() {

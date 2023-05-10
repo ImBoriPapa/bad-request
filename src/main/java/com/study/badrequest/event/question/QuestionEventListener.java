@@ -21,6 +21,8 @@ public class QuestionEventListener {
     private final QuestionService questionService;
     private final ActivityServiceImpl activityService;
 
+
+
     @EventListener
     public void handleCreateEvent(QuestionEventDto.Create dto) {
         log.info("질문 생성 이벤트");

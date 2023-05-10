@@ -9,7 +9,8 @@ import javax.servlet.http.Cookie;
 public interface LoginService {
 
     LoginResponse.LoginDto loginProcessing(String email, String password, String ipAddress);
-    LoginResponse.LoginDto oauth2LoginProcessing(MemberPrincipal memberPrincipal, String ipAddress);
     LoginResponse.LogoutResult logoutProcessing(String accessToken, Cookie cookie);
     LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken);
+    String getTemporaryAuthenticationCode(Long memberId);
+    LoginResponse.LoginDto loginByTemporaryAuthenticationCode(String temporaryCode,String ipAddress);
 }

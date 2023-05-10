@@ -526,7 +526,7 @@ Content-Length: 334
   "message" : "요청에 성공했습니다.",
   "result" : {
     "email" : "member1@gmail.com",
-    "startedAt" : "2023-05-09 16:53",
+    "startedAt" : "2023-05-09 18:12",
     "expiredIn" : 500,
     "links" : [ {
       "rel" : "self",
@@ -681,7 +681,7 @@ Content-Length: 362
   "message" : "요청에 성공했습니다.",
   "result" : {
     "id" : 12324,
-    "createdAt" : "2023-05-09 16:53",
+    "createdAt" : "2023-05-09 18:12",
     "links" : [ {
       "rel" : "self",
       "href" : "https://www.bad-request.kr/api/v2/members"
@@ -765,7 +765,7 @@ Content-Length: 362
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v2/members/2341/loggedInMember HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer f0f61307-e6e7-41c9-aaa5-c38f3a655759
+Authorization: Bearer 635d378e-e5f2-4ff5-a093-fce2e04cb2b8
 Host: www.bad-request.kr</code></pre>
 </div>
 </div>
@@ -940,7 +940,7 @@ Host: www.bad-request.kr</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 4242
+Content-Length: 4268
 
 {
   "status" : "SUCCESS",
@@ -970,12 +970,12 @@ Content-Length: 4242
       },
       "hashTag" : [ {
         "id" : 54,
-        "tagName" : "#java"
+        "hashTagName" : "#java"
       }, {
         "id" : 34,
-        "tagName" : "#spring"
+        "hashTagName" : "#spring"
       } ],
-      "askedAt" : "2023-05-09 16:53",
+      "askedAt" : "2023-05-09 18:12",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/99"
@@ -1006,12 +1006,12 @@ Content-Length: 4242
       },
       "hashTag" : [ {
         "id" : 2,
-        "tagName" : "#javascript"
+        "hashTagName" : "#javascript"
       }, {
         "id" : 14,
-        "tagName" : "#react"
+        "hashTagName" : "#react"
       } ],
-      "askedAt" : "2023-05-09 16:53",
+      "askedAt" : "2023-05-09 18:12",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/98"
@@ -1042,12 +1042,12 @@ Content-Length: 4242
       },
       "hashTag" : [ {
         "id" : 31,
-        "tagName" : "#mysql"
+        "hashTagName" : "#mysql"
       }, {
         "id" : 7,
-        "tagName" : "#database"
+        "hashTagName" : "#database"
       } ],
-      "askedAt" : "2023-05-09 16:53",
+      "askedAt" : "2023-05-09 18:12",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/97"
@@ -1067,7 +1067,7 @@ Content-Length: 4242
       "href" : "https://www.bad-request.kr/api/v2/questions"
     }, {
       "rel" : "NEXT DATA",
-      "href" : "https://www.bad-request.kr/api/v2/questions?lastIndex=97"
+      "href" : "https://www.bad-request.kr/api/v2/questions?lastOfIndex=97"
     }, {
       "rel" : "increase or decrease data size",
       "href" : "https://www.bad-request.kr/api/v2/questions?size=13"
@@ -1288,7 +1288,7 @@ Content-Length: 4242
 <td class="tableblock halign-left valign-top"><p class="tableblock">해시태그 식별아이디</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.results.[0].hashTag.[0].tagName</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.results.[0].hashTag.[0].hashTagName</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">해시태그네임</p></td>
 </tr>

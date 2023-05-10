@@ -32,14 +32,18 @@ public class QuestionServiceImpl implements QuestionService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public QuestionResponse.Create creteQuestion(Long memberId, Authority authority, QuestionRequest.CreateForm form) {
+    public QuestionResponse.Create creteQuestion(Long memberId, QuestionRequest.CreateForm form) {
         log.info("질문 생성 시작");
 
         if (form.getTags() == null || form.getTags().size() < 1) {
             throw new IllegalArgumentException("태그는 1개이상 등록해야됨");
         }
 
-        Member member = memberRepository.findByIdAndAuthority(memberId, authority)
+        if (form.getTags().size() > 5) {
+            throw new IllegalArgumentException("태그는 최대 5개 까지 등록할수 있다");
+        }
+
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new IllegalArgumentException(""));
 
         Question question = Question.createQuestion()

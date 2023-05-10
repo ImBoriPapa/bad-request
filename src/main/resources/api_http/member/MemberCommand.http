@@ -76,6 +76,10 @@ GET http://localhost:8080/api/v2/members/1/loggedInMember
 Content-Type: application/json
 Authorization: {{access_token}}
 
+### 인증 코드로 로그인
+POST http://localhost:8080/api/v2/login/authentication-code?code=fcb6e0ad-0d12-49b3-b8eb-7328937a0db4
+
+
 ### 질문 게시판 리스트 조회
 GET http://localhost:8080/api/v2/questions
 

@@ -1,19 +1,38 @@
-package com.study.badrequest.utils;
+package com.study.badrequest.utils.cookie;
 
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
+import org.springframework.http.ResponseCookie;
 import org.springframework.util.SerializationUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Optional;
 
-public class CookieFactory {
+import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
+import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 
+public class CookieFactory {
+    private static boolean secure;
     @Value("${cookie-status.secure}")
-    public boolean secure;
+    public void setSecure(boolean secure) {
+        CookieFactory.secure = secure;
+    }
+
+    public static ResponseCookie createRefreshTokenCookie(String refreshToken, long expiration) {
+
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + refreshToken)
+                .maxAge(Duration.ofMillis(expiration))
+                .path("/")
+                .secure(secure)
+                .sameSite("None")
+                .httpOnly(true)
+                .build();
+    }
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
@@ -30,9 +49,8 @@ public class CookieFactory {
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
-
         cookie.setPath("/");
-        cookie.setHttpOnly(false);
+        cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
     }

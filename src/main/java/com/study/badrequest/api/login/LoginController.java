@@ -4,27 +4,27 @@ import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ResponseForm;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
-import com.study.badrequest.domain.login.MemberPrincipal;
+
 import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;
-import com.study.badrequest.exception.custom_exception.MemberException;
+
 import com.study.badrequest.service.login.LoginService;
 
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.modelAssembler.LoginResponseModelAssembler;
-import io.lettuce.core.dynamic.annotation.Param;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 
 import static com.study.badrequest.commons.constants.ApiURL.*;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
@@ -39,29 +39,6 @@ public class LoginController {
     private final LoginService loginService;
     private final JwtUtils jwtUtils;
     private final LoginResponseModelAssembler modelAssembler;
-
-    @GetMapping(OAUTH2_LOGIN_SUCCESS_URL)
-    public ResponseEntity oauthLoginSuccess(@AuthenticationPrincipal MemberPrincipal memberPrincipal, HttpServletRequest request) {
-        log.info("Oauth 인증 성공 Jwt 토큰 요청 ID: {}", memberPrincipal.getMemberId());
-
-        LoginResponse.LoginDto loginDto = loginService.oauth2LoginProcessing(memberPrincipal, ipAddressResolver(request));
-
-        return ResponseEntity
-                .ok()
-                .headers(setAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie().toString()))
-                .body(new ResponseForm.Of<>(SUCCESS, loginDto));
-    }
-
-    @GetMapping(OAUTH2_LOGIN_FAILURE_URL)
-    public ResponseEntity oauthLoginFail(HttpServletRequest request, @Param("code") int code) {
-        log.info("ERROR: {}", code);
-
-        ApiResponseStatus apiResponseStatus = findCustomStatusByCode(code);
-
-        return ResponseEntity
-                .badRequest()
-                .body(new ResponseForm.Error<>(new MemberException(apiResponseStatus), request.getRequestURI()));
-    }
 
     @PostMapping(value = LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity login(@RequestBody LoginRequest.Login form, HttpServletRequest request) {
@@ -120,6 +97,16 @@ public class LoginController {
                 .ok()
                 .headers(headers)
                 .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, model));
+    }
+
+    @PostMapping("/api/v2/login/authentication-code")
+    public ResponseEntity loginByOneTimeAuthenticationCode(@RequestParam(name = "code") String code, HttpServletRequest request) {
+        log.info("일회용 코드로 로그인");
+        LoginResponse.LoginDto loginDto = loginService.loginByTemporaryAuthenticationCode(code, request.getRequestURI());
+
+        return ResponseEntity.ok()
+                .headers(setAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie().toString()))
+                .body(new ResponseForm.Of<>(SUCCESS, new LoginResponse.LoginResult(loginDto.getId(), loginDto.getAccessTokenExpired())));
     }
 
     private HttpHeaders setAuthenticationHeader(String accessToken, String cookie) {

@@ -16,7 +16,7 @@ import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_EMAI
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"},callSuper = false)
 @Table(name = "MEMBER", indexes = {
         @Index(name = "MEMBER_AUTHORITY_IDX", columnList = "AUTHORITY"),
         @Index(name = "MEMBER_DOMAIN_IDX", columnList = "DOMAIN_NAME")
@@ -57,8 +57,12 @@ public class Member extends DefaultTime {
     private MemberAccountStatus accountStatus;
     @Column(name = "TEMPORARY_PASSWORD_ISSUED_AT")
     private LocalDateTime temporaryPasswordIssuedAt;
+    @Column(name = "ONE_TIME_AUTHENTICATION_CODE")
+    private String oneTimeAuthenticationCode;
     @Column(name = "ACCEPT_EMAIL")
     private Boolean acceptEmail;
+    @Column(name = "ABLE_USE_TIME_AUTHENTICATION_CODE")
+    private Boolean ableUseOneTimeAuthenticationCode;
 
     @Builder
     public Member(String oauthId, Boolean isOauthLogin, OauthProvider oauthProvider, String email, String password, String contact, Authority authority, String ipAddress, MemberProfile memberProfile, MemberAccountStatus accountStatus, LocalDateTime temporaryPasswordIssuedAt) {
@@ -75,6 +79,16 @@ public class Member extends DefaultTime {
         this.accountStatus = accountStatus;
         this.temporaryPasswordIssuedAt = temporaryPasswordIssuedAt;
         this.acceptEmail = true;
+    }
+
+    public void useOneTimeAuthenticationCode() {
+        this.ableUseOneTimeAuthenticationCode = true;
+        this.oneTimeAuthenticationCode = "";
+    }
+
+    public String createOneTimeAuthenticationCode() {
+        this.ableUseOneTimeAuthenticationCode = false;
+        return this.oneTimeAuthenticationCode = UUID.randomUUID().toString();
     }
 
     public static Member createSelfRegisteredMember(String email, String password, String contact, MemberProfile memberProfile) {

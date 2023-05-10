@@ -21,9 +21,7 @@ public class ApiURL {
     public static final String LOGIN_URL = BASE_API_VERSION_URL + "/login";
     public static final String OAUTH2_LOGIN_URL = BASE_API_VERSION_URL + "/oauth/authorization";
     public static final String OAUTH2_REDIRECT_URL = BASE_API_VERSION_URL + "/oauth/client/*";
-    public static final String OAUTH2_LOGIN_SUCCESS_URL = BASE_API_VERSION_URL + "/oauth/login/success";
-    public static final String OAUTH2_LOGIN_FAILURE_URL = BASE_API_VERSION_URL + "/oauth/login/failure";
-    public static final String OAUTH2_LOGIN_FAILURE_WITH_CODE = OAUTH2_LOGIN_FAILURE_URL + "?code=";
+
     public static final String LOGOUT_URL = BASE_API_VERSION_URL + "/logout";
     public static final String REFRESH_TOKEN_URL = BASE_API_VERSION_URL + "/refresh";
     //Question

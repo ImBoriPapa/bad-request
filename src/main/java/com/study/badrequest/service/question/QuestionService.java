@@ -8,7 +8,7 @@ import com.study.badrequest.dto.question.QuestionResponse;
 
 public interface QuestionService {
 
-    QuestionResponse.Create creteQuestion(Long memberId, Authority authority, QuestionRequest.CreateForm form);
+    QuestionResponse.Create creteQuestion(Long memberId, QuestionRequest.CreateForm form);
     QuestionResponse.Modify modifyQuestion(Long memberId, Authority authority, Long questionId, QuestionRequest.ModifyForm form);
     QuestionResponse.Delete deleteQuestion(Long memberId, Authority authority, Long questionId);
     void incrementViewCount(Long questionId , ExposureStatus exposureStatus);
