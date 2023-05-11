@@ -16,11 +16,13 @@ public class ApiURL {
     public static final String PATCH_MEMBER_INTRODUCE = BASE_API_VERSION_URL + "/members/{memberId}/introduce";
     public static final String PATCH_MEMBER_PROFILE_IMAGE = BASE_API_VERSION_URL + "/members/{memberId}/profile-image";
     public static final String PATCH_MEMBER_PROFILE_IMAGE_TO_DEFAULT = BASE_API_VERSION_URL + "/members/{memberId}/default-image";
-    public static final String GET_LOGGED_IN_MEMBER_INFORMATION = BASE_API_VERSION_URL+"/members/{memberId}/logged";
+    public static final String GET_LOGGED_IN_MEMBER_INFORMATION = BASE_API_VERSION_URL + "/members/{memberId}/logged";
     //login
-    public static final String LOGIN_URL = BASE_API_VERSION_URL + "/login";
+    public static final String EMAIL_LOGIN_URL = BASE_API_VERSION_URL + "/login";
+    public static final String ONE_TIME_CODE_LOGIN = BASE_API_VERSION_URL + "/login/authentication-code";
     public static final String OAUTH2_LOGIN_URL = BASE_API_VERSION_URL + "/oauth/authorization";
     public static final String OAUTH2_REDIRECT_URL = BASE_API_VERSION_URL + "/oauth/client/*";
+
 
     public static final String LOGOUT_URL = BASE_API_VERSION_URL + "/logout";
     public static final String REFRESH_TOKEN_URL = BASE_API_VERSION_URL + "/refresh";

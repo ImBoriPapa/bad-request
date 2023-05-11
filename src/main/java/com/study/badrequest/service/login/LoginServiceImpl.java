@@ -32,6 +32,7 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_MATCH_ONE_TIME_CODE;
 import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_ONE_TIME_CODE;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 
@@ -49,7 +50,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public LoginResponse.LoginDto emailLoginProcessing(String email, String password, String ipAddress) {
+    public LoginResponse.LoginDto emailLogin(String email, String password, String ipAddress) {
         log.info("이메일 로그인 : {}", email);
         //이메일 확인
         Member member = memberRepository.findByEmailAndDomainName(email, Member.extractDomainFromEmail(email))
@@ -74,37 +75,31 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public LoginResponse.LoginDto loginByTemporaryAuthenticationCode(String code, String ipAddress) {
-
+    public LoginResponse.LoginDto oneTimeAuthenticationCodeLogin(String code, String ipAddress) {
+        log.info("1회용 인증 코드로 로그인 ");
         Member member = memberRepository.findByOneTimeAuthenticationCode(code)
-                .orElseThrow(() -> new MemberExceptionBasic(WRONG_ONE_TIME_CODE));
+                .orElseThrow(() -> new CustomRuntimeException(WRONG_ONE_TIME_CODE));
 
         if (!member.getOneTimeAuthenticationCode().equals(code)) {
             SecurityContextHolder.clearContext();
-            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+            throw new CustomRuntimeException(WRONG_ONE_TIME_CODE);
         }
 
         if (member.getAbleUseOneTimeAuthenticationCode()) {
             SecurityContextHolder.clearContext();
-            throw new IllegalArgumentException("만료된 인증 코드입니다. 사용하실 수 없습니다.");
+            throw new CustomRuntimeException(NOT_MATCH_ONE_TIME_CODE);
         }
 
         member.useOneTimeAuthenticationCode();
-
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
-        //RefreshToken 저장
-        RefreshToken refreshToken = storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto);
-
+        
         member.setLastLoginIP(ipAddress);
 
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
+        //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
-        //응답 객체 생성
-        return LoginResponse.LoginDto.builder()
-                .id(member.getId())
-                .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(CookieFactory.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
-                .loggedIn(tokenDto.getAccessTokenExpiredAt())
-                .build();
+
+        return createLoginDto(member, tokenDto, storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto));
+
     }
 
     @Override

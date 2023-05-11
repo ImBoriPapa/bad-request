@@ -6,7 +6,6 @@ import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.utils.cookie.CookieFactory;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
 import org.junit.jupiter.api.DisplayName;
@@ -16,16 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -72,10 +67,36 @@ class LoginServiceImplTest {
         when(memberRepository.findByEmailAndDomainName(any(), any())).thenReturn(Optional.of(member));
         when(jwtUtils.generateJwtTokens(any())).thenReturn(tokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
-        LoginResponse.LoginDto loginDto = loginService.emailLoginProcessing(email, password, ipAddress);
+        LoginResponse.LoginDto loginDto = loginService.emailLogin(email, password, ipAddress);
         //then
-        verify(memberRepository).findByEmailAndDomainName(email,Member.extractDomainFromEmail(email));
+        verify(memberRepository).findByEmailAndDomainName(email, Member.extractDomainFromEmail(email));
     }
 
+    @Test
+    @DisplayName("1회용 인증 코드로 로그인")
+    void oneTimeCodeLoginTest() throws Exception {
+        //given
+        Member member = Member.builder()
+                .email("email@email.com")
+                .authority(Authority.MEMBER)
+                .build();
+        member.createOneTimeAuthenticationCode();
 
+        TokenDto tokenDto = new TokenDto("accessToken", "refreshToken", LocalDateTime.now().plusMinutes(10), 60480000L);
+
+        RefreshToken tokenEntity = RefreshToken.createRefresh()
+                .username(member.getUsername())
+                .token(tokenDto.getAccessToken())
+                .authority(member.getAuthority())
+                .expiration(tokenDto.getRefreshTokenExpirationMill())
+                .build();
+        //when
+        when(memberRepository.findByOneTimeAuthenticationCode(any())).thenReturn(Optional.of(member));
+        when(jwtUtils.generateJwtTokens(any())).thenReturn(tokenDto);
+        when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
+
+        loginService.oneTimeAuthenticationCodeLogin(member.getOneTimeAuthenticationCode(), "ipAddress");
+        //then
+
+    }
 }

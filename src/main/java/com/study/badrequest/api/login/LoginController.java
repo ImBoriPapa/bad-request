@@ -44,7 +44,7 @@ public class LoginController {
     private final JwtUtils jwtUtils;
     private final LoginModelAssembler modelAssembler;
 
-    @PostMapping(value = LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = EMAIL_LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity loginByEmail(@RequestBody @Validated LoginRequest.Login form,
                                        HttpServletRequest request,
                                        BindingResult bindingResult) {
@@ -54,7 +54,7 @@ public class LoginController {
             throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
         }
 
-        LoginResponse.LoginDto dto = loginService.emailLoginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
+        LoginResponse.LoginDto dto = loginService.emailLogin(form.getEmail(), form.getPassword(), ipAddressResolver(request));
 
         EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(dto.getId(), dto.getLoggedIn()));
 
@@ -64,7 +64,6 @@ public class LoginController {
     }
 
     @PostMapping(value = LOGOUT_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-
     public ResponseEntity logout(HttpServletRequest request, @CookieValue(value = "refresh_token", required = false) Cookie cookie) {
 
         String accessToken = resolveAccessToken(request);
@@ -102,16 +101,16 @@ public class LoginController {
                 .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, model));
     }
 
-    @PostMapping("/api/v2/login/authentication-code")
+    @PostMapping(value = ONE_TIME_CODE_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity loginByOneTimeAuthenticationCode(@RequestParam(name = "code") String code, HttpServletRequest request) {
         log.info("일회용 코드로 로그인");
-        LoginResponse.LoginDto loginDto = loginService.loginByTemporaryAuthenticationCode(code, request.getRequestURI());
+        LoginResponse.LoginDto loginDto = loginService.oneTimeAuthenticationCodeLogin(code, request.getRequestURI());
 
-        EntityModel<LoginResponse.LoginResult> loginResultEntityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getLoggedIn()));
+        EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getLoggedIn()));
 
         return ResponseEntity.ok()
                 .headers(createAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie()))
-                .body(new ResponseForm.Of<>(SUCCESS, loginResultEntityModel));
+                .body(new ResponseForm.Of<>(SUCCESS, entityModel));
     }
 
     private HttpHeaders createAuthenticationHeader(String accessToken, ResponseCookie cookie) {

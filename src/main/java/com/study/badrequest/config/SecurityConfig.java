@@ -66,7 +66,7 @@ public class SecurityConfig {
                 //REST Docs
                 .antMatchers("/docs/index.html").permitAll()
                 //login
-                .antMatchers("/", LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN_URL,"/api/v2/login/authentication-code")
+                .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN_URL,"/api/v2/login/authentication-code")
                 .permitAll()
                 //login by one time code
                 //oauth2

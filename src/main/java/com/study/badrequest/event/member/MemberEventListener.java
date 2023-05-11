@@ -24,8 +24,12 @@ public class MemberEventListener {
     private final NonMemberMailService nonMemberMailService;
     private final RecordServiceImpl recordService;
 
+    /**
+     * AFTER_COMMIT 설정이후 트랜젝션은 commit 안됨
+     * @Async 로 Thread 분리
+     */
 
-
+    @Async//Thread 나누기
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCreateEvent(MemberEventDto.Create dto) {
         log.info("회원 생성 이벤트 ");
@@ -61,8 +65,8 @@ public class MemberEventListener {
         recordService.recordMemberInformation(MemberRecordRequestMapper.eventDtoToMemberRecordRequest(dto));
     }
 
-    @Async
-    @EventListener
+    @Async//Thread 나누기
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleLoginEvent(MemberEventDto.Login dto) {
         log.info("회원 로그인 이벤트 ");
         recordService.recordMemberInformation(MemberRecordRequestMapper.eventDtoToMemberRecordRequest(dto));

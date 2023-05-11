@@ -20,8 +20,10 @@ import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_EMAI
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(name = "MEMBER", indexes = {
+        @Index(name = "MEMBER_USERNAME_IDX", columnList = "USER_NAME"),
         @Index(name = "MEMBER_AUTHORITY_IDX", columnList = "AUTHORITY"),
-        @Index(name = "MEMBER_DOMAIN_IDX", columnList = "DOMAIN_NAME")
+        @Index(name = "MEMBER_DOMAIN_IDX", columnList = "DOMAIN_NAME"),
+        @Index(name = "MEMBER_ONE_TIME_AUTHENTICATION_CODE_IDX", columnList = "ONE_TIME_AUTHENTICATION_CODE")
 })
 public class Member extends DefaultTime {
     @Id
@@ -122,10 +124,9 @@ public class Member extends DefaultTime {
     }
 
     public void setLastLoginIP(String ipAddress) {
-        if (ipAddress == null) {
-            this.ipAddress = "UN_KNOWN";
+        if (ipAddress != null) {
+            this.ipAddress = ipAddress;
         }
-        this.ipAddress = ipAddress;
     }
 
     public boolean updateOauthMember(String oauthId, String name) {
