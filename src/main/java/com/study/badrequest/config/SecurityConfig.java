@@ -142,7 +142,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
-        configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);
+        configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);//긴급 배포
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
 
