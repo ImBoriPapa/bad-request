@@ -42,20 +42,18 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
-
-
-
         MemberPrincipal principal = (MemberPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         String temporaryAuthenticationCode = loginService.getTemporaryAuthenticationCode(principal.getMemberId());
 
         String targetUrl = determineTargetUrl(request, response, authentication, temporaryAuthenticationCode);
 
+        clearAuthenticationAttributes(request, response);
+
         if (response.isCommitted()) {
             log.info("응답이 이미 커밋되었습니다.");
             return;
         }
-        clearAuthenticationAttributes(request, response);
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
@@ -67,6 +65,9 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if (redirectUrl.isPresent() && !isAuthorizedRedirectUri(redirectUrl.get())) {
             throw new IllegalArgumentException("리다이렉트 URI 안맞음");
         }
+
+        String url = redirectUrl.orElse(getDefaultTargetUrl());
+        log.info("URL IS: {}, {}",url,redirectUrl.isPresent());
 
         return UriComponentsBuilder
                 .fromUriString(redirectUrl.orElse(getDefaultTargetUrl()))

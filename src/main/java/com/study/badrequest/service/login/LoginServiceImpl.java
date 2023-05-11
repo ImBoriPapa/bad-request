@@ -91,7 +91,7 @@ public class LoginServiceImpl implements LoginService {
         }
 
         member.useOneTimeAuthenticationCode();
-        
+
         member.setLastLoginIP(ipAddress);
 
         TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
@@ -132,29 +132,44 @@ public class LoginServiceImpl implements LoginService {
     @Override
     @Transactional
     public LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken) {
-        log.info("reissueProcessing accessToken={}, refreshToken= {}", accessToken, refreshToken);
+        log.info("토큰 재발급 시작 accessToken={}, refreshToken= {}", accessToken, refreshToken);
         //1. 토큰 상태가 Access or Expired 가 아니면 exception
         throwExceptionIfTokenIsNotAccessOrExpired(accessToken, refreshToken);
 
         //2. Refresh 토큰이 존재하지 않으면 로그아웃 처리
-        RefreshToken refresh = findRefreshByAccessToken(accessToken);
+        RefreshToken refresh = redisRefreshTokenRepository.findById(jwtUtils.getUsernameInToken(accessToken))
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.ALREADY_LOGOUT));
 
         //3. 저장된 리프레시 토큰과 요청한 토큰을 비교
         compareRefreshTokenRequestedWithStored(refresh.getToken(), refreshToken);
 
         //4. 존재하는 회원인지 확인
-        MemberSimpleInformation loginInformation = findMemberInformation(refresh.getUsername(), refresh.getAuthority());
-
+        Member member = memberRepository.findMemberByUsername(jwtUtils.getUsernameInToken(accessToken))
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        //5. username 변경
+        member.replaceUsername();
         //6. 토큰 생성
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(loginInformation.getUsername());
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
 
         //7. 토큰 갱신
-        replaceRefreshToken(refresh, tokenDto);
+        redisRefreshTokenRepository.deleteById(refresh.getUsername());
+
+        RefreshToken token = RefreshToken.createRefresh()
+                .username(member.getUsername())
+                .memberId(member.getId())
+                .token(tokenDto.getRefreshToken())
+                .authority(member.getAuthority())
+                .expiration(tokenDto.getRefreshTokenExpirationMill())
+                .build();
+
+        RefreshToken savedRefreshToken = redisRefreshTokenRepository.save(token);
+        //8. 기존 인증정보 삭제
+        SecurityContextHolder.clearContext();
 
         return LoginResponse.LoginDto.builder()
-                .id(loginInformation.getId())
+                .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(CookieFactory.createRefreshTokenCookie(refresh.getToken(), refresh.getExpiration()))
+                .refreshCookie(CookieFactory.createRefreshTokenCookie(savedRefreshToken.getToken(), savedRefreshToken.getExpiration()))
                 .loggedIn(tokenDto.getAccessTokenExpiredAt())
                 .build();
     }
@@ -177,28 +192,11 @@ public class LoginServiceImpl implements LoginService {
                 .build();
     }
 
-    private RefreshToken findRefreshByAccessToken(String accessToken) {
-        return redisRefreshTokenRepository.findById(jwtUtils.getUsernameInToken(accessToken))
-                .orElseThrow(() -> new JwtAuthenticationExceptionBasic(ApiResponseStatus.ALREADY_LOGOUT));
-    }
-
 
     private void compareRequestedPasswordWithStored(String requestedPassword, String storedPassword) {
         if (!passwordEncoder.matches(requestedPassword, storedPassword)) {
             throw new BasicCustomException(ApiResponseStatus.LOGIN_FAIL);
         }
-    }
-
-    /**
-     * 회원 식별자, username, 권한 정보만 조회
-     * 조회시 권한정보로 인덱싱
-     */
-    private MemberSimpleInformation findMemberInformation(String username, Authority authority) {
-        log.info("findMemberInformation {}, {}", username, authority);
-
-        return memberRepository
-                .findByUsernameAndAuthority(username, authority)
-                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
     private RefreshToken storeRefreshToken(String username, Long memberId, Authority authority, TokenDto tokenDto) {
@@ -252,11 +250,6 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    @Transactional
-    public void replaceRefreshToken(RefreshToken refresh, TokenDto tokenDto) {
-        refresh.replaceToken(tokenDto.getRefreshToken(), tokenDto.getRefreshTokenExpirationMill());
-        redisRefreshTokenRepository.save(refresh);
-    }
 
     private void compareRefreshTokenRequestedWithStored(String StoredRefreshToken, String refreshToken) {
         if (!StoredRefreshToken.equals(refreshToken)) {

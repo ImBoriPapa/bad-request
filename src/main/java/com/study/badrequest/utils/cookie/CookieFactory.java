@@ -1,6 +1,7 @@
 package com.study.badrequest.utils.cookie;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.http.ResponseCookie;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
-
+@Slf4j
 public class CookieFactory {
     private static boolean secure;
     @Value("${cookie-status.secure}")
@@ -60,6 +61,7 @@ public class CookieFactory {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
+                    log.info("cookie name: {}",name);
                     cookie.setPath("/");
                     cookie.setValue("");
                     cookie.setMaxAge(0);
