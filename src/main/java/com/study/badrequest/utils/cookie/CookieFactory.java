@@ -25,7 +25,7 @@ public class CookieFactory {
 
     public static ResponseCookie createRefreshTokenCookie(String refreshToken, long expiration) {
 
-        return ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + refreshToken)
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE,refreshToken)
                 .maxAge(Duration.ofMillis(expiration))
                 .path("/")
                 .secure(secure)

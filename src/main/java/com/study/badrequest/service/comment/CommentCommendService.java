@@ -9,9 +9,9 @@ import com.study.badrequest.domain.comment.SubComment;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.comment.CommentRequest;
 import com.study.badrequest.dto.comment.CommentResponse;
-import com.study.badrequest.exception.custom_exception.BoardException;
-import com.study.badrequest.exception.custom_exception.CommentException;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.BoardExceptionBasic;
+import com.study.badrequest.exception.custom_exception.CommentExceptionBasic;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.board.BoardRepository;
 import com.study.badrequest.repository.comment.CommentRepository;
 import com.study.badrequest.repository.comment.SubCommentRepository;
@@ -40,11 +40,11 @@ public class CommentCommendService {
 
         Board board = boardRepository
                 .findById(boardId)
-                .orElseThrow(() -> new BoardException(ApiResponseStatus.NOT_FOUND_BOARD));
+                .orElseThrow(() -> new BoardExceptionBasic(ApiResponseStatus.NOT_FOUND_BOARD));
 
         Member member = memberRepository
                 .findMemberByUsername(username)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
 
         Comment comment = Comment
                 .createComment()
@@ -67,11 +67,11 @@ public class CommentCommendService {
     public CommentResponse.Modify modifyComment(Long commentId, String text) {
 
         commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentException(ApiResponseStatus.NOT_FOUND_COMMENT))
+                .orElseThrow(() -> new CommentExceptionBasic(ApiResponseStatus.NOT_FOUND_COMMENT))
                 .modify(text);
 
         // TODO: 2023/02/06 쿼리 최적화
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(() -> new CommentException(ApiResponseStatus.NOT_FOUND_COMMENT));
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(() -> new CommentExceptionBasic(ApiResponseStatus.NOT_FOUND_COMMENT));
 
         return new CommentResponse.Modify(findComment.getId(), findComment.getUpdatedAt());
     }
@@ -84,7 +84,7 @@ public class CommentCommendService {
     public CommentResponse.Delete deleteComment(Long commentId) {
         //댓글 조회
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentException(ApiResponseStatus.NOT_FOUND_COMMENT));
+                .orElseThrow(() -> new CommentExceptionBasic(ApiResponseStatus.NOT_FOUND_COMMENT));
 
         comment.getBoard().decreaseCommentCount();
 
@@ -105,7 +105,7 @@ public class CommentCommendService {
     public void deleteAllCommentsAndSubCommentsByBoardId(Long boardId) {
         Board board = boardRepository
                 .findById(boardId)
-                .orElseThrow(() -> new BoardException(ApiResponseStatus.NOT_FOUND_BOARD));
+                .orElseThrow(() -> new BoardExceptionBasic(ApiResponseStatus.NOT_FOUND_BOARD));
 
         subCommentRepository.deleteAllByBoard(board);
 
@@ -120,11 +120,11 @@ public class CommentCommendService {
     public CommentResponse.CreateSub addSubComment(Long commentId, String username, CommentRequest.Create request) {
 
         Member member = memberRepository.findMemberByUsername(username)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
 
         Comment findComment = commentRepository
                 .findById(commentId)
-                .orElseThrow(() -> new BoardException(ApiResponseStatus.NOT_FOUND_BOARD));
+                .orElseThrow(() -> new BoardExceptionBasic(ApiResponseStatus.NOT_FOUND_BOARD));
 
         SubComment subComment = SubComment
                 .CreateSubComment()
@@ -145,10 +145,10 @@ public class CommentCommendService {
     @CustomLogTracer
     public CommentResponse.ModifySub modifySubComment(Long subCommentId, String text) {
         subCommentRepository.findById(subCommentId)
-                .orElseThrow(() -> new CommentException(ApiResponseStatus.NOT_FOUND_COMMENT))
+                .orElseThrow(() -> new CommentExceptionBasic(ApiResponseStatus.NOT_FOUND_COMMENT))
                 .modify(text);
 
-        SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(() -> new CommentException(ApiResponseStatus.NOT_FOUND_SUB_COMMENT));
+        SubComment subComment = subCommentRepository.findById(subCommentId).orElseThrow(() -> new CommentExceptionBasic(ApiResponseStatus.NOT_FOUND_SUB_COMMENT));
 
         return new CommentResponse.ModifySub(subComment.getId(), subComment.getUpdatedAt());
     }
@@ -156,7 +156,7 @@ public class CommentCommendService {
     @CustomLogTracer
     public CommentResponse.DeleteSub deleteSubComment(Long subCommentId) {
         SubComment subComment = subCommentRepository.findById(subCommentId)
-                .orElseThrow(() -> new CommentException(ApiResponseStatus.NOT_FOUND_SUB_COMMENT));
+                .orElseThrow(() -> new CommentExceptionBasic(ApiResponseStatus.NOT_FOUND_SUB_COMMENT));
 
         subComment.getBoard().decreaseCommentCount();
         subComment.getComment().decreaseSubCount();

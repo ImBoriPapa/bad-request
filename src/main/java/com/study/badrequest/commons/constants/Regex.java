@@ -5,6 +5,7 @@ import lombok.Getter;
 
 
 
+
 @Getter
 public class Regex {
     //숫자
@@ -17,5 +18,6 @@ public class Regex {
     public static final String KOR_ENG_NUMBER = "^[ㄱ-ㅎ|가-힣|a-z|A-Z|0-9|]+$";
     //비밀번호는 숫자,문자,특수문자 포함 8~15자리
     public static final String PASSWORD = "^.*(?=^.{8,15}$)(?=.*\\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$";
+
 
 }

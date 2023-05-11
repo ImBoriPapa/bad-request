@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ public class AuthenticationMailInformation implements Serializable {
 
     public void checkConfirmMail(String authenticationCode) {
         if (!this.authenticationCode.equals(authenticationCode)) {
-            throw new MemberException(ApiResponseStatus.WRONG_EMAIL_AUTHENTICATION_CODE);
+            throw new MemberExceptionBasic(ApiResponseStatus.WRONG_EMAIL_AUTHENTICATION_CODE);
         }
         this.isConfirmMail = true;
     }

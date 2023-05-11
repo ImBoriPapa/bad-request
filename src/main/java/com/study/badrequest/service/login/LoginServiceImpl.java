@@ -6,8 +6,11 @@ import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.event.member.MemberEventDto;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.BasicCustomException;
+import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
+import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
 import com.study.badrequest.repository.member.query.MemberSimpleInformation;
@@ -17,7 +20,7 @@ import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -29,6 +32,7 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_ONE_TIME_CODE;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 
 
@@ -38,28 +42,55 @@ import static com.study.badrequest.utils.authentication.AuthenticationFactory.ge
 @Transactional(readOnly = true)
 public class LoginServiceImpl implements LoginService {
     private final MemberRepository memberRepository;
-    private final com.study.badrequest.repository.login.redisRefreshTokenRepository redisRefreshTokenRepository;
+    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
-    @Value("${cookie-status.secure}")
-    private boolean isSecure;
-
 
     @Override
     @Transactional
-    public LoginResponse.LoginDto loginProcessing(String email, String password, String ipAddress) {
-        log.info("Start JWT Token Issue email: {}", email);
-
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.LOGIN_FAIL));
+    public LoginResponse.LoginDto emailLoginProcessing(String email, String password, String ipAddress) {
+        log.info("이메일 로그인 : {}", email);
+        //이메일 확인
+        Member member = memberRepository.findByEmailAndDomainName(email, Member.extractDomainFromEmail(email))
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.LOGIN_FAIL));
         //비밀번호 확인
-        comparePasswordRequestedWithStored(password, member.getPassword());
+        compareRequestedPasswordWithStored(password, member.getPassword());
         //이메일 인증 여부 확인
         member.checkConfirmedMail();
         //임시 비밀번호 여부 확인
         member.checkTemporaryPassword();
         //토큰 생성
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
+        //RefreshToken 저장
+        RefreshToken refreshToken = storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto);
+        //요청 IP 저장
+        member.setLastLoginIP(ipAddress);
+
+        eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
+
+        return createLoginDto(member, tokenDto, refreshToken);
+    }
+
+    @Override
+    @Transactional
+    public LoginResponse.LoginDto loginByTemporaryAuthenticationCode(String code, String ipAddress) {
+
+        Member member = memberRepository.findByOneTimeAuthenticationCode(code)
+                .orElseThrow(() -> new MemberExceptionBasic(WRONG_ONE_TIME_CODE));
+
+        if (!member.getOneTimeAuthenticationCode().equals(code)) {
+            SecurityContextHolder.clearContext();
+            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
+        }
+
+        if (member.getAbleUseOneTimeAuthenticationCode()) {
+            SecurityContextHolder.clearContext();
+            throw new IllegalArgumentException("만료된 인증 코드입니다. 사용하실 수 없습니다.");
+        }
+
+        member.useOneTimeAuthenticationCode();
+
         TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
         //RefreshToken 저장
         RefreshToken refreshToken = storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto);
@@ -72,7 +103,7 @@ public class LoginServiceImpl implements LoginService {
                 .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshCookie(CookieFactory.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
-                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
+                .loggedIn(tokenDto.getAccessTokenExpiredAt())
                 .build();
     }
 
@@ -98,7 +129,7 @@ public class LoginServiceImpl implements LoginService {
 
     private void throwExceptionIfTokenIsNotAccess(String accessToken) {
         if (jwtUtils.validateToken(accessToken) != JwtStatus.ACCESS) {
-            throw new JwtAuthenticationException(ApiResponseStatus.PERMISSION_DENIED);
+            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.PERMISSION_DENIED);
         }
     }
 
@@ -129,7 +160,7 @@ public class LoginServiceImpl implements LoginService {
                 .id(loginInformation.getId())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshCookie(CookieFactory.createRefreshTokenCookie(refresh.getToken(), refresh.getExpiration()))
-                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
+                .loggedIn(tokenDto.getAccessTokenExpiredAt())
                 .build();
     }
 
@@ -137,53 +168,29 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     public String getTemporaryAuthenticationCode(Long memberId) {
         log.info("일회용 인증 코드 생성");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
         return member.createOneTimeAuthenticationCode();
     }
 
-    @Override
-    @Transactional
-    public LoginResponse.LoginDto loginByTemporaryAuthenticationCode(String code, String ipAddress) {
-        Member member = memberRepository.findByOneTimeAuthenticationCode(code)
-                .orElseThrow(() -> new IllegalArgumentException("인증 정보를 찾을 수 없습니다. 다시 로그인해 주세요"));
 
-        if (!member.getOneTimeAuthenticationCode().equals(code)) {
-            SecurityContextHolder.clearContext();
-            throw new IllegalArgumentException("인증 코드가 일치하지 않습니다.");
-        }
-
-        if (member.getAbleUseOneTimeAuthenticationCode()) {
-            SecurityContextHolder.clearContext();
-            throw new IllegalArgumentException("만료된 인증 코드입니다. 사용하실 수 없습니다.");
-        }
-
-        member.useOneTimeAuthenticationCode();
-
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
-        //RefreshToken 저장
-        RefreshToken refreshToken = storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto);
-
-        member.setLastLoginIP(ipAddress);
-
-        eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
-        //응답 객체 생성
+    private LoginResponse.LoginDto createLoginDto(Member member, TokenDto tokenDto, RefreshToken refreshToken) {
         return LoginResponse.LoginDto.builder()
                 .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
                 .refreshCookie(CookieFactory.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
-                .accessTokenExpired(tokenDto.getAccessTokenExpiredAt())
+                .loggedIn(LocalDateTime.now())
                 .build();
     }
 
     private RefreshToken findRefreshByAccessToken(String accessToken) {
         return redisRefreshTokenRepository.findById(jwtUtils.getUsernameInToken(accessToken))
-                .orElseThrow(() -> new JwtAuthenticationException(ApiResponseStatus.ALREADY_LOGOUT));
+                .orElseThrow(() -> new JwtAuthenticationExceptionBasic(ApiResponseStatus.ALREADY_LOGOUT));
     }
 
 
-    private void comparePasswordRequestedWithStored(String requestedPassword, String storedPassword) {
+    private void compareRequestedPasswordWithStored(String requestedPassword, String storedPassword) {
         if (!passwordEncoder.matches(requestedPassword, storedPassword)) {
-            throw new MemberException(ApiResponseStatus.LOGIN_FAIL);
+            throw new BasicCustomException(ApiResponseStatus.LOGIN_FAIL);
         }
     }
 
@@ -196,17 +203,11 @@ public class LoginServiceImpl implements LoginService {
 
         return memberRepository
                 .findByUsernameAndAuthority(username, authority)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
-    /**
-     * 리프레시 토큰 저장
-     * Redis
-     *
-     * @return RefreshToken
-     */
     private RefreshToken storeRefreshToken(String username, Long memberId, Authority authority, TokenDto tokenDto) {
-        log.info("refresh token save");
+        log.info("Refresh Token 저장");
         RefreshToken refreshToken = RefreshToken.createRefresh()
                 .username(username)
                 .memberId(memberId)
@@ -223,7 +224,7 @@ public class LoginServiceImpl implements LoginService {
 
     private Member replaceUsername(String username) {
         Member member = memberRepository.findMemberByUsername(username)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
         member.replaceUsername();
         return member;
     }
@@ -236,23 +237,23 @@ public class LoginServiceImpl implements LoginService {
     private void checkIsLogout(String username) {
         //Refresh Token 이 없다면 인증기간 만료로 인한 로그아웃
         if (!redisRefreshTokenRepository.existsById(username)) {
-            throw new JwtAuthenticationException(ApiResponseStatus.ALREADY_LOGOUT);
+            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.ALREADY_LOGOUT);
         }
     }
 
     private void throwExceptionIfTokenIsNotAccessOrExpired(String accessToken, String refreshToken) {
         JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
         if (accessStatus == JwtStatus.DENIED || accessStatus == JwtStatus.ERROR) {
-            throw new JwtAuthenticationException(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_DENIED);
         }
 
         JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
         if (refreshStatus == JwtStatus.DENIED || refreshStatus == JwtStatus.ERROR) {
-            throw new JwtAuthenticationException(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_DENIED);
         }
 
         if (refreshStatus == JwtStatus.EXPIRED) {
-            throw new JwtAuthenticationException(ApiResponseStatus.TOKEN_IS_EXPIRED);
+            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_EXPIRED);
         }
     }
 
@@ -264,7 +265,7 @@ public class LoginServiceImpl implements LoginService {
 
     private void compareRefreshTokenRequestedWithStored(String StoredRefreshToken, String refreshToken) {
         if (!StoredRefreshToken.equals(refreshToken)) {
-            throw new JwtAuthenticationException(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_DENIED);
         }
     }
 

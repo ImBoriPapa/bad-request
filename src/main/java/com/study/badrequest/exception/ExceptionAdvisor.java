@@ -1,9 +1,9 @@
 package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.response.ResponseForm;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
-import com.study.badrequest.exception.custom_exception.MemberException;
-import com.study.badrequest.exception.custom_exception.TokenException;
+import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
+import com.study.badrequest.exception.custom_exception.TokenExceptionBasic;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +25,14 @@ public class ExceptionAdvisor {
         return ResponseEntity.badRequest().body(error);
     }
 
+    @ExceptionHandler(CustomRuntimeException.class)
+    public final ResponseEntity<ResponseForm.Error> customRuntimeException(HttpServletRequest request, CustomRuntimeException e) {
+        log.info("ExceptionAdvisor CustomRuntimeException Exception status: {}, code: {}, message: {}",e.getStatus(),e.getStatus().getCode(),e.getStatus().getMessage());
 
+        return ResponseEntity
+                .status(e.getStatus().getHttpStatus())
+                .body(new ResponseForm.Error(e, request.getRequestURI()));
+    }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public final ResponseEntity illegalArgumentException(HttpServletRequest request, IllegalArgumentException e) {
@@ -36,32 +43,24 @@ public class ExceptionAdvisor {
         return ResponseEntity.badRequest().body(error);
     }
 
-    @ExceptionHandler(BasicException.class)
-    public final ResponseEntity basicException(HttpServletRequest request, BasicException e) {
-        log.info("[ExceptionAdvisor.basicException]");
-        ResponseForm.Error error = new ResponseForm.Error(e, request.getRequestURI());
-
-        return ResponseEntity.badRequest().body(error);
-    }
-
-    @ExceptionHandler(MemberException.class)
-    public final ResponseEntity memberException(HttpServletRequest request, MemberException e) {
+    @ExceptionHandler(MemberExceptionBasic.class)
+    public final ResponseEntity memberException(HttpServletRequest request, MemberExceptionBasic e) {
         log.info("[ExceptionAdvisor.memberException]");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ResponseForm.Error(e, request.getRequestURI()));
     }
 
-    @ExceptionHandler(JwtAuthenticationException.class)
-    public final ResponseEntity jwtAuthenticationException(HttpServletRequest request, JwtAuthenticationException e) {
+    @ExceptionHandler(JwtAuthenticationExceptionBasic.class)
+    public final ResponseEntity jwtAuthenticationException(HttpServletRequest request, JwtAuthenticationExceptionBasic e) {
         log.info("[ExceptionAdvisor.jwtAuthenticationException]");
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
                 .body(new ResponseForm.Error(e, request.getRequestURI()));
     }
 
-    @ExceptionHandler(TokenException.class)
-    public final ResponseEntity tokenException(HttpServletRequest request, TokenException e) {
+    @ExceptionHandler(TokenExceptionBasic.class)
+    public final ResponseEntity tokenException(HttpServletRequest request, TokenExceptionBasic e) {
         log.info("[ExceptionAdvisor.tokenException]");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

@@ -7,36 +7,36 @@ import org.springframework.validation.BindingResult;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BasicException extends RuntimeException {
+public class BasicCustomException extends RuntimeException {
 
-    public BasicException() {
+    public BasicCustomException() {
     }
 
-    public BasicException(String message) {
+    public BasicCustomException(String message) {
         super(message);
     }
 
-    public BasicException(ApiResponseStatus status) {
+    public BasicCustomException(ApiResponseStatus status) {
         super(status.getMessage());
-        this.status = status.name();
+        this.status = status;
         this.errorCode = status.getCode();
         this.errorMessage = List.of(status.getMessage());
     }
 
-    public BasicException(ApiResponseStatus status, BindingResult bindingResult) {
+    public BasicCustomException(ApiResponseStatus status, BindingResult bindingResult) {
         super(status.getMessage());
-        this.status = status.name();
+        this.status = status;
         this.errorCode = status.getCode();
         this.errorMessage = getErrorList(bindingResult);
     }
 
-    private String status;
+    private ApiResponseStatus status;
 
     private int errorCode;
 
     private List<String> errorMessage;
 
-    public String getStatus() {
+    public ApiResponseStatus getStatus() {
         return status;
     }
 

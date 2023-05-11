@@ -526,7 +526,7 @@ Content-Length: 334
   "message" : "요청에 성공했습니다.",
   "result" : {
     "email" : "member1@gmail.com",
-    "startedAt" : "2023-05-09 18:12",
+    "startedAt" : "2023-05-11 15:54",
     "expiredIn" : 500,
     "links" : [ {
       "rel" : "self",
@@ -681,7 +681,7 @@ Content-Length: 362
   "message" : "요청에 성공했습니다.",
   "result" : {
     "id" : 12324,
-    "createdAt" : "2023-05-09 18:12",
+    "createdAt" : "2023-05-11 15:54",
     "links" : [ {
       "rel" : "self",
       "href" : "https://www.bad-request.kr/api/v2/members"
@@ -763,9 +763,9 @@ Content-Length: 362
 <h3 id="_로그인한_회원_정보"><a class="link" href="#_로그인한_회원_정보">로그인한 회원 정보</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v2/members/2341/loggedInMember HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/v2/members/2341/logged HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer 635d378e-e5f2-4ff5-a093-fce2e04cb2b8
+Authorization: Bearer f53f84f8-4842-42e3-b5c5-b8a3ed8d8bee
 Host: www.bad-request.kr</code></pre>
 </div>
 </div>
@@ -791,7 +791,7 @@ Host: www.bad-request.kr</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 684
+Content-Length: 676
 
 {
   "status" : "SUCCESS",
@@ -805,7 +805,7 @@ Content-Length: 684
     "loggedInAs" : "GITHUB",
     "links" : [ {
       "rel" : "self",
-      "href" : "https://www.bad-request.kr/api/v2/members/2341/loggedInMember"
+      "href" : "https://www.bad-request.kr/api/v2/members/2341/logged"
     }, {
       "rel" : "get profile",
       "href" : "https://www.bad-request.kr/api/v2/members/2341/profile"
@@ -897,7 +897,199 @@ Content-Length: 684
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_bad_request_로그인"><a class="link" href="#_bad_request_로그인">Bad-Request 로그인</a></h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v2/login HTTP/1.1
+Content-Type: application/json
+Content-Length: 69
+Host: www.bad-request.kr
 
+{
+  "email" : "boriPapa@gmail.com",
+  "password" : "password1234!@"
+}</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_요청_필드_3"><a class="link" href="#_요청_필드_3">요청 필드</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드명</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+<th class="tableblock halign-left valign-top">생략가능</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>email</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이메일</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>password</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">비밀번호 - 숫자,문자,특수문자 포함 8~15자리</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>false</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect3">
+<h4 id="_응답_3"><a class="link" href="#_응답_3">응답</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Content-Type: application/json
+Authorization: Bearer Bearer access-token
+Set-Cookie: refresh_token=refresh-token; Path=/; Max-Age=604800; Expires=Thu, 18 May 2023 06:54:38 GMT; HttpOnly; SameSite=None
+Content-Length: 495
+
+{
+  "status" : "SUCCESS",
+  "code" : 1000,
+  "message" : "요청에 성공했습니다.",
+  "result" : {
+    "memberId" : 523,
+    "loggedIn" : "2023-05-11 15:54",
+    "links" : [ {
+      "rel" : "login user information",
+      "href" : "https://www.bad-request.kr/api/v2/members/523/logged"
+    }, {
+      "rel" : "logout",
+      "href" : "https://www.bad-request.kr/api/v2/logout"
+    }, {
+      "rel" : "reIssue token",
+      "href" : "https://www.bad-request.kr/api/v2/refresh"
+    } ]
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_헤더"><a class="link" href="#_응답_헤더">응답 헤더</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Access Token</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Set-Cookie</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Refresh Token</p></td>
+</tr>
+</tbody>
+</table>
+<div class="ulist">
+<ul>
+<li>
+<p>Authorization 헤더에는: Access Token(JWT) 응답합니다. 로그인 이후 요청에 Authorization 헤더에 access-token 으로 로그인을 식별</p>
+</li>
+<li>
+<p>Access Token 은 발급 후 10분 간 유지됩니다.</p>
+</li>
+<li>
+<p>Access Token 이 만료되면 refresh-token 쿠키를 포함해서 토큰을 재발급할 수 있습니다.</p>
+</li>
+<li>
+<p>refresh-token 쿠키의 Refresh 토큰은 일주일간 유지됩니다.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_응답_필드_4"><a class="link" href="#_응답_필드_4">응답 필드</a></h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">필드</th>
+<th class="tableblock halign-left valign-top">타입</th>
+<th class="tableblock halign-left valign-top">설명</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>status</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 상태</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>code</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 코드</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">응답 메시지</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.memberId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">회원 식별 아이디</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.loggedIn</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인 시간</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links.[0].rel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그인한 회원 정보 요청</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links.[0].href</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links.[1].rel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">로그아웃 요청</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links.[1].href</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links.[2].rel</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">토큰 재발급 요청</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>result.links.[2].href</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">url</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_oauth2_로그인"><a class="link" href="#_oauth2_로그인">Oauth2 로그인</a></h3>
@@ -905,17 +1097,56 @@ Content-Length: 684
 <dl>
 <dt class="hdlist1">Google 로그인</dt>
 <dd>
-<p><a href="https://www.bad-request.kr/api/v2/oauth/client/google" class="bare">https://www.bad-request.kr/api/v2/oauth/client/google</a></p>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_uri=http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_uri=http://localhost:3000/redirect</a></p>
 </dd>
 <dt class="hdlist1">Kakao 로그인</dt>
 <dd>
-<p><a href="https://www.bad-request.kr/api/v2/oauth/client/kakao" class="bare">https://www.bad-request.kr/api/v2/oauth/client/kakao</a></p>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_uri=http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_uri=http://localhost:3000/redirect</a></p>
 </dd>
 <dt class="hdlist1">Github 로그인</dt>
 <dd>
-<p><a href="https://www.bad-request.kr/api/v2/oauth/client/github" class="bare">https://www.bad-request.kr/api/v2/oauth/client/github</a></p>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_uri=http:http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_uri=http:http://localhost:3000/redirect</a></p>
+</dd>
+<dt class="hdlist1">note</dt>
+<dd>
+<p>redirect_uri= 의 리다이렉트되기를 원하는 위치를 지정해야합니다.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>인증이 완료되면 리다이렉트 URL로 로그인(Access-Token,Refresh-Token)을 할 수 있는 일회용 인증 코드가 파라미터로 응답됩니다.</p>
+</li>
+<li>
+<p>일회용 인증 코드는 1회만 사용할 수 있습니다.</p>
+</li>
+</ul>
+</div>
 </dd>
 </dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="http" class="language-http hljs">http://localhost:3000/redirect?authentication-code=a5372ebf-5e56-4b78-9900-0b2b2520eff3</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>로그인 이후 Authorization 헤더에 Access-token 으로 인증 및 인가를 실행합니다.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhNTE1MzA3ZC00NmI5LTRhYmYtOTFlNS00YTgxYjY5ZTQzYTEiLCJleHAiOjE2ODM3Mjg0NzR9.cdQidJOe0xJpm9QpDSBi_efvPAXqC3OI1IQodVI6HSN5-VbOj1atLWof6nkdrz-Nyt8_vz1GVaKLiSXWPQlNEg</pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_이_후_일회용_인증_코드를_이용한_로그인_요청"><a class="link" href="#_이_후_일회용_인증_코드를_이용한_로그인_요청">이 후 일회용 인증 코드를 이용한 로그인 요청</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="http" class="language-http hljs">https://www.bad-request.kr/api/v2/login/authentication-code?code=a5372ebf-5e56-4b78-9900-0b2b2520eff3</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -935,7 +1166,7 @@ Host: www.bad-request.kr</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_3"><a class="link" href="#_응답_3">응답</a></h4>
+<h4 id="_응답_4"><a class="link" href="#_응답_4">응답</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
@@ -975,7 +1206,7 @@ Content-Length: 4268
         "id" : 34,
         "hashTagName" : "#spring"
       } ],
-      "askedAt" : "2023-05-09 18:12",
+      "askedAt" : "2023-05-11 15:54",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/99"
@@ -1011,7 +1242,7 @@ Content-Length: 4268
         "id" : 14,
         "hashTagName" : "#react"
       } ],
-      "askedAt" : "2023-05-09 18:12",
+      "askedAt" : "2023-05-11 15:54",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/98"
@@ -1047,7 +1278,7 @@ Content-Length: 4268
         "id" : 7,
         "hashTagName" : "#database"
       } ],
-      "askedAt" : "2023-05-09 18:12",
+      "askedAt" : "2023-05-11 15:54",
       "links" : [ {
         "rel" : "to detail",
         "href" : "https://www.bad-request.kr/api/v2/questions/97"
@@ -1087,7 +1318,7 @@ Content-Length: 4268
 </div>
 </div>
 <div class="sect3">
-<h4 id="_응답_필드_4"><a class="link" href="#_응답_필드_4">응답 필드</a></h4>
+<h4 id="_응답_필드_5"><a class="link" href="#_응답_필드_5">응답 필드</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1425,7 +1656,7 @@ Host: www.bad-request.kr</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 1.0.0-PROD<br>
-Last updated 2023-05-09 16:48:09 +0900
+Last updated 2023-05-11 15:47:08 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

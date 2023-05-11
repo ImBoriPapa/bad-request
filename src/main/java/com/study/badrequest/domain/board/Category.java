@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.board;
 
 
-import com.study.badrequest.exception.custom_exception.RequestParamException;
+import com.study.badrequest.exception.custom_exception.RequestParamExceptionBasic;
 import lombok.Getter;
 import org.springframework.util.StringUtils;
 
@@ -34,6 +34,6 @@ public enum Category {
             }
         }
 
-        throw new RequestParamException(NOT_EXIST_CATEGORY);
+        throw new RequestParamExceptionBasic(NOT_EXIST_CATEGORY);
     }
 }

@@ -4,14 +4,10 @@ package com.study.badrequest.repository.member;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.dto.member.MemberSearchCondition;
 
-import com.study.badrequest.exception.custom_exception.MemberException;
 import com.study.badrequest.repository.member.query.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

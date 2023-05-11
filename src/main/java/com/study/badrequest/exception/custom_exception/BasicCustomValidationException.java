@@ -1,18 +1,18 @@
 package com.study.badrequest.exception.custom_exception;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.exception.BasicCustomException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class JwtAuthenticationException extends BasicException {
-    public JwtAuthenticationException(String message) {
+public class BasicCustomValidationException extends BasicCustomException {
+    public BasicCustomValidationException(String message) {
         super(message);
     }
 
     @Override
-    public String getStatus() {
+    public ApiResponseStatus getStatus() {
         return super.getStatus();
     }
 
@@ -26,15 +26,15 @@ public class JwtAuthenticationException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public JwtAuthenticationException() {
+    public BasicCustomValidationException() {
         super();
     }
 
-    public JwtAuthenticationException(ApiResponseStatus status) {
+    public BasicCustomValidationException(ApiResponseStatus status) {
         super(status);
     }
 
-    public JwtAuthenticationException(ApiResponseStatus status, BindingResult bindingResult) {
+    public BasicCustomValidationException(ApiResponseStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

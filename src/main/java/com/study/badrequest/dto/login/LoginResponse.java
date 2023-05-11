@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.ResponseCookie;
 
-import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
@@ -21,7 +20,7 @@ public class LoginResponse {
         private String accessToken;
         private ResponseCookie refreshCookie;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-        private LocalDateTime accessTokenExpired;
+        private LocalDateTime loggedIn;
     }
 
     /**
@@ -36,7 +35,7 @@ public class LoginResponse {
     public static class LoginResult {
         private Long memberId;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-        private LocalDateTime accessTokenExpired;
+        private LocalDateTime loggedIn;
     }
 
     @Getter

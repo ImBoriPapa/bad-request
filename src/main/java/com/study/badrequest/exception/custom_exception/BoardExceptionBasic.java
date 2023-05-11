@@ -1,31 +1,31 @@
 package com.study.badrequest.exception.custom_exception;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.exception.BasicCustomException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class BoardException extends BasicException {
+public class BoardExceptionBasic extends BasicCustomException {
 
-    public BoardException() {
+    public BoardExceptionBasic() {
         super();
     }
 
-    public BoardException(String message) {
+    public BoardExceptionBasic(String message) {
         super(message);
     }
 
-    public BoardException(ApiResponseStatus status) {
+    public BoardExceptionBasic(ApiResponseStatus status) {
         super(status);
     }
 
-    public BoardException(ApiResponseStatus status, BindingResult bindingResult) {
+    public BoardExceptionBasic(ApiResponseStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 
     @Override
-    public String getStatus() {
+    public ApiResponseStatus getStatus() {
         return super.getStatus();
     }
 

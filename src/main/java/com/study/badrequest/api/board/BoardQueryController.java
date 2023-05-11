@@ -7,8 +7,7 @@ import com.study.badrequest.commons.response.ResponseForm;
 import com.study.badrequest.domain.board.Category;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.board.BoardSearchCondition;
-import com.study.badrequest.exception.custom_exception.BoardException;
-import com.study.badrequest.exception.custom_exception.RequestParamException;
+import com.study.badrequest.exception.custom_exception.BoardExceptionBasic;
 import com.study.badrequest.repository.board.query.BoardDetailDto;
 import com.study.badrequest.repository.board.query.BoardListDto;
 import com.study.badrequest.repository.board.BoardQueryRepository;
@@ -17,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
@@ -41,7 +38,7 @@ public class BoardQueryController {
         Optional<BoardDetailDto> boardDetail = boardQueryRepository.findBoardDetailByIdAndCategory(id, category);
 
         if (boardDetail.isEmpty()) {
-            throw new BoardException(ApiResponseStatus.NOT_FOUND_BOARD);
+            throw new BoardExceptionBasic(ApiResponseStatus.NOT_FOUND_BOARD);
         }
 
         EntityModel<BoardDetailDto> entityModel = boardResponseModelAssembler.toModel(boardDetail.get());

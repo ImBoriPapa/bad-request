@@ -1,31 +1,29 @@
-package com.study.badrequest.exception.custom_exception;
+package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.BasicException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class CommentException extends BasicException {
-
-    public CommentException() {
+public class CustomRuntimeException extends BasicCustomException{
+    public CustomRuntimeException() {
         super();
     }
 
-    public CommentException(String message) {
+    public CustomRuntimeException(String message) {
         super(message);
     }
 
-    public CommentException(ApiResponseStatus status) {
+    public CustomRuntimeException(ApiResponseStatus status) {
         super(status);
     }
 
-    public CommentException(ApiResponseStatus status, BindingResult bindingResult) {
+    public CustomRuntimeException(ApiResponseStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 
     @Override
-    public String getStatus() {
+    public ApiResponseStatus getStatus() {
         return super.getStatus();
     }
 

@@ -23,7 +23,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
 
         List<Link> links = List.of(
                 linkTo(methodOn(MemberApiController.class).createMember(null, null)).withSelfRel(),
-                linkTo(methodOn(LoginController.class).login(null, null)).withRel("Login")
+                linkTo(methodOn(LoginController.class).loginByEmail(null, null,null)).withRel("Login")
         );
 
         return createEntityModel(create, links);
@@ -79,7 +79,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
 
         List<Link> links = List.of(
                 linkTo(methodOn(MemberApiController.class).issueTemporaryPassword(null, null)).withSelfRel(),
-                linkTo(methodOn(LoginController.class).login(null, null)).withRel("Login")
+                linkTo(methodOn(LoginController.class).loginByEmail(null, null,null)).withRel("Login")
         );
 
         return createEntityModel(password, links);

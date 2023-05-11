@@ -41,11 +41,24 @@ include::{snippets}/member-loggedInInformation/response-fields.adoc[]
 
 === Bad-Request 로그인
 
+include::{snippets}/login-email/http-request.adoc[]
+include::{snippets}/login-email/request-fields.adoc[]
+==== 응답
+include::{snippets}/login-email/http-response.adoc[]
+==== 응답 헤더
+include::{snippets}/login-email/response-headers.adoc[]
+* Authorization 헤더에는: Access Token(JWT) 응답합니다. 로그인 이후 요청에 Authorization 헤더에 access-token 으로 로그인을 식별
+* Access Token 은 발급 후 10분 간 유지됩니다.
+* Access Token 이 만료되면 refresh-token 쿠키를 포함해서 토큰을 재발급할 수 있습니다.
+* refresh-token 쿠키의 Refresh 토큰은 일주일간 유지됩니다.
+
+include::{snippets}/login-email/response-fields.adoc[]
+
 === Oauth2 로그인
 
 Google 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_uri=http://localhost:3000/redirect
-Kakao 로그인:: https://www.bad-request.kr/api/v2/oauth/client/kakao?redirect_uri=http://localhost:3000/redirect
-Github 로그인:: https://www.bad-request.kr/api/v2/oauth/client/github?redirect_uri=http:http://localhost:3000/redirect
+Kakao 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_uri=http://localhost:3000/redirect
+Github 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_uri=http:http://localhost:3000/redirect
 note:: redirect_uri= 의 리다이렉트되기를 원하는 위치를 지정해야합니다.
 
 - 인증이 완료되면 리다이렉트 URL로 로그인(Access-Token,Refresh-Token)을 할 수 있는 일회용 인증 코드가 파라미터로 응답됩니다.
@@ -57,12 +70,13 @@ http://localhost:3000/redirect?authentication-code=a5372ebf-5e56-4b78-9900-0b2b2
 ----
 
 - 로그인 이후 Authorization 헤더에 Access-token 으로 인증 및 인가를 실행합니다.
+
 ----
 Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhNTE1MzA3ZC00NmI5LTRhYmYtOTFlNS00YTgxYjY5ZTQzYTEiLCJleHAiOjE2ODM3Mjg0NzR9.cdQidJOe0xJpm9QpDSBi_efvPAXqC3OI1IQodVI6HSN5-VbOj1atLWof6nkdrz-Nyt8_vz1GVaKLiSXWPQlNEg
 ----
 
-
 ==== 이 후 일회용 인증 코드를 이용한 로그인 요청
+
 [source,http]
 ----
 https://www.bad-request.kr/api/v2/login/authentication-code?code=a5372ebf-5e56-4b78-9900-0b2b2520eff3
@@ -107,6 +121,7 @@ https://www.bad-request.kr/api/v2/questions?lastOfIndex=97
 GET /api/v2/questions?sort=view HTTP/1.1
 Host: www.bad-request.kr
 ----
+
 - 조회수로 정렬시 다음 데이터를 불러오기 위해서는 lastOfView 를 사용해야 합니다.
 
 [source,http]
@@ -143,3 +158,4 @@ Host: www.bad-request.kr
 - isAnswered
 * true : 답변이완료된 질문 목록
 * false : 답변이 완료되지 않은 질문 목록
+

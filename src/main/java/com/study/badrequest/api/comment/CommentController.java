@@ -6,7 +6,7 @@ import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ResponseForm;
 import com.study.badrequest.dto.comment.CommentRequest;
 import com.study.badrequest.dto.comment.CommentResponse;
-import com.study.badrequest.exception.custom_exception.CommentException;
+import com.study.badrequest.exception.custom_exception.CommentExceptionBasic;
 import com.study.badrequest.service.comment.CommentCommendService;
 import com.study.badrequest.utils.modelAssembler.CommentResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class CommentController {
         existUsername(user);
 
         if (bindingResult.hasErrors()) {
-            throw new CommentException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
+            throw new CommentExceptionBasic(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
         }
 
         CommentResponse.Create create = commentCommendService.addComment(boardId, user.getUsername(), form);
@@ -63,7 +63,7 @@ public class CommentController {
                                       @RequestBody CommentRequest.Update form,
                                       BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new CommentException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
+            throw new CommentExceptionBasic(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
         }
 
         CommentResponse.Modify modifyComment = commentCommendService.modifyComment(commentId, form.getText());
@@ -131,7 +131,7 @@ public class CommentController {
      */
     private void existUsername(User user) {
         if (user.getUsername() == null || user.getUsername().equals("anonymousUser")) {
-            throw new CommentException(ApiResponseStatus.PERMISSION_DENIED);
+            throw new CommentExceptionBasic(ApiResponseStatus.PERMISSION_DENIED);
         }
     }
 }

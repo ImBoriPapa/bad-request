@@ -5,7 +5,7 @@ import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ResponseForm;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.MemberQueryRepository;
 import com.study.badrequest.repository.member.query.LoggedInMemberInformation;
 import com.study.badrequest.repository.member.query.MemberDetailDto;
@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.ApiURL.*;
 import static com.study.badrequest.commons.response.ApiResponseStatus.NOTFOUND_MEMBER;
@@ -44,7 +42,7 @@ public class MemberQueryApiController {
         restrictAccessIfNotYouAndAdmin(information.getId(), memberId, information.getAuthority());
 
         MemberDetailDto memberDetailDto = memberQueryRepository.findMemberDetail(memberId)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
 
         EntityModel<MemberDetailDto> entityModel = memberResponseModelAssembler.retrieveMemberModel(memberDetailDto);
 
@@ -60,11 +58,11 @@ public class MemberQueryApiController {
     public ResponseEntity getLoggedInInformation(@PathVariable Long memberId, @LoggedInMember CurrentLoggedInMember.Information information) {
 
         if (!memberId.equals(information.getId())) {
-            throw new MemberException(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
+            throw new MemberExceptionBasic(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
         }
 
         LoggedInMemberInformation memberInformation = memberQueryRepository.findLoggedInMemberInformation(information.getId())
-                .orElseThrow(() -> new MemberException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
 
         EntityModel<LoggedInMemberInformation> entityModel = EntityModel.of(memberInformation);
         entityModel.add(linkTo(methodOn(MemberQueryApiController.class).getLoggedInInformation(memberId, null)).withSelfRel());
@@ -89,7 +87,7 @@ public class MemberQueryApiController {
         log.info("프로필 조회 요청 memberId: {}", memberId);
 
         MemberProfileDto memberProfileDto = memberQueryRepository.findMemberProfileByMemberId(memberId)
-                .orElseThrow(() -> new MemberException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
 
         return ResponseEntity
                 .ok()

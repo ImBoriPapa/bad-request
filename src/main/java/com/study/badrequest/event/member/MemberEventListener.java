@@ -11,6 +11,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @Slf4j
@@ -22,8 +24,9 @@ public class MemberEventListener {
     private final NonMemberMailService nonMemberMailService;
     private final RecordServiceImpl recordService;
 
-    @Async
-    @EventListener
+
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleCreateEvent(MemberEventDto.Create dto) {
         log.info("회원 생성 이벤트 ");
         recordService.recordMemberInformation(MemberRecordRequestMapper.eventDtoToMemberRecordRequest(dto));

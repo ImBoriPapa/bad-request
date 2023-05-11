@@ -4,8 +4,8 @@ import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.event.member.MemberEventDto;
-import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.ImageFileUploadExceptionBasic;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.S3ImageUploader;
@@ -44,7 +44,7 @@ public class MemberProfileServiceImpl implements MemberProfileService{
 
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
     }
 
     /**
@@ -89,7 +89,7 @@ public class MemberProfileServiceImpl implements MemberProfileService{
         log.info("Start change Profile Image memberId: {}", memberId);
 
         if (image.getSize() > 500000) {
-            throw new ImageFileUploadException(TOO_BIG_PROFILE_IMAGE_SIZE);
+            throw new ImageFileUploadExceptionBasic(TOO_BIG_PROFILE_IMAGE_SIZE);
         }
 
         Member member = findMemberById(memberId);

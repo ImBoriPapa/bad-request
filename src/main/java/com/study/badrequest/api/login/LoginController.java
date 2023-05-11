@@ -8,18 +8,22 @@ import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;
 
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.service.login.LoginService;
 
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.utils.modelAssembler.LoginResponseModelAssembler;
+import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
@@ -38,25 +42,30 @@ import static com.study.badrequest.utils.jwt.JwtTokenResolver.resolveAccessToken
 public class LoginController {
     private final LoginService loginService;
     private final JwtUtils jwtUtils;
-    private final LoginResponseModelAssembler modelAssembler;
+    private final LoginModelAssembler modelAssembler;
 
     @PostMapping(value = LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity login(@RequestBody LoginRequest.Login form, HttpServletRequest request) {
+    public ResponseEntity loginByEmail(@RequestBody @Validated LoginRequest.Login form,
+                                       HttpServletRequest request,
+                                       BindingResult bindingResult) {
+        log.info("이메일 로그인 요청");
 
-        LoginResponse.LoginDto loginResult = loginService.loginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
+        if (bindingResult.hasErrors()) {
+            throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
+        }
 
-        EntityModel<LoginResponse.LoginResult> loginResultEntityModel = modelAssembler
-                .toModel(new LoginResponse.LoginResult(loginResult.getId(), loginResult.getAccessTokenExpired()));
+        LoginResponse.LoginDto dto = loginService.emailLoginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
 
-        return ResponseEntity
-                .ok()
-                .headers(setAuthenticationHeader(loginResult.getAccessToken(), loginResult.getRefreshCookie().toString()))
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, loginResultEntityModel));
+        EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(dto.getId(), dto.getLoggedIn()));
+
+        return ResponseEntity.ok()
+                .headers(createAuthenticationHeader(dto.getAccessToken(), dto.getRefreshCookie()))
+                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @PostMapping(value = LOGOUT_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 
-    public ResponseEntity logout(HttpServletRequest request, @CookieValue(value = "Refresh", required = false) Cookie cookie) {
+    public ResponseEntity logout(HttpServletRequest request, @CookieValue(value = "refresh_token", required = false) Cookie cookie) {
 
         String accessToken = resolveAccessToken(request);
 
@@ -73,25 +82,19 @@ public class LoginController {
     public ResponseEntity reIssue(
             @LoggedInMember CurrentLoggedInMember.Information information,
             HttpServletRequest request,
-            @CookieValue(value = "Refresh", required = false) Cookie cookie) {
+            @CookieValue(value = "refresh_token", required = false) Cookie cookie) {
 
         log.info("Information ID= {}, Authority= {}", information.getId(), information.getAuthority());
 
         String accessToken = resolveAccessToken(request);
 
-        jwtUtils.checkTokenIsEmpty(accessToken, ApiResponseStatus.TOKEN_IS_EMPTY);
+        LoginResponse.LoginDto result = loginService.reissueToken(accessToken, cookie.getValue());
 
-        String refreshToken = jwtUtils.resolveTokenInRefreshCookie(cookie);
+        modelAssembler.toModel(new LoginResponse.ReIssueResult(result.getId(), result.getLoggedIn()));
 
-        jwtUtils.checkTokenIsEmpty(refreshToken, ApiResponseStatus.REFRESH_COOKIE_IS_EMPTY);
+        EntityModel<LoginResponse.ReIssueResult> model = EntityModel.of(new LoginResponse.ReIssueResult(result.getId(), result.getLoggedIn()));
 
-        LoginResponse.LoginDto result = loginService.reissueToken(accessToken, refreshToken);
-
-        modelAssembler.toModel(new LoginResponse.ReIssueResult(result.getId(), result.getAccessTokenExpired()));
-
-        EntityModel<LoginResponse.ReIssueResult> model = EntityModel.of(new LoginResponse.ReIssueResult(result.getId(), result.getAccessTokenExpired()));
-
-        HttpHeaders headers = setAuthenticationHeader(result.getAccessToken(), result.getRefreshCookie().toString());
+        HttpHeaders headers = createAuthenticationHeader(result.getAccessToken(), result.getRefreshCookie());
 
         return ResponseEntity
                 .ok()
@@ -104,16 +107,18 @@ public class LoginController {
         log.info("일회용 코드로 로그인");
         LoginResponse.LoginDto loginDto = loginService.loginByTemporaryAuthenticationCode(code, request.getRequestURI());
 
+        EntityModel<LoginResponse.LoginResult> loginResultEntityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getLoggedIn()));
+
         return ResponseEntity.ok()
-                .headers(setAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie().toString()))
-                .body(new ResponseForm.Of<>(SUCCESS, new LoginResponse.LoginResult(loginDto.getId(), loginDto.getAccessTokenExpired())));
+                .headers(createAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie()))
+                .body(new ResponseForm.Of<>(SUCCESS, loginResultEntityModel));
     }
 
-    private HttpHeaders setAuthenticationHeader(String accessToken, String cookie) {
+    private HttpHeaders createAuthenticationHeader(String accessToken, ResponseCookie cookie) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(accessToken);
-        headers.set(HttpHeaders.SET_COOKIE, cookie);
+        headers.set(HttpHeaders.SET_COOKIE, cookie.toString());
         return headers;
     }
 

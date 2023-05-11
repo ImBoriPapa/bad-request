@@ -16,7 +16,7 @@ public class ApiURL {
     public static final String PATCH_MEMBER_INTRODUCE = BASE_API_VERSION_URL + "/members/{memberId}/introduce";
     public static final String PATCH_MEMBER_PROFILE_IMAGE = BASE_API_VERSION_URL + "/members/{memberId}/profile-image";
     public static final String PATCH_MEMBER_PROFILE_IMAGE_TO_DEFAULT = BASE_API_VERSION_URL + "/members/{memberId}/default-image";
-    public static final String GET_LOGGED_IN_MEMBER_INFORMATION = BASE_API_VERSION_URL+"/members/{memberId}/loggedInMember";
+    public static final String GET_LOGGED_IN_MEMBER_INFORMATION = BASE_API_VERSION_URL+"/members/{memberId}/logged";
     //login
     public static final String LOGIN_URL = BASE_API_VERSION_URL + "/login";
     public static final String OAUTH2_LOGIN_URL = BASE_API_VERSION_URL + "/oauth/authorization";

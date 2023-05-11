@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
+import com.study.badrequest.exception.custom_exception.ImageFileUploadExceptionBasic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,7 +114,7 @@ public class S3ImageUploader implements ImageUploader {
                             objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ImageFileUploadException(ApiResponseStatus.UPLOAD_FAIL_ERROR);
+            throw new ImageFileUploadExceptionBasic(ApiResponseStatus.UPLOAD_FAIL_ERROR);
         }
     }
 
@@ -160,7 +160,7 @@ public class S3ImageUploader implements ImageUploader {
     private void validateExtension(String originalFileName) {
         if (originalFileName.lastIndexOf(".") < 0) {
             log.info("[확장자가 없는 파일명={}]", originalFileName);
-            throw new ImageFileUploadException(ApiResponseStatus.WRONG_FILE_ERROR);
+            throw new ImageFileUploadExceptionBasic(ApiResponseStatus.WRONG_FILE_ERROR);
         }
     }
 
@@ -170,7 +170,7 @@ public class S3ImageUploader implements ImageUploader {
     private void validateIsSupportExtension(String ext) {
         if (Arrays.stream(SupportImageExtension.values())
                 .noneMatch(imageExtension -> imageExtension.getExtension().equals(ext))) {
-            throw new ImageFileUploadException(ApiResponseStatus.NOT_SUPPORT_ERROR);
+            throw new ImageFileUploadExceptionBasic(ApiResponseStatus.NOT_SUPPORT_ERROR);
         }
     }
 

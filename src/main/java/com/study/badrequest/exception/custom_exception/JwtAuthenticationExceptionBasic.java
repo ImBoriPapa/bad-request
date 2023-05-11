@@ -1,18 +1,18 @@
 package com.study.badrequest.exception.custom_exception;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.exception.BasicCustomException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class ImageFileUploadException extends BasicException {
-    public ImageFileUploadException(String message) {
+public class JwtAuthenticationExceptionBasic extends BasicCustomException {
+    public JwtAuthenticationExceptionBasic(String message) {
         super(message);
     }
 
     @Override
-    public String getStatus() {
+    public ApiResponseStatus getStatus() {
         return super.getStatus();
     }
 
@@ -26,15 +26,15 @@ public class ImageFileUploadException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public ImageFileUploadException() {
+    public JwtAuthenticationExceptionBasic() {
         super();
     }
 
-    public ImageFileUploadException(ApiResponseStatus status) {
+    public JwtAuthenticationExceptionBasic(ApiResponseStatus status) {
         super(status);
     }
 
-    public ImageFileUploadException(ApiResponseStatus status, BindingResult bindingResult) {
+    public JwtAuthenticationExceptionBasic(ApiResponseStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

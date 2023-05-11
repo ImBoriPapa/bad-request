@@ -7,8 +7,7 @@ import com.study.badrequest.commons.response.ResponseForm;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.board.BoardRequest;
 import com.study.badrequest.dto.board.BoardResponse;
-import com.study.badrequest.exception.custom_exception.CustomValidationException;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.BasicCustomValidationException;
 import com.study.badrequest.service.board.BoardCommandServiceImpl;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
 import com.study.badrequest.utils.validator.BoardValidator;
@@ -44,7 +43,7 @@ public class BoardController {
                                     BindingResult bindingResult) {
 
         if (bindingResult.hasErrors()) {
-            throw new CustomValidationException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
+            throw new BasicCustomValidationException(ApiResponseStatus.VALIDATION_ERROR, bindingResult);
         }
 
         BoardResponse.Create create = boardCommandService.create(information.getId(),information.getAuthority() ,form);

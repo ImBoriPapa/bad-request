@@ -9,8 +9,8 @@ import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.board.BoardRequest;
 import com.study.badrequest.dto.board.BoardResponse;
-import com.study.badrequest.exception.custom_exception.BoardException;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.BoardExceptionBasic;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.board.BoardRepository;
 import com.study.badrequest.repository.board.HashTagRepository;
 import com.study.badrequest.repository.member.MemberRepository;
@@ -108,7 +108,7 @@ public class BoardCommandServiceImpl implements BoardCommendService {
 
     private Board findBoardByBoardId(Long boardId) {
         return boardRepository.findById(boardId)
-                .orElseThrow(() -> new BoardException(ApiResponseStatus.NOT_FOUND_BOARD));
+                .orElseThrow(() -> new BoardExceptionBasic(ApiResponseStatus.NOT_FOUND_BOARD));
     }
 
     private Board saveBoard(Long memberId, Authority authority, BoardRequest.Create form) {
@@ -126,6 +126,6 @@ public class BoardCommandServiceImpl implements BoardCommendService {
 
     private Member findMemberByUser(Long memberId, Authority authority, ApiResponseStatus apiResponseStatus) {
         return memberRepository.findByIdAndAuthority(memberId, authority)
-                .orElseThrow(() -> new MemberException(apiResponseStatus));
+                .orElseThrow(() -> new MemberExceptionBasic(apiResponseStatus));
     }
 }

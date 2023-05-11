@@ -1,18 +1,19 @@
 package com.study.badrequest.exception.custom_exception;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.BasicException;
+import com.study.badrequest.exception.BasicCustomException;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
-public class TokenException extends BasicException {
-    public TokenException(String message) {
+public class RequestParamExceptionBasic extends BasicCustomException {
+
+    public RequestParamExceptionBasic(String message) {
         super(message);
     }
 
     @Override
-    public String getStatus() {
+    public ApiResponseStatus getStatus() {
         return super.getStatus();
     }
 
@@ -26,15 +27,15 @@ public class TokenException extends BasicException {
         return super.getErrorMessage();
     }
 
-    public TokenException() {
+    public RequestParamExceptionBasic() {
         super();
     }
 
-    public TokenException(ApiResponseStatus status) {
+    public RequestParamExceptionBasic(ApiResponseStatus status) {
         super(status);
     }
 
-    public TokenException(ApiResponseStatus status, BindingResult bindingResult) {
+    public RequestParamExceptionBasic(ApiResponseStatus status, BindingResult bindingResult) {
         super(status, bindingResult);
     }
 }

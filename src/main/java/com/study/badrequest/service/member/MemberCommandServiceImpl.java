@@ -7,7 +7,7 @@ import com.study.badrequest.domain.member.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.event.member.MemberEventDto;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.AuthenticationMailInformationRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploader;
@@ -66,7 +66,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     public MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String email) {
         log.info("Start issuing temporary passwords email: {}", email);
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberException(NOTFOUND_MEMBER));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
 
         final String temporaryPassword = UUID.randomUUID().toString();
 
@@ -83,7 +83,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Start send Authentication Email email: {}", email);
 
         if (memberRepository.existsByEmail(email)) {
-            throw new MemberException(DUPLICATE_EMAIL);
+            throw new MemberExceptionBasic(DUPLICATE_EMAIL);
         }
 
         AuthenticationMailInformation authenticationMailInformation = authenticationMailInformationRepository.save(new AuthenticationMailInformation(email));
@@ -120,7 +120,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Start Change Password processing => memberId: {}", memberId);
 
         if (form.getCurrentPassword().equals(form.getNewPassword())) {
-            throw new MemberException(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
+            throw new MemberExceptionBasic(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
         }
 
         Member member = findMemberById(memberId);
@@ -167,14 +167,14 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     private void validateForm(MemberRequestForm.SignUp form) {
 
         if (memberRepository.existsByEmail(form.getEmail())) {
-            throw new MemberException(DUPLICATE_EMAIL);
+            throw new MemberExceptionBasic(DUPLICATE_EMAIL);
         }
 
         ifDuplicateContactThrowException(form.getContact());
 
         AuthenticationMailInformation authenticationMailInformation = authenticationMailInformationRepository
                 .findById(form.getEmail())
-                .orElseThrow(() -> new MemberException(NOTFOUND_AUTHENTICATION_EMAIL));
+                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_AUTHENTICATION_EMAIL));
 
         authenticationMailInformation.checkConfirmMail(form.getAuthenticationCode());
 
@@ -182,20 +182,20 @@ public class MemberCommandServiceImpl implements MemberCommandService {
 
     private void ifDuplicateContactThrowException(String contact) {
         if (memberRepository.existsByContact(contact)) {
-            throw new MemberException(DUPLICATE_CONTACT);
+            throw new MemberExceptionBasic(DUPLICATE_CONTACT);
         }
     }
 
 
     public Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
     }
 
     //비밀번호 비교
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
-            throw new MemberException(WRONG_PASSWORD);
+            throw new MemberExceptionBasic(WRONG_PASSWORD);
         }
     }
 

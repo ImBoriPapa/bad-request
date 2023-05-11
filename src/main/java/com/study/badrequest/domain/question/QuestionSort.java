@@ -2,7 +2,7 @@ package com.study.badrequest.domain.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 
-import com.study.badrequest.exception.custom_exception.RequestParamException;
+import com.study.badrequest.exception.custom_exception.RequestParamExceptionBasic;
 import org.springframework.util.StringUtils;
 
 public enum QuestionSort {
@@ -22,6 +22,6 @@ public enum QuestionSort {
             }
         }
 
-        throw new RequestParamException(ApiResponseStatus.NOT_EXIST_SORT_VALUE);
+        throw new RequestParamExceptionBasic(ApiResponseStatus.NOT_EXIST_SORT_VALUE);
     }
 }

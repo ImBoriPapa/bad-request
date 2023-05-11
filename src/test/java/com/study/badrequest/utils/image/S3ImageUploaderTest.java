@@ -2,7 +2,7 @@ package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 
-import com.study.badrequest.exception.custom_exception.ImageFileUploadException;
+import com.study.badrequest.exception.custom_exception.ImageFileUploadExceptionBasic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +49,7 @@ class S3ImageUploaderTest {
         String folderName = "board";
         //when
         assertThatThrownBy(() -> imageUploader.uploadFile(noHasExtFile, folderName))
-                .isInstanceOf(ImageFileUploadException.class)
+                .isInstanceOf(ImageFileUploadExceptionBasic.class)
                 .hasMessage(WRONG_FILE_ERROR.getMessage());
         //then
     }
@@ -62,7 +62,7 @@ class S3ImageUploaderTest {
         String folderName = "board";
         //when
         assertThatThrownBy(() -> imageUploader.uploadFile(noHasExtFile, folderName))
-                .isInstanceOf(ImageFileUploadException.class)
+                .isInstanceOf(ImageFileUploadExceptionBasic.class)
                 .hasMessage(NOT_SUPPORT_ERROR.getMessage());
         //then
 

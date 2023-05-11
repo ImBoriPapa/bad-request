@@ -3,7 +3,7 @@ package com.study.badrequest.utils.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ResponseForm;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationException;
+import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,7 +34,7 @@ public class JwtAuthenticationFilterResponseFactory {
     }
 
     private ResponseForm.Error getErrorResponse(HttpServletRequest request, ApiResponseStatus status) {
-        return new ResponseForm.Error(new JwtAuthenticationException(status), request.getRequestURI());
+        return new ResponseForm.Error(new JwtAuthenticationExceptionBasic(status), request.getRequestURI());
 
     }
 

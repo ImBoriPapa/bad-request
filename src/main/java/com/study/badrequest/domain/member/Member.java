@@ -1,22 +1,24 @@
 package com.study.badrequest.domain.member;
 
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.OauthProvider;
 import com.study.badrequest.domain.record.DefaultTime;
-import com.study.badrequest.exception.custom_exception.MemberException;
+import com.study.badrequest.exception.BasicCustomException;
+import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_EMAIL_PATTERN;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"},callSuper = false)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(name = "MEMBER", indexes = {
         @Index(name = "MEMBER_AUTHORITY_IDX", columnList = "AUTHORITY"),
         @Index(name = "MEMBER_DOMAIN_IDX", columnList = "DOMAIN_NAME")
@@ -120,6 +122,9 @@ public class Member extends DefaultTime {
     }
 
     public void setLastLoginIP(String ipAddress) {
+        if (ipAddress == null) {
+            this.ipAddress = "UN_KNOWN";
+        }
         this.ipAddress = ipAddress;
     }
 
@@ -133,30 +138,32 @@ public class Member extends DefaultTime {
     }
 
     public static String extractDomainFromEmail(String email) {
-
+        if (email == null) {
+            throw new CustomRuntimeException(WRONG_EMAIL_PATTERN);
+        }
         String[] parts = email.split("@");
 
         if (parts.length != 2) {
-            throw new MemberException(WRONG_EMAIL_PATTERN);
+            throw new CustomRuntimeException(WRONG_EMAIL_PATTERN);
         }
         String[] domainParts = parts[1].split("\\.");
 
         if (domainParts.length < 2) {
-            throw new MemberException(WRONG_EMAIL_PATTERN);
+            throw new CustomRuntimeException(WRONG_EMAIL_PATTERN);
         }
         return domainParts[0];
     }
 
     public void checkConfirmedMail() {
         if (this.accountStatus == MemberAccountStatus.REQUIRED_MAIL_CONFIRMED) {
-            throw new MemberException(ApiResponseStatus.IS_NOT_CONFIRMED_MAIL);
+            throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
         }
     }
 
     public void checkTemporaryPassword() {
         if (this.accountStatus == MemberAccountStatus.PASSWORD_IS_TEMPORARY) {
             if (this.temporaryPasswordIssuedAt.plusHours(24).isAfter(LocalDateTime.now())) {
-                throw new MemberException(ApiResponseStatus.IS_EXPIRED_TEMPORARY_PASSWORD);
+                throw new CustomRuntimeException(IS_EXPIRED_TEMPORARY_PASSWORD);
             }
         }
     }

@@ -1,9 +1,10 @@
 package com.study.badrequest.utils.jwt;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.TokenException;
+import com.study.badrequest.exception.custom_exception.TokenExceptionBasic;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -115,19 +116,11 @@ public class JwtUtils {
                 .parseClaimsJws(token);
     }
 
-    /**
-     * 쿠키에 저장된 토큰 확인
-     */
-    public String resolveTokenInRefreshCookie(Cookie cookie) {
-        if (cookie != null && cookie.getValue() != null && cookie.getValue().startsWith(REFRESH_TOKEN_PREFIX)) {
-            log.info("[JWT_UTILS resolveRefreshCookie ={}]", cookie.getValue());
-            return cookie.getValue().substring(7);
-        }
-        return null;
-    }
+
 
     /**
      * 토큰에 저장된 토큰 만료 시간*
+     *
      * @Return LocalDateTime
      */
     public LocalDateTime getExpirationLocalDateTime(String token) {
@@ -160,9 +153,6 @@ public class JwtUtils {
     public String getUsernameInToken(String token) {
         return getClaimsJws(token).getBody().getSubject();
     }
-    public void checkTokenIsEmpty(String token, ApiResponseStatus status) {
-        if (token == null) {
-            throw new TokenException(status);
-        }
-    }
+
+
 }
