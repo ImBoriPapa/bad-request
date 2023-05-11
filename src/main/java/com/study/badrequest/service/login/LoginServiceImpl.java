@@ -96,7 +96,7 @@ public class LoginServiceImpl implements LoginService {
 
         TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
         //After Commit
-        eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
+        eventPublisher.publishEvent(new MemberEventDto.Login(member, "1회용 인증 코드 로그인", LocalDateTime.now()));
 
         return createLoginDto(member, tokenDto, storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto));
 
@@ -150,7 +150,6 @@ public class LoginServiceImpl implements LoginService {
         member.replaceUsername();
         //6. 토큰 생성
         TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
-
         //7. 토큰 갱신
         redisRefreshTokenRepository.deleteById(refresh.getUsername());
 

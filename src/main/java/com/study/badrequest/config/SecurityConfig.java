@@ -11,6 +11,7 @@ import com.study.badrequest.utils.authentication.Oauth2AuthenticationFailHandler
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -66,7 +67,7 @@ public class SecurityConfig {
                 //REST Docs
                 .antMatchers("/docs/index.html").permitAll()
                 //login
-                .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN_URL,"/api/v2/login/authentication-code")
+                .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, REFRESH_TOKEN_URL,ONE_TIME_CODE_LOGIN)
                 .permitAll()
                 //login by one time code
                 //oauth2
@@ -141,6 +142,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOriginPattern("*");
         configuration.addAllowedHeader("*");
+        configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowCredentials(true);
 

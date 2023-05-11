@@ -66,9 +66,6 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             throw new IllegalArgumentException("리다이렉트 URI 안맞음");
         }
 
-        String url = redirectUrl.orElse(getDefaultTargetUrl());
-        log.info("URL IS: {}, {}",url,redirectUrl.isPresent());
-
         return UriComponentsBuilder
                 .fromUriString(redirectUrl.orElse(getDefaultTargetUrl()))
                 .queryParam("authentication_code", temporaryCode)

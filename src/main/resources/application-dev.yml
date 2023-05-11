@@ -113,7 +113,7 @@ logging:
       file-name-pattern: "/Users/leechoongsub/desktop/log/test.log.%d{yyyy-MM-dd}.%i"
       max-file-size: 5MB
 oauth:
-  authorizedRedirectUris: http://localhost:3000
+  authorizedRedirectUris: http://localhost:8080
 
 cloud:
   aws:
