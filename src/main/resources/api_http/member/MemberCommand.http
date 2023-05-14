@@ -15,11 +15,11 @@ Content-Type: application/json
   "password": "member1!@#",
   "nickname": "nickname",
   "contact": "010-1214-234543",
-  "authenticationCode": "714411"
+  "authenticationCode": "149508"
 }
 
 ### 메일 인증
-PATCH http://localhost:8080/api/v2/members/1/email?authenticationCode=bffbedb2-be83-457e-976f-4c839d032b27
+PATCH http://localhost:8080/api/v2/members/1/email?authenticationCode=445773
 
 ### 임시비밀번호 발급
 POST http://localhost:8080/api/v2/members/temporary-password

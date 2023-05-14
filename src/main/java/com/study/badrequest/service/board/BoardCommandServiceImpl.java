@@ -125,7 +125,7 @@ public class BoardCommandServiceImpl implements BoardCommendService {
     }
 
     private Member findMemberByUser(Long memberId, Authority authority, ApiResponseStatus apiResponseStatus) {
-        return memberRepository.findByIdAndAuthority(memberId, authority)
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new MemberExceptionBasic(apiResponseStatus));
     }
 }

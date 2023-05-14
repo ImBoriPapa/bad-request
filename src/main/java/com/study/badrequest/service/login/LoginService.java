@@ -10,6 +10,6 @@ public interface LoginService {
     LoginResponse.LoginDto emailLogin(String email, String password, String ipAddress);
     LoginResponse.LogoutResult logoutProcessing(String accessToken, Cookie cookie);
     LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken);
-    String getTemporaryAuthenticationCode(Long memberId);
+    String getOneTimeAuthenticationCode(Long memberId);
     LoginResponse.LoginDto oneTimeAuthenticationCodeLogin(String temporaryCode, String ipAddress);
 }

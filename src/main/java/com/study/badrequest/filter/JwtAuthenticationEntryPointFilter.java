@@ -22,7 +22,6 @@ import static com.study.badrequest.commons.constants.JwtTokenHeader.JWT_STATUS_H
 @Slf4j
 public class JwtAuthenticationEntryPointFilter implements AuthenticationEntryPoint {
 
-
     private final JwtAuthenticationFilterResponseFactory jwtAuthenticationFilterResponseFactory;
     private final EnumMap<JwtStatus, ApiResponseStatus> jwtStatusEnumMap = new EnumMap<>(JwtStatus.class);
 

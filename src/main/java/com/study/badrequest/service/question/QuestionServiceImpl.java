@@ -92,7 +92,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new IllegalArgumentException("질문에 추천 혹은 비추천은 한개만 가능하다.");
         }
 
-        Member member = memberRepository.findByIdAndAuthority(memberId, authority).orElseThrow(() -> new IllegalArgumentException(""));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException(""));
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException(""));
 

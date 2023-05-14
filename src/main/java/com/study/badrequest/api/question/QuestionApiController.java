@@ -1,7 +1,7 @@
 package com.study.badrequest.api.question;
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.question.RecommendationKind;
@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -42,7 +41,7 @@ public class QuestionApiController {
 
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(SUCCESS, create));
+                .body(new ApiResponse.Success<>(SUCCESS, create));
     }
 
     @PostMapping("/api/v2/questions/{questionId}/recommendations")
@@ -54,7 +53,7 @@ public class QuestionApiController {
         QuestionResponse.Modify modify = questionService.createRecommendation(10L, Authority.MEMBER, questionId, kind);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(SUCCESS, modify));
+                .body(new ApiResponse.Success<>(SUCCESS, modify));
     }
 
     @DeleteMapping("/api/v2/questions/{questionId}/recommendations")
@@ -63,6 +62,6 @@ public class QuestionApiController {
         QuestionResponse.Modify modify = questionService.deleteRecommendation(10L, Authority.MEMBER, questionId);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(SUCCESS, modify));
+                .body(new ApiResponse.Success<>(SUCCESS, modify));
     }
 }

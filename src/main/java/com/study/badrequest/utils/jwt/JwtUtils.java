@@ -1,15 +1,11 @@
 package com.study.badrequest.utils.jwt;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.TokenExceptionBasic;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.Cookie;
 import java.security.Key;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,7 +14,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 
@@ -50,17 +45,16 @@ public class JwtUtils {
      * 토큰 생성 로직
      * 2023/03/07
      * - 토큰에 권한정보(Authority) 제거
-     * - 상수명 변경: ACCESS_TOKEN_LIFETIME_MIN -> ACCESS_TOKEN_LIFETIME_MINUTES, REFRESH_TOKEN_LIFE -> REFRESH_TOKEN_LIFE_DAYS
-     * <p>
-     * Username 으로 TokenDto 생성 후 반환
+     * 2023/05/12
+     * Username 으로 TokenDto 생성 후 반환 -> username -> changeableId
      */
-    public TokenDto generateJwtTokens(String username) {
+    public TokenDto generateJwtTokens(String changeableId) {
 
         log.info("[GENERATE ACCESS TOKEN]");
-        String accessToken = createToken(username, MINUTES, ACCESS_TOKEN_LIFETIME_MINUTES);
+        String accessToken = createToken(changeableId, MINUTES, ACCESS_TOKEN_LIFETIME_MINUTES);
 
         log.info("[GENERATE REFRESH TOKEN]");
-        String refreshToken = createToken(username, DAYS, REFRESH_TOKEN_LIFE_DAYS);
+        String refreshToken = createToken(changeableId, DAYS, REFRESH_TOKEN_LIFE_DAYS);
 
         return TokenDto.builder()
                 .accessToken(accessToken)
@@ -150,7 +144,7 @@ public class JwtUtils {
      * @param token
      * @return username
      */
-    public String getUsernameInToken(String token) {
+    public String getChangeableIdInToken(String token) {
         return getClaimsJws(token).getBody().getSubject();
     }
 

@@ -25,11 +25,10 @@ public class LoginRequest {
         private String password;
     }
 
-    public static class Logout{
-
-    }
-
-    private static class ReIssue{
-
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class LoginByOneTimeCode{
+        private String code;
     }
 }

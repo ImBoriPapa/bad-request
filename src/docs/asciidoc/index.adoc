@@ -82,12 +82,18 @@ NOTE:: 일회용 인증 코드로 로그인시 응답 받은 Access Token 으로
 include::{snippets}/login-oneTimeCode/http-request.adoc[]
 ==== 요청 파라미터
 
-include::{snippets}/login-oneTimeCode/request-parameters.adoc[]
-
 ==== 응답
 
 include::{snippets}/login-oneTimeCode/http-response.adoc[]
 include::{snippets}/login-oneTimeCode/response-fields.adoc[]
+
+=== 토큰 재발급
+include::{snippets}/login-reissue/http-request.adoc[]
+include::{snippets}/login-reissue/request-headers.adoc[]
+include::{snippets}/login-reissue/http-response.adoc[]
+include::{snippets}/login-reissue/response-headers.adoc[]
+include::{snippets}/login-reissue/response-fields.adoc[]
+
 
 == Questions
 

@@ -1,7 +1,7 @@
 package com.study.badrequest.api.question;
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.repository.question.query.*;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
@@ -34,7 +34,7 @@ public class QuestionQueryApiController {
 
         EntityModel<QuestionListResult> entityModel = questionModelAssembler.getQuestionListModel(result, searchCondition);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of(SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ApiResponse.Success(SUCCESS, entityModel));
     }
 
     @GetMapping("/api/v2/questions/tagged/{tagName}")
@@ -42,7 +42,7 @@ public class QuestionQueryApiController {
 
         QuestionListResult result = questionQueryRepository.findQuestionListByHashTag(null);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of(SUCCESS, result));
+        return ResponseEntity.ok().body(new ApiResponse.Success(SUCCESS, result));
     }
 
     @GetMapping("/api/v2/questions/{questionId}")
@@ -57,6 +57,6 @@ public class QuestionQueryApiController {
         Optional<QuestionDetail> detail = questionQueryRepository.findQuestionDetail(questionId, memberId);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(SUCCESS, detail));
+                .body(new ApiResponse.Success<>(SUCCESS, detail));
     }
 }

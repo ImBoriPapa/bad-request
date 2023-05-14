@@ -2,24 +2,26 @@ package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.RefreshToken;
-import com.study.badrequest.domain.member.Authority;
+
+import com.study.badrequest.domain.member.AuthenticationCode;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.event.member.MemberEventDto;
-import com.study.badrequest.exception.BasicCustomException;
+
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
+import com.study.badrequest.repository.login.AuthenticationCodeRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
-import com.study.badrequest.repository.member.query.MemberSimpleInformation;
 import com.study.badrequest.utils.cookie.CookieFactory;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
@@ -32,7 +34,7 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_MATCH_ONE_TIME_CODE;
+import static com.study.badrequest.commons.response.ApiResponseStatus.CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE;
 import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_ONE_TIME_CODE;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 
@@ -48,12 +50,14 @@ public class LoginServiceImpl implements LoginService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
 
+    private final AuthenticationCodeRepository authenticationCodeRepository;
+
     @Override
     @Transactional
     public LoginResponse.LoginDto emailLogin(String email, String password, String ipAddress) {
         log.info("이메일 로그인 : {}", email);
         //이메일 확인
-        Member member = memberRepository.findByEmailAndDomainName(email, Member.extractDomainFromEmail(email))
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.LOGIN_FAIL));
         //비밀번호 확인
         compareRequestedPasswordWithStored(password, member.getPassword());
@@ -62,9 +66,9 @@ public class LoginServiceImpl implements LoginService {
         //임시 비밀번호 여부 확인
         member.checkTemporaryPassword();
         //토큰 생성
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //RefreshToken 저장
-        RefreshToken refreshToken = storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto);
+        RefreshToken refreshToken = createNewRefreshToken(member, tokenDto);
         //요청 IP 저장
         member.setLastLoginIP(ipAddress);
 
@@ -77,28 +81,27 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     public LoginResponse.LoginDto oneTimeAuthenticationCodeLogin(String code, String ipAddress) {
         log.info("1회용 인증 코드로 로그인 ");
-        Member member = memberRepository.findByOneTimeAuthenticationCode(code)
-                .orElseThrow(() -> new CustomRuntimeException(WRONG_ONE_TIME_CODE));
 
-        if (!member.getOneTimeAuthenticationCode().equals(code)) {
-            SecurityContextHolder.clearContext();
+        Optional<AuthenticationCode> optionalAuthenticationCode = authenticationCodeRepository.findByCode(code);
+
+        if (optionalAuthenticationCode.isEmpty()) {
             throw new CustomRuntimeException(WRONG_ONE_TIME_CODE);
         }
 
-        if (member.getAbleUseOneTimeAuthenticationCode()) {
-            SecurityContextHolder.clearContext();
-            throw new CustomRuntimeException(NOT_MATCH_ONE_TIME_CODE);
-        }
+        AuthenticationCode authenticationCode = optionalAuthenticationCode.get();
 
-        member.useOneTimeAuthenticationCode();
-
+        Member member = memberRepository.findById(authenticationCode.getMember().getId())
+                .orElseThrow(() -> new CustomRuntimeException(CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE));
         member.setLastLoginIP(ipAddress);
 
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+
+        authenticationCodeRepository.deleteById(authenticationCode.getId());
+
         //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member, "1회용 인증 코드 로그인", LocalDateTime.now()));
 
-        return createLoginDto(member, tokenDto, storeRefreshToken(member.getUsername(), member.getId(), member.getAuthority(), tokenDto));
+        return createLoginDto(member, tokenDto, createNewRefreshToken(member, tokenDto));
 
     }
 
@@ -107,15 +110,14 @@ public class LoginServiceImpl implements LoginService {
     public LoginResponse.LogoutResult logoutProcessing(String accessToken, Cookie cookie) {
         log.info("logoutProcessing accessToken= {}", accessToken);
 
-        String username = jwtUtils.getUsernameInToken(accessToken);
+        String changeAbleId = jwtUtils.getChangeableIdInToken(accessToken);
 
         throwExceptionIfTokenIsNotAccess(accessToken);
 
-        removeRefreshToken(username);
+        redisRefreshTokenRepository.deleteById(changeAbleId);
 
-        removeSpringSecuritySession();
-
-        Member member = replaceUsername(username);
+        Member member = findMemberByChangeAbleId(changeAbleId);
+        member.replaceChangeableId();
 
         eventPublisher.publishEvent(new MemberEventDto.Logout(member, "로그아웃", LocalDateTime.now()));
 
@@ -133,52 +135,81 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     public LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken) {
         log.info("토큰 재발급 시작 accessToken={}, refreshToken= {}", accessToken, refreshToken);
-        //1. 토큰 상태가 Access or Expired 가 아니면 exception
-        throwExceptionIfTokenIsNotAccessOrExpired(accessToken, refreshToken);
+        //1 AccessToken 검증
+        validateAccessToken(accessToken);
+        //2 RefreshToken 검증
+        validateRefreshToken(refreshToken);
 
-        //2. Refresh 토큰이 존재하지 않으면 로그아웃 처리
-        RefreshToken refresh = redisRefreshTokenRepository.findById(jwtUtils.getUsernameInToken(accessToken))
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.ALREADY_LOGOUT));
+        //3. Refresh 토큰으로 조회시 정보가 없으면 로그아웃으로 간주
+        String changeableId = jwtUtils.getChangeableIdInToken(accessToken);
 
-        //3. 저장된 리프레시 토큰과 요청한 토큰을 비교
+        RefreshToken refresh = findRefreshTokenByChangeableToken(changeableId);
+        //4. 저장된 리프레시 토큰과 요청한 토큰을 비교
         compareRefreshTokenRequestedWithStored(refresh.getToken(), refreshToken);
+        //5. 존재하는 회원인지 확인
+        Member member = findMemberByChangeAbleId(changeableId);
+        //6. changeableId 변경
+        member.replaceChangeableId();
+        //7. 기존 Refresh 토큰 삭제
+        redisRefreshTokenRepository.deleteById(refresh.getChangeableId());
+        //8. 새로운 토큰 생성
+        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+        //9  새로운 Refresh 토큰 저장
+        RefreshToken savedRefreshToken = createNewRefreshToken(member, tokenDto);
+        //10. 기존 인증정보 삭제
+        SecurityContextHolder.clearContext();
 
-        //4. 존재하는 회원인지 확인
-        Member member = memberRepository.findMemberByUsername(jwtUtils.getUsernameInToken(accessToken))
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-        //5. username 변경
-        member.replaceUsername();
-        //6. 토큰 생성
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getUsername());
-        //7. 토큰 갱신
-        redisRefreshTokenRepository.deleteById(refresh.getUsername());
+        return createLoginDto(member, tokenDto, savedRefreshToken);
+    }
 
+    private void validateRefreshToken(String refreshToken) {
+        JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
+        if (refreshStatus == JwtStatus.DENIED || refreshStatus == JwtStatus.ERROR) {
+            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_DENIED);
+        } else if (refreshStatus == JwtStatus.EXPIRED) {
+            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_EXPIRED);
+        }
+    }
+
+    private void validateAccessToken(String accessToken) {
+
+        JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
+        if (accessStatus == JwtStatus.DENIED || accessStatus == JwtStatus.ERROR) {
+            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_DENIED);
+        }
+    }
+
+    private RefreshToken findRefreshTokenByChangeableToken(String changeableToken) {
+        return redisRefreshTokenRepository.findById(changeableToken)
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.ALREADY_LOGOUT));
+    }
+
+
+    private RefreshToken createNewRefreshToken(Member member, TokenDto tokenDto) {
         RefreshToken token = RefreshToken.createRefresh()
-                .username(member.getUsername())
+                .changeableId(member.getChangeableId())
                 .memberId(member.getId())
                 .token(tokenDto.getRefreshToken())
                 .authority(member.getAuthority())
                 .expiration(tokenDto.getRefreshTokenExpirationMill())
                 .build();
+        return redisRefreshTokenRepository.save(token);
+    }
 
-        RefreshToken savedRefreshToken = redisRefreshTokenRepository.save(token);
-        //8. 기존 인증정보 삭제
-        SecurityContextHolder.clearContext();
-
-        return LoginResponse.LoginDto.builder()
-                .id(member.getId())
-                .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(CookieFactory.createRefreshTokenCookie(savedRefreshToken.getToken(), savedRefreshToken.getExpiration()))
-                .loggedIn(tokenDto.getAccessTokenExpiredAt())
-                .build();
+    private Member findMemberByChangeAbleId(String changeableId) {
+        return memberRepository
+                .findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId))
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
     @Override
     @Transactional
-    public String getTemporaryAuthenticationCode(Long memberId) {
+    public String getOneTimeAuthenticationCode(Long memberId) {
         log.info("일회용 인증 코드 생성");
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
-        return member.createOneTimeAuthenticationCode();
+
+        return authenticationCodeRepository.save(AuthenticationCode.createOnetimeAuthenticationCode(member)).getCode();
+
     }
 
 
@@ -191,68 +222,15 @@ public class LoginServiceImpl implements LoginService {
                 .build();
     }
 
-
     private void compareRequestedPasswordWithStored(String requestedPassword, String storedPassword) {
         if (!passwordEncoder.matches(requestedPassword, storedPassword)) {
-            throw new BasicCustomException(ApiResponseStatus.LOGIN_FAIL);
+            throw new CustomRuntimeException(ApiResponseStatus.LOGIN_FAIL);
         }
     }
-
-    private RefreshToken storeRefreshToken(String username, Long memberId, Authority authority, TokenDto tokenDto) {
-        log.info("Refresh Token 저장");
-        RefreshToken refreshToken = RefreshToken.createRefresh()
-                .username(username)
-                .memberId(memberId)
-                .token(tokenDto.getRefreshToken())
-                .authority(authority)
-                .expiration(tokenDto.getRefreshTokenExpirationMill())
-                .build();
-        return redisRefreshTokenRepository.save(refreshToken);
-    }
-
-    private void removeSpringSecuritySession() {
-        SecurityContextHolder.clearContext();
-    }
-
-    private Member replaceUsername(String username) {
-        Member member = memberRepository.findMemberByUsername(username)
-                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
-        member.replaceUsername();
-        return member;
-    }
-
-    private void removeRefreshToken(String username) {
-        checkIsLogout(username);
-        redisRefreshTokenRepository.deleteById(username);
-    }
-
-    private void checkIsLogout(String username) {
-        //Refresh Token 이 없다면 인증기간 만료로 인한 로그아웃
-        if (!redisRefreshTokenRepository.existsById(username)) {
-            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.ALREADY_LOGOUT);
-        }
-    }
-
-    private void throwExceptionIfTokenIsNotAccessOrExpired(String accessToken, String refreshToken) {
-        JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
-        if (accessStatus == JwtStatus.DENIED || accessStatus == JwtStatus.ERROR) {
-            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_DENIED);
-        }
-
-        JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
-        if (refreshStatus == JwtStatus.DENIED || refreshStatus == JwtStatus.ERROR) {
-            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_DENIED);
-        }
-
-        if (refreshStatus == JwtStatus.EXPIRED) {
-            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_EXPIRED);
-        }
-    }
-
 
     private void compareRefreshTokenRequestedWithStored(String StoredRefreshToken, String refreshToken) {
         if (!StoredRefreshToken.equals(refreshToken)) {
-            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_DENIED);
         }
     }
 
@@ -261,12 +239,14 @@ public class LoginServiceImpl implements LoginService {
      * 리프레시 토큰이 존재 한다면 로그인 없다면 로그아웃
      */
     @Transactional(readOnly = true)
-    public boolean setAuthenticationInContextHolderByUsername(String username) {
-        log.info("Set Authentication In ContextHolder By Username username: {}", username);
-        Optional<RefreshToken> optionalRefreshToken = redisRefreshTokenRepository.findById(username);
+    public boolean setAuthenticationInContextHolderByChangeableId(String changeableId) {
+        log.info("Set Authentication In ContextHolder By ChangeableId ID: {}", changeableId);
+
+        Optional<RefreshToken> optionalRefreshToken = redisRefreshTokenRepository.findById(changeableId);
+
         if (optionalRefreshToken.isPresent()) {
             RefreshToken refreshToken = optionalRefreshToken.get();
-            Authentication authentication = generateAuthentication(refreshToken.getUsername(), refreshToken.getMemberId(), refreshToken.getAuthority());
+            Authentication authentication = generateAuthentication(refreshToken.getChangeableId(), refreshToken.getMemberId(), refreshToken.getAuthority());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
         } else {

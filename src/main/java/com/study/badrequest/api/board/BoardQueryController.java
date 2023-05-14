@@ -3,7 +3,7 @@ package com.study.badrequest.api.board;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.board.Category;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.board.BoardSearchCondition;
@@ -45,7 +45,7 @@ public class BoardQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @GetMapping(BOARD_LIST_URL)
@@ -64,6 +64,6 @@ public class BoardQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 }

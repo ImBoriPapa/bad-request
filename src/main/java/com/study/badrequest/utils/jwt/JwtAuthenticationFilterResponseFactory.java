@@ -2,11 +2,10 @@ package com.study.badrequest.utils.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
+import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
@@ -23,18 +22,18 @@ public class JwtAuthenticationFilterResponseFactory {
 
     public void setErrorResponse(HttpServletRequest request, HttpServletResponse response, ApiResponseStatus status) throws IOException {
         log.info("[JwtAuthenticationFilterResponseFactory. response error status={}]", status);
-        setResponseHeader(response);
+        setResponseHeader(response, status);
         response.getWriter().write(objectMapper.writeValueAsString(getErrorResponse(request, status)));
     }
 
-    private void setResponseHeader(HttpServletResponse response) {
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    private void setResponseHeader(HttpServletResponse response, ApiResponseStatus status) {
+        response.setStatus(status.getHttpStatus().value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding("UTF-8");
     }
 
-    private ResponseForm.Error getErrorResponse(HttpServletRequest request, ApiResponseStatus status) {
-        return new ResponseForm.Error(new JwtAuthenticationExceptionBasic(status), request.getRequestURI());
+    private ApiResponse.Error getErrorResponse(HttpServletRequest request, ApiResponseStatus status) {
+        return new ApiResponse.Error(new CustomRuntimeException(status), request.getRequestURI());
 
     }
 

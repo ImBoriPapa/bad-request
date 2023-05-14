@@ -55,7 +55,7 @@ public class LoginResponse {
     public static class ReIssueResult {
         private Long memberId;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
-        private LocalDateTime accessTokenExpired;
+        private LocalDateTime loggedIn;
     }
 
 

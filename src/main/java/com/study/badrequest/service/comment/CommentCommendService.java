@@ -36,14 +36,16 @@ public class CommentCommendService {
     private final BoardRepository boardRepository;
 
     @CustomLogTracer
-    public CommentResponse.Create addComment(Long boardId, String username, CommentRequest.Create request) {
+    public CommentResponse.Create addComment(Long boardId, String changeableId, CommentRequest.Create request) {
 
         Board board = boardRepository
                 .findById(boardId)
                 .orElseThrow(() -> new BoardExceptionBasic(ApiResponseStatus.NOT_FOUND_BOARD));
 
+
+
         Member member = memberRepository
-                .findMemberByUsername(username)
+                .findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId))
                 .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
 
         Comment comment = Comment
@@ -117,9 +119,10 @@ public class CommentCommendService {
      * 대댓글
      */
     @CustomLogTracer
-    public CommentResponse.CreateSub addSubComment(Long commentId, String username, CommentRequest.Create request) {
+    public CommentResponse.CreateSub addSubComment(Long commentId, String changeableId, CommentRequest.Create request) {
 
-        Member member = memberRepository.findMemberByUsername(username)
+        Member member = memberRepository
+                .findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId))
                 .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
 
         Comment findComment = commentRepository

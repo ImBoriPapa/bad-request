@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.study.badrequest.commons.constants.JwtTokenHeader.JWT_STATUS_HEADER;
-import static com.study.badrequest.utils.jwt.JwtTokenResolver.resolveAccessToken;
+import static com.study.badrequest.utils.jwt.JwtTokenResolver.accessTokenResolver;
 
 @Component
 @Slf4j
@@ -29,7 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("Request URI= {}", request.getRequestURI());
 
-        String accessToken = resolveAccessToken(request);
+        String accessToken = accessTokenResolver(request);
 
         JwtStatus jwtStatus;
 
@@ -46,8 +46,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleJwtStatus(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
         switch (jwtStatus) {
             case ACCESS:
-                String username = jwtUtils.getUsernameInToken(accessToken);
-                if (loginServiceImpl.setAuthenticationInContextHolderByUsername(username)) {
+                String changeableId = jwtUtils.getChangeableIdInToken(accessToken);
+                if (loginServiceImpl.setAuthenticationInContextHolderByChangeableId(changeableId)) {
+                    log.info("Access Token 정상 처리");
                     break;
                 } else {
                     log.info("[JwtAuthenticationFilter is Logout token]");

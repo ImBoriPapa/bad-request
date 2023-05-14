@@ -1,6 +1,6 @@
 package com.study.badrequest.exception;
 
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.exception.custom_exception.TokenExceptionBasic;
@@ -20,25 +20,25 @@ public class ExceptionAdvisor {
     public final ResponseEntity exception(HttpServletRequest request, Exception e) {
         log.info("[ExceptionAdvisor.exception]");
         e.printStackTrace();
-        ResponseForm.Error error = new ResponseForm.Error(e, request.getRequestURI());
+        ApiResponse.Error error = new ApiResponse.Error(e, request.getRequestURI());
 
         return ResponseEntity.badRequest().body(error);
     }
 
     @ExceptionHandler(CustomRuntimeException.class)
-    public final ResponseEntity<ResponseForm.Error> customRuntimeException(HttpServletRequest request, CustomRuntimeException e) {
+    public final ResponseEntity<ApiResponse.Error> customRuntimeException(HttpServletRequest request, CustomRuntimeException e) {
         log.info("ExceptionAdvisor CustomRuntimeException Exception status: {}, code: {}, message: {}",e.getStatus(),e.getStatus().getCode(),e.getStatus().getMessage());
 
         return ResponseEntity
                 .status(e.getStatus().getHttpStatus())
-                .body(new ResponseForm.Error(e, request.getRequestURI()));
+                .body(new ApiResponse.Error(e, request.getRequestURI()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public final ResponseEntity illegalArgumentException(HttpServletRequest request, IllegalArgumentException e) {
         log.info("[ExceptionAdvisor.illegalArgumentException]");
         e.printStackTrace();
-        ResponseForm.Error error = new ResponseForm.Error(e, request.getRequestURI());
+        ApiResponse.Error error = new ApiResponse.Error(e, request.getRequestURI());
 
         return ResponseEntity.badRequest().body(error);
     }
@@ -48,7 +48,7 @@ public class ExceptionAdvisor {
         log.info("[ExceptionAdvisor.memberException]");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseForm.Error(e, request.getRequestURI()));
+                .body(new ApiResponse.Error(e, request.getRequestURI()));
     }
 
     @ExceptionHandler(JwtAuthenticationExceptionBasic.class)
@@ -56,7 +56,7 @@ public class ExceptionAdvisor {
         log.info("[ExceptionAdvisor.jwtAuthenticationException]");
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED)
-                .body(new ResponseForm.Error(e, request.getRequestURI()));
+                .body(new ApiResponse.Error(e, request.getRequestURI()));
     }
 
     @ExceptionHandler(TokenExceptionBasic.class)
@@ -64,6 +64,6 @@ public class ExceptionAdvisor {
         log.info("[ExceptionAdvisor.tokenException]");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new ResponseForm.Error(e, request.getRequestURI()));
+                .body(new ApiResponse.Error(e, request.getRequestURI()));
     }
 }

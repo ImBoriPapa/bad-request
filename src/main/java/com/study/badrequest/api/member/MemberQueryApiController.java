@@ -3,7 +3,7 @@ package com.study.badrequest.api.member;
 import com.study.badrequest.api.login.LoginController;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.MemberQueryRepository;
@@ -36,7 +36,7 @@ public class MemberQueryApiController {
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @GetMapping(value = GET_MEMBER_DETAIL_URL, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseForm.Of> retrieveMemberAccount(@LoggedInMember CurrentLoggedInMember.Information information, @PathVariable Long memberId) {
+    public ResponseEntity<ApiResponse.Success> retrieveMemberAccount(@LoggedInMember CurrentLoggedInMember.Information information, @PathVariable Long memberId) {
         log.info("계정정보 조회 요청 요청계정 Id: {}, 요청자 id: {}, 요청자 권한: {}", memberId, information.getId(), information.getAuthority());
 
         restrictAccessIfNotYouAndAdmin(information.getId(), memberId, information.getAuthority());
@@ -48,7 +48,7 @@ public class MemberQueryApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
@@ -70,7 +70,7 @@ public class MemberQueryApiController {
         entityModel.add(linkTo(methodOn(MemberQueryApiController.class).getActivity(memberId, null)).withRel("get activities"));
         entityModel.add(linkTo(methodOn(LoginController.class).logout(null, null)).withRel("logout"));
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @GetMapping("/api/v2/members/{memberId}/activities")

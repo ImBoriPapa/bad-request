@@ -2,7 +2,7 @@ package com.study.badrequest.api.member;
 
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
@@ -42,7 +42,7 @@ public class MemberApiController {
      * @return 201 created, memberId, createdAt
      */
     @PostMapping(value = POST_MEMBER_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseForm.Of> createMember(@Validated @RequestBody MemberRequestForm.SignUp form, BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse.Success> createMember(@Validated @RequestBody MemberRequestForm.SignUp form, BindingResult bindingResult) {
         log.info("[회원 생성 요청 email: {}, contact: {}, password: {}, nickname: {}]", form.getEmail(), form.getContact(), "PROTECTED", form.getNickname());
 
         requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
@@ -53,7 +53,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .created(locationUri)
-                .body(new ResponseForm.Of<>(SUCCESS, memberResponseModelAssembler.createMemberModel(create)));
+                .body(new ApiResponse.Success<>(SUCCESS, memberResponseModelAssembler.createMemberModel(create)));
     }
 
     /**
@@ -71,7 +71,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(SUCCESS, memberResponseModelAssembler.changeNicknameModel(update)));
+                .body(new ApiResponse.Success<>(SUCCESS, memberResponseModelAssembler.changeNicknameModel(update)));
     }
 
     /**
@@ -85,7 +85,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(SUCCESS, update));
+                .body(new ApiResponse.Success<>(SUCCESS, update));
     }
     // TODO: 2023/04/18 완성하기
 
@@ -99,7 +99,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(SUCCESS, update));
+                .body(new ApiResponse.Success<>(SUCCESS, update));
     }
 
     /**
@@ -113,7 +113,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(SUCCESS, update));
+                .body(new ApiResponse.Success<>(SUCCESS, update));
     }
 
     /**
@@ -123,9 +123,9 @@ public class MemberApiController {
      * @return 200 : String email, LocalDateTime issuedAt
      */
     @PostMapping(value = POST_MEMBER_TEMPORARY_PASSWORD_ISSUE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseForm.Of> issueTemporaryPassword(@Validated
+    public ResponseEntity<ApiResponse.Success> issueTemporaryPassword(@Validated
                                                                   @RequestBody MemberRequestForm.IssueTemporaryPassword form,
-                                                                  BindingResult bindingResult) {
+                                                                      BindingResult bindingResult) {
         log.info("[임시 비밀번호 요청 email: {}]", form.getEmail());
 
         requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
@@ -134,7 +134,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of(SUCCESS, memberResponseModelAssembler.getIssuePasswordModel(issueTemporaryPassword)));
+                .body(new ApiResponse.Success(SUCCESS, memberResponseModelAssembler.getIssuePasswordModel(issueTemporaryPassword)));
     }
 
     /**
@@ -152,7 +152,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(SUCCESS, memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)));
+                .body(new ApiResponse.Success<>(SUCCESS, memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)));
     }
 
 
@@ -164,11 +164,11 @@ public class MemberApiController {
      * @return 200 Ok, memberId, updatedAt
      */
     @PatchMapping(value = PATCH_MEMBER_PASSWORD_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseForm.Of> patchPassword(@Validated
+    public ResponseEntity<ApiResponse.Success> patchPassword(@Validated
                                                          @PathVariable Long memberId,
-                                                         @RequestBody MemberRequestForm.ChangePassword form,
-                                                         @LoggedInMember CurrentLoggedInMember.Information information,
-                                                         BindingResult bindingResult
+                                                             @RequestBody MemberRequestForm.ChangePassword form,
+                                                             @LoggedInMember CurrentLoggedInMember.Information information,
+                                                             BindingResult bindingResult
     ) {
         log.info("[비밀번호 변경 요청 memberId: {}, password: {}, password: {}]", memberId, "PROTECTED", "PROTECTED");
 
@@ -180,7 +180,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of(SUCCESS, memberResponseModelAssembler.getChangePasswordModel(update)));
+                .body(new ApiResponse.Success(SUCCESS, memberResponseModelAssembler.getChangePasswordModel(update)));
     }
 
 
@@ -192,11 +192,11 @@ public class MemberApiController {
      * @return 200 Ok, memberId, updatedAt
      */
     @PatchMapping(value = PATCH_MEMBER_CONTACT_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResponseForm.Of> patchContact(@Validated
+    public ResponseEntity<ApiResponse.Success> patchContact(@Validated
                                                         @PathVariable Long memberId,
-                                                        @RequestBody MemberRequestForm.UpdateContact form,
-                                                        @LoggedInMember CurrentLoggedInMember.Information information,
-                                                        BindingResult bindingResult) {
+                                                            @RequestBody MemberRequestForm.UpdateContact form,
+                                                            @LoggedInMember CurrentLoggedInMember.Information information,
+                                                            BindingResult bindingResult) {
         log.info("[연락처 변경 요청 memberId: {}, contact: {}]", memberId, form.getContact());
 
         requestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
@@ -206,7 +206,7 @@ public class MemberApiController {
         MemberResponse.Update update = memberCommandService.updateContactProcessing(memberId, form.getContact());
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
+                .body(new ApiResponse.Success(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
     }
 
     /**
@@ -217,10 +217,10 @@ public class MemberApiController {
      * @return 200 Ok
      */
     @DeleteMapping(DELETE_MEMBER_URL)
-    public ResponseEntity<ResponseForm.Of> deleteMember(@Validated @PathVariable Long memberId,
-                                                        @RequestBody MemberRequestForm.DeleteMember form,
-                                                        @LoggedInMember CurrentLoggedInMember.Information information,
-                                                        BindingResult bindingResult) {
+    public ResponseEntity<ApiResponse.Success> deleteMember(@Validated @PathVariable Long memberId,
+                                                            @RequestBody MemberRequestForm.DeleteMember form,
+                                                            @LoggedInMember CurrentLoggedInMember.Information information,
+                                                            BindingResult bindingResult) {
 
         log.info("[회원 탈퇴 요청 memberId: {}, password: {}]", memberId, "PROTECTED");
 
@@ -233,6 +233,6 @@ public class MemberApiController {
         EntityModel<MemberResponse.Delete> deleteResultEntityModel = memberResponseModelAssembler.getDeleteModel(delete);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(SUCCESS, deleteResultEntityModel));
+                .body(new ApiResponse.Success(SUCCESS, deleteResultEntityModel));
     }
 }

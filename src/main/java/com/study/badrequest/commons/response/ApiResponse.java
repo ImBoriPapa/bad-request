@@ -8,18 +8,18 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @NoArgsConstructor
-public class ResponseForm {
+public class ApiResponse {
 
     @NoArgsConstructor
     @Getter
-    public static class Of<T> {
-        private ApiResponseStatus status;
+    public static class Success<T> {
+        private String status;
         private int code;
         private String message;
         private T result;
 
-        public Of(ApiResponseStatus status, T result) {
-            this.status = status;
+        public Success(ApiResponseStatus status, T result) {
+            this.status = status.name();
             this.code = status.getCode();
             this.message = status.getMessage();
             this.result = result;

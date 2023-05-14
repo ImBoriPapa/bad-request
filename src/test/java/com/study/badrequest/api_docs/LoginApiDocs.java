@@ -26,19 +26,18 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.EMAIL_LOGIN_URL;
-import static com.study.badrequest.commons.constants.ApiURL.ONE_TIME_CODE_LOGIN;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.commons.constants.ApiURL.*;
+import static com.study.badrequest.commons.constants.JwtTokenHeader.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
-import static org.springframework.hateoas.TemplateVariable.requestParameter;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
@@ -54,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc(addFilters = false)
-public class LoginRestDocs {
+public class LoginApiDocs {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -63,11 +62,8 @@ public class LoginRestDocs {
     private LoginService loginService;
     @MockBean
     private JwtUtils jwtUtils;
-    @Autowired
-    private LoginModelAssembler modelAssembler;
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
 
     @Test
     @DisplayName("bad-request 로그인")
@@ -78,9 +74,14 @@ public class LoginRestDocs {
 
         LoginRequest.Login request = new LoginRequest.Login(email, password);
 
-        ResponseCookie tokenCookie = CookieFactory.createRefreshTokenCookie("refresh-token", 604800000L);
+        ResponseCookie tokenCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + "RefreshToken")
+                .maxAge(604800)
+                .secure(true)
+                .sameSite("none")
+                .httpOnly(true)
+                .build();
 
-        LoginResponse.LoginDto loginDto = new LoginResponse.LoginDto(523L, ACCESS_TOKEN_PREFIX + "access-token", tokenCookie, LocalDateTime.now());
+        LoginResponse.LoginDto loginDto = new LoginResponse.LoginDto(523L, ACCESS_TOKEN_PREFIX + "accessToken", tokenCookie, LocalDateTime.now());
 
         //when
         given(loginService.emailLogin(any(), any(), any())).willReturn(loginDto);
@@ -127,24 +128,31 @@ public class LoginRestDocs {
                 .email("email@email.com")
                 .authority(Authority.MEMBER)
                 .build();
-        member.createOneTimeAuthenticationCode();
-        String authenticationCode = member.getOneTimeAuthenticationCode();
 
-        ResponseCookie tokenCookie = CookieFactory.createRefreshTokenCookie("refresh-token", 604800000L);
+        String authenticationCode = UUID.randomUUID().toString();
+
+        ResponseCookie tokenCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + "RefreshToken")
+                .maxAge(604800)
+                .secure(true)
+                .sameSite("none")
+                .httpOnly(true)
+                .build();
 
         LoginResponse.LoginDto loginDto = new LoginResponse.LoginDto(523L, ACCESS_TOKEN_PREFIX + "access-token", tokenCookie, LocalDateTime.now());
 
+        LoginRequest.LoginByOneTimeCode code = new LoginRequest.LoginByOneTimeCode(authenticationCode);
         //when
         when(loginService.oneTimeAuthenticationCodeLogin(any(), any())).thenReturn(loginDto);
         //then
         mockMvc.perform(post(ONE_TIME_CODE_LOGIN)
-                .param("code", authenticationCode)
-        ).andDo(print())
+                        .content(objectMapper.writeValueAsString(code))
+                        .contentType(MediaType.APPLICATION_JSON)
+                ).andDo(print())
                 .andDo(document("login-oneTimeCode",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestParameters(
-                                parameterWithName("code").description("일회용 인증 코드")
+                        requestFields(
+                                fieldWithPath("code").type(STRING).description("1회용 인증 코드")
                         ),
                         responseHeaders(
                                 headerWithName(HttpHeaders.AUTHORIZATION).description("Access Token"),
@@ -165,5 +173,54 @@ public class LoginRestDocs {
                         )
                 ));
 
+    }
+
+    @Test
+    @DisplayName("토큰재발급")
+    void 토큰재발급() throws Exception {
+        //given
+        String accessToken = ACCESS_TOKEN_PREFIX + "access-token";
+        Cookie refresTokenCookie = new Cookie(REFRESH_TOKEN_COOKIE, UUID.randomUUID().toString());
+        String newAccessToken = "newAccessToken";
+
+        ResponseCookie tokenCookie = ResponseCookie.from(REFRESH_TOKEN_COOKIE, REFRESH_TOKEN_PREFIX + "newRefreshToken")
+                .maxAge(604800)
+                .secure(true)
+                .sameSite("none")
+                .httpOnly(true)
+                .build();
+
+
+        LoginResponse.LoginDto loginDto = new LoginResponse.LoginDto(523L, newAccessToken, tokenCookie, LocalDateTime.now());
+        //when
+        when(loginService.reissueToken(any(), any())).thenReturn(loginDto);
+        //then
+        mockMvc.perform(post(TOKEN_REISSUE_URL)
+                        .header(HttpHeaders.AUTHORIZATION, accessToken)
+                        .cookie(refresTokenCookie)
+                )
+                .andDo(print())
+                .andDo(document("login-reissue",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.AUTHORIZATION).description("Access Token"),
+                                headerWithName(HttpHeaders.SET_COOKIE).description("Refresh Token")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(STRING).description("응답 상태"),
+                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                fieldWithPath("result.memberId").type(NUMBER).description("회원 식별 아이디"),
+                                fieldWithPath("result.loggedIn").type(STRING).description("로그인 시간"),
+                                fieldWithPath("result.links.[0].rel").type(STRING).description("로그인한 회원 정보 요청"),
+                                fieldWithPath("result.links.[0].href").type(STRING).description("url"),
+                                fieldWithPath("result.links.[1].rel").type(STRING).description("로그아웃 요청"),
+                                fieldWithPath("result.links.[1].href").type(STRING).description("url")
+                        )
+                ));
     }
 }

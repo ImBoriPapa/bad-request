@@ -1,7 +1,6 @@
 package com.study.badrequest.dto.member;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.study.badrequest.domain.member.AuthenticationMailInformation;
 import com.study.badrequest.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,18 +29,18 @@ public class MemberResponse {
     }
 
     @NoArgsConstructor
-    @AllArgsConstructor
+
     @Getter
     public static class SendAuthenticationEmail{
         private String email;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime startedAt;
-        private Long expiredIn;
-
-        public SendAuthenticationEmail(AuthenticationMailInformation mail) {
-            this.email = mail.getEmail();
-            this.startedAt = mail.getCreatedAt();
-            this.expiredIn = mail.getExpiration();
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
+        private LocalDateTime expiredAt;
+        public SendAuthenticationEmail(String email,LocalDateTime createdAt,LocalDateTime expiredAt) {
+            this.email = email;
+            this.startedAt = createdAt;
+            this.expiredAt = expiredAt;
         }
     }
 

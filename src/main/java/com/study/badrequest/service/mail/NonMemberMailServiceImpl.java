@@ -1,7 +1,7 @@
 package com.study.badrequest.service.mail;
 
 import com.study.badrequest.domain.mail.NonMemberMail;
-import com.study.badrequest.domain.member.AuthenticationMailInformation;
+import com.study.badrequest.domain.member.AuthenticationCode;
 import com.study.badrequest.repository.mail.NonMemberMailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ import javax.mail.internet.MimeMessage;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-public class NonMemberMailServiceImpl implements NonMemberMailService{
+public class NonMemberMailServiceImpl implements NonMemberMailService {
 
     private final JavaMailSender mailSender;
 
@@ -29,20 +29,21 @@ public class NonMemberMailServiceImpl implements NonMemberMailService{
     private final NonMemberMailRepository nonMemberMailRepository;
     @Value("${mail.authentication-subject}")
     public String authenticationSubject;
+
     @Override
     @Transactional
-    public void sendAuthenticationMail(AuthenticationMailInformation authenticationMailInformation) {
-        log.info("비회원 이메일 인증 메일 발송 시작 수신인: {}", authenticationMailInformation.getEmail());
+    public void sendAuthenticationMail(AuthenticationCode authenticationCode) {
+        log.info("비회원 이메일 인증 메일 발송 시작 수신인: {}", authenticationCode.getEmail());
 
         sendMail(
-                authenticationMailInformation.getEmail(),
+                authenticationCode.getEmail(),
                 authenticationSubject,
                 mailSender.createMimeMessage(),
-                createAuthenticationMailBody(authenticationMailInformation.getAuthenticationCode()),
-                NonMemberMail.createAuthenticationMail(authenticationMailInformation.getEmail(), authenticationSubject)
+                createAuthenticationMailBody(authenticationCode.getCode()),
+                NonMemberMail.createAuthenticationMail(authenticationCode.getEmail(), authenticationSubject)
         );
 
-        log.info("비회원 이메일 인증 메일 발송 완료 수신인: {}", authenticationMailInformation.getEmail());
+        log.info("비회원 이메일 인증 메일 발송 완료 수신인: {}", authenticationCode.getEmail());
     }
 
     private void sendMail(String email, String subject, MimeMessage mimeMessage, String mailText, NonMemberMail nonMemberMail) {
@@ -55,7 +56,7 @@ public class NonMemberMailServiceImpl implements NonMemberMailService{
             nonMemberMailRepository.save(nonMemberMail);
         } catch (MessagingException e) {
             nonMemberMail.sentFail();
-            log.info("비회원 {} 메일 발송 실패 수신인: {}",subject, email);
+            log.info("비회원 {} 메일 발송 실패 수신인: {}", subject, email);
             throw new IllegalArgumentException(e.getMessage());
         }
     }

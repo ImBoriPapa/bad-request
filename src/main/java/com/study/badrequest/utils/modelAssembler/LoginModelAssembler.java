@@ -2,11 +2,9 @@ package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.login.LoginController;
 import com.study.badrequest.api.member.MemberQueryApiController;
-import com.study.badrequest.commons.hateoas.ResponseModelAssembler;
 import com.study.badrequest.dto.login.LoginResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +19,7 @@ public class LoginModelAssembler {
         List<Link> links = List.of(
                 linkTo(methodOn(MemberQueryApiController.class).getLoggedInInformation(result.getMemberId(), null)).withRel("login user information"),
                 linkTo(methodOn(LoginController.class).logout(null, null)).withRel("logout"),
-                linkTo(methodOn(LoginController.class).reIssue(null, null, null)).withRel("reIssue token")
+                linkTo(methodOn(LoginController.class).reIssueToken(null, null)).withRel("reIssue token")
         );
 
         return EntityModel.of(result).add(links);
@@ -33,9 +31,12 @@ public class LoginModelAssembler {
                 .add(linkTo(LoginController.class).slash("/login").withRel("POST : 로그인"));
     }
 
-    public EntityModel<LoginResponse.ReIssueResult> toModel(LoginResponse.ReIssueResult result) {
-
-        return EntityModel.of(result);
+    public EntityModel<LoginResponse.ReIssueResult> createReissueModel(LoginResponse.ReIssueResult result) {
+        List<Link> links = List.of(
+                linkTo(methodOn(MemberQueryApiController.class).getLoggedInInformation(result.getMemberId(), null)).withRel("login user information"),
+                linkTo(methodOn(LoginController.class).logout(null, null)).withRel("logout")
+        );
+        return EntityModel.of(result).add(links);
 
     }
 }

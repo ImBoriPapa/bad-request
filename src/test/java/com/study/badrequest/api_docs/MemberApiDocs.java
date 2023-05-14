@@ -105,8 +105,10 @@ public class MemberApiDocs {
     void 인증메일_발송_요청() throws Exception {
         //given
         String email = "member1@gmail.com";
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime expiredAt = createdAt.plusMinutes(5);
         MemberRequestForm.SendAuthenticationEmail authenticationEmail = new MemberRequestForm.SendAuthenticationEmail(email);
-        MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, LocalDateTime.now(), 500L);
+        MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt,expiredAt);
         //when
         given(memberCommandService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
 
@@ -133,7 +135,7 @@ public class MemberApiDocs {
                                 fieldWithPath("message").type(STRING).description("응답 메시지"),
                                 fieldWithPath("result.email").type(STRING).description("인증된 이메일"),
                                 fieldWithPath("result.startedAt").type(STRING).description("인증 시작 시간"),
-                                fieldWithPath("result.expiredIn").type(NUMBER).description("인증 유지 시간"),
+                                fieldWithPath("result.expiredAt").type(STRING).description("인증 유지 시간"),
                                 fieldWithPath("result.links.[0].rel").type(STRING).description("self"),
                                 fieldWithPath("result.links.[0].href").type(STRING).description("uri")
                         )

@@ -3,7 +3,7 @@ package com.study.badrequest.api.comment;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.dto.comment.CommentRequest;
 import com.study.badrequest.dto.comment.CommentResponse;
 import com.study.badrequest.exception.custom_exception.CommentExceptionBasic;
@@ -51,7 +51,7 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
 
@@ -70,7 +70,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Modify> entityModel = commentResponseModelAssembler.toModel(modifyComment, boardId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -82,7 +82,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Delete> entityModel = commentResponseModelAssembler.toModel(deleteComment, boardId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -98,7 +98,7 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -111,7 +111,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.ModifySub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -123,7 +123,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.DeleteSub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
 
-        return ResponseEntity.ok().body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**

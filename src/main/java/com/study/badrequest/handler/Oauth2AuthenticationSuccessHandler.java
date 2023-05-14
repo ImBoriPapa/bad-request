@@ -1,18 +1,12 @@
 package com.study.badrequest.handler;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
 import com.study.badrequest.domain.login.MemberPrincipal;
-import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
 import com.study.badrequest.service.login.LoginService;
 import com.study.badrequest.utils.cookie.CookieFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
@@ -44,7 +38,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         MemberPrincipal principal = (MemberPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String temporaryAuthenticationCode = loginService.getTemporaryAuthenticationCode(principal.getMemberId());
+        String temporaryAuthenticationCode = loginService.getOneTimeAuthenticationCode(principal.getMemberId());
 
         String targetUrl = determineTargetUrl(request, response, authentication, temporaryAuthenticationCode);
 

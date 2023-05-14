@@ -1,7 +1,7 @@
 package com.study.badrequest.event.member;
 
 
-import com.study.badrequest.domain.member.AuthenticationMailInformation;
+import com.study.badrequest.domain.member.AuthenticationCode;
 import com.study.badrequest.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -66,7 +66,7 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class SendAuthenticationMail {
-        private AuthenticationMailInformation authenticationMailInformation;
+        private AuthenticationCode authenticationCode;
     }
 
     @NoArgsConstructor

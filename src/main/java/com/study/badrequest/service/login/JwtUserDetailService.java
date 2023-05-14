@@ -3,6 +3,7 @@ package com.study.badrequest.service.login;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.MemberPrincipal;
+import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.repository.member.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,14 @@ public class JwtUserDetailService implements UserDetailsService {
      */
     @Override
     @CustomLogTracer
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String changeableId) throws UsernameNotFoundException {
         log.info("Load User By Username");
-        return memberRepository.findByUsername(username)
+        return memberRepository
+                .findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId))
                 .map(member ->
                         new MemberPrincipal(
                                 member.getId(),
-                                member.getUsername(),
+                                member.getChangeableId(),
                                 member.getAuthority().getAuthorities())
                 )
                 .orElseThrow(() -> new UsernameNotFoundException(ApiResponseStatus.NOTFOUND_MEMBER.getMessage()));

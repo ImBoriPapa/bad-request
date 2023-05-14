@@ -1,7 +1,7 @@
 package com.study.badrequest.api.board;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.dto.board.BoardImageResponse;
 import com.study.badrequest.service.board.BoardImageService;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +23,6 @@ public class BoardImageController {
         BoardImageResponse.Create response = boardImageService.save(image);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, response));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, response));
     }
 }

@@ -23,9 +23,8 @@ public class ApiURL {
     public static final String OAUTH2_LOGIN_URL = BASE_API_VERSION_URL + "/oauth/authorization";
     public static final String OAUTH2_REDIRECT_URL = BASE_API_VERSION_URL + "/oauth/client/*";
 
-
     public static final String LOGOUT_URL = BASE_API_VERSION_URL + "/logout";
-    public static final String REFRESH_TOKEN_URL = BASE_API_VERSION_URL + "/refresh";
+    public static final String TOKEN_REISSUE_URL = BASE_API_VERSION_URL + "/reissue";
     //Question
     public static final String QUESTION_DETAIL_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
     public static final String QUESTION_LIST_URL = BASE_API_VERSION_URL + "/questions";

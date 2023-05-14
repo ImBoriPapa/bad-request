@@ -1,8 +1,6 @@
 package com.study.badrequest.api.answer;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
-import com.study.badrequest.domain.question.Answer;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.repository.answer.query.AnswerDto;
 import com.study.badrequest.repository.answer.query.AnswerQueryRepositoryImpl;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +25,6 @@ public class AnswerApiController {
         List<AnswerDto> dtos = queryRepository.findAnswerByQuestionId(questionId);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(SUCCESS, dtos));
+                .body(new ApiResponse.Success<>(SUCCESS, dtos));
     }
 }

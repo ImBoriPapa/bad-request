@@ -1,8 +1,9 @@
 package com.study.badrequest.service.mail;
 
 
-import com.study.badrequest.domain.member.AuthenticationMailInformation;
+import com.study.badrequest.domain.member.AuthenticationCode;
+
 
 public interface NonMemberMailService {
-    void sendAuthenticationMail(AuthenticationMailInformation authenticationMailInformation);
+    void sendAuthenticationMail(AuthenticationCode authenticationCode);
 }

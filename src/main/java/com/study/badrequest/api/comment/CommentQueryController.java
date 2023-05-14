@@ -2,7 +2,7 @@ package com.study.badrequest.api.comment;
 
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.repository.comment.query.CommentListDto;
 import com.study.badrequest.repository.comment.CommentQueryRepository;
 
@@ -39,7 +39,7 @@ public class CommentQueryController {
         EntityModel<CommentListDto> entityModel = commentResponseModelAssembler.toListModel(commentListDto,boardId);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -52,6 +52,6 @@ public class CommentQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 }

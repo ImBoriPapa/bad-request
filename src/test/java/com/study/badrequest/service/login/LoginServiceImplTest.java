@@ -1,9 +1,11 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.domain.login.RefreshToken;
+import com.study.badrequest.domain.member.AuthenticationCode;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
+import com.study.badrequest.repository.login.AuthenticationCodeRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -34,6 +36,8 @@ class LoginServiceImplTest {
     @Mock
     RedisRefreshTokenRepository redisRefreshTokenRepository;
     @Mock
+    AuthenticationCodeRepository authenticationCodeRepository;
+    @Mock
     JwtUtils jwtUtils;
     @Spy
     BCryptPasswordEncoder passwordEncoder;
@@ -58,18 +62,18 @@ class LoginServiceImplTest {
         TokenDto tokenDto = new TokenDto(accessToken, refreshToken, LocalDateTime.now().plusMinutes(10), 60480000L);
 
         RefreshToken tokenEntity = RefreshToken.createRefresh()
-                .username(member.getUsername())
+                .changeableId(member.getChangeableId())
                 .token(tokenDto.getAccessToken())
                 .authority(member.getAuthority())
                 .expiration(tokenDto.getRefreshTokenExpirationMill())
                 .build();
         //when
-        when(memberRepository.findByEmailAndDomainName(any(), any())).thenReturn(Optional.of(member));
+        when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
         when(jwtUtils.generateJwtTokens(any())).thenReturn(tokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
         LoginResponse.LoginDto loginDto = loginService.emailLogin(email, password, ipAddress);
         //then
-        verify(memberRepository).findByEmailAndDomainName(email, Member.extractDomainFromEmail(email));
+        verify(memberRepository).findByEmail(email);
     }
 
     @Test
@@ -80,22 +84,25 @@ class LoginServiceImplTest {
                 .email("email@email.com")
                 .authority(Authority.MEMBER)
                 .build();
-        member.createOneTimeAuthenticationCode();
+
 
         TokenDto tokenDto = new TokenDto("accessToken", "refreshToken", LocalDateTime.now().plusMinutes(10), 60480000L);
 
+        AuthenticationCode authenticationCode = AuthenticationCode.createOnetimeAuthenticationCode(member);
+
         RefreshToken tokenEntity = RefreshToken.createRefresh()
-                .username(member.getUsername())
+                .changeableId(member.getChangeableId())
                 .token(tokenDto.getAccessToken())
                 .authority(member.getAuthority())
                 .expiration(tokenDto.getRefreshTokenExpirationMill())
                 .build();
         //when
-        when(memberRepository.findByOneTimeAuthenticationCode(any())).thenReturn(Optional.of(member));
+        when(authenticationCodeRepository.findByCode(any())).thenReturn(Optional.of(authenticationCode));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(jwtUtils.generateJwtTokens(any())).thenReturn(tokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
 
-        loginService.oneTimeAuthenticationCodeLogin(member.getOneTimeAuthenticationCode(), "ipAddress");
+        loginService.oneTimeAuthenticationCodeLogin("", "ipAddress");
         //then
 
     }

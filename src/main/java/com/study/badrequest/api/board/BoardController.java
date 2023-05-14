@@ -3,7 +3,7 @@ package com.study.badrequest.api.board;
 import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.board.BoardRequest;
 import com.study.badrequest.dto.board.BoardResponse;
@@ -52,7 +52,7 @@ public class BoardController {
 
         return ResponseEntity
                 .created(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).toUri())
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
@@ -78,7 +78,7 @@ public class BoardController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseForm.Of<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     // TODO: 2023/02/15 Delete

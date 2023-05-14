@@ -1,7 +1,7 @@
 package com.study.badrequest.api.image;
 
 
-import com.study.badrequest.commons.response.ResponseForm;
+import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.service.image.QuestionImageService;
 
@@ -35,7 +35,7 @@ public class QuestionImageApiController {
         QuestionImageResponse.Temporary temporary = questionImageService.saveTemporaryImage(image);
 
         return ResponseEntity.ok()
-                .body(new ResponseForm.Of<>(SUCCESS, temporary));
+                .body(new ApiResponse.Success<>(SUCCESS, temporary));
     }
 
 }

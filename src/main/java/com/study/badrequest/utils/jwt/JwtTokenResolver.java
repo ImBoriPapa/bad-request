@@ -1,5 +1,7 @@
 package com.study.badrequest.utils.jwt;
 
+import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +12,8 @@ import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATIO
 @Slf4j
 public class JwtTokenResolver {
 
-    public static String resolveAccessToken(HttpServletRequest request) {
+    public static String accessTokenResolver(HttpServletRequest request) {
+
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
         if (bearerToken != null && bearerToken.startsWith(ACCESS_TOKEN_PREFIX)) {
@@ -20,4 +23,5 @@ public class JwtTokenResolver {
         log.info("Resolve AccessToken Token = NULL");
         return null;
     }
+
 }

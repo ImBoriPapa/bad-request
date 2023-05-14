@@ -40,9 +40,8 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
 
         Oauth2UserInformation oauth2UserInformation = getOauth2UserInformation(userRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
 
-        Optional<Member> optionalMember = memberRepository.findByEmailAndDomainName(
-                oauth2UserInformation.getEmail(),
-                Member.extractDomainFromEmail(oauth2UserInformation.getEmail()));
+        Optional<Member> optionalMember = memberRepository.findByEmail(
+                oauth2UserInformation.getEmail());
 
         if (optionalMember.isPresent()) {
             return renewOauth2Member(oauth2UserInformation, optionalMember.get());
@@ -62,7 +61,7 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
 
         Member member = memberRepository.save(oauthMember);
 //        eventPublisher.publishEvent(new MemberEventDto.Create(member, "Oauth2 회원가입"));
-        return new MemberPrincipal(member.getId(), member.getUsername(), member.getAuthority().getAuthorities());
+        return new MemberPrincipal(member.getId(), member.getChangeableId(), member.getAuthority().getAuthorities());
     }
 
     private MemberPrincipal renewOauth2Member(Oauth2UserInformation oauth2UserInformation, Member member) {
@@ -79,6 +78,6 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
 //            eventPublisher.publishEvent(new MemberEventDto.Update(member, "Oauth2 닉네임 변경"));
         }
 
-        return new MemberPrincipal(member.getId(), member.getUsername(), member.getAuthority().getAuthorities());
+        return new MemberPrincipal(member.getId(), member.getChangeableId(), member.getAuthority().getAuthorities());
     }
 }

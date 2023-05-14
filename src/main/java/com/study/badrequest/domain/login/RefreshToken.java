@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 @RedisHash(value = "refresh")
 public class RefreshToken implements Serializable {
     @Id
-    private String username;
+    private String changeableId;
     private Long memberId;
     private String token;
     private Authority authority;
@@ -28,24 +28,16 @@ public class RefreshToken implements Serializable {
 
     /**
      * RefreshToken 생성시
-     * username 을 키로 token, 권한정보, 만료까지 남은 시간과 인덱스를 설정
+     * changeableId 를 키로 token, 권한정보, 만료까지 남은 시간과 인덱스를 설정
      */
     @Builder(builderMethodName = "createRefresh")
-    public RefreshToken(String username, Long memberId, String token, Authority authority, Long expiration) {
-        this.username = username;
+    public RefreshToken(String changeableId, Long memberId, String token, Authority authority, Long expiration) {
+        this.changeableId = changeableId;
         this.memberId = memberId;
         this.token = token;
         this.authority = authority;
         this.expiration = expiration;
     }
 
-
-    /**
-     * Refresh Token 교체
-     */
-    public void replaceToken(String token, Long expiration) {
-        this.token = token;
-        this.expiration = expiration;
-    }
 
 }

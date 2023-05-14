@@ -35,7 +35,8 @@ public enum ApiResponseStatus {
     LOGIN_FAIL(1600, "로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
     ALREADY_LOGOUT(1601, "로그아웃된 계정입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST),
     WRONG_ONE_TIME_CODE(1602, "잘못된 1회용 인증 코드입니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
-    NOT_MATCH_ONE_TIME_CODE(1603, "발급된 인증코드와 다릅니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE(1603, "발급된 인증코드로 회원정보를 찾을 수 없습니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    EMPTY_ONE_TIME_CODE(1604, "발급된 인증코드와 필요합니다.. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
     //OAUTH2
     ALREADY_REGISTERED_OAUTH2_EMAIL(1700, "이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
     ALREADY_REGISTERED_SELF_LOGIN_EMAIL(1701, "이미 자체 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
