@@ -39,82 +39,100 @@ import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class QuestionServiceImpl implements QuestionService {
-
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final HashTagRepository hashTagRepository;
     private final QuestionTagRepository questionTagRepository;
     private final RecommendationRepository recommendationRepository;
     private final ApplicationEventPublisher applicationEventPublisher;
-
     @Transactional
     public QuestionResponse.Create creteQuestion(Long memberId, QuestionRequest.Create form) {
         log.info("질문 생성 시작 요청 회원 아이디: {}, 제목: {}", memberId, form.getTitle());
 
-        if (form.getTags() == null || form.getTags().size() < 1 || form.getTags().size() > 5) {
-            throw new CustomRuntimeException(AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED);
-        }
+        validateTags(form);
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+        Member member = findMemberById(memberId);
         // 질문 엔티티 생성
-        Question question = Question.createQuestion()
+        Question question = questionRepository.save(createQuestion(form, member));
+        // 질문 Metrics 생성
+        question.addQuestionMetrics(QuestionMetrics.createQuestionMetrics(question));
+        // 태그 저장
+        saveQuestionTag(form.getTags(), question);
+
+        //이벤트: 1.이미지 상태 변경 2. 회원 활동 점수 변경
+        applicationEventPublisher.publishEvent(new QuestionEventDto.Create(member, question, form.getTags(), form.getImageIds()));
+
+        return new QuestionResponse.Create(question.getId(), question.getAskedAt());
+    }
+
+    private Question createQuestion(QuestionRequest.Create form, Member member) {
+        return Question.createQuestion()
                 .title(form.getTitle())
                 .contents(form.getContents())
                 .member(member)
                 .build();
-
-        Question save = questionRepository.save(question);
-        // 질문 엔티티 정보 저장
-
-        save.addQuestionMetrics(QuestionMetrics.createQuestionMetrics(question));
-
-        createQuestionTag(form.getTags(), question);
-
-        //이벤트: 1.이미지 저장 2. 회원 활동 점수 변경
-        applicationEventPublisher.publishEvent(new QuestionEventDto.Create(member, save, form.getTags(), form.getImageIds()));
-
-        return new QuestionResponse.Create(save.getId(), save.getAskedAt());
     }
 
-    private void createQuestionTag(List<String> tags, Question question) {
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+    }
+
+    private void validateTags(QuestionRequest.Create form) {
+        if (form.getTags().size() < 1 || form.getTags().size() > 5) {
+            throw new CustomRuntimeException(AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED);
+        }
+    }
+
+    private void saveQuestionTag(List<String> tags, Question question) {
         log.info("질문 태그 저장 시작");
         tags.forEach(t -> log.info("requested tag name: {}", t));
 
-        List<QuestionTag> newTags = new ArrayList<>();
-        List<String> savedTagNames = new ArrayList<>();
+        Set<String> requestedTags = tags.stream().map(HashTagUtils::stringToHashTagString).collect(Collectors.toSet());
 
-        //String -> HashTags
-        Set<String> hashTags = tags.stream().map(HashTagUtils::stringToHashTag)
-                .collect(Collectors.toSet());
+        List<HashTag> findHashTagByRequestedTags = hashTagRepository.findAllByHashTagNameIn(requestedTags);
 
-        List<HashTag> alreadySaved = hashTagRepository.findAllByHashTagNameIn(hashTags);
+        // 기존에 저장된 해시태그가 없을 경우
+        if (findHashTagByRequestedTags.isEmpty()) {
+            createQuestionTags(question, requestedTags);
+        } else
+            createQuestionTags(question, requestedTags, findHashTagByRequestedTags);
+    }
 
-        //새로운 질문태그 생성
-        if (!alreadySaved.isEmpty()) {
+    private void createQuestionTags(Question question, Set<String> requestedTags, List<HashTag> findHashTagByRequestedTags) {
+        Map<String, QuestionTag> haveToSave = new HashMap<>();
+        // 이미 등록된 해시태그로 질문 태그를 생성해서 haveToSave 에 저장
+        findHashTagByRequestedTags.stream()
+                .map(hashTag -> QuestionTag.createQuestionTag(question, hashTag))
+                .forEach(questionTag -> haveToSave.put(questionTag.getHashTag().getHashTagName(), questionTag));
 
-            for (HashTag hashTag : alreadySaved) {
-                newTags.add(QuestionTag.createQuestionTag(question, hashTag));
-            }
+        // 이미 등록된 해시태그의 태그네임과 같지않은 요청된 태그네임만 새로운 해시태그로 저장
+        List<HashTag> newHashTags = requestedTagMapToHashTags(requestedTags).stream()
+                .filter(hashTag -> !haveToSave.containsKey(hashTag.getHashTagName()))
+                .collect(Collectors.toList());
 
-            savedTagNames = alreadySaved.stream()
-                    .map(HashTag::getHashTagName)
-                    .collect(Collectors.toList());
-        }
+        //새롭게 저장된 해시태그를 haveToSave에 저장
+        hashTagMapQuestionTag(question, newHashTags).forEach(questionTag -> haveToSave.put(questionTag.getHashTag().getHashTagName(), questionTag));
 
-        List<String> finalSavedTagNames = savedTagNames;
+        //만들어진 모든 질문 태그를 저장
+        questionTagRepository.saveAll(haveToSave.values());
+    }
 
-        Set<HashTag> newHashTags = hashTags.stream()
-                .filter(hashTag -> !finalSavedTagNames.contains(hashTag))
+    private void createQuestionTags(Question question, Set<String> requestedTags) {
+        List<HashTag> newHashTags = requestedTagMapToHashTags(requestedTags);
+
+        questionTagRepository.saveAll(hashTagMapQuestionTag(question, newHashTags));
+    }
+
+    private List<HashTag> requestedTagMapToHashTags(Set<String> requestedTags) {
+        return requestedTags.stream()
                 .map(HashTag::new)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
+    }
 
-        List<HashTag> savedNewHashTags = hashTagRepository.saveAll(newHashTags);
-
-        for (HashTag hashTag : savedNewHashTags) {
-            newTags.add(QuestionTag.createQuestionTag(question, hashTag));
-        }
-
-        questionTagRepository.saveAll(newTags);
+    private List<QuestionTag> hashTagMapQuestionTag(Question question, List<HashTag> newHashTags) {
+        return hashTagRepository.saveAll(newHashTags)
+                .stream().map(hashTag -> QuestionTag.createQuestionTag(question, hashTag))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -129,7 +147,7 @@ public class QuestionServiceImpl implements QuestionService {
         log.info("질문 태그 추가 시작");
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
 
-        String hashTag = HashTagUtils.stringToHashTag(questionTag);
+        String hashTag = HashTagUtils.stringToHashTagString(questionTag);
 
         QuestionTag newQuestionTag = hashTagRepository
                 .findByHashTagName(hashTag)

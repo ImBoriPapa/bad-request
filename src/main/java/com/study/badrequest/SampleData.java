@@ -100,7 +100,7 @@ public class SampleData {
         List<String> tagStrings = List.of("Java", "Spring", "MySQL", "JPA", "DataBase", "JavaScript", "MongoDB", "MariaDB", "React", "Node.js");
 
         List<HashTag> hashTags = tagStrings.stream()
-                .map(HashTagUtils::stringToHashTag)
+                .map(HashTagUtils::stringToHashTagString)
                 .map(HashTag::new)
                 .collect(Collectors.toList());
 

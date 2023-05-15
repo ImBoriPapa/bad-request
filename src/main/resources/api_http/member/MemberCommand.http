@@ -94,7 +94,7 @@ GET http://localhost:8080/api/v2/questions?size=5&sort=view
 GET http://localhost:8080/api/v2/questions?size=5&sort=recommend
 
 ### 질문 상세 보기
-GET http://localhost:8080/api/v2/questions/10
+GET http://localhost:8080/api/v2/questions/15
 ### 질문 답변 목록
 GET http://localhost:8080/api/v2/questions/3/answers
 
