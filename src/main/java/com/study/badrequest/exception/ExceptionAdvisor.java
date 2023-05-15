@@ -27,7 +27,8 @@ public class ExceptionAdvisor {
 
     @ExceptionHandler(CustomRuntimeException.class)
     public final ResponseEntity<ApiResponse.Error> customRuntimeException(HttpServletRequest request, CustomRuntimeException e) {
-        log.info("ExceptionAdvisor CustomRuntimeException Exception status: {}, code: {}, message: {}",e.getStatus(),e.getStatus().getCode(),e.getStatus().getMessage());
+
+        log.info("ExceptionAdvisor CustomRuntimeException Exception status: {}, code: {}, message: {}", e.getStatus(), e.getStatus().getCode(), e.getStatus().getMessage());
 
         return ResponseEntity
                 .status(e.getStatus().getHttpStatus())

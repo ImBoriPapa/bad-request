@@ -27,12 +27,13 @@ public class QuestionTag {
     @JoinColumn(name = "HASHTAG_ID")
     private HashTag hashTag;
 
-    protected QuestionTag(Question question,HashTag hashTag) {
+    protected QuestionTag(Question question, HashTag hashTag) {
         this.question = question;
         this.hashTag = hashTag;
+        hashTag.incrementUsage();
     }
 
     public static QuestionTag createQuestionTag(Question question, HashTag hashTag) {
-        return new QuestionTag(question,hashTag);
+        return new QuestionTag(question, hashTag);
     }
 }

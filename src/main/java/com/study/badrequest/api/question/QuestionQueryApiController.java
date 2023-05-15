@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.ApiURL.QUESTION_LIST_URL;
@@ -47,6 +49,8 @@ public class QuestionQueryApiController {
 
     @GetMapping("/api/v2/questions/{questionId}")
     public ResponseEntity getQuestionDetail(@PathVariable Long questionId,
+                                            HttpServletRequest request,
+                                            HttpServletResponse response,
                                             @LoggedInMember CurrentLoggedInMember.Information information) {
         Long memberId = null;
 
@@ -54,7 +58,7 @@ public class QuestionQueryApiController {
             memberId = information.getId();
         }
 
-        Optional<QuestionDetail> detail = questionQueryRepository.findQuestionDetail(questionId, memberId);
+        Optional<QuestionDetail> detail = questionQueryRepository.findQuestionDetail(request,response,questionId, memberId);
 
         return ResponseEntity.ok()
                 .body(new ApiResponse.Success<>(SUCCESS, detail));

@@ -2,6 +2,8 @@ package com.study.badrequest.repository.question.query;
 
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 public interface QuestionQueryRepository {
@@ -9,6 +11,6 @@ public interface QuestionQueryRepository {
 
     QuestionListResult findQuestionListByHashTag(QuestionSearchConditionWithHashTag condition);
 
-    Optional<QuestionDetail> findQuestionDetail(Long questionId,Long memberId);
+    Optional<QuestionDetail> findQuestionDetail(HttpServletRequest request, HttpServletResponse response,Long questionId, Long memberId);
 
 }

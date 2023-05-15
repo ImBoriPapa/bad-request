@@ -56,7 +56,8 @@ public class QuestionImage {
 
     }
 
-    public void changeToSaved(){
+    public void changeTemporaryToSaved(Question question) {
+        this.question = question;
         this.status = ImageStatus.SAVED;
     }
 }

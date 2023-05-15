@@ -25,5 +25,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addConverter(new BindingParamToTopic());
         registry.addConverter(new BindingParamToQuestionSortCriteria());
     }
+
 }
 

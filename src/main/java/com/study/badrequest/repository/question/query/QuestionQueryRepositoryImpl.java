@@ -17,6 +17,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -39,7 +41,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public Optional<QuestionDetail> findQuestionDetail(Long questionId, Long memberId) {
+    public Optional<QuestionDetail> findQuestionDetail(HttpServletRequest request,HttpServletResponse response,Long questionId, Long memberId) {
 
         Optional<QuestionDetail> detailOptional = jpaQueryFactory
                 .select(
@@ -103,7 +105,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 detailOptional.get().getMetrics().setHasRecommendationAndKind(true, recommendation.getKind());
             }
 
-            publishingEventAsynchronously(detailOptional.get().getId(), detailOptional.get().getIsAnswered());
+            publishingEventAsynchronously(request,response,detailOptional.get().getId(), detailOptional.get().getIsAnswered());
 
         }
 
@@ -169,8 +171,8 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
 
-    private void publishingEventAsynchronously(Long questionId, Boolean isAnswered) {
-        CompletableFuture.runAsync(() -> applicationEventPublisher.publishEvent(new QuestionEventDto.View(questionId, isAnswered, PUBLIC)));
+    private void publishingEventAsynchronously(HttpServletRequest request , HttpServletResponse response,Long questionId, Boolean isAnswered) {
+        CompletableFuture.runAsync(() -> applicationEventPublisher.publishEvent(new QuestionEventDto.View(request,response,questionId, isAnswered, PUBLIC)));
     }
 
     public QuestionListResult findQuestionListByHashTag(QuestionSearchConditionWithHashTag condition) {

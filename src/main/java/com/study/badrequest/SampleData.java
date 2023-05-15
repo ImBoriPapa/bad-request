@@ -137,7 +137,7 @@ public class SampleData {
             String topic = topicsByTechnology.get(technology).get(rand.nextInt(5));
             String title = titlePrefix + " " + technology + " ?";
             String content = contentPrefix + " " + technology + ". This is question number " + i;
-            createForms.add(new QuestionRequest.CreateForm(title, content, List.of(technology, topic)));
+            createForms.add(new QuestionRequest.CreateForm(title, content, List.of(technology, topic),null));
         }
 
         ArrayList<Long> ids = new ArrayList<>();

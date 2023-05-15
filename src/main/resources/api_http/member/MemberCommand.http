@@ -95,14 +95,24 @@ GET http://localhost:8080/api/v2/questions/3/answers
 ### 질문 등록
 POST http://localhost:8080/api/v2/questions
 Content-Type: application/json
+Authorization: {{access_token}}
 
 {
   "title": "제목",
-  "contents": "내용",
+  "contents": "내용 입니다.!!",
   "tags": [
     "tag1",
     "tag2"
   ]
+}
+### 질문 수정
+PATCH http://localhost:8080/api/v2/questions/101
+Content-Type: application/json
+Authorization: {{access_token}}
+
+{
+  "title": "수정 제목",
+  "contents": "수정된 제목"
 }
 
 ### 질문 추천

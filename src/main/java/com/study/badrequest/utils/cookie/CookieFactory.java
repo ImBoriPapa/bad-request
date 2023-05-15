@@ -16,9 +16,11 @@ import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
+
 @Slf4j
 public class CookieFactory {
     private static boolean secure;
+
     @Value("${cookie-status.secure}")
     public void setSecure(boolean secure) {
         CookieFactory.secure = secure;
@@ -26,7 +28,7 @@ public class CookieFactory {
 
     public static ResponseCookie createRefreshTokenCookie(String refreshToken, long expiration) {
 
-        return ResponseCookie.from(REFRESH_TOKEN_COOKIE,refreshToken)
+        return ResponseCookie.from(REFRESH_TOKEN_COOKIE, refreshToken)
                 .maxAge(Duration.ofMillis(expiration))
                 .path("/")
                 .secure(secure)
@@ -53,6 +55,7 @@ public class CookieFactory {
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         cookie.setMaxAge(maxAge);
+        cookie.setSecure(secure);
         response.addCookie(cookie);
     }
 
@@ -64,6 +67,7 @@ public class CookieFactory {
                     cookie.setPath("/");
                     cookie.setValue("");
                     cookie.setMaxAge(0);
+                    cookie.setSecure(secure);
                     response.addCookie(cookie);
                 }
             }

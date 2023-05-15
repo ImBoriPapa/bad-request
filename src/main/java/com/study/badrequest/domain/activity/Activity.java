@@ -27,21 +27,18 @@ public class Activity {
     private String title;
     @Column(name = "DESCRIPTION")
     private String description;
-    @Column(name = "RESOURCE_ID")
-    private Long resourceId;
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    protected Activity(Member member, ActivityAction action, String title, String description, Long resourceId, LocalDateTime createdAt) {
+    protected Activity(Member member, ActivityAction action, String title, String description, LocalDateTime createdAt) {
         this.member = member;
         this.action = action;
         this.title = title;
         this.description = description;
-        this.resourceId = resourceId;
         this.createdAt = createdAt;
     }
 
-    public static Activity postQuestion(Member member, String title, String description, Long questionId, LocalDateTime createdAt) {
-        return new Activity(member, ActivityAction.QUESTION, title, description, questionId, createdAt);
+    public static Activity postQuestion(Member member, String title, String description, LocalDateTime createdAt) {
+        return new Activity(member, ActivityAction.QUESTION, title, description, createdAt);
     }
 }

@@ -1,23 +1,30 @@
 package com.study.badrequest.service.image;
 
+import com.study.badrequest.domain.image.ImageStatus;
 import com.study.badrequest.domain.image.QuestionImage;
+import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.repository.image.QuestionImageRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+
+import static com.study.badrequest.config.AsyncConfig.QUESTION_IMAGE_ASYNC_EXECUTOR;
 
 @Service
 @Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
-public class QuestionImageServiceImpl implements QuestionImageService{
+public class QuestionImageServiceImpl implements QuestionImageService {
 
     private final S3ImageUploader imageUploader;
     private final QuestionImageRepository questionImageRepository;
@@ -27,23 +34,74 @@ public class QuestionImageServiceImpl implements QuestionImageService{
 
         log.info("질문 게시글 이미지 임시 저장 원본파일명: {}, 사이즈: {}", image.getOriginalFilename(), image.getSize());
 
-        ImageUploadDto question = imageUploader.uploadFile(image, "question");
+        ImageUploadDto uploadedImage = imageUploader.uploadFile(image, "question");
 
-        QuestionImage savedImage = questionImageRepository.save(QuestionImage.createTemporaryImage(question.getOriginalFileName(), question.getStoredFileName(), question.getImageLocation(), question.getSize(), question.getFileType()));
+        QuestionImage savedImage = questionImageRepository.save(QuestionImage.createTemporaryImage(uploadedImage.getOriginalFileName(), uploadedImage.getStoredFileName(), uploadedImage.getImageLocation(), uploadedImage.getSize(), uploadedImage.getFileType()));
 
         return new QuestionImageResponse.Temporary(savedImage.getId(), savedImage.getOriginalFileName(), savedImage.getImageLocation(), savedImage.getSavedAt());
     }
 
+    @Async(QUESTION_IMAGE_ASYNC_EXECUTOR)
     @Transactional
-    public void chaneTemporaryToSaved(List<Long> imageIds) {
-
+    public void changeTemporaryToSaved(List<Long> imageIds, Question question) {
         log.info("질문 게시판 임시 이미지 저장완료로 변경");
 
         List<QuestionImage> images = questionImageRepository.findAllById(imageIds);
 
         if (!images.isEmpty()) {
-            images.forEach(QuestionImage::changeToSaved);
-        }
 
+            images.forEach(image -> {
+                log.info("이미지 id:{}, storedName: {} 저장완료로 변경", image.getId(), image.getStoredFileName());
+                image.changeTemporaryToSaved(question);
+            });
+        }
+    }
+
+
+    private void removeAllByQuestion(Question question) {
+
+        List<QuestionImage> findByQuestion = questionImageRepository.findByQuestion(question);
+
+        if (!findByQuestion.isEmpty()) {
+
+            findByQuestion.forEach(image -> imageUploader.deleteFileByStoredNames(image.getStoredFileName()));
+
+            questionImageRepository.deleteAll(findByQuestion);
+
+        }
+    }
+
+    @Override
+    @Transactional
+    public void update(List<Long> imageIds, Question question) {
+        log.info("이미지 업데이트 시작");
+        //수정 요청에 imageId가 없다면 전체 삭제
+
+        if (imageIds.isEmpty()) {
+            log.info("요청된 이미지 없음");
+            removeAllByQuestion(question);
+        } else {
+            List<QuestionImage> savedImages = questionImageRepository.findByQuestion(question);
+
+            // 저장된 이미지가 없다면 수정 요청된 이미지 전체 저장
+            if (savedImages.isEmpty()) {
+                questionImageRepository.findAllById(imageIds).forEach(image -> image.changeTemporaryToSaved(question));
+            }
+
+            List<Long> savedIds = savedImages.stream().map(QuestionImage::getId).collect(Collectors.toList());
+
+            //저장된 이미지중에 수정 요청된 이미지와 일치하지 않는다면 삭제
+            List<Long> toDelete = savedIds.stream()
+                    .filter(image -> !imageIds.contains(image))
+                    .collect(Collectors.toList());
+            questionImageRepository.deleteAllById(toDelete);
+            //수정 요청된 이미지중 임시저장파일을 저장완료로 변경
+            questionImageRepository.findAllById(imageIds)
+                    .forEach(image -> {
+                        if (image.getStatus() == ImageStatus.TEMPORARY) {
+                            image.changeTemporaryToSaved(question);
+                        }
+                    });
+        }
     }
 }

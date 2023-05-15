@@ -1,9 +1,10 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.member.MemberQueryApiController;
+import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.commons.hateoas.ResponseModelAssembler;
 import com.study.badrequest.domain.question.QuestionSort;
+import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.repository.question.query.HashTagDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
 import com.study.badrequest.repository.question.query.QuestionSearchCondition;
@@ -19,7 +20,14 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class QuestionModelAssembler extends ResponseModelAssembler {
+public class QuestionModelAssembler {
+
+    public EntityModel<QuestionResponse.Create> createCreateModel(QuestionResponse.Create response) {
+        List<Link> links = List.of(
+                linkTo(methodOn(QuestionApiController.class).create(null, null, null)).withSelfRel()
+        );
+        return EntityModel.of(response, links);
+    }
 
     public EntityModel<QuestionListResult> getQuestionListModel(QuestionListResult result, QuestionSearchCondition condition) {
         List<Link> resultLinks = new ArrayList<>();
@@ -36,15 +44,14 @@ public class QuestionModelAssembler extends ResponseModelAssembler {
         addIsAnsweredLink(condition, resultLinks);
 
         addResultsLink(result);
-
-        return createEntityModel(result, resultLinks);
+        return EntityModel.of(result, resultLinks);
     }
 
     private void addResultsLink(QuestionListResult result) {
         result.getResults().forEach(dto -> {
 
             dto.add(
-                    linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(dto.getId(), null)).withRel("to detail"),
+                    linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(dto.getId(),null,null, null)).withRel("to detail"),
                     linkTo(methodOn(MemberQueryApiController.class).getProfile(dto.getQuestioner().getId(), null)).withRel("to Questioner Profile")
             );
             dto.getHashTag().forEach(hashTagDto -> dto.add(getHashTagLink(hashTagDto)));

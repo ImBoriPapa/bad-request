@@ -13,6 +13,7 @@ public enum ApiResponseStatus {
     ERROR(1002, "서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(1003, "요청 값 검증에 실패했습니다.", HttpStatus.BAD_REQUEST),
     PERMISSION_DENIED(1004, "접근 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+
     /**
      * 파일 업로드 관련
      * code: 1100~
@@ -63,7 +64,12 @@ public enum ApiResponseStatus {
      */
     NOT_EXIST_SORT_VALUE(2500, "존재하지 않는 정렬 조건입니다.", HttpStatus.BAD_REQUEST),
     NOT_EXIST_QUESTION_STATUS_VALUE(2501, "존재하지 않는 질문 상태 입니다.", HttpStatus.BAD_REQUEST),
-
+    NOT_FOUND_QUESTION(2505, "질문을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED(2530, "태그는 최소 한개 이상 사용해야합니디.", HttpStatus.BAD_REQUEST),
+    /**
+     * 태그
+     */
+    NOT_FOUND_QUESTION_TAG(2600,"해당 질문에 태그를 찾을 수 없습니다.",HttpStatus.BAD_REQUEST),
     /**
      * 게시판 관련
      * code: 3000~
