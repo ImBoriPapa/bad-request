@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 
+import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -32,8 +33,8 @@ public class QuestionApiController {
     private final QuestionService questionService;
     private final QuestionModelAssembler modelAssembler;
 
-    @PostMapping(value = "/api/v2/questions", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity create(@RequestBody @Valid QuestionRequest.CreateForm form,
+    @PostMapping(value = QUESTION_BASE_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity create(@RequestBody @Valid QuestionRequest.Create form,
                                  BindingResult bindingResult,
                                  @LoggedInMember CurrentLoggedInMember.Information information) {
         log.info("질문 생성 요청- 요청자 아이디: {}", information.getId());

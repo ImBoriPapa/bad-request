@@ -7,7 +7,6 @@ import com.study.badrequest.domain.member.MemberProfile;
 import com.study.badrequest.domain.member.ProfileImage;
 
 import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.dto.question.QuestionRequest;
 
 import com.study.badrequest.dto.question.QuestionResponse;
@@ -124,7 +123,7 @@ public class SampleData {
         topicsByTechnology.put("SQL", List.of("SQL Basics", "SQL Joins", "SQL Aggregation", "SQL Indexes", "SQL Stored Procedures"));
         topicsByTechnology.put("MongoDB", List.of("MongoDB Basics", "MongoDB CRUD Operations", "MongoDB Aggregation", "MongoDB Indexing", "MongoDB Performance"));
 
-        List<QuestionRequest.CreateForm> createForms = new ArrayList<>(10000);
+        List<QuestionRequest.Create> creates = new ArrayList<>(10000);
         String[] titlePrefixes = {"What is", "How to", "Why do", "When should", "Where to"};
         String[] contentPrefixes = {"I am trying to learn", "I have encountered an issue with", "Can someone explain", "I want to know more about", "I am interested in"};
         String[] technologies = {"Java", "Python", "C++", "JavaScript", "HTML", "CSS", "React", "Angular", "Vue.js", "Node.js", "SQL", "MongoDB"};
@@ -137,12 +136,12 @@ public class SampleData {
             String topic = topicsByTechnology.get(technology).get(rand.nextInt(5));
             String title = titlePrefix + " " + technology + " ?";
             String content = contentPrefix + " " + technology + ". This is question number " + i;
-            createForms.add(new QuestionRequest.CreateForm(title, content, List.of(technology, topic),null));
+            creates.add(new QuestionRequest.Create(title, content, List.of(technology, topic),null));
         }
 
         ArrayList<Long> ids = new ArrayList<>();
 
-        createForms.forEach(form -> {
+        creates.forEach(form -> {
             Member member = memberList.get(new Random().nextInt(10) + 1);
             QuestionResponse.Create create = questionService.creteQuestion(member.getId(), form);
             ids.add(create.getId());

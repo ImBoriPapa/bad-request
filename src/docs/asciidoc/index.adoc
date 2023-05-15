@@ -88,14 +88,26 @@ include::{snippets}/login-oneTimeCode/http-response.adoc[]
 include::{snippets}/login-oneTimeCode/response-fields.adoc[]
 
 === 토큰 재발급
+
 include::{snippets}/login-reissue/http-request.adoc[]
 include::{snippets}/login-reissue/request-headers.adoc[]
 include::{snippets}/login-reissue/http-response.adoc[]
 include::{snippets}/login-reissue/response-headers.adoc[]
 include::{snippets}/login-reissue/response-fields.adoc[]
 
-
 == Questions
+
+=== 질문 생성
+
+include::{snippets}/question-create/http-request.adoc[]
+include::{snippets}/question-create/request-headers.adoc[]
+include::{snippets}/question-create/request-fields.adoc[]
+
+NOTE:: 이미지파일은 이미지 업로드 API를 사용해서 업로드후(임시저장상태 24시간 이내 삭제) 응답에 id를 질문 생성 요청에 함께 보내면 이미지가 저장완료됩니다. 업로드한 이미지가 없으면 생략가능합니다.
+
+include::{snippets}/question-create/http-response.adoc[]
+include::{snippets}/question-create/response-headers.adoc[]
+include::{snippets}/question-create/response-fields.adoc[]
 
 === 질문 목록 조회
 

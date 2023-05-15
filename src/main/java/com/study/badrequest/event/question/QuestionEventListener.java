@@ -1,7 +1,6 @@
 package com.study.badrequest.event.question;
 
 
-
 import com.study.badrequest.service.activity.ActivityServiceImpl;
 
 import com.study.badrequest.service.image.QuestionImageService;
@@ -12,6 +11,7 @@ import org.springframework.context.event.EventListener;
 
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.CompletableFuture;
 
 
 @Component
@@ -41,10 +41,6 @@ public class QuestionEventListener {
     @EventListener
     public void handlePostViewedEvent(QuestionEventDto.View dto) {
         log.info("질문 조회 이벤트");
-        try {
-            questionService.incrementViewWithCookie(dto.getRequest(), dto.getResponse(), dto.getQuestionId());
-        } catch (Exception e) {
-            log.error("조회 수 증가 실패 실패 질문 아이디: {}, 에러 메시지: {}", dto.getQuestionId(), e.getMessage());
-        }
+        CompletableFuture.runAsync(() -> questionService.incrementViewWithCookie(dto.getRequest(), dto.getResponse(), dto.getQuestionId()));
     }
 }

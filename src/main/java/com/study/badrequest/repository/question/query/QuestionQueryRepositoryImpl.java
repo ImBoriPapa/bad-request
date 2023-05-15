@@ -41,7 +41,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
     private final ApplicationEventPublisher applicationEventPublisher;
 
-    public Optional<QuestionDetail> findQuestionDetail(HttpServletRequest request,HttpServletResponse response,Long questionId, Long memberId) {
+    public Optional<QuestionDetail> findQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, Long memberId) {
 
         Optional<QuestionDetail> detailOptional = jpaQueryFactory
                 .select(
@@ -104,11 +104,8 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 Recommendation recommendation = optional.get();
                 detailOptional.get().getMetrics().setHasRecommendationAndKind(true, recommendation.getKind());
             }
-
-            publishingEventAsynchronously(request,response,detailOptional.get().getId(), detailOptional.get().getIsAnswered());
-
+            applicationEventPublisher.publishEvent(new QuestionEventDto.View(request, response, questionId, detailOptional.get().getIsAnswered(), PUBLIC));
         }
-
         return detailOptional;
     }
 
@@ -168,11 +165,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         return new QuestionListResult(resultSize, hasNext, sortBy, lastIndex, lastView, lastRecommend, questionListDto);
 
-    }
-
-
-    private void publishingEventAsynchronously(HttpServletRequest request , HttpServletResponse response,Long questionId, Boolean isAnswered) {
-        CompletableFuture.runAsync(() -> applicationEventPublisher.publishEvent(new QuestionEventDto.View(request,response,questionId, isAnswered, PUBLIC)));
     }
 
     public QuestionListResult findQuestionListByHashTag(QuestionSearchConditionWithHashTag condition) {
@@ -451,7 +443,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         List<String> collect = Arrays.stream(searchWord.split("#")).collect(Collectors.toList());
         return collect.subList(1, collect.size()).stream().map(tag -> "#" + tag.toLowerCase()).collect(Collectors.toList());
     }
-
 
 
 }

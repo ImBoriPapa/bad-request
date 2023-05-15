@@ -32,10 +32,10 @@ public class QuestionImageApiController {
         }
 
         log.info("질문 게시글 이미지 임시저장 요청");
-        QuestionImageResponse.Temporary temporary = questionImageService.saveTemporaryImage(image);
+        QuestionImageResponse.Temporary response = questionImageService.saveTemporaryImage(image);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success<>(SUCCESS, temporary));
+                .body(new ApiResponse.Success<>(SUCCESS, response));
     }
 
 }

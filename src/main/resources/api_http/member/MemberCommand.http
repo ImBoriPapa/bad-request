@@ -77,7 +77,13 @@ Content-Type: application/json
 Authorization: {{access_token}}
 
 ### 인증 코드로 로그인
-POST http://localhost:8080/api/v2/login/authentication-code?code=1f1e87c8-29a8-4147-8439-14f15dc9a548
+POST http://localhost:8080/api/v2/login/authentication-code
+Content-Type: application/json
+
+{
+ "code": "1f1e87c8-29a8-4147-8439-14f15dc9a548"
+}
+
 ### 질문 게시판 리스트 조회
 GET http://localhost:8080/api/v2/questions
 

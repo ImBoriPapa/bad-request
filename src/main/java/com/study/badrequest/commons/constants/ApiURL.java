@@ -22,13 +22,11 @@ public class ApiURL {
     public static final String ONE_TIME_CODE_LOGIN = BASE_API_VERSION_URL + "/login/authentication-code";
     public static final String OAUTH2_LOGIN_URL = BASE_API_VERSION_URL + "/oauth/authorization";
     public static final String OAUTH2_REDIRECT_URL = BASE_API_VERSION_URL + "/oauth/client/*";
-
     public static final String LOGOUT_URL = BASE_API_VERSION_URL + "/logout";
     public static final String TOKEN_REISSUE_URL = BASE_API_VERSION_URL + "/reissue";
     //Question
     public static final String QUESTION_DETAIL_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
-    public static final String QUESTION_LIST_URL = BASE_API_VERSION_URL + "/questions";
-
+    public static final String QUESTION_BASE_URL = BASE_API_VERSION_URL + "/questions";
     //Board
     public static final String BOARD_LIST_URL = BASE_API_VERSION_URL + "/board";
     public static final String BOARD_DETAIL_URL = BASE_API_VERSION_URL + "/board/{boardId}";

@@ -18,21 +18,21 @@ import com.study.badrequest.utils.hash_tag.HashTagUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.LockModeType;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+
 import java.util.*;
+
 import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+
 
 @Service
 @Slf4j
@@ -48,7 +48,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final ApplicationEventPublisher applicationEventPublisher;
 
     @Transactional
-    public QuestionResponse.Create creteQuestion(Long memberId, QuestionRequest.CreateForm form) {
+    public QuestionResponse.Create creteQuestion(Long memberId, QuestionRequest.Create form) {
         log.info("질문 생성 시작 요청 회원 아이디: {}, 제목: {}", memberId, form.getTitle());
 
         if (form.getTags() == null || form.getTags().size() < 1 || form.getTags().size() > 5) {
@@ -199,10 +199,10 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Transactional
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
     public void incrementViewWithCookie(HttpServletRequest request, HttpServletResponse response, Long questionId) {
+        log.info("incrementViewWithCookie");
         final String cookieName = "view_count";
-        final int maxAge = (int) LocalDate.now().plusDays(1).atStartOfDay(ZoneOffset.UTC).toEpochSecond();
+        final int maxAge = 3600;
 
         Optional<Cookie> viewCookie = CookieFactory.getCookie(request, cookieName);
 
@@ -226,10 +226,13 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private void incrementViewCount(Long questionId) {
+        log.info("조회수 증가");
+
         Question question = questionRepository
                 .findById(questionId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
         question.getQuestionMetrics().incrementCountOfView();
+
     }
 
 

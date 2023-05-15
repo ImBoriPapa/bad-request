@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_LIST_URL;
+import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
 import static com.study.badrequest.commons.response.ApiResponseStatus.SUCCESS;
 import static org.springframework.http.MediaType.*;
 
@@ -29,7 +29,7 @@ public class QuestionQueryApiController {
     private final QuestionQueryRepository questionQueryRepository;
     private final QuestionModelAssembler questionModelAssembler;
 
-    @GetMapping(value = QUESTION_LIST_URL, produces = APPLICATION_JSON_VALUE)
+    @GetMapping(value = QUESTION_BASE_URL, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity getQuestions(QuestionSearchCondition searchCondition) {
         log.info("질문 목록 조회");
         QuestionListResult result = questionQueryRepository.findQuestionListByCondition(searchCondition);

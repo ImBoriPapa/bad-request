@@ -1,14 +1,19 @@
 package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.question.QuestionMetrics;
+import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.question.QuestionSort;
+import com.study.badrequest.dto.question.QuestionRequest;
+import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.repository.question.query.HashTagDto;
 import com.study.badrequest.repository.question.query.QuestionDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
 import com.study.badrequest.repository.question.query.QuestionQueryRepository;
+import com.study.badrequest.service.question.QuestionService;
+import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,33 +23,39 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
-import org.springframework.restdocs.payload.JsonFieldType;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static com.study.badrequest.domain.member.Authority.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_LIST_URL;
+import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
+import static org.mockito.Mockito.when;
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.JsonFieldType.*;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
+
+
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
-@WebMvcTest(controllers = QuestionQueryApiController.class)
+@WebMvcTest(controllers = {QuestionQueryApiController.class, QuestionApiController.class})
 @Import(QuestionModelAssembler.class)
 @ActiveProfiles("test")
 @AutoConfigureRestDocs
@@ -58,7 +69,60 @@ public class QuestionApiDocs {
     @MockBean
     private QuestionQueryRepository questionQueryRepository;
     @MockBean
+    private QuestionService questionService;
+    @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Test
+    @DisplayName("질문 생성")
+    @WithCustomMockUser(memberId = "321312", authority = MEMBER)
+    void 질문생성() throws Exception {
+        //given
+        Long memberId = 321312L;
+        Long questionId = 424211L;
+        String title = "제목입니다.";
+        String contents = "내용은 최소 5글자 이상입니다.";
+        List<String> tags = List.of("Java", "Spring");
+        List<Long> imageIds = List.of(53L, 34L, 53L);
+        String accessToken = UUID.randomUUID().toString();
+        QuestionRequest.Create create = new QuestionRequest.Create(title, contents, tags, imageIds);
+        QuestionResponse.Create response = new QuestionResponse.Create(questionId, LocalDateTime.now());
+        //when
+        when(questionService.creteQuestion(any(), any())).thenReturn(response);
+        //then
+        mockMvc.perform(post(QUESTION_BASE_URL)
+                        .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(create))
+                )
+                .andDo(print())
+                .andDo(document("question-create",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                        ),
+                        responseHeaders(
+                                headerWithName(HttpHeaders.LOCATION).description("Resource Location")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").type(STRING).description("질문 제목"),
+                                fieldWithPath("contents").type(STRING).description("질문 내용"),
+                                fieldWithPath("tags").type(ARRAY).description("태그"),
+                                fieldWithPath("imageIds").type(ARRAY).description("업로드된 이미지 식별 아이디").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(STRING).description("응답 상태"),
+                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
+                                fieldWithPath("result.askedAt").type(STRING).description("질문 생성 시간"),
+                                fieldWithPath("result.links.[0].rel").type(STRING).description("self"),
+                                fieldWithPath("result.links.[0].href").type(STRING).description("uri")
+                        )
+                ));
+
+    }
 
     @Test
     @DisplayName("질문 리스트 조회")
@@ -97,7 +161,7 @@ public class QuestionApiDocs {
         //when
         given(questionQueryRepository.findQuestionListByCondition(any())).willReturn(questionListResult);
         //then
-        mockMvc.perform(get(QUESTION_LIST_URL))
+        mockMvc.perform(get(QUESTION_BASE_URL))
                 .andDo(print())
                 .andDo(document("question-list",
                         getDocumentRequest(),

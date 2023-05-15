@@ -24,7 +24,10 @@ public class QuestionModelAssembler {
 
     public EntityModel<QuestionResponse.Create> createCreateModel(QuestionResponse.Create response) {
         List<Link> links = List.of(
-                linkTo(methodOn(QuestionApiController.class).create(null, null, null)).withSelfRel()
+                linkTo(methodOn(QuestionApiController.class).create(null, null, null)).withSelfRel(),
+                linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(response.getId(), null, null, null)).withRel("detail"),
+                linkTo(methodOn(QuestionApiController.class).modify(response.getId(), null, null)).withRel("modify"),
+                linkTo(methodOn(QuestionApiController.class).delete(response.getId(), null)).withRel("delete")
         );
         return EntityModel.of(response, links);
     }
@@ -51,7 +54,7 @@ public class QuestionModelAssembler {
         result.getResults().forEach(dto -> {
 
             dto.add(
-                    linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(dto.getId(),null,null, null)).withRel("to detail"),
+                    linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(dto.getId(), null, null, null)).withRel("to detail"),
                     linkTo(methodOn(MemberQueryApiController.class).getProfile(dto.getQuestioner().getId(), null)).withRel("to Questioner Profile")
             );
             dto.getHashTag().forEach(hashTagDto -> dto.add(getHashTagLink(hashTagDto)));

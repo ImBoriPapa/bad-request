@@ -38,7 +38,7 @@ public class AsyncConfig implements AsyncConfigurer {
         executor.setThreadNamePrefix("qi-exec-" + executor.getActiveCount());
         return executor;
     }
-
+    
     @Override
     public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
         return new CustomAsyncExceptionHandler();

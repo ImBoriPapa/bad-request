@@ -38,7 +38,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 
 
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -108,7 +107,7 @@ public class MemberApiDocs {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiredAt = createdAt.plusMinutes(5);
         MemberRequestForm.SendAuthenticationEmail authenticationEmail = new MemberRequestForm.SendAuthenticationEmail(email);
-        MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt,expiredAt);
+        MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt, expiredAt);
         //when
         given(memberCommandService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
 
