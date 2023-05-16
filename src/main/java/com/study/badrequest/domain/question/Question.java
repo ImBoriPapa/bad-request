@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "QUESTION", indexes = {
-        @Index(name = "QUESTION_IS_ANSWERED_IDX", columnList = "IS_ANSWERED"),
         @Index(name = "QUESTION_EXPOSURE_IDX", columnList = "EXPOSURE")
 }
 )
@@ -31,8 +30,6 @@ public class Question {
     private String contents;
     @Column(name = "PREVIEW")
     private String preview;
-    @Column(name = "IS_ANSWERED")
-    private Boolean isAnswered;
     @Enumerated(EnumType.STRING)
     @Column(name = "EXPOSURE")
     private ExposureStatus exposure;
@@ -52,15 +49,14 @@ public class Question {
         this.title = title;
         this.contents = contents;
         this.preview = contents;
-        this.isAnswered = false;
         this.exposure = ExposureStatus.PUBLIC;
         this.askedAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
         this.deletedRequestAt = null;
     }
 
-    public void addQuestionMetrics(QuestionMetrics viewCount) {
-        this.questionMetrics = viewCount;
+    public void addQuestionMetrics(QuestionMetrics questionMetrics) {
+        this.questionMetrics = questionMetrics;
     }
 
     @PrePersist
@@ -76,12 +72,6 @@ public class Question {
         this.exposure = status;
         this.questionMetrics.changeExposure(status);
         this.deletedRequestAt = LocalDateTime.now();
-    }
-
-    public void changeToAnswered() {
-        this.isAnswered = true;
-        this.questionMetrics.changeIsAnswered(true);
-        this.modifiedAt = LocalDateTime.now();
     }
 
     public void modify(String title, String contents) {

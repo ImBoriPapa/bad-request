@@ -8,7 +8,9 @@ import com.study.badrequest.domain.question.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.service.question.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionService;
+import com.study.badrequest.service.question.QuestionTagService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +33,8 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @Slf4j
 public class QuestionApiController {
     private final QuestionService questionService;
+    private final QuestionTagService questionTagService;
+    private final QuestionMetricsService questionMetricsService;
     private final QuestionModelAssembler modelAssembler;
 
     @PostMapping(value = QUESTION_BASE_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,7 +47,7 @@ public class QuestionApiController {
             throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
         }
 
-        QuestionResponse.Create response = questionService.creteQuestion(information.getId(), form);
+        QuestionResponse.Create response = questionService.createQuestion(information.getId(), form);
 
         return ResponseEntity
                 .created(linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(response.getId(), null, null, null)).toUri())
@@ -79,7 +83,7 @@ public class QuestionApiController {
 
         RecommendationKind kind = recommend ? RecommendationKind.RECOMMENDATION : RecommendationKind.UN_RECOMMENDATION;
 
-        QuestionResponse.Modify modify = questionService.createRecommendation(10L, Authority.MEMBER, questionId, kind);
+        QuestionResponse.Modify modify = questionMetricsService.createRecommendation(10L, questionId);
 
         return ResponseEntity.ok()
                 .body(new ApiResponse.Success<>(SUCCESS, modify));
@@ -88,7 +92,7 @@ public class QuestionApiController {
     @DeleteMapping("/api/v2/questions/{questionId}/recommendations")
     public ResponseEntity deleteRecommendation(@PathVariable Long questionId) {
 
-        QuestionResponse.Modify modify = questionService.deleteRecommendation(10L, Authority.MEMBER, questionId);
+        QuestionResponse.Modify modify = questionMetricsService.deleteRecommendation(10L, questionId);
 
         return ResponseEntity.ok()
                 .body(new ApiResponse.Success<>(SUCCESS, modify));

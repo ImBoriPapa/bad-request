@@ -10,8 +10,7 @@ import javax.persistence.*;
 @Table(name = "QUESTION_METRICS", indexes = {
         @Index(name = "VIEW_IDX", columnList = "COUNT_OF_VIEW"),
         @Index(name = "RECOMMEND_IDX", columnList = "COUNT_OF_RECOMMEND"),
-        @Index(name = "EXPOSURE_IDX", columnList = "EXPOSURE"),
-        @Index(name = "IS_ANSWERED_IDX", columnList = "IS_ANSWERED")
+        @Index(name = "EXPOSURE_IDX", columnList = "EXPOSURE")
 })
 @NoArgsConstructor
 @Getter
@@ -25,20 +24,19 @@ public class QuestionMetrics {
     private Integer countOfRecommend;
     @Column(name = "COUNT_OF_VIEW")
     private Integer countOfView;
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "questionMetrics")
-    private Question question;
     @Enumerated(EnumType.STRING)
     @Column(name = "EXPOSURE")
     private ExposureStatus exposure;
-    @Column(name = "IS_ANSWERED")
-    private Boolean isAnswered;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "questionMetrics")
+    private Question question;
+
 
     protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Question question) {
         this.countOfRecommend = countOfRecommend;
         this.countOfView = countOfView;
-        this.question = question;
         this.exposure = question.getExposure();
-        this.isAnswered = question.getIsAnswered();
+        this.question = question;
+
     }
 
     public static QuestionMetrics createQuestionMetrics(Question question) {
@@ -61,7 +59,4 @@ public class QuestionMetrics {
         this.exposure = exposureStatus;
     }
 
-    public void changeIsAnswered(boolean isAnswered) {
-        this.isAnswered = isAnswered;
-    }
 }

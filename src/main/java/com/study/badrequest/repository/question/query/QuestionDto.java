@@ -18,7 +18,6 @@ public class QuestionDto extends EntityModel {
     private Long id;
     private String title;
     private String preview;
-    private Boolean isAnswered;
     private Metrics metrics;
     private Questioner questioner;
     private List<HashTagDto> hashTag = new ArrayList<>();

@@ -81,7 +81,7 @@ POST http://localhost:8080/api/v2/login/authentication-code
 Content-Type: application/json
 
 {
- "code": "1f1e87c8-29a8-4147-8439-14f15dc9a548"
+  "code": "1f1e87c8-29a8-4147-8439-14f15dc9a548"
 }
 
 ### 질문 게시판 리스트 조회
@@ -95,6 +95,7 @@ GET http://localhost:8080/api/v2/questions?size=5&sort=recommend
 
 ### 질문 상세 보기
 GET http://localhost:8080/api/v2/questions/15
+
 ### 질문 답변 목록
 GET http://localhost:8080/api/v2/questions/3/answers
 
@@ -111,8 +112,9 @@ Authorization: {{access_token}}
     "tag2"
   ]
 }
+
 ### 질문 수정
-PATCH http://localhost:8080/api/v2/questions/101
+PATCH http://localhost:8080/api/v2/questions/10
 Content-Type: application/json
 Authorization: {{access_token}}
 

@@ -49,7 +49,6 @@ public class LoginServiceImpl implements LoginService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
-
     private final AuthenticationCodeRepository authenticationCodeRepository;
 
     @Override

@@ -4,7 +4,9 @@ package com.study.badrequest.event.question;
 import com.study.badrequest.service.activity.ActivityServiceImpl;
 
 import com.study.badrequest.service.image.QuestionImageService;
+import com.study.badrequest.service.question.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionService;
+import com.study.badrequest.service.question.QuestionTagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -19,19 +21,23 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class QuestionEventListener {
     private final QuestionService questionService;
+    private final QuestionTagService questionTagService;
     private final QuestionImageService questionImageService;
+    private final QuestionMetricsService questionMetricsService;
     private final ActivityServiceImpl activityService;
-
     @EventListener
-    public void handleCreateEvent(QuestionEventDto.Create dto) {
-        log.info("질문 생성 이벤트");
+    public void handleCreateEvent(QuestionEventDto.CreateEvent dto) {
+        log.info("질문 생성 이벤트 수신");
+
+        questionTagService.createQuestionTag(dto.getTags(), dto.getQuestion());
+
         questionImageService.changeTemporaryToSaved(dto.getImages(), dto.getQuestion());
 
         activityService.createActivity(dto.getMember(), dto.getQuestion().getTitle(), dto.getQuestion().getAskedAt());
     }
 
     @EventListener
-    public void handleModifyEvent(QuestionEventDto.Modify dto) {
+    public void handleModifyEvent(QuestionEventDto.ModifyEvent dto) {
         log.info("질문 수정 이벤트");
 
         questionImageService.update(dto.getImages(), dto.getQuestion());
@@ -39,8 +45,8 @@ public class QuestionEventListener {
     }
 
     @EventListener
-    public void handlePostViewedEvent(QuestionEventDto.View dto) {
+    public void handlePostViewedEvent(QuestionEventDto.ViewEvent dto) {
         log.info("질문 조회 이벤트");
-        CompletableFuture.runAsync(() -> questionService.incrementViewWithCookie(dto.getRequest(), dto.getResponse(), dto.getQuestionId()));
+        CompletableFuture.runAsync(() -> questionMetricsService.incrementViewWithCookie(dto.getRequest(), dto.getResponse(), dto.getQuestionId()));
     }
 }

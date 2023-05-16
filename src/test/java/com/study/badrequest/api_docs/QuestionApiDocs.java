@@ -3,7 +3,6 @@ package com.study.badrequest.api_docs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.question.QuestionSort;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
@@ -12,7 +11,9 @@ import com.study.badrequest.repository.question.query.HashTagDto;
 import com.study.badrequest.repository.question.query.QuestionDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
 import com.study.badrequest.repository.question.query.QuestionQueryRepository;
+import com.study.badrequest.service.question.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionService;
+import com.study.badrequest.service.question.QuestionTagService;
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import org.junit.jupiter.api.DisplayName;
@@ -71,6 +72,11 @@ public class QuestionApiDocs {
     @MockBean
     private QuestionService questionService;
     @MockBean
+    private QuestionTagService questionTagService;
+
+    @MockBean
+    private QuestionMetricsService questionMetricsService;
+    @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
@@ -88,7 +94,7 @@ public class QuestionApiDocs {
         QuestionRequest.Create create = new QuestionRequest.Create(title, contents, tags, imageIds);
         QuestionResponse.Create response = new QuestionResponse.Create(questionId, LocalDateTime.now());
         //when
-        when(questionService.creteQuestion(any(), any())).thenReturn(response);
+        when(questionService.createQuestion(any(), any())).thenReturn(response);
         //then
         mockMvc.perform(post(QUESTION_BASE_URL)
                         .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)
@@ -152,9 +158,9 @@ public class QuestionApiDocs {
         );
 
         List<QuestionDto> questionDtos = List.of(
-                new QuestionDto(99L, "질문1", "질문내용 미리보기1..", false, metrics1, questioner1, tagDtos1, LocalDateTime.now()),
-                new QuestionDto(98L, "질문1", "질문내용 미리보기1..", false, metrics2, questioner2, tagDtos2, LocalDateTime.now()),
-                new QuestionDto(97L, "질문1", "질문내용 미리보기1..", false, metrics3, questioner3, tagDtos3, LocalDateTime.now())
+                new QuestionDto(99L, "질문1", "질문내용 미리보기1..", metrics1, questioner1, tagDtos1, LocalDateTime.now()),
+                new QuestionDto(98L, "질문1", "질문내용 미리보기1..", metrics2, questioner2, tagDtos2, LocalDateTime.now()),
+                new QuestionDto(97L, "질문1", "질문내용 미리보기1..", metrics3, questioner3, tagDtos3, LocalDateTime.now())
         );
 
         QuestionListResult questionListResult = new QuestionListResult(3, true, QuestionSort.NEW_EAST, 97L, null, null, questionDtos);
@@ -192,7 +198,6 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.results.[0].id").type(NUMBER).description("질문 식별 아이디"),
                                 fieldWithPath("result.results.[0].title").type(STRING).description("질문 제목"),
                                 fieldWithPath("result.results.[0].preview").type(STRING).description("질문 내용 미리보기"),
-                                fieldWithPath("result.results.[0].isAnswered").type(BOOLEAN).description("답변완료"),
                                 fieldWithPath("result.results.[0].askedAt").type(STRING).description("질문 등록 일시"),
                                 fieldWithPath("result.results.[0].metrics").type(OBJECT).description("지표 정보"),
                                 fieldWithPath("result.results.[0].metrics.countOfRecommend").type(NUMBER).description("추천수"),

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class LoginServiceImplTest {
     @InjectMocks
-    private LoginServiceImpl loginService;
+    LoginServiceImpl loginService;
     @Mock
     MemberRepository memberRepository;
     @Mock

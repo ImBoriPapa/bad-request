@@ -16,7 +16,6 @@ public class QuestionDetail {
     private Long id;
     private String title;
     private String contents;
-    private Boolean isAnswered;
     private Boolean isQuestioner;
     private QuestionDetailMetrics metrics;
     private QuestionDetailQuestioner questioner;

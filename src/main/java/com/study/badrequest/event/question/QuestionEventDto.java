@@ -17,7 +17,7 @@ public class QuestionEventDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class Create {
+    public static class CreateEvent {
         private Member member;
         private Question question;
         private List<String> tags = new ArrayList<>();
@@ -27,7 +27,7 @@ public class QuestionEventDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class Modify {
+    public static class ModifyEvent {
 
         private Question question;
         private List<Long> images = new ArrayList<>();
@@ -36,12 +36,10 @@ public class QuestionEventDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class View {
-
+    public static class ViewEvent {
         private HttpServletRequest request;
         private HttpServletResponse response;
         private Long questionId;
-        private Boolean isAnswered;
         private ExposureStatus exposureStatus;
 
     }

@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.study.badrequest.domain.board.QHashTag.*;
@@ -49,7 +48,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                                 question.id.as("id"),
                                 question.title.as("title"),
                                 question.contents.as("contents"),
-                                question.isAnswered.as("isAnswered"),
                                 Expressions.asBoolean(false).as("isQuestioner"),
                                 Projections.fields(QuestionDetail.QuestionDetailMetrics.class,
                                         questionMetrics.countOfRecommend.as("countOfRecommend"),
@@ -104,7 +102,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 Recommendation recommendation = optional.get();
                 detailOptional.get().getMetrics().setHasRecommendationAndKind(true, recommendation.getKind());
             }
-            applicationEventPublisher.publishEvent(new QuestionEventDto.View(request, response, questionId, detailOptional.get().getIsAnswered(), PUBLIC));
+            applicationEventPublisher.publishEvent(new QuestionEventDto.ViewEvent(request, response, questionId, PUBLIC));
         }
         return detailOptional;
     }
@@ -114,7 +112,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         final int limitSize = setLimitSize(condition.getSize());
 
-        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfIndex(), condition.getLastOfView(), condition.getLastOfRecommend(), limitSize, PUBLIC, condition.getIsAnswered(), condition.getSort());
+        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfIndex(), condition.getLastOfView(), condition.getLastOfRecommend(), limitSize, PUBLIC, condition.getSort());
 
         List<QuestionDto> questionListDto = selelctQuestionFieldsByIdListAsQuestionDto(questionIdList);
 
@@ -227,17 +225,17 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
      * @param lastIndex      :  조회 시작 위치
      * @param limitSize      :  조회 데이터 크기
      * @param exposureStatus : 노출 설정
-     * @param isAnswered     : 답변완료
+
      * @param sort
      * @return
      */
-    private List<Long> selectQuestionIdList(Long lastIndex, Integer lastOfView, Integer lastOfRecommend, Integer limitSize, ExposureStatus exposureStatus, Boolean isAnswered, QuestionSort sort) {
+    private List<Long> selectQuestionIdList(Long lastIndex, Integer lastOfView, Integer lastOfRecommend, Integer limitSize, ExposureStatus exposureStatus, QuestionSort sort) {
 
         JPAQuery<Long> query = jpaQueryFactory.select(question.id).from(question);
         JPAQuery<Long> queryWithSort = jpaQueryFactory.select(questionMetrics.id).from(questionMetrics);
 
         if (sort == null) {
-            query.where(lastIndexCursor(lastIndex), eqIsAnswered(isAnswered))
+            query.where(lastIndexCursor(lastIndex))
                     .orderBy(question.id.desc())
                     .limit(limitSize + 1).fetch();
 
@@ -245,15 +243,14 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         if (sort != null) {
 
             List<Long> metricsIds;
-            BooleanExpression eqAnswered = isAnswered == null ? null : questionMetrics.isAnswered.eq(isAnswered);
+
 
             switch (sort) {
                 case VIEW:
 
                     metricsIds = queryWithSort.where(
                                     lastViewCursor(lastOfView),
-                                    questionMetrics.exposure.eq(PUBLIC),
-                                    eqAnswered)
+                                    questionMetrics.exposure.eq(PUBLIC))
                             .orderBy(questionMetrics.countOfView.desc())
                             .limit(limitSize + 1)
                             .fetch();
@@ -264,8 +261,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
                     metricsIds = queryWithSort.where(
                                     lastRecommendCursor(lastOfRecommend),
-                                    questionMetrics.exposure.eq(PUBLIC),
-                                    eqAnswered)
+                                    questionMetrics.exposure.eq(PUBLIC))
                             .orderBy(questionMetrics.countOfRecommend.desc())
                             .limit(limitSize + 1)
                             .fetch();
@@ -295,7 +291,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                         question.id.as("id"),
                         question.title.as("title"),
                         question.preview.as("preview"),
-                        question.isAnswered.as("isAnswered"),
                         Projections.fields(QuestionDto.Metrics.class,
                                 questionMetrics.countOfRecommend.as("countOfRecommend"),
                                 questionMetrics.countOfView.as("countOfView")
@@ -392,9 +387,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return keyword == null ? null : question.title.containsIgnoreCase(keyword);
     }
 
-    private BooleanExpression eqIsAnswered(Boolean isAnswered) {
-        return isAnswered == null ? null : question.isAnswered.eq(isAnswered);
-    }
+
 
     private BooleanExpression eqExposure(ExposureStatus status) {
         return status == null ? question.exposure.eq(PUBLIC) : question.exposure.eq(status);
