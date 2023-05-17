@@ -39,6 +39,7 @@ public class QuestionDetail {
     public static class QuestionDetailMetrics {
         private Integer countOfRecommend;
         private Integer countOfView;
+        private Integer countOfAnswer;
         private Boolean hasRecommendation;
         private RecommendationKind kind;
         public void setHasRecommendationAndKind(boolean hasRecommendation,RecommendationKind kind) {

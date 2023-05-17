@@ -110,6 +110,9 @@ public class SecurityConfig {
                 .antMatchers("/static/**", "/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")
                 .permitAll()
 
+                .antMatchers("/test")
+                .permitAll()
+
                 .anyRequest().authenticated()
                 //oauth2
                 .and()

@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 @Entity
 @Table(name = "QUESTION_METRICS", indexes = {
         @Index(name = "VIEW_IDX", columnList = "COUNT_OF_VIEW"),
         @Index(name = "RECOMMEND_IDX", columnList = "COUNT_OF_RECOMMEND"),
+        @Index(name = "ANSWER_IDX", columnList = "COUNT_OF_ANSWER"),
         @Index(name = "EXPOSURE_IDX", columnList = "EXPOSURE")
 })
 @NoArgsConstructor
@@ -24,6 +26,8 @@ public class QuestionMetrics {
     private Integer countOfRecommend;
     @Column(name = "COUNT_OF_VIEW")
     private Integer countOfView;
+    @Column(name = "COUNT_OF_ANSWER")
+    private Integer countOfAnswer;
     @Enumerated(EnumType.STRING)
     @Column(name = "EXPOSURE")
     private ExposureStatus exposure;
@@ -31,16 +35,17 @@ public class QuestionMetrics {
     private Question question;
 
 
-    protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Question question) {
+    protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Integer countOfAnswer, Question question) {
         this.countOfRecommend = countOfRecommend;
         this.countOfView = countOfView;
+        this.countOfAnswer = countOfAnswer;
         this.exposure = question.getExposure();
         this.question = question;
 
     }
 
     public static QuestionMetrics createQuestionMetrics(Question question) {
-        return new QuestionMetrics(0, 0, question);
+        return new QuestionMetrics(0, 0, 0, question);
     }
 
     public void incrementCountOfRecommendations() {

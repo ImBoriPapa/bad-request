@@ -32,7 +32,7 @@ public class BoardImageServiceImpl implements BoardImageService {
 
         final String FOLDER_NAME = "board";
 
-        ImageUploadDto imageUploadDto = imageUploader.uploadFile(image, FOLDER_NAME);
+        ImageUploadDto imageUploadDto = imageUploader.uploadImageFile(image, FOLDER_NAME);
 
         BoardImage boardImage = BoardImage
                 .createBoardImage()

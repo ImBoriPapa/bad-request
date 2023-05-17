@@ -32,6 +32,13 @@ public class QuestionModelAssembler {
         return EntityModel.of(response, links);
     }
 
+    public EntityModel<QuestionResponse.Modify> createModifyModel(QuestionResponse.Modify response) {
+        List<Link> links = List.of(
+                linkTo(methodOn(QuestionApiController.class).modify(response.getId(), null, null)).withSelfRel()
+        );
+        return EntityModel.of(response, links);
+    }
+
     public EntityModel<QuestionListResult> getQuestionListModel(QuestionListResult result, QuestionSearchCondition condition) {
         List<Link> resultLinks = new ArrayList<>();
 

@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.exception.custom_exception.ImageFileUploadExceptionBasic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+
 @Component
 @Slf4j
 @RequiredArgsConstructor
@@ -34,7 +37,7 @@ public class S3ImageUploader implements ImageUploader {
     @Value("${s3-image.default-profile-image}")
     public String DEFAULT_PROFILE_IMAGE;
 
-    public ImageUploadDto uploadFile(MultipartFile image, String folderName) {
+    public ImageUploadDto uploadImageFile(MultipartFile image, String folderName) {
 
         String storedName = getStoredName(folderName, image);
 
@@ -53,11 +56,11 @@ public class S3ImageUploader implements ImageUploader {
     /**
      * upload File List
      */
-    public List<ImageUploadDto> uploadFile(List<MultipartFile> images, String folderName) {
+    public List<ImageUploadDto> uploadImageFile(List<MultipartFile> images, String folderName) {
         log.info("[S3ImageUploader -> uploadFile()]");
         return images
                 .stream()
-                .map(file -> uploadFile(file, folderName))
+                .map(file -> uploadImageFile(file, folderName))
                 .collect(Collectors.toList());
     }
 
@@ -114,7 +117,7 @@ public class S3ImageUploader implements ImageUploader {
                             objectMetadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new ImageFileUploadExceptionBasic(ApiResponseStatus.UPLOAD_FAIL_ERROR);
+            throw new CustomRuntimeException(UPLOAD_FAIL_ERROR);
         }
     }
 
@@ -160,7 +163,7 @@ public class S3ImageUploader implements ImageUploader {
     private void validateExtension(String originalFileName) {
         if (originalFileName.lastIndexOf(".") < 0) {
             log.info("[확장자가 없는 파일명={}]", originalFileName);
-            throw new ImageFileUploadExceptionBasic(ApiResponseStatus.WRONG_FILE_ERROR);
+            throw new CustomRuntimeException(WRONG_FILE_ERROR);
         }
     }
 
@@ -170,7 +173,7 @@ public class S3ImageUploader implements ImageUploader {
     private void validateIsSupportExtension(String ext) {
         if (Arrays.stream(SupportImageExtension.values())
                 .noneMatch(imageExtension -> imageExtension.getExtension().equals(ext))) {
-            throw new ImageFileUploadExceptionBasic(ApiResponseStatus.NOT_SUPPORT_ERROR);
+            throw new CustomRuntimeException(NOT_SUPPORT_ERROR);
         }
     }
 

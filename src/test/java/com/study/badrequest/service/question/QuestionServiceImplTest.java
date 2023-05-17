@@ -6,18 +6,14 @@ import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.board.HashTagRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.question.QuestionRepository;
-import com.study.badrequest.repository.question.QuestionTagRepository;
-import com.study.badrequest.repository.reommendation.RecommendationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -38,46 +34,51 @@ class QuestionServiceImplTest {
     @Mock
     QuestionRepository questionRepository;
     @Mock
-    HashTagRepository hashTagRepository;
-    @Mock
-    QuestionTagRepository questionTagRepository;
-    @Mock
-    RecommendationRepository recommendationRepository;
-    @Mock
     ApplicationEventPublisher applicationEventPublisher;
     @Mock
     MemberRepository memberRepository;
 
     @Test
-    @DisplayName("질문 생성 테스트1: 태그가 1개 이하, 5개 이상")
-    void 생성테스트1() throws Exception {
+    @DisplayName("질문 생성 테스트: 태그가 1개 이하")
+    void createQuestionWithLessThanOneTag() throws Exception {
         //given
         Long memberId = 341L;
         String title = "제목입니다.";
         String contents = "내용입니다.";
         List<String> emptyTags = List.of();
         List<Long> emptyLong = List.of();
-        List<String> sixTags = List.of("tag1","tag2","tag3","tag4","tag5","tag6");
-
         //when
-        QuestionRequest.Create lessThanOne = new QuestionRequest.Create(title,contents,emptyTags,emptyLong);
-        QuestionRequest.Create moreThanFive = new QuestionRequest.Create(title,contents,sixTags,emptyLong);
-
+        QuestionRequest.Create lessThanOne = new QuestionRequest.Create(title, contents, emptyTags, emptyLong);
         //then
         assertThatThrownBy(() -> questionService.createQuestion(memberId, lessThanOne)).isInstanceOf(CustomRuntimeException.class);
-        assertThatThrownBy(() -> questionService.createQuestion(memberId, moreThanFive)).isInstanceOf(CustomRuntimeException.class);
     }
 
     @Test
-    @DisplayName("질문 생성 테스트2: 회원 정보를 찾지 못할때")
-    void 생성테스트2() throws Exception{
+    @DisplayName("질문 생성 테스트: 태그가 5개 이상")
+    void createQuestionWithMoreThanFiveTags() throws Exception {
         //given
         Long memberId = 341L;
         String title = "제목입니다.";
         String contents = "내용입니다.";
-        List<String> tags = List.of("tag1","tag2","tag3");
         List<Long> emptyLong = List.of();
-        QuestionRequest.Create request = new QuestionRequest.Create(title,contents,tags,emptyLong);
+        List<String> sixTags = List.of("tag1", "tag2", "tag3", "tag4", "tag5", "tag6");
+        //when
+        QuestionRequest.Create moreThanFive = new QuestionRequest.Create(title, contents, sixTags, emptyLong);
+
+        //then
+        assertThatThrownBy(() -> questionService.createQuestion(memberId, moreThanFive)).isInstanceOf(CustomRuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("질문 생성 테스트: 회원 정보를 찾지 못할때")
+    void createQuestionWithNotFoundMember() throws Exception {
+        //given
+        Long memberId = 341L;
+        String title = "제목입니다.";
+        String contents = "내용입니다.";
+        List<String> tags = List.of("tag1", "tag2", "tag3");
+        List<Long> emptyLong = List.of();
+        QuestionRequest.Create request = new QuestionRequest.Create(title, contents, tags, emptyLong);
         //when
         when(memberRepository.findById(any())).thenThrow(CustomRuntimeException.class);
         //then
@@ -85,16 +86,15 @@ class QuestionServiceImplTest {
     }
 
     @Test
-    @DisplayName("질문 생성 테스트3: 회원 정보를 찾지 못할때")
-    void 생성테스트3() throws Exception{
+    @DisplayName("질문 생성 테스트: 정상 동작")
+    void createQuestion4() throws Exception {
         //given
         Long memberId = 341L;
         String title = "제목입니다.";
         String contents = "내용입니다.";
-        List<String> tags = List.of("tag1","tag2","tag3");
+        List<String> tags = List.of("tag1", "tag2", "tag3");
         List<Long> emptyLong = List.of();
-        QuestionRequest.Create request = new QuestionRequest.Create(title,contents,tags,emptyLong);
-        QuestionResponse.Create response = new QuestionResponse.Create();
+        QuestionRequest.Create request = new QuestionRequest.Create(title, contents, tags, emptyLong);
         Member member = Member.builder()
                 .email("email@email.com")
                 .build();
@@ -104,14 +104,14 @@ class QuestionServiceImplTest {
                 .title(title)
                 .contents(contents)
                 .build();
-
-
         //when
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(questionRepository.save(any())).thenReturn(question);
         QuestionResponse.Create create = questionService.createQuestion(memberId, request);
         //then
-
+        verify(memberRepository, times(1)).findById(memberId);
+        verify(questionRepository, times(1)).save(any(Question.class));
+        verify(applicationEventPublisher, times(1)).publishEvent(any(QuestionEventDto.CreateEvent.class));
     }
 
 

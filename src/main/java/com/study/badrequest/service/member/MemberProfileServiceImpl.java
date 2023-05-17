@@ -98,7 +98,7 @@ public class MemberProfileServiceImpl implements MemberProfileService{
             imageUploader.deleteFileByStoredNames(member.getMemberProfile().getProfileImage().getStoredFileName());
         }
 
-        ImageUploadDto uploadedFile = imageUploader.uploadFile(image, "profile");
+        ImageUploadDto uploadedFile = imageUploader.uploadImageFile(image, "profile");
 
         eventPublisher.publishEvent(new MemberEventDto.Update(member,"프로필 이미지 변경",member.getUpdatedAt()));
 

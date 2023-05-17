@@ -32,6 +32,7 @@ public class QuestionDto extends EntityModel {
     public static class Metrics {
         private Integer countOfRecommend;
         private Integer countOfView;
+        private Integer countOfAnswer;
 
     }
     @NoArgsConstructor

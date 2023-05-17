@@ -13,6 +13,7 @@ public enum ApiResponseStatus {
     ERROR(1002, "서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(1003, "요청 값 검증에 실패했습니다.", HttpStatus.BAD_REQUEST),
     PERMISSION_DENIED(1004, "접근 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+    BANNED_WORD(1005, "사용 금지된 단어를 사용하였습니다..", HttpStatus.BAD_REQUEST),
 
     /**
      * 파일 업로드 관련
@@ -22,6 +23,7 @@ public enum ApiResponseStatus {
     UPLOAD_FAIL_ERROR(1102, "파일 업로드에 실패했습니다.", HttpStatus.BAD_REQUEST),
     NOT_SUPPORT_ERROR(1103, "지원하지 않는 파일 형식입니다.", HttpStatus.BAD_REQUEST),
     TOO_BIG_PROFILE_IMAGE_SIZE(1104, "프로필 이미지 파일의 크기는 500KB이하만 가능합니다.", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_IMAGE_FILE(1105, "이미지 파일을 찾을수 없습니다.", HttpStatus.BAD_REQUEST),
     /**
      * 로그인 관련
      */
@@ -69,7 +71,7 @@ public enum ApiResponseStatus {
     /**
      * 태그
      */
-    NOT_FOUND_QUESTION_TAG(2600,"해당 질문에 태그를 찾을 수 없습니다.",HttpStatus.BAD_REQUEST),
+    NOT_FOUND_QUESTION_TAG(2600, "해당 질문에 태그를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     /**
      * 게시판 관련
      * code: 3000~

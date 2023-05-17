@@ -1,4 +1,4 @@
-package com.study.badrequest.utils.validator;
+package com.study.badrequest.utils.verification;
 
 import com.study.badrequest.commons.annotation.EnumValid;
 

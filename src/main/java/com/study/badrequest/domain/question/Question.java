@@ -2,6 +2,7 @@ package com.study.badrequest.domain.question;
 
 
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -47,8 +48,8 @@ public class Question {
     public Question(Member member, String title, String contents) {
         this.member = member;
         this.title = title;
-        this.contents = contents;
-        this.preview = contents;
+        this.contents = setContents(contents);
+        this.preview = setPreview(contents);
         this.exposure = ExposureStatus.PUBLIC;
         this.askedAt = LocalDateTime.now();
         this.modifiedAt = LocalDateTime.now();
@@ -59,12 +60,16 @@ public class Question {
         this.questionMetrics = questionMetrics;
     }
 
-    @PrePersist
-    private void setPreview() {
-        if (this.contents != null && this.contents.length() > 1000) {
-            this.preview = this.contents.substring(0, 1000) + "...";
+    private String setContents(String contents) {
+        return MarkdownUtils.parseMarkdownToHtml(contents);
+    }
+
+    private String setPreview(String contents) {
+        String plainText = MarkdownUtils.markdownToPlainText(contents);
+        if (plainText.length() > 50) {
+            return plainText.substring(0, 50) + "...";
         } else {
-            this.preview = this.contents;
+            return plainText;
         }
     }
 
@@ -76,8 +81,8 @@ public class Question {
 
     public void modify(String title, String contents) {
         this.title = title;
-        this.contents = contents;
+        this.contents = setContents(contents);
+        this.preview = setPreview(contents);
         this.modifiedAt = LocalDateTime.now();
-        setPreview();
     }
 }

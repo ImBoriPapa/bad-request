@@ -29,7 +29,7 @@ public class QuestionRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class ModifyForm {
+    public static class Modify {
         @NotBlank(message = "제목은 공백을 허용하지 않습니다.")
         @Size(message = "제목은 최소 1글자 이상이어야 합니다.", min = 1, max = 30)
         private String title;

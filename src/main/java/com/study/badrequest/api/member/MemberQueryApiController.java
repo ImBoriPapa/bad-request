@@ -48,7 +48,7 @@ public class MemberQueryApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
@@ -70,7 +70,7 @@ public class MemberQueryApiController {
         entityModel.add(linkTo(methodOn(MemberQueryApiController.class).getActivity(memberId, null)).withRel("get activities"));
         entityModel.add(linkTo(methodOn(LoginController.class).logout(null, null)).withRel("logout"));
 
-        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @GetMapping("/api/v2/members/{memberId}/activities")
@@ -91,6 +91,6 @@ public class MemberQueryApiController {
 
         return ResponseEntity
                 .ok()
-                .body(memberProfileDto);
+                .body(ApiResponse.success(memberProfileDto));
     }
 }

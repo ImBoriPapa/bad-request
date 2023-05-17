@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+import static com.study.badrequest.commons.constants.ApiURL.QUESTION_PATCH_URL;
 import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
 import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static com.study.badrequest.domain.member.Authority.*;
@@ -73,7 +74,6 @@ public class QuestionApiDocs {
     private QuestionService questionService;
     @MockBean
     private QuestionTagService questionTagService;
-
     @MockBean
     private QuestionMetricsService questionMetricsService;
     @MockBean
@@ -87,11 +87,11 @@ public class QuestionApiDocs {
         Long memberId = 321312L;
         Long questionId = 424211L;
         String title = "제목입니다.";
-        String contents = "내용은 최소 5글자 이상입니다.";
+        String markdownContents = "내용입니다. ----- * 내용은 * 마크다운형식입니다.";
         List<String> tags = List.of("Java", "Spring");
         List<Long> imageIds = List.of(53L, 34L, 53L);
         String accessToken = UUID.randomUUID().toString();
-        QuestionRequest.Create create = new QuestionRequest.Create(title, contents, tags, imageIds);
+        QuestionRequest.Create create = new QuestionRequest.Create(title, markdownContents, tags, imageIds);
         QuestionResponse.Create response = new QuestionResponse.Create(questionId, LocalDateTime.now());
         //when
         when(questionService.createQuestion(any(), any())).thenReturn(response);
@@ -131,12 +131,57 @@ public class QuestionApiDocs {
     }
 
     @Test
+    @DisplayName("질문 수정")
+    @WithCustomMockUser(memberId = "321312", authority = MEMBER)
+    void 질문수정() throws Exception {
+        //given
+        Long questionId = 5321L;
+        String title = "제목입니다.";
+        String markdownContents = "내용입니다. ----- * 내용은 * 마크다운형식입니다.";
+        List<Long> imageIds = List.of(23L, 134L, 5213L);
+
+        String accessToken = UUID.randomUUID().toString();
+        QuestionRequest.Modify request = new QuestionRequest.Modify(title,markdownContents,imageIds);
+        QuestionResponse.Modify response = new QuestionResponse.Modify(questionId,LocalDateTime.now());
+        //when
+        when(questionService.modifyQuestion(any(),any() ,any())).thenReturn(response);
+        //then
+        mockMvc.perform(patch(QUESTION_PATCH_URL,questionId)
+                        .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                )
+                .andDo(document("question-modify",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").type(STRING).description("수정된 질문 제목"),
+                                fieldWithPath("contents").type(STRING).description("수정된 질문 내용"),
+                                fieldWithPath("imageIds").type(ARRAY).description("수정된 이미지 식별 아이디").optional()
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(STRING).description("응답 상태"),
+                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
+                                fieldWithPath("result.modifiedAt").type(STRING).description("질문 수정 시간"),
+                                fieldWithPath("result.links.[0].rel").type(STRING).description("self"),
+                                fieldWithPath("result.links.[0].href").type(STRING).description("uri")
+                        )
+                ));
+
+    }
+
+    @Test
     @DisplayName("질문 리스트 조회")
     void 질문리스트조회() throws Exception {
         //given
-        QuestionDto.Metrics metrics1 = new QuestionDto.Metrics(421, 1004);
-        QuestionDto.Metrics metrics2 = new QuestionDto.Metrics(10, 50);
-        QuestionDto.Metrics metrics3 = new QuestionDto.Metrics(100, 412);
+        QuestionDto.Metrics metrics1 = new QuestionDto.Metrics(421, 100, 2);
+        QuestionDto.Metrics metrics2 = new QuestionDto.Metrics(10, 50, 0);
+        QuestionDto.Metrics metrics3 = new QuestionDto.Metrics(100, 412, 13);
 
         QuestionDto.Questioner questioner1 = new QuestionDto.Questioner(3214L, "닉네임1", "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg", 100);
         QuestionDto.Questioner questioner2 = new QuestionDto.Questioner(594L, "닉네임2", "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg", 620);
@@ -202,6 +247,7 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.results.[0].metrics").type(OBJECT).description("지표 정보"),
                                 fieldWithPath("result.results.[0].metrics.countOfRecommend").type(NUMBER).description("추천수"),
                                 fieldWithPath("result.results.[0].metrics.countOfView").type(NUMBER).description("조회수"),
+                                fieldWithPath("result.results.[0].metrics.countOfAnswer").type(NUMBER).description("답변수"),
                                 fieldWithPath("result.results.[0].questioner").type(OBJECT).description("질문자 정보"),
                                 fieldWithPath("result.results.[0].questioner.id").type(NUMBER).description("질문자 식별 아이디(memberId)"),
                                 fieldWithPath("result.results.[0].questioner.nickname").type(STRING).description("닉네임"),

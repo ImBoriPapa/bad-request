@@ -104,10 +104,16 @@ include::{snippets}/question-create/request-headers.adoc[]
 include::{snippets}/question-create/request-fields.adoc[]
 
 NOTE:: 이미지파일은 이미지 업로드 API를 사용해서 업로드후(임시저장상태 24시간 이내 삭제) 응답에 id를 질문 생성 요청에 함께 보내면 이미지가 저장완료됩니다. 업로드한 이미지가 없으면 생략가능합니다.
-
+TIP:: API 확인하기: <<질문 게시판 이미지 업로드>>
 include::{snippets}/question-create/http-response.adoc[]
 include::{snippets}/question-create/response-headers.adoc[]
 include::{snippets}/question-create/response-fields.adoc[]
+
+=== 질문 수정
+include::{snippets}/question-modify/http-request.adoc[]
+include::{snippets}/question-modify/request-headers.adoc[]
+include::{snippets}/question-modify/http-response.adoc[]
+include::{snippets}/question-modify/response-fields.adoc[]
 
 === 질문 목록 조회
 
@@ -184,3 +190,10 @@ Host: www.bad-request.kr
 * true : 답변이완료된 질문 목록
 * false : 답변이 완료되지 않은 질문 목록
 
+=== 이미지 업로드
+==== 질문 게시판 이미지 업로드
+include::{snippets}/image-upload_question/http-request.adoc[]
+include::{snippets}/image-upload_question/request-headers.adoc[]
+include::{snippets}/image-upload_question/request-parts.adoc[]
+include::{snippets}/image-upload_question/http-response.adoc[]
+include::{snippets}/image-upload_question/response-fields.adoc[]

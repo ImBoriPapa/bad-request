@@ -53,7 +53,6 @@ public class QuestionImage {
                 .status(ImageStatus.TEMPORARY)
                 .savedAt(LocalDateTime.now())
                 .build();
-
     }
 
     public void changeTemporaryToSaved(Question question) {

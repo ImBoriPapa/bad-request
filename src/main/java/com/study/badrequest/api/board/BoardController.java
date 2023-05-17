@@ -10,7 +10,7 @@ import com.study.badrequest.dto.board.BoardResponse;
 import com.study.badrequest.exception.custom_exception.BasicCustomValidationException;
 import com.study.badrequest.service.board.BoardCommandServiceImpl;
 import com.study.badrequest.utils.modelAssembler.BoardResponseModelAssembler;
-import com.study.badrequest.utils.validator.BoardValidator;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -31,7 +31,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 @RequestMapping(BASE_API_VERSION_URL)
 public class BoardController {
     private final BoardCommandServiceImpl boardCommandService;
-    private final BoardValidator boardValidator;
+
     private final BoardResponseModelAssembler boardResponseModelAssembler;
 
 
@@ -70,7 +70,7 @@ public class BoardController {
             @PathVariable(name = "boardId") Long boardId,
             @RequestPart(name = "form") BoardRequest.Update form) {
 
-        boardValidator.validateUpdateForm(form);
+
 
         BoardResponse.Update update = boardCommandService.update(user, boardId, form);
 

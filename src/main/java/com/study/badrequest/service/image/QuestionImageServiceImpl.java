@@ -6,7 +6,7 @@ import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.repository.image.QuestionImageRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
-import com.study.badrequest.utils.image.S3ImageUploader;
+import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -25,16 +25,14 @@ import static com.study.badrequest.config.AsyncConfig.QUESTION_IMAGE_ASYNC_EXECU
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionImageServiceImpl implements QuestionImageService {
-
-    private final S3ImageUploader imageUploader;
+    private final ImageUploader imageUploader;
     private final QuestionImageRepository questionImageRepository;
-
+    private final String FOLDER_NAME = "QUESTIONS";
     @Transactional
     public QuestionImageResponse.Temporary saveTemporaryImage(MultipartFile image) {
-
         log.info("질문 게시글 이미지 임시 저장 원본파일명: {}, 사이즈: {}", image.getOriginalFilename(), image.getSize());
 
-        ImageUploadDto uploadedImage = imageUploader.uploadFile(image, "question");
+        ImageUploadDto uploadedImage = imageUploader.uploadImageFile(image, FOLDER_NAME);
 
         QuestionImage savedImage = questionImageRepository.save(QuestionImage.createTemporaryImage(uploadedImage.getOriginalFileName(), uploadedImage.getStoredFileName(), uploadedImage.getImageLocation(), uploadedImage.getSize(), uploadedImage.getFileType()));
 

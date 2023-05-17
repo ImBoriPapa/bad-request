@@ -10,7 +10,7 @@ import com.study.badrequest.service.member.MemberCommandService;
 import com.study.badrequest.service.member.MemberProfileService;
 
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
-import com.study.badrequest.utils.validator.RequestValidUtils;
+import com.study.badrequest.utils.verification.RequestValidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -53,7 +53,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .created(locationUri)
-                .body(new ApiResponse.Success<>(SUCCESS, memberResponseModelAssembler.createMemberModel(create)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.createMemberModel(create)));
     }
 
     /**
@@ -71,7 +71,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(SUCCESS, memberResponseModelAssembler.changeNicknameModel(update)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeNicknameModel(update)));
     }
 
     /**
@@ -85,7 +85,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(SUCCESS, update));
+                .body(ApiResponse.success(SUCCESS, update));
     }
     // TODO: 2023/04/18 완성하기
 
@@ -99,7 +99,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(SUCCESS, update));
+                .body(ApiResponse.success(SUCCESS, update));
     }
 
     /**
@@ -113,7 +113,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(SUCCESS, update));
+                .body(ApiResponse.success(SUCCESS, update));
     }
 
     /**
@@ -134,7 +134,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success(SUCCESS, memberResponseModelAssembler.getIssuePasswordModel(issueTemporaryPassword)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getIssuePasswordModel(issueTemporaryPassword)));
     }
 
     /**
@@ -152,7 +152,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(SUCCESS, memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)));
     }
 
 
@@ -180,7 +180,7 @@ public class MemberApiController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success(SUCCESS, memberResponseModelAssembler.getChangePasswordModel(update)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getChangePasswordModel(update)));
     }
 
 
@@ -206,7 +206,7 @@ public class MemberApiController {
         MemberResponse.Update update = memberCommandService.updateContactProcessing(memberId, form.getContact());
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
     }
 
     /**
@@ -233,6 +233,6 @@ public class MemberApiController {
         EntityModel<MemberResponse.Delete> deleteResultEntityModel = memberResponseModelAssembler.getDeleteModel(delete);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success(SUCCESS, deleteResultEntityModel));
+                .body(ApiResponse.success(SUCCESS, deleteResultEntityModel));
     }
 }

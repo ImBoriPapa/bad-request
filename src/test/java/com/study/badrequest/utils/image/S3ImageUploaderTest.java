@@ -2,6 +2,7 @@ package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.exception.custom_exception.ImageFileUploadExceptionBasic;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class S3ImageUploaderTest {
         String folderName = "board";
 
         //when
-        ImageUploadDto imageUploadDto = imageUploader.uploadFile(file, folderName);
+        ImageUploadDto imageUploadDto = imageUploader.uploadImageFile(file, folderName);
         //then
         assertThat(imageUploadDto.getOriginalFileName()).isEqualTo(file.getOriginalFilename());
         assertThat(imageUploadDto.getStoredFileName()).isNotNull();
@@ -48,8 +49,8 @@ class S3ImageUploaderTest {
         MockMultipartFile noHasExtFile = new MockMultipartFile("image","image","image/png","test".getBytes());
         String folderName = "board";
         //when
-        assertThatThrownBy(() -> imageUploader.uploadFile(noHasExtFile, folderName))
-                .isInstanceOf(ImageFileUploadExceptionBasic.class)
+        assertThatThrownBy(() -> imageUploader.uploadImageFile(noHasExtFile, folderName))
+                .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(WRONG_FILE_ERROR.getMessage());
         //then
     }
@@ -61,8 +62,8 @@ class S3ImageUploaderTest {
         MockMultipartFile noHasExtFile = new MockMultipartFile("image","image.zxc","image/png","test".getBytes());
         String folderName = "board";
         //when
-        assertThatThrownBy(() -> imageUploader.uploadFile(noHasExtFile, folderName))
-                .isInstanceOf(ImageFileUploadExceptionBasic.class)
+        assertThatThrownBy(() -> imageUploader.uploadImageFile(noHasExtFile, folderName))
+                .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(NOT_SUPPORT_ERROR.getMessage());
         //then
 

@@ -21,7 +21,7 @@ import com.study.badrequest.service.member.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
-import com.study.badrequest.utils.validator.RequestValidUtils;
+import com.study.badrequest.utils.verification.RequestValidUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

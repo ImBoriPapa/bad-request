@@ -52,6 +52,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                                 Projections.fields(QuestionDetail.QuestionDetailMetrics.class,
                                         questionMetrics.countOfRecommend.as("countOfRecommend"),
                                         questionMetrics.countOfView.as("countOfView"),
+                                        questionMetrics.countOfAnswer.as("countOfAnswer"),
                                         Expressions.asBoolean(false).as("hasRecommendation")
                                 ).as("metrics"),
                                 Projections.fields(QuestionDetail.QuestionDetailQuestioner.class,
@@ -114,7 +115,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         List<Long> questionIdList = selectQuestionIdList(condition.getLastOfIndex(), condition.getLastOfView(), condition.getLastOfRecommend(), limitSize, PUBLIC, condition.getSort());
 
-        List<QuestionDto> questionListDto = selelctQuestionFieldsByIdListAsQuestionDto(questionIdList);
+        List<QuestionDto> questionListDto = selectQuestionFieldsByIdListAsQuestionDto(questionIdList);
 
         sortListByQuestionSort(condition.getSort(), questionListDto);
 
@@ -187,7 +188,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         List<Long> questionIds = findQuestionIds(questionTags);
 
-        List<QuestionDto> questionListDto = selelctQuestionFieldsByIdListAsQuestionDto(questionIds);
+        List<QuestionDto> questionListDto = selectQuestionFieldsByIdListAsQuestionDto(questionIds);
 
         addQuestionTagToListDto(questionListDto);
 
@@ -285,7 +286,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return lastOfView == null ? questionMetrics.countOfView.lt(Integer.MAX_VALUE) : questionMetrics.countOfView.lt(lastOfView);
     }
 
-    private List<QuestionDto> selelctQuestionFieldsByIdListAsQuestionDto(List<Long> questionIds) {
+    private List<QuestionDto> selectQuestionFieldsByIdListAsQuestionDto(List<Long> questionIds) {
         return jpaQueryFactory
                 .select(Projections.fields(QuestionDto.class,
                         question.id.as("id"),
@@ -293,7 +294,8 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                         question.preview.as("preview"),
                         Projections.fields(QuestionDto.Metrics.class,
                                 questionMetrics.countOfRecommend.as("countOfRecommend"),
-                                questionMetrics.countOfView.as("countOfView")
+                                questionMetrics.countOfView.as("countOfView"),
+                                questionMetrics.countOfAnswer.as("countOfAnswer")
                         ).as("metrics"),
                         Projections.fields(QuestionDto.Questioner.class,
                                 member.id.as("id"),

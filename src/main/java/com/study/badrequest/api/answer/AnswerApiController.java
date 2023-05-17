@@ -25,6 +25,6 @@ public class AnswerApiController {
         List<AnswerDto> dtos = queryRepository.findAnswerByQuestionId(questionId);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success<>(SUCCESS, dtos));
+                .body(ApiResponse.success(SUCCESS, dtos));
     }
 }

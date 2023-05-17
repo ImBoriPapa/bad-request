@@ -59,7 +59,7 @@ public class LoginController {
 
         return ResponseEntity.ok()
                 .headers(createAuthenticationHeader(dto.getAccessToken(), dto.getRefreshCookie()))
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @PostMapping(value = LOGOUT_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,7 +72,7 @@ public class LoginController {
         EntityModel<LoginResponse.LogoutResult> entityModel = modelAssembler.toModel(logoutResult);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success<>(LOGOUT_SUCCESS, entityModel));
+                .body(ApiResponse.success(LOGOUT_SUCCESS, entityModel));
     }
 
     @PostMapping(value = TOKEN_REISSUE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -98,7 +98,7 @@ public class LoginController {
         return ResponseEntity
                 .ok()
                 .headers(createAuthenticationHeader(result.getAccessToken(), result.getRefreshCookie()))
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @PostMapping(value = ONE_TIME_CODE_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -115,7 +115,7 @@ public class LoginController {
 
         return ResponseEntity.ok()
                 .headers(createAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie()))
-                .body(new ApiResponse.Success<>(SUCCESS, entityModel));
+                .body(ApiResponse.success(SUCCESS, entityModel));
     }
 
     private HttpHeaders createAuthenticationHeader(String accessToken, ResponseCookie cookie) {

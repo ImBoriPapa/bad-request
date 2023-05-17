@@ -10,6 +10,14 @@ import java.util.List;
 @NoArgsConstructor
 public class ApiResponse {
 
+    public static <T> ApiResponse.Success<T> success(T result){
+        return new Success<>(ApiResponseStatus.SUCCESS,result);
+    }
+
+    public static <T> ApiResponse.Success<T> success(ApiResponseStatus status,T result){
+        return new Success<>(status,result);
+    }
+
     @NoArgsConstructor
     @Getter
     public static class Success<T> {
