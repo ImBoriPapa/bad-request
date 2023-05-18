@@ -1,9 +1,9 @@
-package com.study.badrequest.service.question;
+package com.study.badrequest.service.questionComment;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionComment;
+import com.study.badrequest.domain.questionComment.QuestionComment;
 import com.study.badrequest.dto.questionComment.QuestionCommentRequest;
 import com.study.badrequest.dto.questionComment.QuestionCommentResponse;
 import com.study.badrequest.exception.CustomRuntimeException;

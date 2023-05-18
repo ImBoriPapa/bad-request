@@ -1,7 +1,8 @@
-package com.study.badrequest.domain.answer;
+package com.study.badrequest.domain.answerComment;
 
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.member.MemberProfile;
+import com.study.badrequest.domain.answer.Answer;
+import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.question.Question;
 import lombok.*;
 
@@ -22,22 +23,31 @@ public class AnswerComment {
     @Column(name = "CONTENTS")
     private String contents;
     @Column(name = "EXPOSURE_STATUS")
+    @Enumerated(EnumType.STRING)
     private ExposureStatus exposureStatus;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_PROFILE_ID")
-    private MemberProfile writer;
+    private Member writer;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "QUESTION_ID")
-    private Question question;
+    @JoinColumn(name = "ANSWER_ID")
+    private Answer answer;
+    @Column(name = "ADDED_AT")
     private LocalDateTime addedAt;
+    @Column(name = "DELETED_AT")
     private LocalDateTime deletedAt;
+
     @Builder
-    public AnswerComment(String contents, ExposureStatus exposureStatus, MemberProfile writer, Question question, LocalDateTime addedAt, LocalDateTime deletedAt) {
+    public AnswerComment(String contents, ExposureStatus exposureStatus, Member writer, Answer answer, LocalDateTime addedAt, LocalDateTime deletedAt) {
         this.contents = contents;
         this.exposureStatus = exposureStatus;
         this.writer = writer;
-        this.question = question;
+        this.answer = answer;
         this.addedAt = addedAt;
         this.deletedAt = deletedAt;
+    }
+
+    public void statusToDelete() {
+        this.exposureStatus = ExposureStatus.DELETE;
+        this.deletedAt = LocalDateTime.now();
     }
 }

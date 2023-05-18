@@ -5,7 +5,7 @@ import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
 import com.study.badrequest.dto.questionComment.QuestionCommentRequest;
 import com.study.badrequest.dto.questionComment.QuestionCommentResponse;
-import com.study.badrequest.service.question.QuestionCommentService;
+import com.study.badrequest.service.questionComment.QuestionCommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
