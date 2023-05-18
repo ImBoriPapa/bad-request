@@ -69,6 +69,11 @@ public enum ApiResponseStatus {
     NOT_FOUND_QUESTION(2505, "질문을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED(2530, "태그는 최소 한개 이상 사용해야합니디.", HttpStatus.BAD_REQUEST),
     /**
+     * 답변
+     */
+    NOT_FOUND_ANSWER(2550, "해당 답변을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+
+    /**
      * 태그
      */
     NOT_FOUND_QUESTION_TAG(2600, "해당 질문에 태그를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),

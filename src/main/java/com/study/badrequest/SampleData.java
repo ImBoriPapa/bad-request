@@ -48,14 +48,11 @@ public class SampleData {
     private final ArrayList<Question> questions = new ArrayList<>();
     private final HashTagRepository hashTagRepository;
     private final AnswerServiceImpl answerService;
-
-
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         createMemberData();
         createSampleHashTag();
         createSampleQuestion();
-        createSampleAnswer();
     }
 
     public void createMemberData() {
@@ -151,15 +148,6 @@ public class SampleData {
 
     }
 
-    public void createSampleAnswer() {
 
-        for (Question q : questions) {
-            Member member = memberList.get(new Random().nextInt(10) + 1);
-            answerService.createAnswer(member.getId(), q.getId(), "test 답변1 입니다. \n 잘보여줬으면 좋겠군요!!~~");
-            answerService.createAnswer(member.getId(), q.getId(), "test 답변2 입니다. \n 잘보여줬으면 좋겠군요!!~~");
-            answerService.createAnswer(member.getId(), q.getId(), "test 답변3 입니다. \n 잘보여줬으면 좋겠군요!!~~");
-        }
-
-    }
 
 }

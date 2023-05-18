@@ -28,9 +28,12 @@ public class ApiURL {
     public static final String QUESTION_BASE_URL = BASE_API_VERSION_URL + "/questions";
     public static final String QUESTION_DETAIL_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
     public static final String QUESTION_PATCH_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
+    //Answers
+    public static final String ANSWER_REGISTER = QUESTION_DETAIL_URL + "/answers";
+
     //Board
     public static final String BOARD_LIST_URL = BASE_API_VERSION_URL + "/board";
     public static final String BOARD_DETAIL_URL = BASE_API_VERSION_URL + "/board/{boardId}";
     //Image
-    public static final String UPLOAD_QUESTION_IMAGE = BASE_API_VERSION_URL+"/image/questions";
+    public static final String UPLOAD_QUESTION_IMAGE = BASE_API_VERSION_URL + "/image/questions";
 }

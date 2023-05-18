@@ -38,7 +38,8 @@ public class Activity {
         this.createdAt = createdAt;
     }
 
-    public static Activity postQuestion(Member member, String title, String description, LocalDateTime createdAt) {
-        return new Activity(member, ActivityAction.QUESTION, title, description, createdAt);
+    public static Activity createActivity(Member member,ActivityAction action ,String title, String description, LocalDateTime createdAt) {
+        return new Activity(member, action, title, description, createdAt);
     }
+
 }

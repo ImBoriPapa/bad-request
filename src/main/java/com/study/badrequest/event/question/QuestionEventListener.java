@@ -1,7 +1,8 @@
 package com.study.badrequest.event.question;
 
 
-import com.study.badrequest.service.activity.ActivityServiceImpl;
+import com.study.badrequest.service.activity.ActivityService;
+
 
 import com.study.badrequest.service.image.QuestionImageService;
 import com.study.badrequest.service.question.QuestionMetricsService;
@@ -24,7 +25,7 @@ public class QuestionEventListener {
     private final QuestionTagService questionTagService;
     private final QuestionImageService questionImageService;
     private final QuestionMetricsService questionMetricsService;
-    private final ActivityServiceImpl activityService;
+    private final ActivityService activityService;
     @EventListener
     public void handleCreateEvent(QuestionEventDto.CreateEvent dto) {
         log.info("질문 생성 이벤트 수신");
@@ -33,7 +34,7 @@ public class QuestionEventListener {
 
         questionImageService.changeTemporaryToSaved(dto.getImages(), dto.getQuestion());
 
-        activityService.createActivity(dto.getMember(), dto.getQuestion().getTitle(), dto.getQuestion().getAskedAt());
+        activityService.createQuestionActivity(dto.getMember(), dto.getQuestion().getTitle(), dto.getQuestion().getAskedAt());
     }
 
     @EventListener
