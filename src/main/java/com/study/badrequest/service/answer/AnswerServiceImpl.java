@@ -2,7 +2,7 @@ package com.study.badrequest.service.answer;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.question.Answer;
+import com.study.badrequest.domain.answer.Answer;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
@@ -16,8 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_FOUND_ANSWER;
 

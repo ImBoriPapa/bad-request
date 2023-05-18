@@ -1,6 +1,9 @@
-package com.study.badrequest.domain.question;
+package com.study.badrequest.domain.answer;
 
+import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.member.Member;
+
+import com.study.badrequest.domain.question.Question;
 import lombok.*;
 
 import javax.persistence.*;

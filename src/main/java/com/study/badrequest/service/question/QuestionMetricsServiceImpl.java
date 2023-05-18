@@ -1,10 +1,9 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.Recommendation;
-import com.study.badrequest.domain.question.RecommendationKind;
+import com.study.badrequest.domain.recommendation.Recommendation;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.MemberRepository;

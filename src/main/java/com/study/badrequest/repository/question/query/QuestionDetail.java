@@ -1,7 +1,7 @@
 package com.study.badrequest.repository.question.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.study.badrequest.domain.question.RecommendationKind;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

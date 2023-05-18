@@ -1,5 +1,6 @@
 package com.study.badrequest.domain.question;
 
+import com.study.badrequest.commons.status.ExposureStatus;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

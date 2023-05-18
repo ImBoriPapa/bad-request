@@ -3,7 +3,7 @@ package com.study.badrequest.api.question;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
-import com.study.badrequest.domain.question.RecommendationKind;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.exception.CustomRuntimeException;

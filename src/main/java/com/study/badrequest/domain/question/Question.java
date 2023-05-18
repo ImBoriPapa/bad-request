@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.question;
 
 
+import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;

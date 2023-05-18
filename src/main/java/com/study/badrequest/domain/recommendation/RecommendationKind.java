@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.question;
+package com.study.badrequest.domain.recommendation;
 
 public enum RecommendationKind {
 

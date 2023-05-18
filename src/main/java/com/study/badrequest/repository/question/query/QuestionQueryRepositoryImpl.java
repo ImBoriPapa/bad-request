@@ -7,7 +7,9 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.question.*;
+import com.study.badrequest.domain.recommendation.Recommendation;
 import com.study.badrequest.event.question.QuestionEventDto;
 
 import lombok.RequiredArgsConstructor;
@@ -22,14 +24,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.study.badrequest.commons.status.ExposureStatus.PUBLIC;
 import static com.study.badrequest.domain.board.QHashTag.*;
 import static com.study.badrequest.domain.member.QMember.*;
 import static com.study.badrequest.domain.member.QMemberProfile.*;
-import static com.study.badrequest.domain.question.ExposureStatus.*;
 import static com.study.badrequest.domain.question.QQuestion.*;
 import static com.study.badrequest.domain.question.QQuestionMetrics.*;
 import static com.study.badrequest.domain.question.QQuestionTag.*;
-import static com.study.badrequest.domain.question.QRecommendation.*;
+import static com.study.badrequest.domain.recommendation.QRecommendation.recommendation;
 
 
 @Repository

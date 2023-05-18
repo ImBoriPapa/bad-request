@@ -9,9 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.study.badrequest.domain.answer.QAnswer.answer;
 import static com.study.badrequest.domain.member.QMember.*;
 import static com.study.badrequest.domain.member.QMemberProfile.*;
-import static com.study.badrequest.domain.question.QAnswer.*;
 
 @Repository
 @Transactional(readOnly = true)
