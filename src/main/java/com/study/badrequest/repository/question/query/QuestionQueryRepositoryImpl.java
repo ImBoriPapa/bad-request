@@ -7,14 +7,15 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
+
 import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.question.*;
 import com.study.badrequest.domain.recommendation.Recommendation;
-import com.study.badrequest.event.question.QuestionEventDto;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,11 +41,69 @@ import static com.study.badrequest.domain.recommendation.QRecommendation.recomme
 @Slf4j
 public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public Optional<QuestionDetail> findQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, Long memberId) {
+    public Optional<QuestionDetail> findQuestionDetail(Long questionId, Long memberId, ExposureStatus exposureStatus) {
 
-        Optional<QuestionDetail> detailOptional = jpaQueryFactory
+        Optional<QuestionDetail> detailOptional = getQuestionDetailByQuestionIdAndExposureStatus(questionId, exposureStatus);
+
+        detailOptional.ifPresent(detail -> {
+            addingTags(detail);
+            checkIsQuestioner(memberId, detail);
+            setRecommendation(detail);
+        });
+
+        return detailOptional;
+    }
+
+    private void setRecommendation(QuestionDetail detail) {
+        Optional<Recommendation> optional = findRecommendationByQuestionId(detail.getId());
+
+        if (optional.isPresent()) {
+            Recommendation recommendation = optional.get();
+            detail.getMetrics().setHasRecommendationAndKind(true, recommendation.getKind());
+        }
+
+    }
+
+    private Optional<Recommendation> findRecommendationByQuestionId(Long questionId) {
+        return jpaQueryFactory
+                .selectDistinct(recommendation)
+                .from(recommendation)
+                .join(recommendation.member, member).fetchJoin()
+                .where(recommendation.question.id.eq(questionId))
+                .fetch()
+                .stream()
+                .findFirst();
+    }
+
+    private void checkIsQuestioner(Long memberId, QuestionDetail questionDetail) {
+        if (memberId != null) {
+            if (questionDetail.getId().equals(memberId)) {
+                questionDetail.isQuestionerToTrue();
+            }
+        }
+    }
+
+    private void addingTags(QuestionDetail questionDetail) {
+        List<QuestionTag> questionTags = getQuestionTagsByQuestionId(questionDetail);
+
+        List<HashTagDto> hashTagDtos = questionTags.stream().map(tag -> new HashTagDto(tag.getId(), tag.getHashTag().getHashTagName())).collect(Collectors.toList());
+
+        questionDetail.addHashTag(hashTagDtos);
+    }
+
+    private List<QuestionTag> getQuestionTagsByQuestionId(QuestionDetail detailOptional) {
+        return jpaQueryFactory
+                .selectDistinct(questionTag)
+                .from(questionTag)
+                .join(questionTag.hashTag, hashTag)
+                .fetchJoin()
+                .where(questionTag.question.id.eq(detailOptional.getId()))
+                .fetch();
+    }
+
+    private Optional<QuestionDetail> getQuestionDetailByQuestionIdAndExposureStatus(Long questionId, ExposureStatus exposureStatus) {
+        return jpaQueryFactory
                 .select(
                         Projections.fields(QuestionDetail.class,
                                 question.id.as("id"),
@@ -70,44 +129,9 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .join(question.questionMetrics, questionMetrics)
                 .join(question.member, member)
                 .join(member.memberProfile, memberProfile)
-                .where(question.id.eq(questionId).and(eqExposure(PUBLIC)))
+                .where(question.id.eq(questionId).and(eqExposure(exposureStatus)))
                 .stream()
                 .findFirst();
-
-        if (detailOptional.isPresent()) {
-
-            List<QuestionTag> questionTags = jpaQueryFactory
-                    .selectDistinct(questionTag)
-                    .from(questionTag)
-                    .join(questionTag.hashTag, hashTag)
-                    .fetchJoin()
-                    .where(questionTag.question.id.eq(detailOptional.get().getId()))
-                    .fetch();
-
-            List<HashTagDto> hashTagDtos = questionTags.stream().map(tag -> new HashTagDto(tag.getId(), tag.getHashTag().getHashTagName())).collect(Collectors.toList());
-
-            detailOptional.get().addHashTag(hashTagDtos);
-
-            if (memberId != null && detailOptional.get().getId().equals(memberId)) {
-                detailOptional.get().isQuestionerToTrue();
-            }
-
-            Optional<Recommendation> optional = jpaQueryFactory
-                    .selectDistinct(recommendation)
-                    .from(recommendation)
-                    .join(recommendation.member, member).fetchJoin()
-                    .where(recommendation.question.id.eq(detailOptional.get().getId()))
-                    .fetch()
-                    .stream()
-                    .findFirst();
-
-            if (optional.isPresent()) {
-                Recommendation recommendation = optional.get();
-                detailOptional.get().getMetrics().setHasRecommendationAndKind(true, recommendation.getKind());
-            }
-            applicationEventPublisher.publishEvent(new QuestionEventDto.ViewEvent(request, response, questionId, PUBLIC));
-        }
-        return detailOptional;
     }
 
     @Override
@@ -228,7 +252,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
      * @param lastIndex      :  조회 시작 위치
      * @param limitSize      :  조회 데이터 크기
      * @param exposureStatus : 노출 설정
-
      * @param sort
      * @return
      */
@@ -390,7 +413,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private BooleanExpression containsTitle(String keyword) {
         return keyword == null ? null : question.title.containsIgnoreCase(keyword);
     }
-
 
 
     private BooleanExpression eqExposure(ExposureStatus status) {

@@ -18,9 +18,7 @@ import static com.study.badrequest.domain.member.QMemberProfile.*;
 @RequiredArgsConstructor
 @Slf4j
 public class AnswerQueryRepositoryImpl {
-
     private final JPAQueryFactory jpaQueryFactory;
-
     public List<AnswerDto> findAnswerByQuestionId(Long questionId) {
 
         List<AnswerDto> answerDtos = jpaQueryFactory

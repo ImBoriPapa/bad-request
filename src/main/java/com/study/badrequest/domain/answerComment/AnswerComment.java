@@ -26,7 +26,7 @@ public class AnswerComment {
     @Enumerated(EnumType.STRING)
     private ExposureStatus exposureStatus;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_PROFILE_ID")
+    @JoinColumn(name = "MEMBER_ID")
     private Member writer;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ANSWER_ID")

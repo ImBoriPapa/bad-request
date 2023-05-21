@@ -2,11 +2,16 @@ package com.study.badrequest.api.question;
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
+
 import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.repository.question.query.*;
+
+import com.study.badrequest.service.question.QuestionQueryService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,16 +30,15 @@ import static org.springframework.http.MediaType.*;
 @RequiredArgsConstructor
 @Slf4j
 public class QuestionQueryApiController {
-
-    private final QuestionQueryRepository questionQueryRepository;
+    private final QuestionQueryService questionQueryService;
     private final QuestionModelAssembler questionModelAssembler;
 
     @GetMapping(value = QUESTION_BASE_URL, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getQuestions(QuestionSearchCondition searchCondition) {
+    public ResponseEntity getQuestions(QuestionSearchCondition condition) {
         log.info("질문 목록 조회");
-        QuestionListResult result = questionQueryRepository.findQuestionListByCondition(searchCondition);
+        QuestionListResult result = questionQueryService.getQuestionList(condition);
 
-        EntityModel<QuestionListResult> entityModel = questionModelAssembler.getQuestionListModel(result, searchCondition);
+        EntityModel<QuestionListResult> entityModel = questionModelAssembler.getQuestionListModel(result, condition);
 
         return ResponseEntity.ok().body(new ApiResponse.Success(SUCCESS, entityModel));
     }
@@ -42,7 +46,7 @@ public class QuestionQueryApiController {
     @GetMapping("/api/v2/questions/tagged/{tagName}")
     public ResponseEntity getQuestionsByTag(@PathVariable String tagName) {
 
-        QuestionListResult result = questionQueryRepository.findQuestionListByHashTag(null);
+        QuestionListResult result = questionQueryService.getQuestionListBy(null);
 
         return ResponseEntity.ok().body(new ApiResponse.Success(SUCCESS, result));
     }
@@ -52,15 +56,10 @@ public class QuestionQueryApiController {
                                             HttpServletRequest request,
                                             HttpServletResponse response,
                                             @LoggedInMember CurrentLoggedInMember.Information information) {
-        Long memberId = null;
 
-        if (information != null) {
-            memberId = information.getId();
-        }
-
-        Optional<QuestionDetail> detail = questionQueryRepository.findQuestionDetail(request,response,questionId, memberId);
+        QuestionDetail questionDetail = questionQueryService.getQuestionDetail(request, response, questionId,information);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success<>(SUCCESS, detail));
+                .body(new ApiResponse.Success<>(SUCCESS, questionDetail));
     }
 }

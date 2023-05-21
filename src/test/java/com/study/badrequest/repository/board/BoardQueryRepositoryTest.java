@@ -60,8 +60,6 @@ class BoardQueryRepositoryTest {
 
         BoardSearchCondition condition = new BoardSearchCondition();
 
-
-
         BoardListDto boardList = boardQueryRepository.findBoardList(condition,null);
 
         for (BoardListResult result : boardList.getResults()) {

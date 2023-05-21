@@ -98,11 +98,11 @@ spring:
 
 logging:
   level:
-    root: TRACE
-    org.springframework.orm.jpa: trace
-    org.springframework.transaction: trace
-    org.springframework.data.*.*: trace
-    org.springframework.cache.*: trace
+    root: INFO
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    org.springframework.data.*.*: INFO
+    org.springframework.cache.*: INFO
 
 
 cloud:

@@ -41,7 +41,6 @@ public class QuestionEventDto {
         private HttpServletRequest request;
         private HttpServletResponse response;
         private Long questionId;
-        private ExposureStatus exposureStatus;
 
     }
 }

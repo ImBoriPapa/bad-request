@@ -12,6 +12,7 @@ import com.study.badrequest.repository.question.query.QuestionDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
 import com.study.badrequest.repository.question.query.QuestionQueryRepository;
 import com.study.badrequest.service.question.QuestionMetricsService;
+import com.study.badrequest.service.question.QuestionQueryService;
 import com.study.badrequest.service.question.QuestionService;
 import com.study.badrequest.service.question.QuestionTagService;
 import com.study.badrequest.testHelper.WithCustomMockUser;
@@ -69,7 +70,7 @@ public class QuestionApiDocs {
     @Autowired
     ObjectMapper objectMapper;
     @MockBean
-    private QuestionQueryRepository questionQueryRepository;
+    private QuestionQueryService questionQueryService;
     @MockBean
     private QuestionService questionService;
     @MockBean
@@ -210,7 +211,7 @@ public class QuestionApiDocs {
 
         QuestionListResult questionListResult = new QuestionListResult(3, true, QuestionSort.NEW_EAST, 97L, null, null, questionDtos);
         //when
-        given(questionQueryRepository.findQuestionListByCondition(any())).willReturn(questionListResult);
+        given(questionQueryService.getQuestionList(any())).willReturn(questionListResult);
         //then
         mockMvc.perform(get(QUESTION_BASE_URL))
                 .andDo(print())
