@@ -34,32 +34,32 @@ public class QuestionQueryApiController {
     private final QuestionModelAssembler questionModelAssembler;
 
     @GetMapping(value = QUESTION_BASE_URL, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity getQuestions(QuestionSearchCondition condition) {
+    public ResponseEntity<?> getQuestions(QuestionSearchCondition condition) {
         log.info("질문 목록 조회");
         QuestionListResult result = questionQueryService.getQuestionList(condition);
 
         EntityModel<QuestionListResult> entityModel = questionModelAssembler.getQuestionListModel(result, condition);
 
-        return ResponseEntity.ok().body(new ApiResponse.Success(SUCCESS, entityModel));
+        return ResponseEntity.ok().body(ApiResponse.success(SUCCESS, entityModel));
     }
 
     @GetMapping("/api/v2/questions/tagged/{tagName}")
-    public ResponseEntity getQuestionsByTag(@PathVariable String tagName) {
+    public ResponseEntity<?> getQuestionsByTag(@PathVariable String tagName) {
 
         QuestionListResult result = questionQueryService.getQuestionListBy(null);
 
-        return ResponseEntity.ok().body(new ApiResponse.Success(SUCCESS, result));
+        return ResponseEntity.ok().body(ApiResponse.success(SUCCESS, result));
     }
 
     @GetMapping("/api/v2/questions/{questionId}")
-    public ResponseEntity getQuestionDetail(@PathVariable Long questionId,
-                                            HttpServletRequest request,
-                                            HttpServletResponse response,
-                                            @LoggedInMember CurrentLoggedInMember.Information information) {
+    public ResponseEntity<?> getQuestionDetail(@PathVariable Long questionId,
+                                               HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               @LoggedInMember CurrentLoggedInMember.Information information) {
 
-        QuestionDetail questionDetail = questionQueryService.getQuestionDetail(request, response, questionId,information);
+        QuestionDetail questionDetail = questionQueryService.getQuestionDetail(request, response, questionId, information);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success<>(SUCCESS, questionDetail));
+                .body(ApiResponse.success(SUCCESS, questionDetail));
     }
 }
