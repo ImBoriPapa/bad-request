@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.commons.status.ExposureStatus.*;
 import static com.study.badrequest.utils.verification.WordValidateUtils.findBannedWord;
 
 
@@ -95,7 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new CustomRuntimeException(PERMISSION_DENIED);
         }
 
-        question.changeExposureToDelete(ExposureStatus.DELETE);
+        question.changeExposure(DELETE);
 
         return new QuestionResponse.Delete(questionId, question.getDeletedRequestAt());
     }

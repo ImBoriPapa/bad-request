@@ -20,8 +20,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,13 +40,13 @@ import static com.study.badrequest.domain.recommendation.QRecommendation.recomme
 public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
-    public Optional<QuestionDetail> findQuestionDetail(Long questionId, Long memberId, ExposureStatus exposureStatus) {
+    public Optional<QuestionDetail> findQuestionDetail(Long questionId, Long loggedInMemberId, ExposureStatus exposureStatus) {
 
         Optional<QuestionDetail> detailOptional = getQuestionDetailByQuestionIdAndExposureStatus(questionId, exposureStatus);
 
         detailOptional.ifPresent(detail -> {
-            addingTags(detail);
-            checkIsQuestioner(memberId, detail);
+            addQuestionTagToQuestionDetail(detail);
+            checkIsQuestioner(loggedInMemberId, detail);
             setRecommendation(detail);
         });
 
@@ -78,27 +76,29 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
     private void checkIsQuestioner(Long memberId, QuestionDetail questionDetail) {
         if (memberId != null) {
-            if (questionDetail.getId().equals(memberId)) {
+            if (questionDetail.getQuestioner().getId().equals(memberId)) {
                 questionDetail.isQuestionerToTrue();
             }
         }
     }
 
-    private void addingTags(QuestionDetail questionDetail) {
-        List<QuestionTag> questionTags = getQuestionTagsByQuestionId(questionDetail);
+    private void addQuestionTagToQuestionDetail(QuestionDetail questionDetail) {
 
-        List<HashTagDto> hashTagDtos = questionTags.stream().map(tag -> new HashTagDto(tag.getId(), tag.getHashTag().getHashTagName())).collect(Collectors.toList());
+        List<TagDto> tagDtos = getQuestionTagsByQuestionId(questionDetail.getId())
+                .stream()
+                .map(tag -> new TagDto(tag.getId(),tag.getHashTag().getId(),tag.getHashTag().getHashTagName()))
+                .collect(Collectors.toList());
 
-        questionDetail.addHashTag(hashTagDtos);
+        questionDetail.addHashTag(tagDtos);
     }
 
-    private List<QuestionTag> getQuestionTagsByQuestionId(QuestionDetail detailOptional) {
+    private List<QuestionTag> getQuestionTagsByQuestionId(Long questionId) {
         return jpaQueryFactory
                 .selectDistinct(questionTag)
                 .from(questionTag)
                 .join(questionTag.hashTag, hashTag)
                 .fetchJoin()
-                .where(questionTag.question.id.eq(detailOptional.getId()))
+                .where(questionTag.question.id.eq(questionId))
                 .fetch();
     }
 
@@ -338,17 +338,17 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .fetch();
     }
 
-    private List<QuestionTagDto> findQuestionTag(List<Long> ids) {
+    private List<QuestionTagDto> findQuestionTagDtoByQuestionIds(List<Long> ids) {
         /**
          *1,SIMPLE,questionta0_,range,"PRIMARY,FKkt90ri7g7j1a9dd4ol9gns2ek",PRIMARY,8,null,10,Using where
          * 1,SIMPLE,hashtag1_,eq_ref,PRIMARY,PRIMARY,8,bad_request.questionta0_.hashtag_id,1,Using index
          */
-        List<Long> questionTagIds = jpaQueryFactory
-                .select(questionTag.id)
-                .from(questionTag)
-                .where(questionTag.question.id.in(ids))
-                .fetch();
+        List<Long> questionTagIds = findQuestionTagsInQuestionIds(ids);
 
+        return findQuestionTagDtosByQuestionTagIds(questionTagIds);
+    }
+
+    private List<QuestionTagDto> findQuestionTagDtosByQuestionTagIds(List<Long> questionTagIds) {
         return jpaQueryFactory
                 .select(
                         Projections.fields(QuestionTagDto.class,
@@ -362,15 +362,21 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .where(questionTag.id.in(questionTagIds))
                 .orderBy(questionTag.id.asc())
                 .fetch();
+    }
 
-
+    private List<Long> findQuestionTagsInQuestionIds(List<Long> questionIds) {
+        return jpaQueryFactory
+                .select(questionTag.id)
+                .from(questionTag)
+                .where(questionTag.question.id.in(questionIds))
+                .fetch();
     }
 
     private void addQuestionTagToListDto(List<QuestionDto> questionListDto) {
 
         List<Long> questionsIds = getQuestionsIds(questionListDto);
 
-        List<QuestionTagDto> questionTagDtos = findQuestionTag(questionsIds);
+        List<QuestionTagDto> questionTagDtos = findQuestionTagDtoByQuestionIds(questionsIds);
 
         Map<Long, List<QuestionTagDto>> longListMap = groupQuestionTagsByQuestionId(questionTagDtos);
 
@@ -400,7 +406,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                     dto -> dto.addHashTag(
                             questionTagMap.get(dto.getId())
                                     .stream()
-                                    .map(t -> new HashTagDto(t.getHashTagId(), t.getHashTagName()))
+                                    .map(t -> new TagDto(t.getId(),t.getHashTagId(), t.getHashTagName()))
                                     .collect(Collectors.toList())
                     ));
         }
@@ -413,7 +419,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private BooleanExpression containsTitle(String keyword) {
         return keyword == null ? null : question.title.containsIgnoreCase(keyword);
     }
-
 
     private BooleanExpression eqExposure(ExposureStatus status) {
         return status == null ? question.exposure.eq(PUBLIC) : question.exposure.eq(status);

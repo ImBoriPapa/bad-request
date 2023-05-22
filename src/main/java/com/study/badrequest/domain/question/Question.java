@@ -74,7 +74,7 @@ public class Question {
         }
     }
 
-    public void changeExposureToDelete(ExposureStatus status) {
+    public void changeExposure(ExposureStatus status) {
         this.exposure = status;
         this.questionMetrics.changeExposure(status);
         this.deletedRequestAt = LocalDateTime.now();

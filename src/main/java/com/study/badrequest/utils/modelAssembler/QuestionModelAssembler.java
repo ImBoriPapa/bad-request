@@ -5,7 +5,7 @@ import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
 import com.study.badrequest.domain.question.QuestionSort;
 import com.study.badrequest.dto.question.QuestionResponse;
-import com.study.badrequest.repository.question.query.HashTagDto;
+import com.study.badrequest.repository.question.query.TagDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
 import com.study.badrequest.repository.question.query.QuestionSearchCondition;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
@@ -64,12 +64,12 @@ public class QuestionModelAssembler {
                     linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(dto.getId(), null, null, null)).withRel("to detail"),
                     linkTo(methodOn(MemberQueryApiController.class).getProfile(dto.getQuestioner().getId(), null)).withRel("to Questioner Profile")
             );
-            dto.getHashTag().forEach(hashTagDto -> dto.add(getHashTagLink(hashTagDto)));
+            dto.getHashTag().forEach(tagDto -> dto.add(getHashTagLink(tagDto)));
         });
     }
 
-    private Link getHashTagLink(HashTagDto hashTagDto) {
-        String tag = HashTagUtils.hashTagToTag(hashTagDto.getHashTagName());
+    private Link getHashTagLink(TagDto tagDto) {
+        String tag = HashTagUtils.hashTagToTag(tagDto.getHashTagName());
         return linkTo(methodOn(QuestionQueryApiController.class).getQuestionsByTag(tag)).withRel("find by tagged");
     }
 

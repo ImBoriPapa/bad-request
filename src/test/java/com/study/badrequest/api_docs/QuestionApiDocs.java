@@ -7,10 +7,9 @@ import com.study.badrequest.domain.question.QuestionSort;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.repository.question.query.HashTagDto;
+import com.study.badrequest.repository.question.query.TagDto;
 import com.study.badrequest.repository.question.query.QuestionDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
-import com.study.badrequest.repository.question.query.QuestionQueryRepository;
 import com.study.badrequest.service.question.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionQueryService;
 import com.study.badrequest.service.question.QuestionService;
@@ -142,12 +141,12 @@ public class QuestionApiDocs {
         List<Long> imageIds = List.of(23L, 134L, 5213L);
 
         String accessToken = UUID.randomUUID().toString();
-        QuestionRequest.Modify request = new QuestionRequest.Modify(title,markdownContents,imageIds);
-        QuestionResponse.Modify response = new QuestionResponse.Modify(questionId,LocalDateTime.now());
+        QuestionRequest.Modify request = new QuestionRequest.Modify(title, markdownContents, imageIds);
+        QuestionResponse.Modify response = new QuestionResponse.Modify(questionId, LocalDateTime.now());
         //when
-        when(questionService.modifyQuestion(any(),any() ,any())).thenReturn(response);
+        when(questionService.modifyQuestion(any(), any(), any())).thenReturn(response);
         //then
-        mockMvc.perform(patch(QUESTION_PATCH_URL,questionId)
+        mockMvc.perform(patch(QUESTION_PATCH_URL, questionId)
                         .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
@@ -188,19 +187,19 @@ public class QuestionApiDocs {
         QuestionDto.Questioner questioner2 = new QuestionDto.Questioner(594L, "닉네임2", "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg", 620);
         QuestionDto.Questioner questioner3 = new QuestionDto.Questioner(9525L, "닉네임3", "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg", 350);
 
-        List<HashTagDto> tagDtos1 = List.of(
-                new HashTagDto(54L, "#java"),
-                new HashTagDto(34L, "#spring")
+        List<TagDto> tagDtos1 = List.of(
+                new TagDto(54L, 23L, "#java"),
+                new TagDto(34L, 24L, "#spring")
         );
 
-        List<HashTagDto> tagDtos2 = List.of(
-                new HashTagDto(2L, "#javascript"),
-                new HashTagDto(14L, "#react")
+        List<TagDto> tagDtos2 = List.of(
+                new TagDto(2L, 42L, "#javascript"),
+                new TagDto(14L, 12L, "#react")
         );
 
-        List<HashTagDto> tagDtos3 = List.of(
-                new HashTagDto(31L, "#mysql"),
-                new HashTagDto(7L, "#database")
+        List<TagDto> tagDtos3 = List.of(
+                new TagDto(31L, 4L, "#mysql"),
+                new TagDto(7L, 12L, "#database")
         );
 
         List<QuestionDto> questionDtos = List.of(
@@ -255,8 +254,9 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.results.[0].questioner.profileImage").type(STRING).description("프로필 이미지"),
                                 fieldWithPath("result.results.[0].questioner.activityScore").type(NUMBER).description("활동점수"),
                                 fieldWithPath("result.results.[0].hashTag").type(ARRAY).description("해시 태그"),
-                                fieldWithPath("result.results.[0].hashTag.[0].id").type(NUMBER).description("해시태그 식별아이디"),
-                                fieldWithPath("result.results.[0].hashTag.[0].hashTagName").type(STRING).description("해시태그네임"),
+                                fieldWithPath("result.results.[0].hashTag.[0].questionTagId").type(NUMBER).description("질문태그 식별 아이디"),
+                                fieldWithPath("result.results.[0].hashTag.[0].hashTagId").type(NUMBER).description("해시태그 식별 아이디"),
+                                fieldWithPath("result.results.[0].hashTag.[0].hashTagName").type(STRING).description("해시태그 네임"),
                                 fieldWithPath("result.results.[0].links.[0].rel").type(STRING).description("rel"),
                                 fieldWithPath("result.results.[0].links.[0].href").type(STRING).description("href")
                         )

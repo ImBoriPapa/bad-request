@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class HashTagDto {
-    private Long id;
+public class TagDto {
+    private Long questionTagId;
+    private Long hashTagId;
     private String hashTagName;
 }

@@ -19,13 +19,13 @@ public class QuestionDetail {
     private Boolean isQuestioner;
     private QuestionDetailMetrics metrics;
     private QuestionDetailQuestioner questioner;
-    private List<HashTagDto> hashTag = new ArrayList<>();
+    private List<TagDto> hashTag = new ArrayList<>();
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime askedAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
-    public void addHashTag(List<HashTagDto> hashTag) {
+    public void addHashTag(List<TagDto> hashTag) {
         this.hashTag = hashTag;
     }
 
