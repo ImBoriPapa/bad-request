@@ -32,23 +32,22 @@ public class QuestionMetrics {
     @Enumerated(EnumType.STRING)
     @Column(name = "EXPOSURE")
     private ExposureStatus exposure;
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "questionMetrics")
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "questionMetrics")
     private Question question;
 
-
-    protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Integer countOfAnswer, Question question) {
+    protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Integer countOfAnswer,ExposureStatus exposure) {
         this.countOfRecommend = countOfRecommend;
         this.countOfView = countOfView;
         this.countOfAnswer = countOfAnswer;
-        this.exposure = question.getExposure();
+        this.exposure = exposure;
+    }
+
+    public static QuestionMetrics createQuestionMetrics() {
+        return new QuestionMetrics(0, 0, 0, ExposureStatus.PUBLIC);
+    }
+    public void addQuestion(Question question){
         this.question = question;
-
     }
-
-    public static QuestionMetrics createQuestionMetrics(Question question) {
-        return new QuestionMetrics(0, 0, 0, question);
-    }
-
     public void incrementCountOfRecommendations() {
         ++this.countOfRecommend;
     }

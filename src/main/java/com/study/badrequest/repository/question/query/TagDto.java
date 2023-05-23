@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class TagDto {
-    private Long questionTagId;
-    private Long hashTagId;
-    private String hashTagName;
+    private Long id;
+    private String tagName;
 }

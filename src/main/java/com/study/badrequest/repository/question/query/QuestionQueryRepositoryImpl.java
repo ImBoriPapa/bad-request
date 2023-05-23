@@ -40,20 +40,47 @@ import static com.study.badrequest.domain.recommendation.QRecommendation.recomme
 public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
+    /**
+     * 질문 상세 조회
+     *
+     * @param questionId:       질문 식별 아이디
+     * @param loggedInMemberId: 현재 로그인된 회원 아이디
+     * @param exposureStatus:   노출 상태
+     * @return QuestionDetail
+     * Updated 2023/5/23
+     */
     public Optional<QuestionDetail> findQuestionDetail(Long questionId, Long loggedInMemberId, ExposureStatus exposureStatus) {
-
+        log.info("[QUERY]=> findQuestionDetail- Question ID: {}", questionId);
         Optional<QuestionDetail> detailOptional = getQuestionDetailByQuestionIdAndExposureStatus(questionId, exposureStatus);
 
-        detailOptional.ifPresent(detail -> {
-            addQuestionTagToQuestionDetail(detail);
-            checkIsQuestioner(loggedInMemberId, detail);
-            setRecommendation(detail);
-        });
+        detailOptional.ifPresent(detail -> organizeQuestionDetail(loggedInMemberId, detail));
 
         return detailOptional;
     }
 
-    private void setRecommendation(QuestionDetail detail) {
+    private void organizeQuestionDetail(Long loggedInMemberId, QuestionDetail detail) {
+        addTagsToQuestionDetail(detail);
+        setRecommendationInformation(detail);
+        checkQuestioner(loggedInMemberId, detail);
+    }
+
+    private void addTagsToQuestionDetail(QuestionDetail detail) {
+        List<TagDto> tagDtoList = findTagsDtoByQuestionId(detail.getId());
+
+        if (CollectionUtils.isNullOrEmpty(tagDtoList)) {
+            log.error("[QUERY]==> Tags should not accept empty values- QuestionID: {}", detail.getId());
+        }
+
+        detail.addTag(tagDtoList);
+    }
+
+    private void checkQuestioner(Long loggedInMemberId, QuestionDetail detail) {
+        if (loggedInMemberId != null && Objects.equals(loggedInMemberId, detail.getQuestioner().getId())) {
+            detail.isQuestionerToTrue();
+        }
+    }
+
+    private void setRecommendationInformation(QuestionDetail detail) {
         Optional<Recommendation> optional = findRecommendationByQuestionId(detail.getId());
 
         if (optional.isPresent()) {
@@ -63,7 +90,16 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
     }
 
+    private List<TagDto> findTagsDtoByQuestionId(Long questionId) {
+        log.debug("[QUERY]==> findTagsDtoByQuestionId- QuestionID: {}", questionId);
+        return findQuestionTagsByQuestionId(questionId)
+                .stream()
+                .map(tag -> new TagDto(tag.getId(), tag.getHashTag().getHashTagName()))
+                .collect(Collectors.toList());
+    }
+
     private Optional<Recommendation> findRecommendationByQuestionId(Long questionId) {
+        log.debug("[QUERY]==> findRecommendationByQuestionId- QuestionID: {}", questionId);
         return jpaQueryFactory
                 .selectDistinct(recommendation)
                 .from(recommendation)
@@ -74,25 +110,9 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .findFirst();
     }
 
-    private void checkIsQuestioner(Long memberId, QuestionDetail questionDetail) {
-        if (memberId != null) {
-            if (questionDetail.getQuestioner().getId().equals(memberId)) {
-                questionDetail.isQuestionerToTrue();
-            }
-        }
-    }
 
-    private void addQuestionTagToQuestionDetail(QuestionDetail questionDetail) {
-
-        List<TagDto> tagDtos = getQuestionTagsByQuestionId(questionDetail.getId())
-                .stream()
-                .map(tag -> new TagDto(tag.getId(),tag.getHashTag().getId(),tag.getHashTag().getHashTagName()))
-                .collect(Collectors.toList());
-
-        questionDetail.addHashTag(tagDtos);
-    }
-
-    private List<QuestionTag> getQuestionTagsByQuestionId(Long questionId) {
+    private List<QuestionTag> findQuestionTagsByQuestionId(Long questionId) {
+        log.debug("[QUERY]==> findQuestionTagsByQuestionId- QuestionID: {}", questionId);
         return jpaQueryFactory
                 .selectDistinct(questionTag)
                 .from(questionTag)
@@ -103,6 +123,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private Optional<QuestionDetail> getQuestionDetailByQuestionIdAndExposureStatus(Long questionId, ExposureStatus exposureStatus) {
+        log.debug("[QUERY]==> getQuestionDetailByQuestionIdAndExposureStatus- QuestionID: {}, ExposureStatus: {}", questionId, exposureStatus);
         return jpaQueryFactory
                 .select(
                         Projections.fields(QuestionDetail.class,
@@ -134,14 +155,23 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .findFirst();
     }
 
+    /**
+     * 질문 리스트 조회
+     *
+     * @param condition: Long lastOfData: 다음 데이터를 조회하기 위한 마지막 데이터의 식별 값 입니다.,
+     *                   Integer size: 조회당 요청 데이터의 개수입니다.,
+     *                   QuestionSort sort: 데이터 정렬 조건입니다.
+     * @return QuestionListResult
+     * updated: 2023/5/23
+     */
     @Override
     public QuestionListResult findQuestionListByCondition(QuestionSearchCondition condition) {
-
+        log.info("[QUERY]=> findQuestionListByCondition LastOfData: {}, SORT: {}, SIZE: {}", condition.getLastOfData(), condition.getSort(), condition.getSize());
         final int limitSize = setLimitSize(condition.getSize());
 
-        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfIndex(), condition.getLastOfView(), condition.getLastOfRecommend(), limitSize, PUBLIC, condition.getSort());
+        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfData(), limitSize, condition.getSort());
 
-        List<QuestionDto> questionListDto = selectQuestionFieldsByIdListAsQuestionDto(questionIdList);
+        List<QuestionDto> questionListDto = selectQuestionDtoInIds(questionIdList);
 
         sortListByQuestionSort(condition.getSort(), questionListDto);
 
@@ -156,39 +186,32 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
             --resultSize;
         }
 
-        Long lastIndex = 0L;
-        Integer lastView = 0;
-        Integer lastRecommend = 0;
+        long lastData = 0L;
 
         QuestionSort sortBy = condition.getSort() == null ? QuestionSort.NEW_EAST : condition.getSort();
         switch (sortBy) {
             case NEW_EAST:
-                lastIndex = questionListDto.stream()
+                lastData = questionListDto.stream()
                         .mapToLong(QuestionDto::getId)
                         .min()
                         .orElse(0);
-                lastView = null;
-                lastRecommend = null;
                 break;
             case VIEW:
-                lastView = questionListDto.stream()
-                        .mapToInt(q -> q.getMetrics().getCountOfView())
+                lastData = questionListDto.stream()
+                        .mapToLong(q -> q.getMetrics().getCountOfView())
                         .min()
                         .orElse(0);
-                lastIndex = null;
-                lastRecommend = null;
+
                 break;
             case RECOMMEND:
-                lastRecommend = questionListDto.stream()
-                        .mapToInt(q -> q.getMetrics().getCountOfRecommend())
+                lastData = questionListDto.stream()
+                        .mapToLong(q -> q.getMetrics().getCountOfRecommend())
                         .min()
                         .orElse(0);
-                lastIndex = null;
-                lastView = null;
                 break;
         }
 
-        return new QuestionListResult(resultSize, hasNext, sortBy, lastIndex, lastView, lastRecommend, questionListDto);
+        return new QuestionListResult(resultSize, hasNext, sortBy, lastData, questionListDto);
 
     }
 
@@ -214,7 +237,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         List<Long> questionIds = findQuestionIds(questionTags);
 
-        List<QuestionDto> questionListDto = selectQuestionFieldsByIdListAsQuestionDto(questionIds);
+        List<QuestionDto> questionListDto = selectQuestionDtoInIds(questionIds);
 
         addQuestionTagToListDto(questionListDto);
 
@@ -228,6 +251,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         NEW_EAST: questionId 로 Order By questionId DESC 로 정렬 불필요
     */
     private void sortListByQuestionSort(QuestionSort sort, List<QuestionDto> questionListDto) {
+        log.debug("[QUERY]==> sortListByQuestionSort Sort: {}",sort);
         if (sort != null) {
 
             final Comparator<QuestionDto> comparator;
@@ -249,69 +273,73 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     /**
      * Question.questionId 리스트 조회
      *
-     * @param lastIndex      :  조회 시작 위치
-     * @param limitSize      :  조회 데이터 크기
-     * @param exposureStatus : 노출 설정
+     * @param lastOfData  :  조회 시작 위치
+     * @param limitSize :  조회 데이터 크기
      * @param sort
-     * @return
+     * @return List<Long>: Question ID
      */
-    private List<Long> selectQuestionIdList(Long lastIndex, Integer lastOfView, Integer lastOfRecommend, Integer limitSize, ExposureStatus exposureStatus, QuestionSort sort) {
-
-        JPAQuery<Long> query = jpaQueryFactory.select(question.id).from(question);
-        JPAQuery<Long> queryWithSort = jpaQueryFactory.select(questionMetrics.id).from(questionMetrics);
+    private List<Long> selectQuestionIdList(Long lastOfData, Integer limitSize, QuestionSort sort) {
+        log.debug("[QUERY]==> selectQuestionIdList- LastOfData: {}, LimitSize: {}, SORT: {}", lastOfData, limitSize, sort);
+        final JPAQuery<Long> selectIdFromQuestion = jpaQueryFactory.select(question.id).from(question);
 
         if (sort == null) {
-            query.where(lastIndexCursor(lastIndex))
+            log.debug("[QUERY]===> selectIdFromQuestion SortBy NEW");
+            selectIdFromQuestion
+                    .where(lastIndexCursor(lastOfData), eqExposure(PUBLIC))
                     .orderBy(question.id.desc())
-                    .limit(limitSize + 1).fetch();
-
+                    .limit(limitSize + 1);
         }
+
         if (sort != null) {
-
-            List<Long> metricsIds;
-
-
-            switch (sort) {
-                case VIEW:
-
-                    metricsIds = queryWithSort.where(
-                                    lastViewCursor(lastOfView),
-                                    questionMetrics.exposure.eq(PUBLIC))
-                            .orderBy(questionMetrics.countOfView.desc())
-                            .limit(limitSize + 1)
-                            .fetch();
-
-                    query.where(question.id.in(CollectionUtils.isNullOrEmpty(metricsIds) ? new ArrayList<>() : metricsIds));
-                    break;
-                case RECOMMEND:
-
-                    metricsIds = queryWithSort.where(
-                                    lastRecommendCursor(lastOfRecommend),
-                                    questionMetrics.exposure.eq(PUBLIC))
-                            .orderBy(questionMetrics.countOfRecommend.desc())
-                            .limit(limitSize + 1)
-                            .fetch();
-
-                    query.where(question.id.in(CollectionUtils.isNullOrEmpty(metricsIds) ? new ArrayList<>() : metricsIds));
-                    break;
-            }
+            List<Long> questionIds = selectQuestionIdWithSort(lastOfData, limitSize, sort);
+            selectIdFromQuestion
+                    .where(question.id.in(questionIds));
         }
 
-        List<Long> results = query.fetch();
+        List<Long> results = selectIdFromQuestion.fetch();
 
         return CollectionUtils.isNullOrEmpty(results) ? new ArrayList<>() : results;
     }
 
-    private Predicate lastRecommendCursor(Integer lastOfRecommend) {
-        return lastOfRecommend == null ? questionMetrics.countOfRecommend.lt(Integer.MAX_VALUE) : questionMetrics.countOfRecommend.lt(lastOfRecommend);
+    private List<Long> selectQuestionIdWithSort(Long lastData, Integer limitSize, QuestionSort sort) {
+        log.debug("[QUERY]===> selectQuestionIdWithSort SORT: {}",sort);
+        final JPAQuery<Long> queryWithSort = jpaQueryFactory
+                .select(questionMetrics.question.id)
+                .from(questionMetrics);
+
+        switch (sort) {
+            case VIEW:
+                return queryWithSort.where(
+                                lastViewCursor(lastData),
+                                questionMetrics.exposure.eq(PUBLIC))
+                        .orderBy(questionMetrics.countOfView.desc(), questionMetrics.id.desc())
+                        .limit(limitSize + 1)
+                        .fetch();
+
+            case RECOMMEND:
+                return queryWithSort.where(
+                                lastRecommendCursor(lastData),
+                                questionMetrics.exposure.eq(PUBLIC))
+                        .orderBy(questionMetrics.countOfRecommend.desc(), questionMetrics.id.desc())
+                        .limit(limitSize + 1)
+                        .fetch();
+
+        }
+        return new ArrayList<>();
     }
 
 
-    private Predicate lastViewCursor(Integer lastOfView) {
-        return lastOfView == null ? questionMetrics.countOfView.lt(Integer.MAX_VALUE) : questionMetrics.countOfView.lt(lastOfView);
+    private Predicate lastRecommendCursor(Long lastOfData) {
+        return lastOfData == null ? questionMetrics.countOfRecommend.lt(Integer.MAX_VALUE) : questionMetrics.countOfRecommend.lt(lastOfData.intValue());
     }
 
-    private List<QuestionDto> selectQuestionFieldsByIdListAsQuestionDto(List<Long> questionIds) {
+
+    private Predicate lastViewCursor(Long lastOfData) {
+        return lastOfData == null ? questionMetrics.countOfView.lt(Integer.MAX_VALUE) : questionMetrics.countOfView.lt(lastOfData.intValue());
+    }
+
+    private List<QuestionDto> selectQuestionDtoInIds(List<Long> questionIds) {
+        log.debug("[QUERY]==> selectQuestionDtoInIds- QuestionID: {}",questionIds);
         return jpaQueryFactory
                 .select(Projections.fields(QuestionDto.class,
                         question.id.as("id"),
@@ -339,16 +367,17 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private List<QuestionTagDto> findQuestionTagDtoByQuestionIds(List<Long> ids) {
-        /**
-         *1,SIMPLE,questionta0_,range,"PRIMARY,FKkt90ri7g7j1a9dd4ol9gns2ek",PRIMARY,8,null,10,Using where
-         * 1,SIMPLE,hashtag1_,eq_ref,PRIMARY,PRIMARY,8,bad_request.questionta0_.hashtag_id,1,Using index
-         */
         List<Long> questionTagIds = findQuestionTagsInQuestionIds(ids);
+
+        if(CollectionUtils.isNullOrEmpty(questionTagIds)){
+            log.error("[QUERY]===> findQuestionTagsInQuestionIds Not Allow EMPTY");
+        }
 
         return findQuestionTagDtosByQuestionTagIds(questionTagIds);
     }
 
     private List<QuestionTagDto> findQuestionTagDtosByQuestionTagIds(List<Long> questionTagIds) {
+        log.debug("[QUERY]==> findQuestionTagDtosByQuestionTagIds");
         return jpaQueryFactory
                 .select(
                         Projections.fields(QuestionTagDto.class,
@@ -365,6 +394,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private List<Long> findQuestionTagsInQuestionIds(List<Long> questionIds) {
+        log.debug("[QUERY]==> findQuestionTagsInQuestionIds QuestionID: {}",questionIds);
         return jpaQueryFactory
                 .select(questionTag.id)
                 .from(questionTag)
@@ -403,10 +433,10 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private void addGroupedQuestionTagsToQuestionDto(List<QuestionDto> questionListDto, Map<Long, List<QuestionTagDto>> questionTagMap) {
         if (questionTagMap != null && !questionTagMap.isEmpty()) {
             questionListDto.forEach(
-                    dto -> dto.addHashTag(
+                    dto -> dto.addTags(
                             questionTagMap.get(dto.getId())
                                     .stream()
-                                    .map(t -> new TagDto(t.getId(),t.getHashTagId(), t.getHashTagName()))
+                                    .map(t -> new TagDto(t.getId(), t.getHashTagName()))
                                     .collect(Collectors.toList())
                     ));
         }

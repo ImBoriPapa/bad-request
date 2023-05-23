@@ -9,11 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class QuestionSearchCondition {
-    private Long lastOfIndex;
-    private Integer lastOfView;
-    private Integer lastOfRecommend;
+    private Long lastOfData;
     private Integer size;
     private QuestionSort sort;
-    private Boolean isAnswered;
-    private String searchBy;
 }

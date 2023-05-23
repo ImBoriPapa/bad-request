@@ -23,7 +23,7 @@ public class QuestionDto extends EntityModel {
     private List<TagDto> hashTag = new ArrayList<>();
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime askedAt;
-    public void addHashTag(List<TagDto> hashTags) {
+    public void addTags(List<TagDto> hashTags) {
         this.hashTag = hashTags;
     }
     @NoArgsConstructor

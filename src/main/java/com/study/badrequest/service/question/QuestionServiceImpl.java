@@ -40,7 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         Question question = questionRepository.save(createQuestionEntity(form, member));
 
-        question.addQuestionMetrics(QuestionMetrics.createQuestionMetrics(question));
+        question.addQuestionMetrics(QuestionMetrics.createQuestionMetrics());
 
         //이벤트: 1.태그 저장 2.이미지 상태 변경 2. 회원 활동 점수 변경
         applicationEventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member, question, form.getTags(), form.getImageIds()));

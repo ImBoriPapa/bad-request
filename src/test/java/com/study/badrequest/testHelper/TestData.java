@@ -67,7 +67,7 @@ public class TestData {
                             .contents("내용")
                             .member(sampleMembers.get(randomMemberId))
                             .build();
-                    question.addQuestionMetrics(QuestionMetrics.createQuestionMetrics(question));
+                    question.addQuestionMetrics(QuestionMetrics.createQuestionMetrics());
                     list.add(question);
 
                     HashTag hashTag1 = hashTagRepository.save(new HashTag("#tag" + new Random().nextInt(10) + 1));

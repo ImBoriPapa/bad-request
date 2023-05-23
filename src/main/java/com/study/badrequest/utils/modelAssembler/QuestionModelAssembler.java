@@ -51,8 +51,6 @@ public class QuestionModelAssembler {
 
         addSortLink(condition, resultLinks);
 
-        addIsAnsweredLink(condition, resultLinks);
-
         addResultsLink(result);
         return EntityModel.of(result, resultLinks);
     }
@@ -69,35 +67,26 @@ public class QuestionModelAssembler {
     }
 
     private Link getHashTagLink(TagDto tagDto) {
-        String tag = HashTagUtils.hashTagToTag(tagDto.getHashTagName());
+        String tag = HashTagUtils.hashTagToTag(tagDto.getTagName());
         return linkTo(methodOn(QuestionQueryApiController.class).getQuestionsByTag(tag)).withRel("find by tagged");
-    }
-
-    private void addIsAnsweredLink(QuestionSearchCondition condition, List<Link> links) {
-
-        if (condition.getIsAnswered() == null) {
-            Link filterByIsAnswered = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
-                    .slash("?isAnswered=" + true)
-                    .withRel("filter by isAnswered");
-            links.add(filterByIsAnswered);
-        }
     }
 
     private void addSortLink(QuestionSearchCondition condition, List<Link> links) {
 
-        if (condition.getLastOfView() != null || condition.getLastOfRecommend() != null) {
-            Link sortByNew = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition)).withRel("sort by new-east");
+        if (condition.getSort() != QuestionSort.NEW_EAST) {
+            Link sortByNew = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
+                    .withRel("sort by new-east");
             links.add(sortByNew);
         }
 
-        if (condition.getLastOfView() == null) {
+        if (condition.getSort() != QuestionSort.VIEW) {
             Link sortByView = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
                     .slash("?sort=" + QuestionSort.VIEW.toString().toLowerCase())
                     .withRel("sort by view");
             links.add(sortByView);
 
         }
-        if (condition.getLastOfRecommend() == null) {
+        if (condition.getSort() != QuestionSort.RECOMMEND) {
             Link sortByRecommend = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
                     .slash("?sort=" + QuestionSort.RECOMMEND.toString().toLowerCase())
                     .withRel("sort by recommend");
@@ -116,21 +105,8 @@ public class QuestionModelAssembler {
     }
 
     private void addNextLink(QuestionListResult result, QuestionSearchCondition condition, List<Link> links) {
-
         if (result.getHasNext()) {
-            String param = "";
-            switch (result.getSortBy()) {
-                case NEW_EAST:
-                    param = "lastOfIndex=" + result.getLastOfIndex();
-                    break;
-                case VIEW:
-                    param = "lastOfView=" + result.getLastOfView();
-                    break;
-                case RECOMMEND:
-                    param = "lastOfRecommend=" + result.getLastOfRecommend();
-                    break;
-            }
-
+            String param = "lastOfData=" + result.getLastOfData();
             Link nextData = linkTo(methodOn(QuestionQueryApiController.class)
                     .getQuestions(condition))
                     .slash("?" + param)

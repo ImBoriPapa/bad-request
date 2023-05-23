@@ -59,6 +59,7 @@ public class Question {
 
     public void addQuestionMetrics(QuestionMetrics questionMetrics) {
         this.questionMetrics = questionMetrics;
+        questionMetrics.addQuestion(this);
     }
 
     private String setContents(String contents) {

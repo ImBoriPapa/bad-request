@@ -188,18 +188,18 @@ public class QuestionApiDocs {
         QuestionDto.Questioner questioner3 = new QuestionDto.Questioner(9525L, "닉네임3", "https://bori-market-bucket.s3.ap-northeast-2.amazonaws.com/default/profile.jpg", 350);
 
         List<TagDto> tagDtos1 = List.of(
-                new TagDto(54L, 23L, "#java"),
-                new TagDto(34L, 24L, "#spring")
+                new TagDto(54L, "#java"),
+                new TagDto(34L,  "#spring")
         );
 
         List<TagDto> tagDtos2 = List.of(
-                new TagDto(2L, 42L, "#javascript"),
-                new TagDto(14L, 12L, "#react")
+                new TagDto(2L,  "#javascript"),
+                new TagDto(14L,  "#react")
         );
 
         List<TagDto> tagDtos3 = List.of(
-                new TagDto(31L, 4L, "#mysql"),
-                new TagDto(7L, 12L, "#database")
+                new TagDto(31L,  "#mysql"),
+                new TagDto(7L,  "#database")
         );
 
         List<QuestionDto> questionDtos = List.of(
@@ -208,7 +208,7 @@ public class QuestionApiDocs {
                 new QuestionDto(97L, "질문1", "질문내용 미리보기1..", metrics3, questioner3, tagDtos3, LocalDateTime.now())
         );
 
-        QuestionListResult questionListResult = new QuestionListResult(3, true, QuestionSort.NEW_EAST, 97L, null, null, questionDtos);
+        QuestionListResult questionListResult = new QuestionListResult(3, true, QuestionSort.NEW_EAST, 97L, questionDtos);
         //when
         given(questionQueryService.getQuestionList(any())).willReturn(questionListResult);
         //then
@@ -224,9 +224,7 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.size").type(NUMBER).description("데이터 크기"),
                                 fieldWithPath("result.hasNext").type(BOOLEAN).description("다음 데이터 존재 유무"),
                                 fieldWithPath("result.sortBy").type(STRING).description("정렬 방식"),
-                                fieldWithPath("result.lastOfIndex").type(NUMBER).description("현재 조회된 데이터의 마지막 인덱스"),
-                                fieldWithPath("result.lastOfView").type(NULL).description("현재 조회된 데이터의 마지막 조회수"),
-                                fieldWithPath("result.lastOfRecommend").type(NULL).description("조회된 데이터의 마지막 추천수"),
+                                fieldWithPath("result.lastOfData").type(NUMBER).description("다음 데이터를 요청하기 위한 마지막 데이터 식별값"),
                                 fieldWithPath("result.links.[0].rel").type(STRING).description("요청된 url"),
                                 fieldWithPath("result.links.[0].href").type(STRING).description("요청 url"),
                                 fieldWithPath("result.links.[1].rel").type(STRING).description("다음 데이터"),
@@ -254,9 +252,8 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.results.[0].questioner.profileImage").type(STRING).description("프로필 이미지"),
                                 fieldWithPath("result.results.[0].questioner.activityScore").type(NUMBER).description("활동점수"),
                                 fieldWithPath("result.results.[0].hashTag").type(ARRAY).description("해시 태그"),
-                                fieldWithPath("result.results.[0].hashTag.[0].questionTagId").type(NUMBER).description("질문태그 식별 아이디"),
-                                fieldWithPath("result.results.[0].hashTag.[0].hashTagId").type(NUMBER).description("해시태그 식별 아이디"),
-                                fieldWithPath("result.results.[0].hashTag.[0].hashTagName").type(STRING).description("해시태그 네임"),
+                                fieldWithPath("result.results.[0].hashTag.[0].id").type(NUMBER).description("질문태그 식별 아이디"),
+                                fieldWithPath("result.results.[0].hashTag.[0].tagName").type(STRING).description("해시태그 네임"),
                                 fieldWithPath("result.results.[0].links.[0].rel").type(STRING).description("rel"),
                                 fieldWithPath("result.results.[0].links.[0].href").type(STRING).description("href")
                         )

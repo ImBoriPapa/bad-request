@@ -1,13 +1,15 @@
 package com.study.badrequest.repository.question.query;
 
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.commons.status.ExposureStatus;
 
-import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.domain.question.*;
 import com.study.badrequest.repository.question.QuestionRepository;
 import com.study.badrequest.testHelper.TestConfig;
 import com.study.badrequest.testHelper.TestData;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,6 +19,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+
+import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -32,7 +36,11 @@ class QuestionQueryRepositoryImplTest {
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
+    private JPAQueryFactory jpaQueryFactory;
+    @Autowired
     private TestData testData;
+
+
 
     @BeforeEach
     void beforeEach() {
@@ -96,13 +104,68 @@ class QuestionQueryRepositoryImplTest {
     }
 
     @Test
-    @DisplayName("질문 리스트 조회")
-    void 질문리스트조회() throws Exception{
+    @DisplayName("질문 리스트 조회 최신순")
+    void 질문리스트조회1() throws Exception{
         //given
         QuestionSearchCondition condition = new QuestionSearchCondition();
         //when
         QuestionListResult result = questionQueryRepository.findQuestionListByCondition(condition);
         //then
+        assertThat(result.getSize()).isEqualTo(10);
+
+    }
+
+    @Test
+    @DisplayName("질문 리스트 조회- 조회수 순")
+    void 질문리스트조회2() throws Exception{
+        //given
+        QuestionSearchCondition condition = new QuestionSearchCondition();
+        condition.setSort(QuestionSort.VIEW);
+        //when
+        Question question1 = questionRepository.findById(5L).get();
+        question1.getQuestionMetrics().incrementCountOfView();
+        question1.getQuestionMetrics().incrementCountOfView();
+        question1.getQuestionMetrics().incrementCountOfView();
+
+        Question question2 = questionRepository.findById(10L).get();
+        question2.getQuestionMetrics().incrementCountOfView();
+        question2.getQuestionMetrics().incrementCountOfView();
+
+        Question question3 = questionRepository.findById(1L).get();
+        question3.getQuestionMetrics().incrementCountOfView();
+
+        QuestionListResult result = questionQueryRepository.findQuestionListByCondition(condition);
+        //then
+        assertThat(result.getResults().get(0).getId()).isEqualTo(5L);
+        assertThat(result.getResults().get(1).getId()).isEqualTo(10L);
+        assertThat(result.getResults().get(2).getId()).isEqualTo(1L);
+
+    }
+
+    @Test
+    @DisplayName("질문 리스트 조회- 추천순")
+    void 질문리스트조회3() throws Exception{
+        //given
+        QuestionSearchCondition condition = new QuestionSearchCondition();
+        condition.setSort(QuestionSort.RECOMMEND);
+        //when
+        Question question1 = questionRepository.findById(10L).get();
+        question1.getQuestionMetrics().incrementCountOfRecommendations();
+        question1.getQuestionMetrics().incrementCountOfRecommendations();
+        question1.getQuestionMetrics().incrementCountOfRecommendations();
+
+        Question question2 = questionRepository.findById(15L).get();
+        question2.getQuestionMetrics().incrementCountOfRecommendations();
+        question2.getQuestionMetrics().incrementCountOfRecommendations();
+
+        Question question3 = questionRepository.findById(5L).get();
+        question3.getQuestionMetrics().incrementCountOfRecommendations();
+
+        QuestionListResult result = questionQueryRepository.findQuestionListByCondition(condition);
+        //then
+        assertThat(result.getResults().get(0).getId()).isEqualTo(10L);
+        assertThat(result.getResults().get(1).getId()).isEqualTo(15L);
+        assertThat(result.getResults().get(2).getId()).isEqualTo(5L);
 
     }
 }

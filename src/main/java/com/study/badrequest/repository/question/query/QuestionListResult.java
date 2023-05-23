@@ -14,18 +14,14 @@ public class QuestionListResult {
     private Integer size;
     private Boolean hasNext;
     private QuestionSort sortBy;
-    private Long lastOfIndex;
-    private Integer lastOfView;
-    private Integer lastOfRecommend;
+    private Long lastOfData;
     private List<QuestionDto> results = new ArrayList<>();
 
-    public QuestionListResult(Integer size, Boolean hasNext, QuestionSort sortBy, Long lastOfIndex, Integer lastOfView, Integer lastOfRecommend, List<QuestionDto> results) {
+    public QuestionListResult(Integer size, Boolean hasNext, QuestionSort sortBy, Long lastOfData, List<QuestionDto> results) {
         this.size = size;
         this.hasNext = hasNext;
         this.sortBy = sortBy;
-        this.lastOfIndex = lastOfIndex;
-        this.lastOfView = lastOfView;
-        this.lastOfRecommend = lastOfRecommend;
+        this.lastOfData = lastOfData;
         this.results = results;
     }
 }
