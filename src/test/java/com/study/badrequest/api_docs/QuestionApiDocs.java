@@ -3,10 +3,13 @@ package com.study.badrequest.api_docs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
+import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.domain.question.QuestionSort;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
+import com.study.badrequest.repository.question.query.QuestionDetail;
 import com.study.badrequest.repository.question.query.TagDto;
 import com.study.badrequest.repository.question.query.QuestionDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
@@ -32,10 +35,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_PATCH_URL;
+import static com.study.badrequest.commons.constants.ApiURL.*;
 import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
 import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
 import static com.study.badrequest.domain.member.Authority.*;
@@ -43,7 +47,6 @@ import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentReques
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -54,6 +57,8 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
@@ -251,9 +256,11 @@ public class QuestionApiDocs {
                                 fieldWithPath("result.results.[0].questioner.nickname").type(STRING).description("닉네임"),
                                 fieldWithPath("result.results.[0].questioner.profileImage").type(STRING).description("프로필 이미지"),
                                 fieldWithPath("result.results.[0].questioner.activityScore").type(NUMBER).description("활동점수"),
-                                fieldWithPath("result.results.[0].hashTag").type(ARRAY).description("해시 태그"),
-                                fieldWithPath("result.results.[0].hashTag.[0].id").type(NUMBER).description("질문태그 식별 아이디"),
-                                fieldWithPath("result.results.[0].hashTag.[0].tagName").type(STRING).description("해시태그 네임"),
+                                fieldWithPath("result.results.[0].tags").type(ARRAY).description("태그"),
+                                fieldWithPath("result.results.[0].tags.[0].id").type(NUMBER).description("질문태그 식별 아이디"),
+                                fieldWithPath("result.results.[0].tags.[0].tagName").type(STRING).description("해시태그 네임"),
+                                fieldWithPath("result.results.[0].tags.[0].links.[0].rel").type(STRING).description("태그 검색"),
+                                fieldWithPath("result.results.[0].tags.[0].links.[0].href").type(STRING).description("경로 "),
                                 fieldWithPath("result.results.[0].links.[0].rel").type(STRING).description("rel"),
                                 fieldWithPath("result.results.[0].links.[0].href").type(STRING).description("href")
                         )
@@ -261,5 +268,76 @@ public class QuestionApiDocs {
 
     }
 
+    @Test
+    @DisplayName("질문 상세 조회")
+    void 질문상세조회() throws Exception{
+        //given
+        String accessToken = UUID.randomUUID().toString();
+        Long questionId = 563L;
+        String title = "제목입니다.";
+        String contents = "<p>내용입니다.</p>";
+        boolean isQuestioner = true;
+        int countOfRecommend = 100;
+        int countOfView = 632;
+        int countOfAnswer  = 3;
+        boolean hasRecommendation = false;
+        RecommendationKind kind = null;
+        Long memberId = 242L;
+        String nickname = "닉네임입니다";
+        String imageLocation = "https://my-bucket-s3/profile/my_image.png";
+        QuestionDetail.QuestionDetailMetrics metrics = new QuestionDetail.QuestionDetailMetrics(countOfRecommend,countOfView,countOfAnswer,hasRecommendation,kind);
+        int activityScore = 240;
+        QuestionDetail.QuestionDetailQuestioner questioner = new QuestionDetail.QuestionDetailQuestioner(memberId,nickname,imageLocation,activityScore);
+        TagDto tag1 = new TagDto(24L,"#java");
+        TagDto tag2 = new TagDto(26L,"#spring");
+        List<TagDto> tags = List.of(tag1, tag2);
+        LocalDateTime askedAt = LocalDateTime.now();
+        LocalDateTime modifiedAt = LocalDateTime.now();
+        QuestionDetail questionDetail = new QuestionDetail(242L,title,contents,isQuestioner,metrics,questioner,tags,askedAt,modifiedAt);
+        //when
+        given(questionQueryService.getQuestionDetail(any(), any(), any(), any())).willReturn(questionDetail);
+        //then
+        mockMvc.perform(get(QUESTION_DETAIL_URL,questionId)
+                        .header(AUTHORIZATION_HEADER,accessToken))
+                .andDo(print())
+                .andDo(document("question-detail",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(headerWithName(AUTHORIZATION_HEADER).description("Access Token").optional()),
+                        pathParameters(
+                                parameterWithName("questionId").description("질문 식별 아이디")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(STRING).description("응답 상태"),
+                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
+                                fieldWithPath("result.title").type(STRING).description("질문 제목"),
+                                fieldWithPath("result.contents").type(STRING).description("질문 내용"),
+                                fieldWithPath("result.isQuestioner").type(BOOLEAN).description("질문자"),
+                                fieldWithPath("result.metrics.countOfRecommend").type(NUMBER).description("추천수"),
+                                fieldWithPath("result.metrics.countOfView").type(NUMBER).description("조회수"),
+                                fieldWithPath("result.metrics.countOfAnswer").type(NUMBER).description("답변수"),
+                                fieldWithPath("result.metrics.hasRecommendation").type(BOOLEAN).description("추천 여부"),
+                                fieldWithPath("result.metrics.kind").type(NULL).description("추천 종류"),
+                                fieldWithPath("result.questioner.id").type(NUMBER).description("질문자 식별 아이디"),
+                                fieldWithPath("result.questioner.nickname").type(STRING).description("질문자 닉네임"),
+                                fieldWithPath("result.questioner.profileImage").type(STRING).description("프로필 이미지"),
+                                fieldWithPath("result.questioner.activityScore").type(NUMBER).description("활동 점수"),
+                                fieldWithPath("result.tag.[0].id").type(NUMBER).description("질문 태그 아이디"),
+                                fieldWithPath("result.tag.[0].tagName").type(STRING).description("태그명"),
+                                fieldWithPath("result.tag.[0].links.[0].rel").type(STRING).description(""),
+                                fieldWithPath("result.tag.[0].links.[0].href").type(STRING).description(""),
+                                fieldWithPath("result.askedAt").type(STRING).description("질문일"),
+                                fieldWithPath("result.modifiedAt").type(STRING).description("수정일"),
+                                fieldWithPath("result.links.[0].rel").type(STRING).description(""),
+                                fieldWithPath("result.links.[0].href").type(STRING).description("")
+                        )
 
+
+                )
+                );
+
+
+    }
 }

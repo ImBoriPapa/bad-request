@@ -4,7 +4,9 @@ import com.study.badrequest.api.member.MemberQueryApiController;
 import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
 import com.study.badrequest.domain.question.QuestionSort;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.repository.question.query.QuestionDetail;
 import com.study.badrequest.repository.question.query.TagDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
 import com.study.badrequest.repository.question.query.QuestionSearchCondition;
@@ -21,6 +23,27 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class QuestionModelAssembler {
+
+    public EntityModel<QuestionDetail> createDetailModel(QuestionDetail questionDetail) {
+
+
+        List<Link> links = new ArrayList<>();
+        links.add(linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(questionDetail.getId(), null, null, null)).withSelfRel());
+
+        if (questionDetail.getIsQuestioner()) {
+            links.add(linkTo(methodOn(QuestionApiController.class).modify(questionDetail.getId(), null, null)).withRel("modify"));
+            links.add(linkTo(methodOn(QuestionApiController.class).delete(questionDetail.getId(), null)).withRel("delete"));
+        } else {
+            links.add(linkTo(methodOn(QuestionApiController.class).recommendation(questionDetail.getId(), true)).withRel("recommendation"));
+            links.add(linkTo(methodOn(QuestionApiController.class).recommendation(questionDetail.getId(), false)).withRel("un-recommendation"));
+        }
+
+        questionDetail.getTag().forEach(tag -> tag.add(
+                getHashTagLink(tag)
+        ));
+
+        return EntityModel.of(questionDetail, links);
+    }
 
     public EntityModel<QuestionResponse.Create> createCreateModel(QuestionResponse.Create response) {
         List<Link> links = List.of(
@@ -62,7 +85,8 @@ public class QuestionModelAssembler {
                     linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(dto.getId(), null, null, null)).withRel("to detail"),
                     linkTo(methodOn(MemberQueryApiController.class).getProfile(dto.getQuestioner().getId(), null)).withRel("to Questioner Profile")
             );
-            dto.getHashTag().forEach(tagDto -> dto.add(getHashTagLink(tagDto)));
+            dto.getTags().forEach(tagDto -> tagDto.add(getHashTagLink(tagDto)));
+
         });
     }
 

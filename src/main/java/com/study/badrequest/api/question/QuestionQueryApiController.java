@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
+import static com.study.badrequest.commons.constants.ApiURL.QUESTION_DETAIL_URL;
 import static com.study.badrequest.commons.response.ApiResponseStatus.SUCCESS;
 import static org.springframework.http.MediaType.*;
 
@@ -51,7 +52,7 @@ public class QuestionQueryApiController {
         return ResponseEntity.ok().body(ApiResponse.success(SUCCESS, result));
     }
 
-    @GetMapping("/api/v2/questions/{questionId}")
+    @GetMapping(value = QUESTION_DETAIL_URL,produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getQuestionDetail(@PathVariable Long questionId,
                                                HttpServletRequest request,
                                                HttpServletResponse response,
@@ -60,6 +61,6 @@ public class QuestionQueryApiController {
         QuestionDetail questionDetail = questionQueryService.getQuestionDetail(request, response, questionId, information);
 
         return ResponseEntity.ok()
-                .body(ApiResponse.success(SUCCESS, questionDetail));
+                .body(ApiResponse.success(SUCCESS, questionModelAssembler.createDetailModel(questionDetail)));
     }
 }

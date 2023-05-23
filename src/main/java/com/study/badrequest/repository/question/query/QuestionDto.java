@@ -20,11 +20,11 @@ public class QuestionDto extends EntityModel {
     private String preview;
     private Metrics metrics;
     private Questioner questioner;
-    private List<TagDto> hashTag = new ArrayList<>();
+    private List<TagDto> tags = new ArrayList<>();
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime askedAt;
-    public void addTags(List<TagDto> hashTags) {
-        this.hashTag = hashTags;
+    public void addTags(List<TagDto> tags) {
+        this.tags = tags;
     }
     @NoArgsConstructor
     @AllArgsConstructor

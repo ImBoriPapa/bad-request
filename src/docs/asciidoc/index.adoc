@@ -103,13 +103,15 @@ include::{snippets}/question-create/http-request.adoc[]
 include::{snippets}/question-create/request-headers.adoc[]
 include::{snippets}/question-create/request-fields.adoc[]
 
-NOTE:: 이미지파일은 이미지 업로드 API를 사용해서 업로드후(임시저장상태 24시간 이내 삭제) 응답에 id를 질문 생성 요청에 함께 보내면 이미지가 저장완료됩니다. 업로드한 이미지가 없으면 생략가능합니다.
+NOTE:: 이미지파일은 이미지 업로드 API를 사용해서 업로드후(임시저장상태 24시간 이내 삭제) 응답에 id를 질문 생성 요청에 함께 보내면 이미지가 저장완료됩니다.
+업로드한 이미지가 없으면 생략가능합니다.
 TIP:: API 확인하기: <<질문 게시판 이미지 업로드>>
 include::{snippets}/question-create/http-response.adoc[]
 include::{snippets}/question-create/response-headers.adoc[]
 include::{snippets}/question-create/response-fields.adoc[]
 
 === 질문 수정
+
 include::{snippets}/question-modify/http-request.adoc[]
 include::{snippets}/question-modify/request-headers.adoc[]
 include::{snippets}/question-modify/http-response.adoc[]
@@ -126,9 +128,7 @@ include::{snippets}/question-list/http-request.adoc[]
 include::{snippets}/question-list/http-response.adoc[]
 include::{snippets}/question-list/response-fields.adoc[]
 
-==== 인덱스 정렬
-
-- 최신 데이터 순서로 정렬
+==== 최신 데이터 순서로 정렬
 
 [source,http]
 ----
@@ -136,16 +136,7 @@ GET /api/v2/questions HTTP/1.1
 Host: www.bad-request.kr
 ----
 
-- 인덱스 정렬시 다음 데이터를 불러오기 위해서는 lastOfIndex 를 사용해야 합니다.
-
-[source,http]
-----
-https://www.bad-request.kr/api/v2/questions?lastOfIndex=97
-----
-
-==== 조회수로 정렬
-
-- 조회수가 많은 순으로 정렬
+==== 조회수가 많은 순으로 정렬
 
 [source,http]
 ----
@@ -153,16 +144,7 @@ GET /api/v2/questions?sort=view HTTP/1.1
 Host: www.bad-request.kr
 ----
 
-- 조회수로 정렬시 다음 데이터를 불러오기 위해서는 lastOfView 를 사용해야 합니다.
-
-[source,http]
-----
-https://www.bad-request.kr/api/v2/questions?sort=view&lastOfView=50
-----
-
-==== 추천수로 정렬
-
-- 추천수가 많은 순으로 정렬
+==== 추천수가 많은 순으로 정렬
 
 [source,http]
 ----
@@ -170,28 +152,35 @@ GET /api/v2/questions?sort=recommend HTTP/1.1
 Host: www.bad-request.kr
 ----
 
-- 추천수로 정렬시 다음 데이터를 불러오기 위해서는 lastOfRecommend 를 사용해야 합니다.
+==== 조회할 데이터의 크기 조절
 
 [source,http]
 ----
-https://www.bad-request.kr/api/v2/questions?sort=recommend&lastOfRecommend=10
-----
-
-==== 사이즈 & 답변유무
-
-[source,http]
-----
-GET /api/v2/questions?size=10&isAnswered=true HTTP/1.1
+GET /api/v2/questions?size=10 HTTP/1.1
 Host: www.bad-request.kr
 ----
 
-- size: 조회할 데이터의 크기
-- isAnswered
-* true : 답변이완료된 질문 목록
-* false : 답변이 완료되지 않은 질문 목록
+=== 질문 상세 조회
+==== 요청
+include::{snippets}/question-detail/http-request.adoc[]
+include::{snippets}/question-detail/request-headers.adoc[]
+- AccessToken 생략가능: 토큰이 없을 경우 비로그인 조회입니다.
 
-=== 이미지 업로드
+include::{snippets}/question-detail/path-parameters.adoc[]
+==== 응답
+include::{snippets}/question-detail/http-response.adoc[]
+- contents: 질문내용은 생성시 Markdown 형태의 내용 데이터를 html로 변환해서 응답합니다.
+- isQuestioner: 질문 작성자가 조회하면 true 입니다.
+- hasRecommendation: 조회시 회원이 해당 질문에 추천 혹은 비추천을 등록한 경우 true 입니다.
+- questioner: 질문글에 작성자의 회원 정보입니다.(Id = MemberId)
+
+include::{snippets}/question-detail/response-fields.adoc[]
+
+== 이미지
+=== 질문 이미지 업로드
+
 ==== 질문 게시판 이미지 업로드
+
 include::{snippets}/image-upload_question/http-request.adoc[]
 include::{snippets}/image-upload_question/request-headers.adoc[]
 include::{snippets}/image-upload_question/request-parts.adoc[]
