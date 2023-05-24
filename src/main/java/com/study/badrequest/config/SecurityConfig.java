@@ -102,8 +102,7 @@ public class SecurityConfig {
                 .antMatchers("/api/v1/image/board-image")
                 .permitAll()
                 //admin
-                .antMatchers("/api/v2/admin/*").hasAuthority(Authority.ADMIN.name())
-
+                .antMatchers("/api/v2/admin/**").hasAuthority(Authority.ADMIN.name())
                 //dashboard
                 .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh", "/api/v1/dashboard/*")
                 .permitAll()
