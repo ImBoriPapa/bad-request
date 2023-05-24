@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static com.study.badrequest.utils.header.IpAddressResolver.ipAddressResolver;
+import static com.study.badrequest.utils.header.HttpHeaderResolver.ipAddressResolver;
 
 
 @Slf4j

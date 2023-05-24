@@ -25,10 +25,10 @@ public class LoginModelAssembler {
         return EntityModel.of(result).add(links);
     }
 
-    public EntityModel<LoginResponse.LogoutResult> toModel(LoginResponse.LogoutResult result) {
+    public EntityModel<LoginResponse.LogoutResult> createLogoutModel(LoginResponse.LogoutResult result) {
 
         return EntityModel.of(result)
-                .add(linkTo(LoginController.class).slash("/login").withRel("POST : 로그인"));
+                .add(linkTo(methodOn(LoginController.class).logout(null, null)).withSelfRel());
     }
 
     public EntityModel<LoginResponse.ReIssueResult> createReissueModel(LoginResponse.ReIssueResult result) {

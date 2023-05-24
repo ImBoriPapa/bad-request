@@ -17,9 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationFilterResponseFactory {
-
     private final ObjectMapper objectMapper;
-
     public void setErrorResponse(HttpServletRequest request, HttpServletResponse response, ApiResponseStatus status) throws IOException {
         log.info("[JwtAuthenticationFilterResponseFactory. response error status={}]", status);
         setResponseHeader(response, status);

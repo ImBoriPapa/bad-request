@@ -18,9 +18,17 @@ public class ApiResponse {
         return new Success<>(status,result);
     }
 
+    public static ApiResponse.Error error(Exception ex, String request){
+        return new Error(ex, request);
+    }
+
+    public static ApiResponse.Error error(BasicCustomException ex, String request){
+        return new Error(ex, request);
+    }
     @NoArgsConstructor
     @Getter
     public static class Success<T> {
+
         private String status;
         private int code;
         private String message;

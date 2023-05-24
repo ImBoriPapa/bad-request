@@ -9,13 +9,12 @@ import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.login.AuthenticationCodeRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
-import com.study.badrequest.utils.cookie.CookieFactory;
+import com.study.badrequest.utils.cookie.CookieUtils;
 import com.study.badrequest.utils.jwt.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.jwt.TokenDto;
@@ -30,13 +29,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE;
-import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_ONE_TIME_CODE;
+import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
+import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
+import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
 
 
 @Service
@@ -106,27 +107,40 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public LoginResponse.LogoutResult logoutProcessing(String accessToken, Cookie cookie) {
-        log.info("logoutProcessing accessToken= {}", accessToken);
+    public LoginResponse.LogoutResult logoutProcessing(HttpServletRequest request, HttpServletResponse response) {
+        log.info("logoutProcessing accessToken");
+        String accessToken = accessTokenResolver(request);
+
+        if (accessToken == null) {
+            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_EMPTY);
+        }
+
+        switch (jwtUtils.validateToken(accessToken)) {
+            case ACCESS:
+                break;
+            case DENIED:
+                throw new CustomRuntimeException(PERMISSION_DENIED);
+            case EXPIRED:
+                throw new CustomRuntimeException(TOKEN_IS_EXPIRED);
+            case ERROR:
+                throw new CustomRuntimeException(TOKEN_IS_ERROR);
+        }
 
         String changeAbleId = jwtUtils.getChangeableIdInToken(accessToken);
 
-        throwExceptionIfTokenIsNotAccess(accessToken);
-
-        redisRefreshTokenRepository.deleteById(changeAbleId);
+        redisRefreshTokenRepository.findById(changeAbleId).ifPresent(redisRefreshTokenRepository::delete);
 
         Member member = findMemberByChangeAbleId(changeAbleId);
         member.replaceChangeableId();
 
+        SecurityContextHolder.clearContext();
+        CookieUtils.deleteCookie(request, response, "JSESSIONID");
+        CookieUtils.deleteCookie(request, response, REFRESH_TOKEN_COOKIE);
+        request.getSession().invalidate();
+
         eventPublisher.publishEvent(new MemberEventDto.Logout(member, "로그아웃", LocalDateTime.now()));
 
         return new LoginResponse.LogoutResult();
-    }
-
-    private void throwExceptionIfTokenIsNotAccess(String accessToken) {
-        if (jwtUtils.validateToken(accessToken) != JwtStatus.ACCESS) {
-            throw new JwtAuthenticationExceptionBasic(ApiResponseStatus.PERMISSION_DENIED);
-        }
     }
 
 
@@ -216,7 +230,7 @@ public class LoginServiceImpl implements LoginService {
         return LoginResponse.LoginDto.builder()
                 .id(member.getId())
                 .accessToken(tokenDto.getAccessToken())
-                .refreshCookie(CookieFactory.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
+                .refreshCookie(CookieUtils.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
                 .loggedIn(LocalDateTime.now())
                 .build();
     }

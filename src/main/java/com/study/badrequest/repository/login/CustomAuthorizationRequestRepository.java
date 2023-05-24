@@ -1,6 +1,6 @@
 package com.study.badrequest.repository.login;
 
-import com.study.badrequest.utils.cookie.CookieFactory;
+import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
@@ -19,8 +19,8 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
     @Override
     public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
         log.info("loadAuthorizationRequest");
-        return CookieFactory.getCookie(request,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
-                .map(cookie -> CookieFactory.deserialize(cookie,OAuth2AuthorizationRequest.class))
+        return CookieUtils.getCookie(request,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME)
+                .map(cookie -> CookieUtils.deserialize(cookie,OAuth2AuthorizationRequest.class))
                 .orElse(null);
     }
 
@@ -28,16 +28,16 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         log.info("saveAuthorizationRequest");
         if (authorizationRequest == null) {
-            CookieFactory.deleteCookie(request,response,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-            CookieFactory.deleteCookie(request,response, REDIRECT_URL_PARAM_COOKIE_NAME);
+            CookieUtils.deleteCookie(request,response,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
+            CookieUtils.deleteCookie(request,response, REDIRECT_URL_PARAM_COOKIE_NAME);
             return;
         }
-        CookieFactory.addCookie(response,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME,CookieFactory.serialize(authorizationRequest),cookieExpireSeconds);
+        CookieUtils.addCookie(response,OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME, CookieUtils.serialize(authorizationRequest),cookieExpireSeconds);
         String redirectUriAfterLogin = request.getParameter(REDIRECT_URL_PARAM_COOKIE_NAME);
         log.info("redirectUriAfterLogin: {}",redirectUriAfterLogin);
 
         if (StringUtils.hasLength(redirectUriAfterLogin)) {
-            CookieFactory.addCookie(response, REDIRECT_URL_PARAM_COOKIE_NAME,redirectUriAfterLogin,cookieExpireSeconds);
+            CookieUtils.addCookie(response, REDIRECT_URL_PARAM_COOKIE_NAME,redirectUriAfterLogin,cookieExpireSeconds);
         }
     }
 
@@ -47,7 +47,7 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
     }
 
     public void removeAuthorizationRequestCookies(HttpServletRequest request, HttpServletResponse response) {
-        CookieFactory.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
-        CookieFactory.deleteCookie(request, response, REDIRECT_URL_PARAM_COOKIE_NAME);
+        CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
+        CookieUtils.deleteCookie(request, response, REDIRECT_URL_PARAM_COOKIE_NAME);
     }
 }

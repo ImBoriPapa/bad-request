@@ -3,7 +3,6 @@ package com.study.badrequest.utils.cookie;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties;
 import org.springframework.http.ResponseCookie;
 import org.springframework.util.SerializationUtils;
 
@@ -15,15 +14,14 @@ import java.util.Base64;
 import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_PREFIX;
 
 @Slf4j
-public class CookieFactory {
+public class CookieUtils {
     private static boolean secure;
 
     @Value("${cookie-status.secure}")
     public void setSecure(boolean secure) {
-        CookieFactory.secure = secure;
+        CookieUtils.secure = secure;
     }
 
     public static ResponseCookie createRefreshTokenCookie(String refreshToken, long expiration) {
@@ -40,7 +38,7 @@ public class CookieFactory {
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null && cookies.length > 0) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     return Optional.of(cookie);
@@ -61,7 +59,7 @@ public class CookieFactory {
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String name) {
         Cookie[] cookies = request.getCookies();
-        if (cookies != null && cookies.length > 0) {
+        if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     cookie.setPath("/");

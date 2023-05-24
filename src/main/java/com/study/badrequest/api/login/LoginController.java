@@ -9,7 +9,6 @@ import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.service.login.LoginService;
 
-import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;
 
 import lombok.RequiredArgsConstructor;
@@ -25,14 +24,15 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
 import static com.study.badrequest.commons.constants.ApiURL.*;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
-import static com.study.badrequest.utils.header.IpAddressResolver.ipAddressResolver;
-import static com.study.badrequest.utils.jwt.JwtTokenResolver.accessTokenResolver;
+import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
+import static com.study.badrequest.utils.header.HttpHeaderResolver.ipAddressResolver;
+
 
 
 @RestController
@@ -40,7 +40,6 @@ import static com.study.badrequest.utils.jwt.JwtTokenResolver.accessTokenResolve
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
-    private final JwtUtils jwtUtils;
     private final LoginModelAssembler modelAssembler;
 
     @PostMapping(value = EMAIL_LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,13 +62,11 @@ public class LoginController {
     }
 
     @PostMapping(value = LOGOUT_URL, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity logout(HttpServletRequest request, @CookieValue(value = "refresh_token", required = false) Cookie cookie) {
+    public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
+        log.info("Logout Request");
+        LoginResponse.LogoutResult logoutResult = loginService.logoutProcessing(request, response);
 
-        String accessToken = accessTokenResolver(request);
-
-        LoginResponse.LogoutResult logoutResult = loginService.logoutProcessing(accessToken, cookie);
-
-        EntityModel<LoginResponse.LogoutResult> entityModel = modelAssembler.toModel(logoutResult);
+        EntityModel<LoginResponse.LogoutResult> entityModel = modelAssembler.createLogoutModel(logoutResult);
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success(LOGOUT_SUCCESS, entityModel));
@@ -109,7 +106,7 @@ public class LoginController {
             throw new CustomRuntimeException(ApiResponseStatus.EMPTY_ONE_TIME_CODE);
         }
 
-        LoginResponse.LoginDto loginDto = loginService.oneTimeAuthenticationCodeLogin(form.getCode(), request.getRequestURI());
+        LoginResponse.LoginDto loginDto = loginService.oneTimeAuthenticationCodeLogin(form.getCode(), ipAddressResolver(request));
 
         EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getLoggedIn()));
 

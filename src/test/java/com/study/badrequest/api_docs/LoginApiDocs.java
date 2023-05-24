@@ -7,7 +7,6 @@ import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.service.login.LoginService;
-import com.study.badrequest.utils.cookie.CookieFactory;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +42,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

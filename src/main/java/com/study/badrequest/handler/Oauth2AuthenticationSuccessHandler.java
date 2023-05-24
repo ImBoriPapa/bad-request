@@ -3,7 +3,7 @@ package com.study.badrequest.handler;
 import com.study.badrequest.domain.login.MemberPrincipal;
 import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
 import com.study.badrequest.service.login.LoginService;
-import com.study.badrequest.utils.cookie.CookieFactory;
+import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -54,7 +54,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication, String temporaryCode) {
 
-        Optional<String> redirectUrl = CookieFactory.getCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME).map(Cookie::getValue);
+        Optional<String> redirectUrl = CookieUtils.getCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME).map(Cookie::getValue);
 
         if (redirectUrl.isPresent() && !isAuthorizedRedirectUri(redirectUrl.get())) {
             throw new IllegalArgumentException("리다이렉트 URI 안맞음");

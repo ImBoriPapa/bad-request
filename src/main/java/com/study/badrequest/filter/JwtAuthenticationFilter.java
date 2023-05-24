@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.study.badrequest.commons.constants.JwtTokenHeader.JWT_STATUS_HEADER;
-import static com.study.badrequest.utils.jwt.JwtTokenResolver.accessTokenResolver;
+import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
+
 
 @Component
 @Slf4j

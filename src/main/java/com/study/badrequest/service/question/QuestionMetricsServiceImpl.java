@@ -9,7 +9,7 @@ import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.question.QuestionRepository;
 import com.study.badrequest.repository.reommendation.RecommendationRepository;
-import com.study.badrequest.utils.cookie.CookieFactory;
+import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,7 +66,7 @@ public class QuestionMetricsServiceImpl implements QuestionMetricsService {
         final String cookieName = "view_count";
         final int maxAge = 3600;
 
-        Optional<Cookie> viewCookie = CookieFactory.getCookie(request, cookieName);
+        Optional<Cookie> viewCookie = CookieUtils.getCookie(request, cookieName);
 
         if (viewCookie.isPresent()) {
             String value = viewCookie.get().getValue();
@@ -75,12 +75,12 @@ public class QuestionMetricsServiceImpl implements QuestionMetricsService {
 
             if (!Arrays.asList(strings).contains(questionId.toString())) {
                 String added = value + "-" + questionId;
-                CookieFactory.addCookie(response, cookieName, added, maxAge);
+                CookieUtils.addCookie(response, cookieName, added, maxAge);
                 incrementViewCount(questionId);
             }
 
         } else {
-            CookieFactory.addCookie(response, cookieName, questionId.toString(), maxAge);
+            CookieUtils.addCookie(response, cookieName, questionId.toString(), maxAge);
             incrementViewCount(questionId);
 
         }

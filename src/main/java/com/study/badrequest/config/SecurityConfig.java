@@ -40,6 +40,7 @@ public class SecurityConfig {
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
     private final CustomAuthorizationRequestRepository authorizationRequestRepository;
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
         security
@@ -67,7 +68,7 @@ public class SecurityConfig {
                 //REST Docs
                 .antMatchers("/docs/index.html").permitAll()
                 //login
-                .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, TOKEN_REISSUE_URL,ONE_TIME_CODE_LOGIN)
+                .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, TOKEN_REISSUE_URL, ONE_TIME_CODE_LOGIN)
                 .permitAll()
                 //login by one time code
                 //oauth2
@@ -128,13 +129,7 @@ public class SecurityConfig {
                 .userService(oauthUserDetailService)
                 .and()
                 .successHandler(oauth2AuthenticationSuccessHandler)
-                .failureHandler(oauth2AuthenticationFailHandler)
-                .and()
-                .logout()
-                .logoutUrl(LOGOUT_URL)
-                .deleteCookies("JSESSIONID")
-                .deleteCookies("Refresh")
-                .permitAll();
+                .failureHandler(oauth2AuthenticationFailHandler);
 
 
         return security.build();
