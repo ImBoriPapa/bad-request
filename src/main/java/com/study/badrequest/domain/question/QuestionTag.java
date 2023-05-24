@@ -1,6 +1,6 @@
 package com.study.badrequest.domain.question;
 
-import com.study.badrequest.domain.board.HashTag;
+import com.study.badrequest.domain.hashTag.HashTag;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

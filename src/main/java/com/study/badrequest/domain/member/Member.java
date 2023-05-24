@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.member;
 
 
+import com.study.badrequest.domain.activity.ActivityScoreEnum;
 import com.study.badrequest.domain.login.OauthProvider;
 import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.*;
@@ -174,5 +175,30 @@ public class Member {
 
     public static Long getCreatedAtInChangeableId(String changeableId) {
         return Long.valueOf(changeableId.split("-")[5]);
+    }
+
+    public void changeNickname(String nickname) {
+        this.memberProfile.changeNickname(nickname);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeIntroduce(String introduce) {
+        this.memberProfile.changeIntroduce(introduce);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeProfileImageToDefault(String imageLocation) {
+        this.memberProfile.getProfileImage().replaceDefaultImage(imageLocation);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeProfileImage(String storeFilName, String imageLocation, Long size) {
+        this.memberProfile.getProfileImage().replaceProfileImage(storeFilName, imageLocation, size);
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void incrementActivityScore(ActivityScoreEnum activityScoreEnum) {
+        this.memberProfile.incrementActivityScore(activityScoreEnum);
+        this.updatedAt = LocalDateTime.now();
     }
 }

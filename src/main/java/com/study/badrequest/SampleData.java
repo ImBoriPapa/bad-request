@@ -1,7 +1,7 @@
 package com.study.badrequest;
 
 
-import com.study.badrequest.domain.board.*;
+import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.member.MemberProfile;
 import com.study.badrequest.domain.member.ProfileImage;
@@ -10,7 +10,7 @@ import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.question.QuestionRequest;
 
 import com.study.badrequest.dto.question.QuestionResponse;
-import com.study.badrequest.repository.board.HashTagRepository;
+import com.study.badrequest.repository.hashTag.HashTagRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
 import com.study.badrequest.repository.question.QuestionRepository;

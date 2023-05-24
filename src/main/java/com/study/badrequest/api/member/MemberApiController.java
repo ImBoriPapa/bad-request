@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+
 
 import java.net.URI;
 
@@ -32,8 +32,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class MemberApiController {
     private final MemberCommandService memberCommandService;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
-    private final MemberProfileService memberProfileService;
-    private final RequestValidUtils requestValidUtils;
+
 
     /**
      * 회원가입
@@ -45,7 +44,7 @@ public class MemberApiController {
     public ResponseEntity createMember(@Validated @RequestBody MemberRequestForm.SignUp form, BindingResult bindingResult) {
         log.info("[회원 생성 요청 email: {}, contact: {}, password: {}, nickname: {}]", form.getEmail(), form.getContact(), "PROTECTED", form.getNickname());
 
-        requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
+        RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         MemberResponse.Create create = memberCommandService.signupMemberProcessing(form);
 
@@ -56,65 +55,11 @@ public class MemberApiController {
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.createMemberModel(create)));
     }
 
-    /**
-     * 닉네임 변경 요청
-     */
-    @PatchMapping(value = PATCH_MEMBER_NICKNAME, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity changeNickname(@PathVariable Long memberId,
-                                         @RequestBody MemberRequestForm.ChangeNickname form,
-                                         @LoggedInMember CurrentLoggedInMember.Information information) {
-        log.info("[회원 닉네임 변경 요청 요청 memberId: {}, 로그인된 memberId: {}]",memberId,information.getId());
 
-        requestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
-        MemberResponse.Update update = memberProfileService.changeNickname(memberId, form);
 
-        return ResponseEntity
-                .ok()
-                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeNicknameModel(update)));
-    }
 
-    /**
-     * 자시 소개 변경 요청
-     */
-    @PatchMapping(value = PATCH_MEMBER_INTRODUCE, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity changeIntroduce(@PathVariable Long memberId,
-                                          @RequestBody MemberRequestForm.ChangeIntroduce form) {
-        log.info("[회원 소개 변경 요청]");
-        MemberResponse.Update update = memberProfileService.changeIntroduce(memberId, form);
 
-        return ResponseEntity
-                .ok()
-                .body(ApiResponse.success(SUCCESS, update));
-    }
-    // TODO: 2023/04/18 완성하기
-
-    /**
-     * 기본 프로필 이미지로 변경
-     */
-    @PatchMapping(PATCH_MEMBER_PROFILE_IMAGE_TO_DEFAULT)
-    public ResponseEntity changeProfileImageToDefault(@PathVariable Long memberId) {
-        log.info("[회원 프로필 이미지 기본 이미지로 변경 요청]");
-        MemberResponse.Update update = memberProfileService.changeProfileImageToDefault(memberId);
-
-        return ResponseEntity
-                .ok()
-                .body(ApiResponse.success(SUCCESS, update));
-    }
-
-    /**
-     * 프로필 이미지 변경
-     */
-    @PatchMapping(PATCH_MEMBER_PROFILE_IMAGE)
-    public ResponseEntity changeProfileImage(@PathVariable Long memberId,
-                                             @RequestPart MultipartFile image) {
-        log.info("[회원 프로필 이미지 변경 요청]");
-        MemberResponse.Update update = memberProfileService.changeProfileImage(memberId, image);
-
-        return ResponseEntity
-                .ok()
-                .body(ApiResponse.success(SUCCESS, update));
-    }
 
     /**
      * 임시 비밀번호 요청
@@ -128,7 +73,7 @@ public class MemberApiController {
                                                                       BindingResult bindingResult) {
         log.info("[임시 비밀번호 요청 email: {}]", form.getEmail());
 
-        requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
+        RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         MemberResponse.TemporaryPassword issueTemporaryPassword = memberCommandService.issueTemporaryPasswordProcessing(form.getEmail());
 
@@ -146,7 +91,7 @@ public class MemberApiController {
     public ResponseEntity sendAuthenticationEmail(@Validated @RequestBody MemberRequestForm.SendAuthenticationEmail form, BindingResult bindingResult) {
         log.info("[이메일 인증 번호 요청 email: {}]", form.getEmail());
 
-        requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
+        RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = memberCommandService.sendAuthenticationMailProcessing(form.getEmail());
 
@@ -172,9 +117,9 @@ public class MemberApiController {
     ) {
         log.info("[비밀번호 변경 요청 memberId: {}, password: {}, password: {}]", memberId, "PROTECTED", "PROTECTED");
 
-        requestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
-        requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
+        RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         MemberResponse.Update update = memberCommandService.changePasswordProcessing(memberId, form);
 
@@ -199,9 +144,9 @@ public class MemberApiController {
                                                             BindingResult bindingResult) {
         log.info("[연락처 변경 요청 memberId: {}, contact: {}]", memberId, form.getContact());
 
-        requestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
-        requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
+        RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         MemberResponse.Update update = memberCommandService.updateContactProcessing(memberId, form.getContact());
 
@@ -224,9 +169,9 @@ public class MemberApiController {
 
         log.info("[회원 탈퇴 요청 memberId: {}, password: {}]", memberId, "PROTECTED");
 
-        requestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
-        requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
+        RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         MemberResponse.Delete delete = memberCommandService.resignMemberProcessing(memberId, form.getPassword());
 

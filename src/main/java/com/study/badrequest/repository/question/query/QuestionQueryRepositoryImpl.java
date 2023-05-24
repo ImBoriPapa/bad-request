@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.status.ExposureStatus.PUBLIC;
-import static com.study.badrequest.domain.board.QHashTag.*;
+import static com.study.badrequest.domain.hashTag.QHashTag.hashTag;
 import static com.study.badrequest.domain.member.QMember.*;
 import static com.study.badrequest.domain.member.QMemberProfile.*;
 import static com.study.badrequest.domain.question.QQuestion.*;

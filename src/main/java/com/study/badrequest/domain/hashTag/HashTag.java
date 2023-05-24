@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.board;
+package com.study.badrequest.domain.hashTag;
 
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;

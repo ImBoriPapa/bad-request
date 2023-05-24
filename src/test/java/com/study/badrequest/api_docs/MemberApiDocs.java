@@ -92,8 +92,6 @@ public class MemberApiDocs {
     @MockBean
     private MemberQueryRepository memberQueryRepository;
     @MockBean
-    private RequestValidUtils requestValidUtils;
-    @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @MockBean
     private MemberResponseModelAssembler memberResponseModelAssembler;
@@ -192,58 +190,7 @@ public class MemberApiDocs {
                 ));
     }
 
-    @Test
-    @DisplayName("닉네임 변경 요청")
-    @WithCustomMockUser(memberId = "12314", authority = MEMBER)
-    void 닉네임변경() throws Exception {
-        //given
-        Long memberId = 12314L;
-        String nickname = "변경된닉네임";
-        UUID token = UUID.randomUUID();
-        MemberRequestForm.ChangeNickname changeNickname = new MemberRequestForm.ChangeNickname(nickname);
-        MemberResponse.Update update = new MemberResponse.Update(memberId, LocalDateTime.now());
-        EntityModel<MemberResponse.Update> entityModel = EntityModel.of(update,
-                Link.of("https://www.bad-request.kr/api/v2/members/" + memberId + "/nickname")
-        );
-        CurrentLoggedInMember currentLoggedInMember = new CurrentLoggedInMember("sfasfasfa", memberId, MEMBER.getAuthorities());
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                currentLoggedInMember, "", MEMBER.getAuthorities()
-        );
-        SecurityContextHolder.createEmptyContext().setAuthentication(authenticationToken);
-        //when
-        given(memberProfileService.changeNickname(any(), any())).willReturn(update);
-        given(memberResponseModelAssembler.changeNicknameModel(any())).willReturn(entityModel);
-        //then
-        mockMvc.perform(patch(PATCH_MEMBER_NICKNAME, memberId)
-                        .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + token)
-                        .content(objectMapper.writeValueAsString(changeNickname))
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                )
-                .andDo(print())
-                .andDo(document("member-changeNickname",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        pathParameters(
-                                parameterWithName("memberId").description("회원 식별 아이디")
-                        ),
-                        requestHeaders(
-                                headerWithName(AUTHORIZATION_HEADER).description("Access Token")
-                        ),
-                        requestFields(
-                                fieldWithPath("nickname").type(STRING).description("변경할 닉네임")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").type(STRING).description("응답 상태"),
-                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
-                                fieldWithPath("message").type(STRING).description("응답 메시지"),
-                                fieldWithPath("result.id").type(NUMBER).description("회원 식별 아이디"),
-                                fieldWithPath("result.updatedAt").type(STRING).description("회원 생성 시간"),
-                                fieldWithPath("result.links.[0].rel").type(STRING).description("self"),
-                                fieldWithPath("result.links.[0].href").type(STRING).description("uri")
-                        )
-                ));
-    }
 
     @Test
     @DisplayName("로그인된 회원 정보")

@@ -10,7 +10,7 @@ public interface MemberProfileService {
 
     MemberResponse.Update changeIntroduce(Long memberId, MemberRequestForm.ChangeIntroduce form);
 
-    MemberResponse.Update changeProfileImageToDefault(Long memberId);
+    MemberResponse.Delete deleteProfileImage(Long memberId);
 
     MemberResponse.Update changeProfileImage(Long memberId, MultipartFile image);
 }

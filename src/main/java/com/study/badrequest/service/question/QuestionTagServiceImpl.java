@@ -1,10 +1,11 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.domain.board.HashTag;
+import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionTag;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.board.HashTagRepository;
+
+import com.study.badrequest.repository.hashTag.HashTagRepository;
 import com.study.badrequest.repository.question.QuestionRepository;
 import com.study.badrequest.repository.question.QuestionTagRepository;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;

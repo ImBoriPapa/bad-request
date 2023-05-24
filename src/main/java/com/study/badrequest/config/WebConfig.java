@@ -21,8 +21,6 @@ public class WebConfig implements WebMvcConfigurer {
 
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverter(new LogLevelConverter());
-        registry.addConverter(new BindingParamToCategory());
-        registry.addConverter(new BindingParamToTopic());
         registry.addConverter(new BindingParamToQuestionSortCriteria());
     }
 

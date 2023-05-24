@@ -1,11 +1,12 @@
 package com.study.badrequest.service.member;
 
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.domain.member.MemberProfile;
+import com.study.badrequest.domain.member.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.event.member.MemberEventDto;
-import com.study.badrequest.exception.custom_exception.ImageFileUploadExceptionBasic;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.S3ImageUploader;
@@ -16,14 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOTFOUND_MEMBER;
-import static com.study.badrequest.commons.response.ApiResponseStatus.TOO_BIG_PROFILE_IMAGE_SIZE;
+import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class MemberProfileServiceImpl implements MemberProfileService{
+public class MemberProfileServiceImpl implements MemberProfileService {
     private final MemberRepository memberRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final S3ImageUploader imageUploader;
@@ -35,16 +35,15 @@ public class MemberProfileServiceImpl implements MemberProfileService{
     public MemberResponse.Update changeNickname(Long memberId, MemberRequestForm.ChangeNickname form) {
         log.info("Start change Nickname memberId: {}", memberId);
         Member member = findMemberById(memberId);
-        member.getMemberProfile().changeNickname(form.getNickname());
+        member.changeNickname(form.getNickname());
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member,"닉네임 변경",member.getUpdatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Update(member, "닉네임 변경", member.getUpdatedAt()));
 
         return new MemberResponse.Update(member);
     }
 
     public Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
+        return memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
     }
 
     /**
@@ -55,30 +54,34 @@ public class MemberProfileServiceImpl implements MemberProfileService{
     public MemberResponse.Update changeIntroduce(Long memberId, MemberRequestForm.ChangeIntroduce form) {
         log.info("Start change Introduce memberId: {}", memberId);
         Member member = findMemberById(memberId);
-        member.getMemberProfile().changeIntroduce(form.getSelfIntroduce());
+        member.changeIntroduce(form.getSelfIntroduce());
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member,"자기 소개 변경 변경",member.getUpdatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Update(member, "자기 소개 변경 변경", member.getUpdatedAt()));
 
         return new MemberResponse.Update(member);
     }
 
-
     /**
-     * 기본 프로필 이미지로 변경
+     * 프로필 이미지 삭제
      */
     @Transactional
-    public MemberResponse.Update changeProfileImageToDefault(Long memberId) {
+    public MemberResponse.Delete deleteProfileImage(Long memberId) {
         log.info("Start change Profile Image To Default memberId: {}", memberId);
 
         Member member = findMemberById(memberId);
 
-        imageUploader.deleteFileByStoredNames(member.getMemberProfile().getProfileImage().getStoredFileName());
+        ProfileImage profileImage = member.getMemberProfile().getProfileImage();
 
-        member.getMemberProfile().getProfileImage().replaceDefaultImage(imageUploader.getDefaultProfileImage());
+        if (profileImage.getIsDefault()) {
+            throw new CustomRuntimeException(CAN_NOT_DELETE_DEFAULT_IMAGE);
+        }
+        imageUploader.deleteFileByStoredNames(profileImage.getStoredFileName());
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member,"기본 프로필 이미지로 변경",member.getUpdatedAt()));
+        member.changeProfileImageToDefault(imageUploader.getDefaultProfileImage());
 
-        return new MemberResponse.Update(member);
+        eventPublisher.publishEvent(new MemberEventDto.Update(member, "프로필 이미지 삭제 -> 기본 이미지로 변경", member.getUpdatedAt()));
+
+        return new MemberResponse.Delete();
     }
 
     /**
@@ -88,19 +91,23 @@ public class MemberProfileServiceImpl implements MemberProfileService{
     public MemberResponse.Update changeProfileImage(Long memberId, MultipartFile image) {
         log.info("Start change Profile Image memberId: {}", memberId);
 
-        if (image.getSize() > 500000) {
-            throw new ImageFileUploadExceptionBasic(TOO_BIG_PROFILE_IMAGE_SIZE);
-        }
-
         Member member = findMemberById(memberId);
 
-        if (!member.getMemberProfile().getProfileImage().getIsDefault()) {
-            imageUploader.deleteFileByStoredNames(member.getMemberProfile().getProfileImage().getStoredFileName());
+        MemberProfile profile = member.getMemberProfile();
+
+        if (!profile.getProfileImage().getIsDefault()) {
+            imageUploader.deleteFileByStoredNames(profile.getProfileImage().getStoredFileName());
         }
 
         ImageUploadDto uploadedFile = imageUploader.uploadImageFile(image, "profile");
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member,"프로필 이미지 변경",member.getUpdatedAt()));
+        member.changeProfileImage(
+                uploadedFile.getStoredFileName(),
+                uploadedFile.getImageLocation(),
+                uploadedFile.getSize()
+        );
+
+        eventPublisher.publishEvent(new MemberEventDto.Update(member, "프로필 이미지 변경", member.getUpdatedAt()));
 
         return new MemberResponse.Update(member);
     }
