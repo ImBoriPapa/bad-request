@@ -37,6 +37,13 @@ public class QuestionEventDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
+    public static class DeleteEvent{
+        private Question question;
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
     public static class ViewEvent {
         private HttpServletRequest request;
         private HttpServletResponse response;

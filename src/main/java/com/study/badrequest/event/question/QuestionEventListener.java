@@ -5,9 +5,9 @@ import com.study.badrequest.service.activity.ActivityService;
 
 
 import com.study.badrequest.service.image.QuestionImageService;
-import com.study.badrequest.service.question.QuestionMetricsService;
+import com.study.badrequest.service.questionMetrics.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionService;
-import com.study.badrequest.service.question.QuestionTagService;
+import com.study.badrequest.service.questionTag.QuestionTagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -21,7 +21,6 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 @RequiredArgsConstructor
 public class QuestionEventListener {
-    private final QuestionService questionService;
     private final QuestionTagService questionTagService;
     private final QuestionImageService questionImageService;
     private final QuestionMetricsService questionMetricsService;
@@ -42,6 +41,13 @@ public class QuestionEventListener {
         log.info("질문 수정 이벤트");
 
         questionImageService.update(dto.getImages(), dto.getQuestion());
+
+    }
+
+    @EventListener
+    public void handleDeleteEvent(QuestionEventDto.DeleteEvent dto){
+        log.info("질문 삭제 이벤트");
+
 
     }
 

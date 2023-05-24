@@ -2,6 +2,7 @@ package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.member.MemberQueryApiController;
 import com.study.badrequest.api.question.QuestionApiController;
+import com.study.badrequest.api.question.QuestionMetricsApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
 import com.study.badrequest.domain.question.QuestionSort;
 import com.study.badrequest.domain.recommendation.RecommendationKind;
@@ -34,8 +35,8 @@ public class QuestionModelAssembler {
             links.add(linkTo(methodOn(QuestionApiController.class).modify(questionDetail.getId(), null, null)).withRel("modify"));
             links.add(linkTo(methodOn(QuestionApiController.class).delete(questionDetail.getId(), null)).withRel("delete"));
         } else {
-            links.add(linkTo(methodOn(QuestionApiController.class).recommendation(questionDetail.getId(), true)).withRel("recommendation"));
-            links.add(linkTo(methodOn(QuestionApiController.class).recommendation(questionDetail.getId(), false)).withRel("un-recommendation"));
+            links.add(linkTo(methodOn(QuestionMetricsApiController.class).recommendation(questionDetail.getId(), true)).withRel("recommendation"));
+            links.add(linkTo(methodOn(QuestionMetricsApiController.class).recommendation(questionDetail.getId(), false)).withRel("un-recommendation"));
         }
 
         questionDetail.getTag().forEach(tag -> tag.add(
@@ -59,6 +60,15 @@ public class QuestionModelAssembler {
         List<Link> links = List.of(
                 linkTo(methodOn(QuestionApiController.class).modify(response.getId(), null, null)).withSelfRel()
         );
+        return EntityModel.of(response, links);
+    }
+
+    public EntityModel<QuestionResponse.Delete> createDeleteModel(QuestionResponse.Delete response) {
+
+        List<Link> links = List.of(
+                linkTo(methodOn(QuestionApiController.class).delete(response.getId(), null)).withSelfRel()
+        );
+
         return EntityModel.of(response, links);
     }
 

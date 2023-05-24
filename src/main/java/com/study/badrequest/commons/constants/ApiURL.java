@@ -28,6 +28,7 @@ public class ApiURL {
     public static final String QUESTION_BASE_URL = BASE_API_VERSION_URL + "/questions";
     public static final String QUESTION_DETAIL_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
     public static final String QUESTION_PATCH_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
+    public static final String QUESTION_DELETE_URL = BASE_API_VERSION_URL + "/questions/{questionId}";
     //Answers
     public static final String ANSWER_REGISTER = QUESTION_DETAIL_URL + "/answers";
 

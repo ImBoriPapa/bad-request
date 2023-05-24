@@ -3,7 +3,6 @@ package com.study.badrequest.api_docs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.domain.question.QuestionSort;
 import com.study.badrequest.domain.recommendation.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionRequest;
@@ -13,10 +12,10 @@ import com.study.badrequest.repository.question.query.QuestionDetail;
 import com.study.badrequest.repository.question.query.TagDto;
 import com.study.badrequest.repository.question.query.QuestionDto;
 import com.study.badrequest.repository.question.query.QuestionListResult;
-import com.study.badrequest.service.question.QuestionMetricsService;
+import com.study.badrequest.service.questionMetrics.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionQueryService;
 import com.study.badrequest.service.question.QuestionService;
-import com.study.badrequest.service.question.QuestionTagService;
+import com.study.badrequest.service.questionTag.QuestionTagService;
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +34,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,8 +55,7 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
@@ -181,6 +178,41 @@ public class QuestionApiDocs {
     }
 
     @Test
+    @DisplayName("질문 삭제")
+    @WithCustomMockUser(memberId = "5324", authority = MEMBER)
+    void 질문삭제() throws Exception {
+        //given
+        Long memberId = 5324L;
+        Long questionId = 23214L;
+        String accessToken = UUID.randomUUID().toString();
+        QuestionResponse.Delete response = new QuestionResponse.Delete(questionId, LocalDateTime.now());
+        //when
+        given(questionService.deleteQuestion(any(), any())).willReturn(response);
+        //then
+        mockMvc.perform(delete(QUESTION_DELETE_URL, questionId)
+                        .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken))
+                .andDo(print())
+                .andDo(document("question-delete",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(AUTHORIZATION_HEADER).description("Access Token")
+                        ),
+                        responseFields(
+                                fieldWithPath("status").type(STRING).description("응답 상태"),
+                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
+                                fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
+                                fieldWithPath("result.deletedAt").type(STRING).description("질문 삭제 시간"),
+                                fieldWithPath("result.links.[0].rel").type(STRING).description("self"),
+                                fieldWithPath("result.links.[0].href").type(STRING).description("uri")
+                        )
+
+                ));
+
+    }
+
+    @Test
     @DisplayName("질문 리스트 조회")
     void 질문리스트조회() throws Exception {
         //given
@@ -194,17 +226,17 @@ public class QuestionApiDocs {
 
         List<TagDto> tagDtos1 = List.of(
                 new TagDto(54L, "#java"),
-                new TagDto(34L,  "#spring")
+                new TagDto(34L, "#spring")
         );
 
         List<TagDto> tagDtos2 = List.of(
-                new TagDto(2L,  "#javascript"),
-                new TagDto(14L,  "#react")
+                new TagDto(2L, "#javascript"),
+                new TagDto(14L, "#react")
         );
 
         List<TagDto> tagDtos3 = List.of(
-                new TagDto(31L,  "#mysql"),
-                new TagDto(7L,  "#database")
+                new TagDto(31L, "#mysql"),
+                new TagDto(7L, "#database")
         );
 
         List<QuestionDto> questionDtos = List.of(
@@ -268,9 +300,10 @@ public class QuestionApiDocs {
 
     }
 
+
     @Test
     @DisplayName("질문 상세 조회")
-    void 질문상세조회() throws Exception{
+    void 질문상세조회() throws Exception {
         //given
         String accessToken = UUID.randomUUID().toString();
         Long questionId = 563L;
@@ -279,63 +312,63 @@ public class QuestionApiDocs {
         boolean isQuestioner = true;
         int countOfRecommend = 100;
         int countOfView = 632;
-        int countOfAnswer  = 3;
+        int countOfAnswer = 3;
         boolean hasRecommendation = false;
         RecommendationKind kind = null;
         Long memberId = 242L;
         String nickname = "닉네임입니다";
         String imageLocation = "https://my-bucket-s3/profile/my_image.png";
-        QuestionDetail.QuestionDetailMetrics metrics = new QuestionDetail.QuestionDetailMetrics(countOfRecommend,countOfView,countOfAnswer,hasRecommendation,kind);
+        QuestionDetail.QuestionDetailMetrics metrics = new QuestionDetail.QuestionDetailMetrics(countOfRecommend, countOfView, countOfAnswer, hasRecommendation, kind);
         int activityScore = 240;
-        QuestionDetail.QuestionDetailQuestioner questioner = new QuestionDetail.QuestionDetailQuestioner(memberId,nickname,imageLocation,activityScore);
-        TagDto tag1 = new TagDto(24L,"#java");
-        TagDto tag2 = new TagDto(26L,"#spring");
+        QuestionDetail.QuestionDetailQuestioner questioner = new QuestionDetail.QuestionDetailQuestioner(memberId, nickname, imageLocation, activityScore);
+        TagDto tag1 = new TagDto(24L, "#java");
+        TagDto tag2 = new TagDto(26L, "#spring");
         List<TagDto> tags = List.of(tag1, tag2);
         LocalDateTime askedAt = LocalDateTime.now();
         LocalDateTime modifiedAt = LocalDateTime.now();
-        QuestionDetail questionDetail = new QuestionDetail(242L,title,contents,isQuestioner,metrics,questioner,tags,askedAt,modifiedAt);
+        QuestionDetail questionDetail = new QuestionDetail(242L, title, contents, isQuestioner, metrics, questioner, tags, askedAt, modifiedAt);
         //when
         given(questionQueryService.getQuestionDetail(any(), any(), any(), any())).willReturn(questionDetail);
         //then
-        mockMvc.perform(get(QUESTION_DETAIL_URL,questionId)
-                        .header(AUTHORIZATION_HEADER,accessToken))
+        mockMvc.perform(get(QUESTION_DETAIL_URL, questionId)
+                        .header(AUTHORIZATION_HEADER, accessToken))
                 .andDo(print())
                 .andDo(document("question-detail",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestHeaders(headerWithName(AUTHORIZATION_HEADER).description("Access Token").optional()),
-                        pathParameters(
-                                parameterWithName("questionId").description("질문 식별 아이디")
-                        ),
-                        responseFields(
-                                fieldWithPath("status").type(STRING).description("응답 상태"),
-                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
-                                fieldWithPath("message").type(STRING).description("응답 메시지"),
-                                fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
-                                fieldWithPath("result.title").type(STRING).description("질문 제목"),
-                                fieldWithPath("result.contents").type(STRING).description("질문 내용"),
-                                fieldWithPath("result.isQuestioner").type(BOOLEAN).description("질문자"),
-                                fieldWithPath("result.metrics.countOfRecommend").type(NUMBER).description("추천수"),
-                                fieldWithPath("result.metrics.countOfView").type(NUMBER).description("조회수"),
-                                fieldWithPath("result.metrics.countOfAnswer").type(NUMBER).description("답변수"),
-                                fieldWithPath("result.metrics.hasRecommendation").type(BOOLEAN).description("추천 여부"),
-                                fieldWithPath("result.metrics.kind").type(NULL).description("추천 종류"),
-                                fieldWithPath("result.questioner.id").type(NUMBER).description("질문자 식별 아이디"),
-                                fieldWithPath("result.questioner.nickname").type(STRING).description("질문자 닉네임"),
-                                fieldWithPath("result.questioner.profileImage").type(STRING).description("프로필 이미지"),
-                                fieldWithPath("result.questioner.activityScore").type(NUMBER).description("활동 점수"),
-                                fieldWithPath("result.tag.[0].id").type(NUMBER).description("질문 태그 아이디"),
-                                fieldWithPath("result.tag.[0].tagName").type(STRING).description("태그명"),
-                                fieldWithPath("result.tag.[0].links.[0].rel").type(STRING).description(""),
-                                fieldWithPath("result.tag.[0].links.[0].href").type(STRING).description(""),
-                                fieldWithPath("result.askedAt").type(STRING).description("질문일"),
-                                fieldWithPath("result.modifiedAt").type(STRING).description("수정일"),
-                                fieldWithPath("result.links.[0].rel").type(STRING).description(""),
-                                fieldWithPath("result.links.[0].href").type(STRING).description("")
+                                getDocumentRequest(),
+                                getDocumentResponse(),
+                                requestHeaders(headerWithName(AUTHORIZATION_HEADER).description("Access Token").optional()),
+                                pathParameters(
+                                        parameterWithName("questionId").description("질문 식별 아이디")
+                                ),
+                                responseFields(
+                                        fieldWithPath("status").type(STRING).description("응답 상태"),
+                                        fieldWithPath("code").type(NUMBER).description("응답 코드"),
+                                        fieldWithPath("message").type(STRING).description("응답 메시지"),
+                                        fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
+                                        fieldWithPath("result.title").type(STRING).description("질문 제목"),
+                                        fieldWithPath("result.contents").type(STRING).description("질문 내용"),
+                                        fieldWithPath("result.isQuestioner").type(BOOLEAN).description("질문자"),
+                                        fieldWithPath("result.metrics.countOfRecommend").type(NUMBER).description("추천수"),
+                                        fieldWithPath("result.metrics.countOfView").type(NUMBER).description("조회수"),
+                                        fieldWithPath("result.metrics.countOfAnswer").type(NUMBER).description("답변수"),
+                                        fieldWithPath("result.metrics.hasRecommendation").type(BOOLEAN).description("추천 여부"),
+                                        fieldWithPath("result.metrics.kind").type(NULL).description("추천 종류"),
+                                        fieldWithPath("result.questioner.id").type(NUMBER).description("질문자 식별 아이디"),
+                                        fieldWithPath("result.questioner.nickname").type(STRING).description("질문자 닉네임"),
+                                        fieldWithPath("result.questioner.profileImage").type(STRING).description("프로필 이미지"),
+                                        fieldWithPath("result.questioner.activityScore").type(NUMBER).description("활동 점수"),
+                                        fieldWithPath("result.tag.[0].id").type(NUMBER).description("질문 태그 아이디"),
+                                        fieldWithPath("result.tag.[0].tagName").type(STRING).description("태그명"),
+                                        fieldWithPath("result.tag.[0].links.[0].rel").type(STRING).description(""),
+                                        fieldWithPath("result.tag.[0].links.[0].href").type(STRING).description(""),
+                                        fieldWithPath("result.askedAt").type(STRING).description("질문일"),
+                                        fieldWithPath("result.modifiedAt").type(STRING).description("수정일"),
+                                        fieldWithPath("result.links.[0].rel").type(STRING).description(""),
+                                        fieldWithPath("result.links.[0].href").type(STRING).description("")
+                                )
+
+
                         )
-
-
-                )
                 );
 
 

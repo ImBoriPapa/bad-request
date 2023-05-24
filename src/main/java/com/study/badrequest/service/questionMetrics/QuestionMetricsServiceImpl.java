@@ -1,4 +1,4 @@
-package com.study.badrequest.service.question;
+package com.study.badrequest.service.questionMetrics;
 
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.question.Question;

@@ -1,0 +1,27 @@
+
+### 로그인
+POST http://localhost:8080/api/v2/login
+Content-Type: application/json
+
+{
+  "email": "sample@gmail.com",
+  "password": "sample1234!@"
+}
+
+> {%
+    client.global.set("access_token", response.headers.valueOf("Authorization"));
+    client.global.set("refresh_token", response.headers.valueOf("Set-Cookie").split(";")[0]);
+
+    client.log(client.global.get("access_token"));
+    client.log(client.global.get("refresh_token"));
+%}
+
+### 답변 등록
+POST http://localhost:8080/api/v2/questions/42/answers
+Content-Type: application/json
+Authorization: {{access_token}}
+
+{
+  "contents" : "이것은 질문입니다."
+}
+

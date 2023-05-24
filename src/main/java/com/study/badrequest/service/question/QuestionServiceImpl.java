@@ -98,6 +98,8 @@ public class QuestionServiceImpl implements QuestionService {
 
         question.changeExposure(DELETE);
 
+        applicationEventPublisher.publishEvent(new QuestionEventDto.DeleteEvent(question));
+
         return new QuestionResponse.Delete(questionId, question.getDeletedRequestAt());
     }
 
