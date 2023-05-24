@@ -27,7 +27,7 @@ public class ApiResponse {
     }
     @NoArgsConstructor
     @Getter
-    public static class Success<T> {
+    protected static class Success<T> {
 
         private String status;
         private int code;

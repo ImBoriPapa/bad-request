@@ -23,6 +23,6 @@ public class BoardImageController {
         BoardImageResponse.Create response = boardImageService.save(image);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, response));
+                .body( ApiResponse.success(ApiResponseStatus.SUCCESS, response));
     }
 }

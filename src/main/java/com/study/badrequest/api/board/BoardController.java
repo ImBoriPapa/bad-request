@@ -52,7 +52,7 @@ public class BoardController {
 
         return ResponseEntity
                 .created(linkTo(BoardController.class).slash("/board").slash(create.getBoardId()).toUri())
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
@@ -78,7 +78,7 @@ public class BoardController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     // TODO: 2023/02/15 Delete

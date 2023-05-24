@@ -45,7 +45,7 @@ public class BoardQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @GetMapping(BOARD_LIST_URL)
@@ -64,6 +64,6 @@ public class BoardQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 }

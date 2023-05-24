@@ -39,7 +39,7 @@ public class CommentQueryController {
         EntityModel<CommentListDto> entityModel = commentResponseModelAssembler.toListModel(commentListDto,boardId);
 
         return ResponseEntity.ok()
-                .body(new ApiResponse.Success(ApiResponseStatus.SUCCESS, entityModel));
+                .body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -52,6 +52,6 @@ public class CommentQueryController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 }

@@ -36,7 +36,7 @@ public class MemberQueryApiController {
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @GetMapping(value = GET_MEMBER_DETAIL_URL, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse.Success> retrieveMemberAccount(@LoggedInMember CurrentLoggedInMember.Information information, @PathVariable Long memberId) {
+    public ResponseEntity retrieveMemberAccount(@LoggedInMember CurrentLoggedInMember.Information information, @PathVariable Long memberId) {
         log.info("계정정보 조회 요청 요청계정 Id: {}, 요청자 id: {}, 요청자 권한: {}", memberId, information.getId(), information.getAuthority());
 
         restrictAccessIfNotYouAndAdmin(information.getId(), memberId, information.getAuthority());

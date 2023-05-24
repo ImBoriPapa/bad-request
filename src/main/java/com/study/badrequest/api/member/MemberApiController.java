@@ -42,7 +42,7 @@ public class MemberApiController {
      * @return 201 created, memberId, createdAt
      */
     @PostMapping(value = POST_MEMBER_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse.Success> createMember(@Validated @RequestBody MemberRequestForm.SignUp form, BindingResult bindingResult) {
+    public ResponseEntity createMember(@Validated @RequestBody MemberRequestForm.SignUp form, BindingResult bindingResult) {
         log.info("[회원 생성 요청 email: {}, contact: {}, password: {}, nickname: {}]", form.getEmail(), form.getContact(), "PROTECTED", form.getNickname());
 
         requestValidUtils.throwValidationExceptionIfErrors(bindingResult);
@@ -123,7 +123,7 @@ public class MemberApiController {
      * @return 200 : String email, LocalDateTime issuedAt
      */
     @PostMapping(value = POST_MEMBER_TEMPORARY_PASSWORD_ISSUE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse.Success> issueTemporaryPassword(@Validated
+    public ResponseEntity issueTemporaryPassword(@Validated
                                                                   @RequestBody MemberRequestForm.IssueTemporaryPassword form,
                                                                       BindingResult bindingResult) {
         log.info("[임시 비밀번호 요청 email: {}]", form.getEmail());
@@ -164,7 +164,7 @@ public class MemberApiController {
      * @return 200 Ok, memberId, updatedAt
      */
     @PatchMapping(value = PATCH_MEMBER_PASSWORD_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse.Success> patchPassword(@Validated
+    public ResponseEntity patchPassword(@Validated
                                                          @PathVariable Long memberId,
                                                              @RequestBody MemberRequestForm.ChangePassword form,
                                                              @LoggedInMember CurrentLoggedInMember.Information information,
@@ -192,7 +192,7 @@ public class MemberApiController {
      * @return 200 Ok, memberId, updatedAt
      */
     @PatchMapping(value = PATCH_MEMBER_CONTACT_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse.Success> patchContact(@Validated
+    public ResponseEntity patchContact(@Validated
                                                         @PathVariable Long memberId,
                                                             @RequestBody MemberRequestForm.UpdateContact form,
                                                             @LoggedInMember CurrentLoggedInMember.Information information,
@@ -217,7 +217,7 @@ public class MemberApiController {
      * @return 200 Ok
      */
     @DeleteMapping(DELETE_MEMBER_URL)
-    public ResponseEntity<ApiResponse.Success> deleteMember(@Validated @PathVariable Long memberId,
+    public ResponseEntity deleteMember(@Validated @PathVariable Long memberId,
                                                             @RequestBody MemberRequestForm.DeleteMember form,
                                                             @LoggedInMember CurrentLoggedInMember.Information information,
                                                             BindingResult bindingResult) {

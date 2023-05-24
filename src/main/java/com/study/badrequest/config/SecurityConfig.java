@@ -1,5 +1,6 @@
 package com.study.badrequest.config;
 
+import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
@@ -24,7 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
-import static com.study.badrequest.api.admin.ValueController.VALUES;
+
 import static com.study.badrequest.commons.constants.ApiURL.*;
 
 @Configuration
@@ -100,9 +101,9 @@ public class SecurityConfig {
                 //image
                 .antMatchers("/api/v1/image/board-image")
                 .permitAll()
-                //values
-                .antMatchers(VALUES + "/*")
-                .permitAll()
+                //admin
+                .antMatchers("/api/v2/admin/*").hasAuthority(Authority.ADMIN.name())
+
                 //dashboard
                 .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh", "/api/v1/dashboard/*")
                 .permitAll()

@@ -51,7 +51,7 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
 
@@ -70,7 +70,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Modify> entityModel = commentResponseModelAssembler.toModel(modifyComment, boardId);
 
-        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -82,7 +82,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.Delete> entityModel = commentResponseModelAssembler.toModel(deleteComment, boardId);
 
-        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -98,7 +98,7 @@ public class CommentController {
 
         return ResponseEntity
                 .ok()
-                .body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+                .body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -111,7 +111,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.ModifySub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
 
-        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     @CustomLogTracer
@@ -123,7 +123,7 @@ public class CommentController {
 
         EntityModel<CommentResponse.DeleteSub> entityModel = commentResponseModelAssembler.toModel(result, commentId);
 
-        return ResponseEntity.ok().body(new ApiResponse.Success<>(ApiResponseStatus.SUCCESS, entityModel));
+        return ResponseEntity.ok().body( ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
     }
 
     /**
