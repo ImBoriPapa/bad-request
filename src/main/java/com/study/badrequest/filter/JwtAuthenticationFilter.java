@@ -1,7 +1,7 @@
 package com.study.badrequest.filter;
 
 import com.study.badrequest.service.login.LoginServiceImpl;
-import com.study.badrequest.utils.jwt.JwtStatus;
+import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

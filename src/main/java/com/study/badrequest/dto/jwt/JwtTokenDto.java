@@ -1,4 +1,4 @@
-package com.study.badrequest.utils.jwt;
+package com.study.badrequest.dto.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TokenDto {
+public class JwtTokenDto {
     private String accessToken;
     private String refreshToken;
     private LocalDateTime accessTokenExpiredAt;

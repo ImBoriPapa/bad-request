@@ -90,8 +90,12 @@ public enum ApiResponseStatus {
      * code: 4000~
      */
     NOT_FOUND_COMMENT(4000, "존재하지 않는 댓글 입니다.", HttpStatus.BAD_REQUEST),
-    NOT_FOUND_SUB_COMMENT(4001, "존재하지 않는 대댓글 입니다.", HttpStatus.BAD_REQUEST);
+    NOT_FOUND_SUB_COMMENT(4001, "존재하지 않는 대댓글 입니다.", HttpStatus.BAD_REQUEST),
 
+    /**
+     * 메일
+     */
+    FAIL_SEND_MAIL(5000,"메일 발송에 실패했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
     private final int code;
     private final String message;
     private final HttpStatus httpStatus;

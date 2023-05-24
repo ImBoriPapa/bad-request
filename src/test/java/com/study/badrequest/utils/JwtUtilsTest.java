@@ -1,9 +1,9 @@
 package com.study.badrequest.utils;
 
 
-import com.study.badrequest.utils.jwt.JwtStatus;
+import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.utils.jwt.TokenDto;
+import com.study.badrequest.dto.jwt.JwtTokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.study.badrequest.utils.jwt.JwtStatus.*;
+import static com.study.badrequest.commons.status.JwtStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
 
@@ -47,7 +47,7 @@ class JwtUtilsTest {
     @DisplayName("토큰 검증 테스트")
     void tokenValidateTest() throws Exception{
         //given
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(username);
 
         String expiredToken = Jwts.builder()
                 .setSubject(username)
@@ -56,8 +56,8 @@ class JwtUtilsTest {
                 .compact();
 
         //when
-        JwtStatus expectAccess = jwtUtils.validateToken(tokenDto.getAccessToken());
-        JwtStatus expectDenied = jwtUtils.validateToken(tokenDto.getAccessToken()+"dsa");
+        JwtStatus expectAccess = jwtUtils.validateToken(jwtTokenDto.getAccessToken());
+        JwtStatus expectDenied = jwtUtils.validateToken(jwtTokenDto.getAccessToken()+"dsa");
         JwtStatus expectExpired = jwtUtils.validateToken(expiredToken);
 
         //then
@@ -70,8 +70,8 @@ class JwtUtilsTest {
     @DisplayName("access 토큰 생성 테스트")
     void accessTokenCreateTest() throws Exception{
         //given
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
-        String accessToken = tokenDto.getAccessToken();
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(username);
+        String accessToken = jwtTokenDto.getAccessToken();
         //when
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -83,7 +83,7 @@ class JwtUtilsTest {
 
         //then
         assertThat(claims.getSubject()).isEqualTo(username);
-        assertThat(accessTokenExpiredTime).isEqualTo(tokenDto.getAccessTokenExpiredAt());
+        assertThat(accessTokenExpiredTime).isEqualTo(jwtTokenDto.getAccessTokenExpiredAt());
 
     }
 
@@ -91,8 +91,8 @@ class JwtUtilsTest {
     @DisplayName("refresh 토큰 생성 테스트")
     void refreshTokenCreateTest() throws Exception{
         //given
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
-        String refreshToken = tokenDto.getRefreshToken();
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(username);
+        String refreshToken = jwtTokenDto.getRefreshToken();
         //when
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -114,11 +114,11 @@ class JwtUtilsTest {
     void createTokenDtoTest() throws Exception {
         //given
         //when
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(username);
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(username);
         //then
-        assertThat(tokenDto.getAccessToken()).isNotNull();
-        assertThat(tokenDto.getRefreshToken()).isNotNull();
-        assertThat(tokenDto.getAccessTokenExpiredAt()).isNotNull();
-        assertThat(tokenDto.getRefreshTokenExpirationMill()).isNotNull();
+        assertThat(jwtTokenDto.getAccessToken()).isNotNull();
+        assertThat(jwtTokenDto.getRefreshToken()).isNotNull();
+        assertThat(jwtTokenDto.getAccessTokenExpiredAt()).isNotNull();
+        assertThat(jwtTokenDto.getRefreshTokenExpirationMill()).isNotNull();
     }
 }

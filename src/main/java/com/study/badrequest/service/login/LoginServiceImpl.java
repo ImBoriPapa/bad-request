@@ -15,9 +15,9 @@ import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
 import com.study.badrequest.utils.cookie.CookieUtils;
-import com.study.badrequest.utils.jwt.JwtStatus;
+import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.utils.jwt.TokenDto;
+import com.study.badrequest.dto.jwt.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,15 +66,15 @@ public class LoginServiceImpl implements LoginService {
         //임시 비밀번호 여부 확인
         member.checkTemporaryPassword();
         //토큰 생성
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //RefreshToken 저장
-        RefreshToken refreshToken = createNewRefreshToken(member, tokenDto);
+        RefreshToken refreshToken = createNewRefreshToken(member, jwtTokenDto);
         //요청 IP 저장
         member.setLastLoginIP(ipAddress);
 
         eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
 
-        return createLoginDto(member, tokenDto, refreshToken);
+        return createLoginDto(member, jwtTokenDto, refreshToken);
     }
 
     @Override
@@ -94,14 +94,14 @@ public class LoginServiceImpl implements LoginService {
                 .orElseThrow(() -> new CustomRuntimeException(CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE));
         member.setLastLoginIP(ipAddress);
 
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
 
         authenticationCodeRepository.deleteById(authenticationCode.getId());
 
         //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member, "1회용 인증 코드 로그인", LocalDateTime.now()));
 
-        return createLoginDto(member, tokenDto, createNewRefreshToken(member, tokenDto));
+        return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto));
 
     }
 
@@ -166,13 +166,13 @@ public class LoginServiceImpl implements LoginService {
         //7. 기존 Refresh 토큰 삭제
         redisRefreshTokenRepository.deleteById(refresh.getChangeableId());
         //8. 새로운 토큰 생성
-        TokenDto tokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //9  새로운 Refresh 토큰 저장
-        RefreshToken savedRefreshToken = createNewRefreshToken(member, tokenDto);
+        RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto);
         //10. 기존 인증정보 삭제
         SecurityContextHolder.clearContext();
 
-        return createLoginDto(member, tokenDto, savedRefreshToken);
+        return createLoginDto(member, jwtTokenDto, savedRefreshToken);
     }
 
     private void validateRefreshToken(String refreshToken) {
@@ -198,13 +198,13 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
-    private RefreshToken createNewRefreshToken(Member member, TokenDto tokenDto) {
+    private RefreshToken createNewRefreshToken(Member member, JwtTokenDto jwtTokenDto) {
         RefreshToken token = RefreshToken.createRefresh()
                 .changeableId(member.getChangeableId())
                 .memberId(member.getId())
-                .token(tokenDto.getRefreshToken())
+                .token(jwtTokenDto.getRefreshToken())
                 .authority(member.getAuthority())
-                .expiration(tokenDto.getRefreshTokenExpirationMill())
+                .expiration(jwtTokenDto.getRefreshTokenExpirationMill())
                 .build();
         return redisRefreshTokenRepository.save(token);
     }
@@ -226,10 +226,10 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
-    private LoginResponse.LoginDto createLoginDto(Member member, TokenDto tokenDto, RefreshToken refreshToken) {
+    private LoginResponse.LoginDto createLoginDto(Member member, JwtTokenDto jwtTokenDto, RefreshToken refreshToken) {
         return LoginResponse.LoginDto.builder()
                 .id(member.getId())
-                .accessToken(tokenDto.getAccessToken())
+                .accessToken(jwtTokenDto.getAccessToken())
                 .refreshCookie(CookieUtils.createRefreshTokenCookie(refreshToken.getToken(), refreshToken.getExpiration()))
                 .loggedIn(LocalDateTime.now())
                 .build();

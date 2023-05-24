@@ -9,7 +9,7 @@ import com.study.badrequest.repository.login.AuthenticationCodeRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.utils.jwt.TokenDto;
+import com.study.badrequest.dto.jwt.JwtTokenDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,17 +59,17 @@ class LoginServiceImplTest {
                 .authority(Authority.MEMBER)
                 .build();
 
-        TokenDto tokenDto = new TokenDto(accessToken, refreshToken, LocalDateTime.now().plusMinutes(10), 60480000L);
+        JwtTokenDto jwtTokenDto = new JwtTokenDto(accessToken, refreshToken, LocalDateTime.now().plusMinutes(10), 60480000L);
 
         RefreshToken tokenEntity = RefreshToken.createRefresh()
                 .changeableId(member.getChangeableId())
-                .token(tokenDto.getAccessToken())
+                .token(jwtTokenDto.getAccessToken())
                 .authority(member.getAuthority())
-                .expiration(tokenDto.getRefreshTokenExpirationMill())
+                .expiration(jwtTokenDto.getRefreshTokenExpirationMill())
                 .build();
         //when
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
-        when(jwtUtils.generateJwtTokens(any())).thenReturn(tokenDto);
+        when(jwtUtils.generateJwtTokens(any())).thenReturn(jwtTokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
         LoginResponse.LoginDto loginDto = loginService.emailLogin(email, password, ipAddress);
         //then
@@ -86,20 +86,20 @@ class LoginServiceImplTest {
                 .build();
 
 
-        TokenDto tokenDto = new TokenDto("accessToken", "refreshToken", LocalDateTime.now().plusMinutes(10), 60480000L);
+        JwtTokenDto jwtTokenDto = new JwtTokenDto("accessToken", "refreshToken", LocalDateTime.now().plusMinutes(10), 60480000L);
 
         AuthenticationCode authenticationCode = AuthenticationCode.createOnetimeAuthenticationCode(member);
 
         RefreshToken tokenEntity = RefreshToken.createRefresh()
                 .changeableId(member.getChangeableId())
-                .token(tokenDto.getAccessToken())
+                .token(jwtTokenDto.getAccessToken())
                 .authority(member.getAuthority())
-                .expiration(tokenDto.getRefreshTokenExpirationMill())
+                .expiration(jwtTokenDto.getRefreshTokenExpirationMill())
                 .build();
         //when
         when(authenticationCodeRepository.findByCode(any())).thenReturn(Optional.of(authenticationCode));
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(jwtUtils.generateJwtTokens(any())).thenReturn(tokenDto);
+        when(jwtUtils.generateJwtTokens(any())).thenReturn(jwtTokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
 
         loginService.oneTimeAuthenticationCodeLogin("", "ipAddress");

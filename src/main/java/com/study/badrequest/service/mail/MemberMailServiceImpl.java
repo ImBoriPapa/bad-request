@@ -1,7 +1,9 @@
 package com.study.badrequest.service.mail;
 
+import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.mail.MemberMail;
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.mail.MemberMailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +60,8 @@ public class MemberMailServiceImpl implements MemberMailService {
         } catch (MessagingException e) {
             memberMail.sentFail();
             mailRepository.save(memberMail);
-            log.info("회원 {} 메일 발송 실패 수신인: {}", subject, email);
-            throw new IllegalArgumentException(e.getMessage());
+            log.info("회원 {} 메일 발송 실패 수신인: {} message: {}", subject, email, e.getLocalizedMessage());
+            throw new CustomRuntimeException(ApiResponseStatus.FAIL_SEND_MAIL);
         }
     }
 

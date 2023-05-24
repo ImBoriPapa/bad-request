@@ -1,5 +1,7 @@
 package com.study.badrequest.utils.jwt;
 
+import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.dto.jwt.JwtTokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +25,7 @@ public class JwtUtils {
     private final String SECRETE_KEY;
     private final int ACCESS_TOKEN_LIFETIME_MINUTES;
     private final int REFRESH_TOKEN_LIFE_DAYS;
-    private Key key;
+    private final Key key;
 
     /**
      * 인스턴스 생성시 변수 초기화
@@ -48,7 +50,7 @@ public class JwtUtils {
      * 2023/05/12
      * Username 으로 TokenDto 생성 후 반환 -> username -> changeableId
      */
-    public TokenDto generateJwtTokens(String changeableId) {
+    public JwtTokenDto generateJwtTokens(String changeableId) {
 
         log.info("[GENERATE ACCESS TOKEN]");
         String accessToken = createToken(changeableId, MINUTES, ACCESS_TOKEN_LIFETIME_MINUTES);
@@ -56,7 +58,7 @@ public class JwtUtils {
         log.info("[GENERATE REFRESH TOKEN]");
         String refreshToken = createToken(changeableId, DAYS, REFRESH_TOKEN_LIFE_DAYS);
 
-        return TokenDto.builder()
+        return JwtTokenDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .accessTokenExpiredAt(getExpirationLocalDateTime(accessToken))
@@ -109,7 +111,6 @@ public class JwtUtils {
                 .build()
                 .parseClaimsJws(token);
     }
-
 
 
     /**

@@ -2,6 +2,7 @@ package com.study.badrequest.service.mail;
 
 import com.study.badrequest.domain.mail.NonMemberMail;
 import com.study.badrequest.domain.member.AuthenticationCode;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.mail.NonMemberMailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+
+import static com.study.badrequest.commons.response.ApiResponseStatus.FAIL_SEND_MAIL;
 
 @Service
 @RequiredArgsConstructor
@@ -56,8 +59,8 @@ public class NonMemberMailServiceImpl implements NonMemberMailService {
             nonMemberMailRepository.save(nonMemberMail);
         } catch (MessagingException e) {
             nonMemberMail.sentFail();
-            log.info("비회원 {} 메일 발송 실패 수신인: {}", subject, email);
-            throw new IllegalArgumentException(e.getMessage());
+            log.error("비회원 {} 메일 발송 실패 수신인: {}, Message: {}", subject, email,e.getLocalizedMessage());
+            throw new CustomRuntimeException(FAIL_SEND_MAIL);
         }
     }
 
