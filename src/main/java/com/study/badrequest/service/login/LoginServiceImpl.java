@@ -34,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.constants.JwtTokenHeader.REFRESH_TOKEN_COOKIE;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;

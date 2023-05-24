@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.member.MemberApiController;
 
 import com.study.badrequest.api.member.MemberQueryApiController;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.domain.login.OauthProvider;
 
 
@@ -21,7 +21,6 @@ import com.study.badrequest.service.member.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
-import com.study.badrequest.utils.verification.RequestValidUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -55,8 +54,8 @@ import static com.study.badrequest.domain.member.Authority.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -198,8 +197,8 @@ public class MemberApiDocs {
     void 로그인된회원정보조회() throws Exception {
         //given
         Long memberId = 2341L;
-        CurrentLoggedInMember currentLoggedInMember = new CurrentLoggedInMember(UUID.randomUUID().toString(), memberId, MEMBER.getAuthorities());
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(currentLoggedInMember, "", MEMBER.getAuthorities());
+        CurrentMember currentMember = new CurrentMember(UUID.randomUUID().toString(), memberId, MEMBER.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(currentMember, "", MEMBER.getAuthorities());
         LoggedInMemberInformation memberInformation = new LoggedInMemberInformation(memberId, MEMBER, "닉네임1", "", OauthProvider.GITHUB);
         //when
         SecurityContextHolder.createEmptyContext().setAuthentication(authenticationToken);

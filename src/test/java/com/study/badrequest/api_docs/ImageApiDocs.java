@@ -18,19 +18,17 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.multipart.MultipartFile;
 
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.study.badrequest.commons.constants.ApiURL.UPLOAD_QUESTION_IMAGE;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,7 +36,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.JsonFieldType.NUMBER;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;

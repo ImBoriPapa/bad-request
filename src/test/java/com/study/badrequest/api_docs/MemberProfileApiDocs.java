@@ -2,7 +2,7 @@ package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.member.MemberProfileApiController;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
@@ -30,8 +30,8 @@ import java.util.UUID;
 
 import static com.study.badrequest.commons.constants.ApiURL.PATCH_MEMBER_NICKNAME;
 import static com.study.badrequest.commons.constants.ApiURL.PATCH_MEMBER_PROFILE_IMAGE;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static com.study.badrequest.domain.member.Authority.MEMBER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
@@ -81,10 +81,10 @@ public class MemberProfileApiDocs {
         EntityModel<MemberResponse.Update> entityModel = EntityModel.of(update,
                 Link.of("https://www.bad-request.kr/api/v2/members/" + memberId + "/nickname")
         );
-        CurrentLoggedInMember currentLoggedInMember = new CurrentLoggedInMember("sfasfasfa", memberId, MEMBER.getAuthorities());
+        CurrentMember currentMember = new CurrentMember("sfasfasfa", memberId, MEMBER.getAuthorities());
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                currentLoggedInMember, "", MEMBER.getAuthorities()
+                currentMember, "", MEMBER.getAuthorities()
         );
         SecurityContextHolder.createEmptyContext().setAuthentication(authenticationToken);
         //when

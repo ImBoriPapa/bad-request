@@ -2,7 +2,7 @@ package com.study.badrequest.api.member;
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
@@ -34,7 +34,7 @@ public class MemberProfileApiController {
     @PatchMapping(value = PATCH_MEMBER_NICKNAME, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeNickname(@PathVariable Long memberId,
                                          @Validated @RequestBody MemberRequestForm.ChangeNickname form, BindingResult bindingResult,
-                                         @LoggedInMember CurrentLoggedInMember.Information information) {
+                                         @LoggedInMember CurrentMember.Information information) {
         log.info("Nickname Change Request: memberId: {},", memberId);
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);

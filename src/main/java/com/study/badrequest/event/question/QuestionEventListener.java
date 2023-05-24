@@ -5,9 +5,8 @@ import com.study.badrequest.service.activity.ActivityService;
 
 
 import com.study.badrequest.service.image.QuestionImageService;
-import com.study.badrequest.service.questionMetrics.QuestionMetricsService;
-import com.study.badrequest.service.question.QuestionService;
-import com.study.badrequest.service.questionTag.QuestionTagService;
+import com.study.badrequest.service.question.QuestionMetricsService;
+import com.study.badrequest.service.question.QuestionTagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

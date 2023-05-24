@@ -11,9 +11,9 @@ import org.springframework.security.core.userdetails.User;
 import java.util.Collection;
 
 @Getter
-public class CurrentLoggedInMember extends User {
+public class CurrentMember extends User {
     private  Information information;
-    public CurrentLoggedInMember(String username, Long id, Collection<? extends GrantedAuthority> authorities) {
+    public CurrentMember(String username, Long id, Collection<? extends GrantedAuthority> authorities) {
         super(username, "", authorities);
         this.information = new Information(id,username, Authority.getAuthorityByAuthorities(authorities));
     }

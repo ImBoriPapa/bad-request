@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
-import static com.study.badrequest.commons.constants.JwtTokenHeader.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.JwtTokenHeader.AUTHORIZATION_HEADER;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 @Slf4j
 public class HttpHeaderResolver {
 

@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.authentication;
 
 
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.domain.member.Authority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +18,7 @@ public class AuthenticationFactory {
         Collection<? extends GrantedAuthority> authorities = authority.getAuthorities();
 
         return new UsernamePasswordAuthenticationToken(
-                new CurrentLoggedInMember(username, memberId, authorities),
+                new CurrentMember(username, memberId, authorities),
                 "",
                 authorities
         );

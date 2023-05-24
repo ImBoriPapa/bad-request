@@ -1,4 +1,4 @@
-package com.study.badrequest.service.questionTag;
+package com.study.badrequest.service.question;
 
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.question.Question;

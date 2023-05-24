@@ -3,15 +3,13 @@ package com.study.badrequest.api.question;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
 
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
-import com.study.badrequest.event.question.QuestionEventDto;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.repository.question.query.*;
 
 import com.study.badrequest.service.question.QuestionQueryService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Optional;
 
 import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
 import static com.study.badrequest.commons.constants.ApiURL.QUESTION_DETAIL_URL;
@@ -56,7 +53,7 @@ public class QuestionQueryApiController {
     public ResponseEntity<?> getQuestionDetail(@PathVariable Long questionId,
                                                HttpServletRequest request,
                                                HttpServletResponse response,
-                                               @LoggedInMember CurrentLoggedInMember.Information information) {
+                                               @LoggedInMember CurrentMember.Information information) {
 
         QuestionDetail questionDetail = questionQueryService.getQuestionDetail(request, response, questionId, information);
 

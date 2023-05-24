@@ -1,4 +1,4 @@
-package com.study.badrequest.service.questionMetrics;
+package com.study.badrequest.service.question;
 
 import com.study.badrequest.dto.question.QuestionResponse;
 

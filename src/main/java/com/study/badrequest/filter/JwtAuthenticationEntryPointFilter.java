@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumMap;
 
-import static com.study.badrequest.commons.constants.JwtTokenHeader.JWT_STATUS_HEADER;
+import static com.study.badrequest.commons.constants.AuthenticationHeaders.JWT_STATUS_HEADER;
 
 @Component
 @RequiredArgsConstructor

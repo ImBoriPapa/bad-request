@@ -41,8 +41,8 @@ public enum ApiResponseStatus {
     CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE(1603, "발급된 인증코드로 회원정보를 찾을 수 없습니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
     EMPTY_ONE_TIME_CODE(1604, "발급된 인증코드와 필요합니다.. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
     //OAUTH2
-    ALREADY_REGISTERED_OAUTH2_EMAIL(1700, "이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
-    ALREADY_REGISTERED_SELF_LOGIN_EMAIL(1701, "이미 자체 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REGISTERED_OAUTH2_EMAIL(1700, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REGISTERED_SELF_LOGIN_EMAIL(1701, "요청 하신 이메일은 Bad-Request 에서 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
     /**
      * 회원 관련
      * code: 2000~
@@ -69,7 +69,7 @@ public enum ApiResponseStatus {
     NOT_FOUND_QUESTION(2505, "질문을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
     AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED(2530, "태그는 최소 한개 이상 사용해야합니디.", HttpStatus.BAD_REQUEST),
 
-    CAN_NOT_DELETE_DEFAULT_IMAGE(2200,"기본 이미지는 삭제할 수 없습니다.",HttpStatus.BAD_REQUEST),
+    CAN_NOT_DELETE_DEFAULT_IMAGE(2200, "기본 이미지는 삭제할 수 없습니다.", HttpStatus.BAD_REQUEST),
     /**
      * 답변
      */

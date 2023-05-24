@@ -6,6 +6,7 @@ import com.study.badrequest.domain.login.Oauth2UserInformation;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.member.MemberProfile;
 import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.custom_exception.CustomOauth2LoginException;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.S3ImageUploader;
@@ -43,11 +44,7 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
         Optional<Member> optionalMember = memberRepository.findByEmail(
                 oauth2UserInformation.getEmail());
 
-        if (optionalMember.isPresent()) {
-            return renewOauth2Member(oauth2UserInformation, optionalMember.get());
-        }
-
-        return createNewOauth2Member(oauth2UserInformation);
+        return optionalMember.map(member -> renewOauth2Member(oauth2UserInformation, member)).orElseGet(() -> createNewOauth2Member(oauth2UserInformation));
 
     }
 

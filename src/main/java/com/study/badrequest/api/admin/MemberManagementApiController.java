@@ -4,7 +4,7 @@ import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.admin.AdministratorActivityHistory;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.service.admin.MemberManagementService;
@@ -34,7 +34,7 @@ public class MemberManagementApiController {
     @PatchMapping("/api/v2/admin/member-management/{memberId}")
     public ResponseEntity changeMemberAuthority(@PathVariable Long memberId,
                                                 @RequestBody ChangeAuthorityRequest form,
-                                                @LoggedInMember CurrentLoggedInMember.Information information) {
+                                                @LoggedInMember CurrentMember.Information information) {
 
         if (information.getAuthority() != Authority.ADMIN) {
             throw new CustomRuntimeException(ApiResponseStatus.PERMISSION_DENIED);

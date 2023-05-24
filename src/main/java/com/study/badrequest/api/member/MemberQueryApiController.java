@@ -4,7 +4,7 @@ import com.study.badrequest.api.login.LoginController;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.MemberQueryRepository;
 import com.study.badrequest.repository.member.query.LoggedInMemberInformation;
@@ -36,7 +36,7 @@ public class MemberQueryApiController {
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @GetMapping(value = GET_MEMBER_DETAIL_URL, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity retrieveMemberAccount(@LoggedInMember CurrentLoggedInMember.Information information, @PathVariable Long memberId) {
+    public ResponseEntity retrieveMemberAccount(@LoggedInMember CurrentMember.Information information, @PathVariable Long memberId) {
         log.info("계정정보 조회 요청 요청계정 Id: {}, 요청자 id: {}, 요청자 권한: {}", memberId, information.getId(), information.getAuthority());
 
         restrictAccessIfNotYouAndAdmin(information.getId(), memberId, information.getAuthority());
@@ -55,7 +55,7 @@ public class MemberQueryApiController {
      * 로그인한 회원 정보
      */
     @GetMapping(GET_LOGGED_IN_MEMBER_INFORMATION)
-    public ResponseEntity getLoggedInInformation(@PathVariable Long memberId, @LoggedInMember CurrentLoggedInMember.Information information) {
+    public ResponseEntity getLoggedInInformation(@PathVariable Long memberId, @LoggedInMember CurrentMember.Information information) {
 
         if (!memberId.equals(information.getId())) {
             throw new MemberExceptionBasic(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
@@ -74,7 +74,7 @@ public class MemberQueryApiController {
     }
 
     @GetMapping("/api/v2/members/{memberId}/activities")
-    public ResponseEntity getActivity(@PathVariable Long memberId, @LoggedInMember CurrentLoggedInMember.Information information) {
+    public ResponseEntity getActivity(@PathVariable Long memberId, @LoggedInMember CurrentMember.Information information) {
 
         return ResponseEntity.ok().body(null);
     }
@@ -83,7 +83,7 @@ public class MemberQueryApiController {
      * 프로필 정보 보기
      */
     @GetMapping(GET_MEMBER_PROFILE)
-    public ResponseEntity getProfile(@PathVariable Long memberId, @LoggedInMember CurrentLoggedInMember.Information information) {
+    public ResponseEntity getProfile(@PathVariable Long memberId, @LoggedInMember CurrentMember.Information information) {
         log.info("프로필 조회 요청 memberId: {}", memberId);
 
         MemberProfileDto memberProfileDto = memberQueryRepository.findMemberProfileByMemberId(memberId)

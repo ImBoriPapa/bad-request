@@ -54,7 +54,8 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     protected String determineTargetUrl(HttpServletRequest request, HttpServletResponse response, Authentication authentication, String temporaryCode) {
 
-        Optional<String> redirectUrl = CookieUtils.getCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME).map(Cookie::getValue);
+        Optional<String> redirectUrl = CookieUtils.getCookie(request, REDIRECT_URL_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue);
 
         if (redirectUrl.isPresent() && !isAuthorizedRedirectUri(redirectUrl.get())) {
             throw new IllegalArgumentException("리다이렉트 URI 안맞음");

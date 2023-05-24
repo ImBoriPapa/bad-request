@@ -1,12 +1,7 @@
 package com.study.badrequest.commons.constants;
 
 
-import lombok.Getter;
 
-
-
-
-@Getter
 public class Regex {
     //숫자
     public static final String NUMBER = "^[0-9]*$";

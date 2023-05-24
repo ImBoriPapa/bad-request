@@ -3,11 +3,10 @@ package com.study.badrequest.api.member;
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.service.member.MemberCommandService;
-import com.study.badrequest.service.member.MemberProfileService;
 
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.verification.RequestValidUtils;
@@ -112,7 +111,7 @@ public class MemberApiController {
     public ResponseEntity patchPassword(@Validated
                                                          @PathVariable Long memberId,
                                                              @RequestBody MemberRequestForm.ChangePassword form,
-                                                             @LoggedInMember CurrentLoggedInMember.Information information,
+                                                             @LoggedInMember CurrentMember.Information information,
                                                              BindingResult bindingResult
     ) {
         log.info("[비밀번호 변경 요청 memberId: {}, password: {}, password: {}]", memberId, "PROTECTED", "PROTECTED");
@@ -140,7 +139,7 @@ public class MemberApiController {
     public ResponseEntity patchContact(@Validated
                                                         @PathVariable Long memberId,
                                                             @RequestBody MemberRequestForm.UpdateContact form,
-                                                            @LoggedInMember CurrentLoggedInMember.Information information,
+                                                            @LoggedInMember CurrentMember.Information information,
                                                             BindingResult bindingResult) {
         log.info("[연락처 변경 요청 memberId: {}, contact: {}]", memberId, form.getContact());
 
@@ -164,7 +163,7 @@ public class MemberApiController {
     @DeleteMapping(DELETE_MEMBER_URL)
     public ResponseEntity deleteMember(@Validated @PathVariable Long memberId,
                                                             @RequestBody MemberRequestForm.DeleteMember form,
-                                                            @LoggedInMember CurrentLoggedInMember.Information information,
+                                                            @LoggedInMember CurrentMember.Information information,
                                                             BindingResult bindingResult) {
 
         log.info("[회원 탈퇴 요청 memberId: {}, password: {}]", memberId, "PROTECTED");

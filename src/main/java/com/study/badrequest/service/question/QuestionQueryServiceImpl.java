@@ -2,7 +2,7 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.login.CurrentLoggedInMember;
+import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.question.query.*;
@@ -24,7 +24,7 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
     private final ApplicationEventPublisher eventPublisher;
     @Override
     @Transactional(readOnly = true)
-    public QuestionDetail getQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, CurrentLoggedInMember.Information information) {
+    public QuestionDetail getQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, CurrentMember.Information information) {
         log.info("질문 조회 서비스");
         Long memberId = information == null ? null : information.getId();
 

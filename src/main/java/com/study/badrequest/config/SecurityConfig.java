@@ -4,11 +4,12 @@ import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
+import com.study.badrequest.handler.Oauth2AuthenticationFailHandler;
 import com.study.badrequest.handler.Oauth2AuthenticationSuccessHandler;
 import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
 import com.study.badrequest.service.login.JwtUserDetailService;
 import com.study.badrequest.service.login.OauthUserDetailService;
-import com.study.badrequest.utils.authentication.Oauth2AuthenticationFailHandler;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,6 +40,7 @@ public class SecurityConfig {
     private final OauthUserDetailService oauthUserDetailService;
     private final Oauth2AuthenticationFailHandler oauth2AuthenticationFailHandler;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+
     private final CustomAuthorizationRequestRepository authorizationRequestRepository;
 
 

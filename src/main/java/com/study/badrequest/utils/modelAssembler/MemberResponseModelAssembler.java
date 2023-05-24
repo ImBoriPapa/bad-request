@@ -4,7 +4,7 @@ import com.study.badrequest.api.login.LoginController;
 import com.study.badrequest.api.member.MemberApiController;
 import com.study.badrequest.api.member.MemberProfileApiController;
 import com.study.badrequest.api.member.MemberQueryApiController;
-import com.study.badrequest.commons.hateoas.ResponseModelAssembler;
+
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.repository.member.query.MemberDetailDto;
 import org.springframework.hateoas.EntityModel;
@@ -19,7 +19,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @Component
-public class MemberResponseModelAssembler extends ResponseModelAssembler {
+public class MemberResponseModelAssembler {
     public EntityModel<MemberResponse.Create> createMemberModel(MemberResponse.Create create) {
 
         List<Link> links = List.of(
@@ -27,7 +27,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
                 linkTo(methodOn(LoginController.class).loginByEmail(null, null, null)).withRel("Login")
         );
 
-        return createEntityModel(create, links);
+        return EntityModel.of(create, links);
     }
 
     public EntityModel<MemberResponse.Update> changeNicknameModel(MemberResponse.Update form) {
@@ -36,14 +36,14 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
                 linkTo(methodOn(MemberProfileApiController.class).changeNickname(form.getId(), null, null, null)).withSelfRel()
         );
 
-        return createEntityModel(form, links);
+        return EntityModel.of(form, links);
     }
 
     public EntityModel<MemberResponse.SendAuthenticationEmail> getSendAuthenticationMail(MemberResponse.SendAuthenticationEmail email) {
         List<Link> links = List.of(
                 linkTo(methodOn(MemberApiController.class).sendAuthenticationEmail(null, null)).withSelfRel()
         );
-        return createEntityModel(email, links);
+        return EntityModel.of(email, links);
     }
 
     public EntityModel<MemberResponse.Update> getChangePasswordModel(MemberResponse.Update update) {
@@ -53,7 +53,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
                 linkTo(methodOn(MemberQueryApiController.class).getProfile(null, null)).withRel("Profile")
         );
 
-        return createEntityModel(update, links);
+        return EntityModel.of(update, links);
     }
 
     public EntityModel<MemberResponse.Update> getChangeContactModel(MemberResponse.Update update) {
@@ -63,7 +63,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
                 linkTo(methodOn(MemberQueryApiController.class).getProfile(null, null)).withRel("Profile")
         );
 
-        return createEntityModel(update, links);
+        return EntityModel.of(update, links);
     }
 
 
@@ -74,7 +74,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
                 linkTo(methodOn(MemberApiController.class).createMember(null, null)).withRel("Signup Member")
         );
 
-        return createEntityModel(result, links);
+        return EntityModel.of(result, links);
     }
 
     public EntityModel<MemberResponse.TemporaryPassword> getIssuePasswordModel(MemberResponse.TemporaryPassword password) {
@@ -84,7 +84,7 @@ public class MemberResponseModelAssembler extends ResponseModelAssembler {
                 linkTo(methodOn(LoginController.class).loginByEmail(null, null, null)).withRel("Login")
         );
 
-        return createEntityModel(password, links);
+        return EntityModel.of(password, links);
     }
 
     /**

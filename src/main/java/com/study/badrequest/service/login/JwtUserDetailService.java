@@ -4,6 +4,7 @@ import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.MemberPrincipal;
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,6 @@ public class JwtUserDetailService implements UserDetailsService {
                                 member.getChangeableId(),
                                 member.getAuthority().getAuthorities())
                 )
-                .orElseThrow(() -> new UsernameNotFoundException(ApiResponseStatus.NOTFOUND_MEMBER.getMessage()));
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 }
