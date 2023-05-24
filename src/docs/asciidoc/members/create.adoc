@@ -1,0 +1,12 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 회원가입
+
+include::{snippets}/member-signup/http-request.adoc[]
+include::{snippets}/member-signup/request-fields.adoc[]
+==== 응답
+
+include::{snippets}/member-signup/http-response.adoc[]
+include::{snippets}/member-signup/response-fields.adoc[]

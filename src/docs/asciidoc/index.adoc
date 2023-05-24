@@ -12,185 +12,29 @@ endif::[]
 
 == Members
 
-=== 이메일 인증 요청
-
-include::{snippets}/member_send_authentication_mail/http-request.adoc[]
-include::{snippets}/member_send_authentication_mail/request-fields.adoc[]
-==== 응답
-
-include::{snippets}/member_send_authentication_mail/http-response.adoc[]
-include::{snippets}/member_send_authentication_mail/response-fields.adoc[]
-
-=== 회원가입
-
-include::{snippets}/member-signup/http-request.adoc[]
-include::{snippets}/member-signup/request-fields.adoc[]
-==== 응답
-
-include::{snippets}/member-signup/http-response.adoc[]
-include::{snippets}/member-signup/response-fields.adoc[]
-
-=== 로그인한 회원 정보
-
-include::{snippets}/member-loggedInInformation/http-request.adoc[]
-include::{snippets}/member-loggedInInformation/request-headers.adoc[]
-include::{snippets}/member-loggedInInformation/http-response.adoc[]
-include::{snippets}/member-loggedInInformation/response-fields.adoc[]
+* link:members/create.html[회원가입 API,window=_blank]
+* link:members/send_authentication_mail.html[이메일 인증 메일 API,window=_blank]
+* link:members/logged_in_information.html[로그인한 회원 정보 API,window=_blank]
 
 == Login
 
-=== Bad-Request 로그인
+* link:login/bad_request_login.html[Bad-Request 로그인 API,window=_blank]
 
-include::{snippets}/login-email/http-request.adoc[]
-include::{snippets}/login-email/request-fields.adoc[]
-==== 응답
+* link:login/oauth2_login.html[oauth2 로그인 API,window=_blank]
 
-include::{snippets}/login-email/http-response.adoc[]
+* link:login/one_time_code.html[일회용 인증코드 로그인 API,window=_blank]
 
-==== 응답 헤더
-
-include::{snippets}/login-email/response-headers.adoc[]
-* Authorization 헤더에는: Access Token(JWT) 응답합니다.
-로그인 이후 요청에 Authorization 헤더에 access-token 으로 로그인을 식별
-* Access Token 은 발급 후 10분 간 유지됩니다.
-* Access Token 이 만료되면 refresh-token 쿠키를 포함해서 토큰을 재발급할 수 있습니다.
-* refresh-token 쿠키의 Refresh 토큰은 일주일간 유지됩니다.
-
-include::{snippets}/login-email/response-fields.adoc[]
-
-=== Oauth2 로그인
-
-Google 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_url=http://localhost:3000/redirect
-Kakao 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_url=http://localhost:3000/redirect
-Github 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_url=http:http://localhost:3000/redirect
-note:: redirect_uri= 의 리다이렉트되기를 원하는 위치를 지정해야합니다.
-
-- 인증이 완료되면 요청한 리다이랙트 위치로 리다이랙트 하면서 로그인을 할 수 있는 일회용 인증 코드가 파라미터로 응답됩니다.
-
-[source,http]
-----
-http://localhost:3000/redirect?authentication-code=a5372ebf-5e56-4b78-9900-0b2b2520eff3
-----
-
-- 일회용 인증 코드를 이용한 로그인 요청을 할 수 있습니.
-- 일회용 인증 코드는 1회만 사용할 수 있습니다.
-
-=== 일회용 인증 코드로 로그인
-
-NOTE:: 일회용 인증 코드로 로그인시 응답 받은 Access Token 으로 차후 요청시 로그인 유지 식별
-
-include::{snippets}/login-oneTimeCode/http-request.adoc[]
-==== 요청 파라미터
-
-==== 응답
-
-include::{snippets}/login-oneTimeCode/http-response.adoc[]
-include::{snippets}/login-oneTimeCode/response-fields.adoc[]
-
-=== 토큰 재발급
-
-include::{snippets}/login-reissue/http-request.adoc[]
-include::{snippets}/login-reissue/request-headers.adoc[]
-include::{snippets}/login-reissue/http-response.adoc[]
-include::{snippets}/login-reissue/response-headers.adoc[]
-include::{snippets}/login-reissue/response-fields.adoc[]
+* link:login/re_issue.html[토큰 재발급 API,window=_blank]
 
 == Questions
 
-=== 질문 생성
+* link:questions/create_question.html[질문 등록 API,window=_blank]
+* link:questions/modify_question.html[질문 수정 API,window=_blank]
+* link:questions/delete_question.html[질문 삭졔 API,window=_blank]
+* link:questions/list_question.html[질문 목록 API,window=_blank]
+* link:questions/detail_question.html[질문 상세 API,window=_blank]
 
-include::{snippets}/question-create/http-request.adoc[]
-include::{snippets}/question-create/request-headers.adoc[]
-include::{snippets}/question-create/request-fields.adoc[]
+== Images
 
-NOTE:: 이미지파일은 이미지 업로드 API를 사용해서 업로드후(임시저장상태 24시간 이내 삭제) 응답에 id를 질문 생성 요청에 함께 보내면 이미지가 저장완료됩니다.
-업로드한 이미지가 없으면 생략가능합니다.
-TIP:: API 확인하기: <<질문 게시판 이미지 업로드>>
-include::{snippets}/question-create/http-response.adoc[]
-include::{snippets}/question-create/response-headers.adoc[]
-include::{snippets}/question-create/response-fields.adoc[]
+* link:images/question_image.html[질문글 이미지 업로드 API,window=_blank]
 
-=== 질문 수정
-
-include::{snippets}/question-modify/http-request.adoc[]
-include::{snippets}/question-modify/request-headers.adoc[]
-include::{snippets}/question-modify/http-response.adoc[]
-include::{snippets}/question-modify/response-fields.adoc[]
-
-=== 질문 삭제
-
-include::{snippets}/question-delete/http-request.adoc[]
-include::{snippets}/question-delete/request-headers.adoc[]
-include::{snippets}/question-delete/http-response.adoc[]
-include::{snippets}/question-delete/response-fields.adoc[]
-
-
-=== 질문 목록 조회
-
-==== 요청
-
-include::{snippets}/question-list/http-request.adoc[]
-
-==== 응답
-
-include::{snippets}/question-list/http-response.adoc[]
-include::{snippets}/question-list/response-fields.adoc[]
-
-==== 최신 데이터 순서로 정렬
-
-[source,http]
-----
-GET /api/v2/questions HTTP/1.1
-Host: www.bad-request.kr
-----
-
-==== 조회수가 많은 순으로 정렬
-
-[source,http]
-----
-GET /api/v2/questions?sort=view HTTP/1.1
-Host: www.bad-request.kr
-----
-
-==== 추천수가 많은 순으로 정렬
-
-[source,http]
-----
-GET /api/v2/questions?sort=recommend HTTP/1.1
-Host: www.bad-request.kr
-----
-
-==== 조회할 데이터의 크기 조절
-
-[source,http]
-----
-GET /api/v2/questions?size=10 HTTP/1.1
-Host: www.bad-request.kr
-----
-
-=== 질문 상세 조회
-==== 요청
-include::{snippets}/question-detail/http-request.adoc[]
-include::{snippets}/question-detail/request-headers.adoc[]
-- AccessToken 생략가능: 토큰이 없을 경우 비로그인 조회입니다.
-
-include::{snippets}/question-detail/path-parameters.adoc[]
-==== 응답
-include::{snippets}/question-detail/http-response.adoc[]
-- contents: 질문내용은 생성시 Markdown 형태의 내용 데이터를 html로 변환해서 응답합니다.
-- isQuestioner: 질문 작성자가 조회하면 true 입니다.
-- hasRecommendation: 조회시 회원이 해당 질문에 추천 혹은 비추천을 등록한 경우 true 입니다.
-- questioner: 질문글에 작성자의 회원 정보입니다.(Id = MemberId)
-
-include::{snippets}/question-detail/response-fields.adoc[]
-
-== 이미지
-=== 질문 이미지 업로드
-
-==== 질문 게시판 이미지 업로드
-
-include::{snippets}/image-upload_question/http-request.adoc[]
-include::{snippets}/image-upload_question/request-headers.adoc[]
-include::{snippets}/image-upload_question/request-parts.adoc[]
-include::{snippets}/image-upload_question/http-response.adoc[]
-include::{snippets}/image-upload_question/response-fields.adoc[]

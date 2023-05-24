@@ -1,0 +1,11 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 질문글 이미지 업로드
+
+include::{snippets}/image-upload_question/http-request.adoc[]
+include::{snippets}/image-upload_question/request-headers.adoc[]
+include::{snippets}/image-upload_question/request-parts.adoc[]
+include::{snippets}/image-upload_question/http-response.adoc[]
+include::{snippets}/image-upload_question/response-fields.adoc[]

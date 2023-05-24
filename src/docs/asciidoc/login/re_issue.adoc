@@ -1,0 +1,11 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 토큰 재발급
+
+include::{snippets}/login-reissue/http-request.adoc[]
+include::{snippets}/login-reissue/request-headers.adoc[]
+include::{snippets}/login-reissue/http-response.adoc[]
+include::{snippets}/login-reissue/response-headers.adoc[]
+include::{snippets}/login-reissue/response-fields.adoc[]

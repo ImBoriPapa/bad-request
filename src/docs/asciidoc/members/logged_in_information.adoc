@@ -1,0 +1,10 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 로그인한 회원 정보
+
+include::{snippets}/member-loggedInInformation/http-request.adoc[]
+include::{snippets}/member-loggedInInformation/request-headers.adoc[]
+include::{snippets}/member-loggedInInformation/http-response.adoc[]
+include::{snippets}/member-loggedInInformation/response-fields.adoc[]

@@ -1,0 +1,15 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 일회용 인증 코드로 로그인
+
+NOTE:: 일회용 인증 코드로 로그인시 응답 받은 Access Token 으로 차후 요청시 로그인 유지 식별
+
+include::{snippets}/login-oneTimeCode/http-request.adoc[]
+==== 요청 파라미터
+
+==== 응답
+
+include::{snippets}/login-oneTimeCode/http-response.adoc[]
+include::{snippets}/login-oneTimeCode/response-fields.adoc[]

@@ -1,0 +1,10 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 질문 수정
+
+include::{snippets}/question-modify/http-request.adoc[]
+include::{snippets}/question-modify/request-headers.adoc[]
+include::{snippets}/question-modify/http-response.adoc[]
+include::{snippets}/question-modify/response-fields.adoc[]

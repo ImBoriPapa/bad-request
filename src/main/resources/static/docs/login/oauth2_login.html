@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Bad-request API documentation</title>
+<title>Oauth2 로그인</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -435,109 +435,62 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body class="book toc2 toc-left">
+<body class="article">
 <div id="header">
-<h1>Bad-request API documentation</h1>
-<div class="details">
-<span id="revnumber">version 2.0.0-PROD</span>
-</div>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_members">Members</a></li>
-<li><a href="#_login">Login</a></li>
-<li><a href="#_questions">Questions</a></li>
-<li><a href="#_images">Images</a></li>
-</ul>
-</div>
 </div>
 <div id="content">
-<div class="sect1">
-<h2 id="_members"><a class="link" href="#_members">Members</a></h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="_oauth2_로그인">Oauth2 로그인</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Google 로그인</dt>
+<dd>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_url=http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_url=http://localhost:3000/redirect</a></p>
+</dd>
+<dt class="hdlist1">Kakao 로그인</dt>
+<dd>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_url=http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_url=http://localhost:3000/redirect</a></p>
+</dd>
+<dt class="hdlist1">Github 로그인</dt>
+<dd>
+<p><a href="https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_url=http:http://localhost:3000/redirect" class="bare">https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_url=http:http://localhost:3000/redirect</a></p>
+</dd>
+<dt class="hdlist1">note</dt>
+<dd>
+<p>redirect_uri= 의 리다이렉트되기를 원하는 위치를 지정해야합니다.</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="members/create.html" target="_blank" rel="noopener">회원가입 API</a></p>
-</li>
-<li>
-<p><a href="members/send_authentication_mail.html" target="_blank" rel="noopener">이메일 인증 메일 API</a></p>
-</li>
-<li>
-<p><a href="members/logged_in_information.html" target="_blank" rel="noopener">로그인한 회원 정보 API</a></p>
+<p>인증이 완료되면 요청한 리다이랙트 위치로 리다이랙트 하면서 로그인을 할 수 있는 일회용 인증 코드가 파라미터로 응답됩니다.</p>
 </li>
 </ul>
 </div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-http" data-lang="http">http://localhost:3000/redirect?authentication-code=a5372ebf-5e56-4b78-9900-0b2b2520eff3</code></pre>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_login"><a class="link" href="#_login">Login</a></h2>
-<div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p><a href="login/bad_request_login.html" target="_blank" rel="noopener">Bad-Request 로그인 API</a></p>
+<p>일회용 인증 코드를 이용한 로그인 요청을 할 수 있습니다.</p>
 </li>
 <li>
-<p><a href="login/oauth2_login.html" target="_blank" rel="noopener">oauth2 로그인 API</a></p>
-</li>
-<li>
-<p><a href="login/one_time_code.html" target="_blank" rel="noopener">일회용 인증코드 로그인 API</a></p>
-</li>
-<li>
-<p><a href="login/re_issue.html" target="_blank" rel="noopener">토큰 재발급 API</a></p>
+<p>일회용 인증 코드는 1회만 사용할 수 있습니다.</p>
 </li>
 </ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_questions"><a class="link" href="#_questions">Questions</a></h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="questions/create_question.html" target="_blank" rel="noopener">질문 등록 API</a></p>
-</li>
-<li>
-<p><a href="questions/modify_question.html" target="_blank" rel="noopener">질문 수정 API</a></p>
-</li>
-<li>
-<p><a href="questions/delete_question.html" target="_blank" rel="noopener">질문 삭졔 API</a></p>
-</li>
-<li>
-<p><a href="questions/list_question.html" target="_blank" rel="noopener">질문 목록 API</a></p>
-</li>
-<li>
-<p><a href="questions/detail_question.html" target="_blank" rel="noopener">질문 상세 API</a></p>
-</li>
-</ul>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_images"><a class="link" href="#_images">Images</a></h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p><a href="images/question_image.html" target="_blank" rel="noopener">질문글 이미지 업로드 API</a></p>
-</li>
-</ul>
-</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 2.0.0-PROD<br>
-Last updated 2023-05-24 22:28:26 +0900
+Last updated 2023-05-24 22:03:53 +0900
 </div>
 </div>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js"></script>
-<script>hljs.initHighlighting()</script>
 </body>
 </html>

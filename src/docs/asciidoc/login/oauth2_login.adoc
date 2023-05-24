@@ -1,0 +1,20 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== Oauth2 로그인
+
+Google 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/google?redirect_url=http://localhost:3000/redirect
+Kakao 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/kakao?redirect_url=http://localhost:3000/redirect
+Github 로그인:: https://www.bad-request.kr/api/v2/oauth/authorization/github?redirect_url=http:http://localhost:3000/redirect
+note:: redirect_uri= 의 리다이렉트되기를 원하는 위치를 지정해야합니다.
+
+- 인증이 완료되면 요청한 리다이랙트 위치로 리다이랙트 하면서 로그인을 할 수 있는 일회용 인증 코드가 파라미터로 응답됩니다.
+
+[source,http]
+----
+http://localhost:3000/redirect?authentication-code=a5372ebf-5e56-4b78-9900-0b2b2520eff3
+----
+
+- 일회용 인증 코드를 이용한 로그인 요청을 할 수 있습니다.
+- 일회용 인증 코드는 1회만 사용할 수 있습니다.

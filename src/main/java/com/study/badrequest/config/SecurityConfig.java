@@ -67,7 +67,7 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 //REST Docs
-                .antMatchers("/docs/index.html").permitAll()
+                .antMatchers("/docs/**").permitAll()
                 //login
                 .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, TOKEN_REISSUE_URL, ONE_TIME_CODE_LOGIN)
                 .permitAll()
@@ -103,9 +103,6 @@ public class SecurityConfig {
                 .permitAll()
                 //admin
                 .antMatchers("/api/v2/admin/**").hasAuthority(Authority.ADMIN.name())
-                //dashboard
-                .antMatchers("/log", "/log-ex", "/dashboard", "/dashboard/**", "/heap", "/refresh", "/api/v1/dashboard/*")
-                .permitAll()
 
                 //static
                 .antMatchers("/static/**", "/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico")

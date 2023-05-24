@@ -1,0 +1,11 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== 이메일 인증 요청
+include::{snippets}/member_send_authentication_mail/http-request.adoc[]
+include::{snippets}/member_send_authentication_mail/request-fields.adoc[]
+==== 응답
+
+include::{snippets}/member_send_authentication_mail/http-response.adoc[]
+include::{snippets}/member_send_authentication_mail/response-fields.adoc[]

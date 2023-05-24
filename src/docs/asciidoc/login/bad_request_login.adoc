@@ -1,0 +1,22 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+=== Bad-Request 로그인
+
+include::{snippets}/login-email/http-request.adoc[]
+include::{snippets}/login-email/request-fields.adoc[]
+==== 응답
+
+include::{snippets}/login-email/http-response.adoc[]
+
+==== 응답 헤더
+
+include::{snippets}/login-email/response-headers.adoc[]
+* Authorization 헤더에는: Access Token(JWT) 응답합니다.
+로그인 이후 요청에 Authorization 헤더에 access-token 으로 로그인을 식별
+* Access Token 은 발급 후 10분 간 유지됩니다.
+* Access Token 이 만료되면 refresh-token 쿠키를 포함해서 토큰을 재발급할 수 있습니다.
+* refresh-token 쿠키의 Refresh 토큰은 일주일간 유지됩니다.
+
+include::{snippets}/login-email/response-fields.adoc[]
