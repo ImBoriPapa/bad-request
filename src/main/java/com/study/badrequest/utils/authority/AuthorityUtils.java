@@ -2,6 +2,7 @@ package com.study.badrequest.utils.authority;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Authority;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 
 import java.util.Random;
@@ -9,24 +10,21 @@ import java.util.Random;
 
 public class AuthorityUtils {
 
-    private static final Random RANDOM = new Random();
     /**
      * 본인이 아니거나 관리자 권한이 없으면 회원 정보 제한
-     * Restrict access unless you or an administrator
      */
-    public static void restrictAccessIfNotYouAndAdmin(Long memberId, Long requestMemberId, Authority authority) {
-        if (!isRequestingMemberAuthorized(memberId, requestMemberId, authority)) {
-            throw new MemberExceptionBasic(ApiResponseStatus.PERMISSION_DENIED);
+    public static void verifyPermission(Long targetMemberId, Long requestMemberId, Authority requestMemberAuthority, ApiResponseStatus status) {
+        if (!isRequestingMemberAuthorized(targetMemberId, requestMemberId, requestMemberAuthority)) {
+            throw new CustomRuntimeException(status);
         }
     }
-    private static boolean isRequestingMemberAuthorized(Long memberId, Long requestMemberId, Authority authority) {
-        return memberId.equals(requestMemberId) || authority == Authority.ADMIN;
+
+    private static boolean isRequestingMemberAuthorized(Long targetMemberId, Long requestMemberId, Authority authority) {
+
+        if (!targetMemberId.equals(requestMemberId)) {
+            return authority == Authority.ADMIN;
+        }
+        return true;
     }
 
-    public static Authority randomAuthority() {
-        Authority[] values = Authority.values();
-
-        int index = RANDOM.nextInt(values.length);
-        return values[index];
-    }
 }

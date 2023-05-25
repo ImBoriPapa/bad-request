@@ -5,6 +5,7 @@ import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentMember;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.MemberQueryRepository;
 import com.study.badrequest.repository.member.query.LoggedInMemberInformation;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.study.badrequest.commons.constants.ApiURL.*;
 import static com.study.badrequest.commons.response.ApiResponseStatus.NOTFOUND_MEMBER;
 import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER;
-import static com.study.badrequest.utils.authority.AuthorityUtils.restrictAccessIfNotYouAndAdmin;
+import static com.study.badrequest.utils.authority.AuthorityUtils.verifyPermission;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -39,10 +40,10 @@ public class MemberQueryApiController {
     public ResponseEntity retrieveMemberAccount(@LoggedInMember CurrentMember.Information information, @PathVariable Long memberId) {
         log.info("계정정보 조회 요청 요청계정 Id: {}, 요청자 id: {}, 요청자 권한: {}", memberId, information.getId(), information.getAuthority());
 
-        restrictAccessIfNotYouAndAdmin(information.getId(), memberId, information.getAuthority());
+        verifyPermission(memberId,information.getId(),information.getAuthority(),ApiResponseStatus.PERMISSION_DENIED);
 
         MemberDetailDto memberDetailDto = memberQueryRepository.findMemberDetail(memberId)
-                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
 
         EntityModel<MemberDetailDto> entityModel = memberResponseModelAssembler.retrieveMemberModel(memberDetailDto);
 
@@ -62,7 +63,7 @@ public class MemberQueryApiController {
         }
 
         LoggedInMemberInformation memberInformation = memberQueryRepository.findLoggedInMemberInformation(information.getId())
-                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
+                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
 
         EntityModel<LoggedInMemberInformation> entityModel = EntityModel.of(memberInformation);
         entityModel.add(linkTo(methodOn(MemberQueryApiController.class).getLoggedInInformation(memberId, null)).withSelfRel());
@@ -87,7 +88,7 @@ public class MemberQueryApiController {
         log.info("프로필 조회 요청 memberId: {}", memberId);
 
         MemberProfileDto memberProfileDto = memberQueryRepository.findMemberProfileByMemberId(memberId)
-                .orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
 
         return ResponseEntity
                 .ok()

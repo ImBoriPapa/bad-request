@@ -1,6 +1,7 @@
 package com.study.badrequest.service.answer;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.answer.Answer;
 import com.study.badrequest.domain.question.Question;
@@ -16,8 +17,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_ALLOW_EMPTY_ANSWER;
 import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_FOUND_ANSWER;
+import static com.study.badrequest.utils.authority.AuthorityUtils.verifyPermission;
+import static com.study.badrequest.utils.verification.WordValidateUtils.findBannedWord;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,11 +37,19 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public AnswerResponse.Register registerAnswer(Long memberId, Long questionId, AnswerRequest.Register form) {
-        log.info("답변 등록\n 요청 회원 아이디: {}\n 질문 아이디: {}\n 답변 내용: {}",memberId,questionId,form.getContents().substring(0,10)+"....");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+    public AnswerResponse.Register createAnswer(Long memberId, Long questionId, AnswerRequest.Register form) {
+        log.info("Create Answer Start");
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
 
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOT_FOUND_QUESTION));
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+
+        if (StringUtils.hasLength(form.getContents())) {
+            throw new CustomRuntimeException(NOT_ALLOW_EMPTY_ANSWER);
+        }
+
+        findBannedWord(form.getContents());
 
         Answer answer = Answer.createAnswer()
                 .contents(form.getContents())
@@ -45,7 +59,7 @@ public class AnswerServiceImpl implements AnswerService {
 
         Answer saved = answerRepository.save(answer);
 
-        eventPublisher.publishEvent(new AnswerEventDto.Register(saved,member));
+        eventPublisher.publishEvent(new AnswerEventDto.Register(saved, member));
 
         return new AnswerResponse.Register(saved.getId(), saved.getAnsweredAt());
     }
@@ -53,12 +67,14 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public AnswerResponse.Modify modifyAnswer(Long memberId, Long answerId, AnswerRequest.Modify form) {
-        log.info("답변 수정");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        log.info("Modify Answer");
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ANSWER));
 
-        answer.updateContents(form.getContents());
+        verifyPermission(answer.getMember().getId(), member.getId(), member.getAuthority(), NOT_ALLOW_MODIFY_ANSWER);
+
+        answer.modifyContents(form.getContents());
 
         return new AnswerResponse.Modify(answer.getId(), answer.getModifiedAt());
     }
@@ -66,10 +82,13 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public AnswerResponse.Delete deleteAnswer(Long memberId, Long answerId) {
-        log.info("답변 삭제");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        log.info("Delete Answer");
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ANSWER));
+
+        verifyPermission(answer.getMember().getId(), member.getId(), member.getAuthority(), NOT_ALLOW_DELETE_ANSWER);
+
         answer.statusToDelete();
 
         return new AnswerResponse.Delete(answer.getDeletedAt());

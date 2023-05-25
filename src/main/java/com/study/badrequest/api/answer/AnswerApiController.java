@@ -6,7 +6,6 @@ import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.answer.query.AnswerQueryRepositoryImpl;
 import com.study.badrequest.service.answer.AnswerService;
 import com.study.badrequest.utils.modelAssembler.AnswerModelAssembler;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +25,7 @@ import static org.springframework.http.MediaType.*;
 @RequiredArgsConstructor
 @Slf4j
 public class AnswerApiController {
-
     private final AnswerService answerService;
-    private final AnswerQueryRepositoryImpl queryRepository;
-
     private final AnswerModelAssembler modelAssembler;
 
     @PostMapping(value = ANSWER_REGISTER, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -41,7 +37,7 @@ public class AnswerApiController {
             throw new CustomRuntimeException(VALIDATION_ERROR);
         }
 
-        AnswerResponse.Register register = answerService.registerAnswer(information.getId(), questionId, request);
+        AnswerResponse.Register register = answerService.createAnswer(information.getId(), questionId, request);
 
         return ResponseEntity
                 .created(linkTo(methodOn(AnswerQueryApiController.class).getAnswers(questionId,null)).toUri())

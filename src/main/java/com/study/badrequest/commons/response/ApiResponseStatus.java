@@ -74,6 +74,9 @@ public enum ApiResponseStatus {
      * 답변
      */
     NOT_FOUND_ANSWER(2550, "해당 답변을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    NOT_ALLOW_EMPTY_ANSWER(2551, "답변 내용은 공백을 허용하지 않습니다.", HttpStatus.BAD_REQUEST),
+    NOT_ALLOW_MODIFY_ANSWER(2552, "회원님이 작성하신 답변만 수정 할수 있습니다.", HttpStatus.FORBIDDEN),
+    NOT_ALLOW_DELETE_ANSWER(2553, "회원님이 작성하신 답변만 삭제 할수 있습니다.", HttpStatus.FORBIDDEN),
 
     /**
      * 태그

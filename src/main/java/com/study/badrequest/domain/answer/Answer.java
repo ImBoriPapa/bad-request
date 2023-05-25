@@ -4,6 +4,7 @@ import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.member.Member;
 
 import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -44,7 +45,7 @@ public class Answer {
 
     @Builder(builderMethodName = "createAnswer")
     public Answer(String contents, Member member, Question question) {
-        this.contents = contents;
+        this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
         this.numberOfRecommendation = 0;
         this.numberOfComment = 0;
         this.exposureStatus = ExposureStatus.PUBLIC;
@@ -54,8 +55,8 @@ public class Answer {
         this.modifiedAt = LocalDateTime.now();
     }
 
-    public void updateContents(String contents) {
-        this.contents = contents;
+    public void modifyContents(String contents) {
+        this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
         this.modifiedAt = LocalDateTime.now();
     }
 
