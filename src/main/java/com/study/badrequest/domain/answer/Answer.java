@@ -24,6 +24,8 @@ public class Answer {
     private String contents;
     @Column(name = "NUMBER_OF_RECOMMENDATION")
     private Integer numberOfRecommendation;
+    @Column(name = "NUMBER_OF_COMMENT")
+    private Integer numberOfComment;
     @Column(name = "EXPOSURE_STATUS")
     @Enumerated(EnumType.STRING)
     private ExposureStatus exposureStatus;
@@ -44,6 +46,7 @@ public class Answer {
     public Answer(String contents, Member member, Question question) {
         this.contents = contents;
         this.numberOfRecommendation = 0;
+        this.numberOfComment = 0;
         this.exposureStatus = ExposureStatus.PUBLIC;
         this.member = member;
         this.question = question;

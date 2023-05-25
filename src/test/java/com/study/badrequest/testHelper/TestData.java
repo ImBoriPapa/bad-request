@@ -1,6 +1,8 @@
 package com.study.badrequest.testHelper;
 
 import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.domain.answer.Answer;
+import com.study.badrequest.domain.answerRecommendation.AnswerRecommendation;
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.member.MemberProfile;
@@ -8,6 +10,9 @@ import com.study.badrequest.domain.member.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.domain.question.QuestionTag;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
+import com.study.badrequest.repository.answer.AnswerRepository;
+import com.study.badrequest.repository.answerRecommendation.AnswerRecommendationRepository;
 import com.study.badrequest.repository.hashTag.HashTagRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.question.QuestionRepository;
@@ -33,12 +38,17 @@ public class TestData {
     private final QuestionRepository questionRepository;
     private final HashTagRepository hashTagRepository;
     private final EntityManager entityManager;
+    private final AnswerRepository answerRepository;
+
+    private final AnswerRecommendationRepository answerRecommendationRepository;
 
     public void restartAutoIncrement() {
         String query1 = "ALTER TABLE MEMBER ALTER COLUMN MEMBER_ID RESTART WITH 1";
         String query2 = "ALTER TABLE QUESTION ALTER COLUMN QUESTION_ID RESTART WITH 1";
+        String query3 = "ALTER TABLE ANSWER ALTER COLUMN ANSWER_ID RESTART WITH 1";
         entityManager.createNativeQuery(query1).executeUpdate();
         entityManager.createNativeQuery(query2).executeUpdate();
+        entityManager.createNativeQuery(query3).executeUpdate();
     }
 
     public List<Member> createSampleMembers() {
@@ -83,5 +93,45 @@ public class TestData {
                 }
         );
         questionRepository.saveAllAndFlush(list);
+    }
+
+    public void createSampleAnswer() {
+        createSampleQuestion();
+        List<Member> members = memberRepository.findAll();
+        List<Question> questions = questionRepository.findAll();
+        ArrayList<Answer> answerList = new ArrayList<>();
+        questions.forEach(question -> {
+            Answer answer1 = Answer.createAnswer()
+                    .contents("답변 1 입니다.")
+                    .question(question)
+                    .member(members.get(new Random().nextInt(members.size() - 1) + 1))
+                    .build();
+
+            Answer answer2 = Answer.createAnswer()
+                    .contents("답변 2 입니다.")
+                    .question(question)
+                    .member(members.get(new Random().nextInt(members.size() - 1) + 1))
+                    .build();
+
+            Answer answer3 = Answer.createAnswer()
+                    .contents("답변 3 입니다.")
+                    .question(question)
+                    .member(members.get(new Random().nextInt(members.size() - 1) + 1))
+                    .build();
+
+            answerList.add(answer1);
+            answerList.add(answer2);
+            answerList.add(answer3);
+        });
+
+        List<Answer> answers = answerRepository.saveAllAndFlush(answerList);
+
+        ArrayList<AnswerRecommendation> answerRecommendation = new ArrayList<>();
+        for (Answer answer : answers) {
+            AnswerRecommendation recommendation = new AnswerRecommendation(RecommendationKind.RECOMMENDATION, members.get(new Random().nextInt(members.size() - 1) + 1), answer);
+            answerRecommendation.add(recommendation);
+        }
+
+        answerRecommendationRepository.saveAllAndFlush(answerRecommendation);
     }
 }

@@ -48,6 +48,7 @@ public class SampleData {
     private final ArrayList<Question> questions = new ArrayList<>();
     private final HashTagRepository hashTagRepository;
     private final AnswerServiceImpl answerService;
+
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         createMemberData();
@@ -149,5 +150,7 @@ public class SampleData {
     }
 
 
+    public void sampleAnswerData(){
 
+    }
 }

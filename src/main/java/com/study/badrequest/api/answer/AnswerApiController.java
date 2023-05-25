@@ -44,7 +44,7 @@ public class AnswerApiController {
         AnswerResponse.Register register = answerService.registerAnswer(information.getId(), questionId, request);
 
         return ResponseEntity
-                .created(linkTo(methodOn(AnswerQueryApiController.class).getOne(questionId, register.getId())).toUri())
+                .created(linkTo(methodOn(AnswerQueryApiController.class).getAnswers(questionId,null)).toUri())
                 .body(ApiResponse.success(modelAssembler.createAnswerRegisterModel(questionId, register)));
     }
 

@@ -1,6 +1,7 @@
 package com.study.badrequest.repository.answer.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.study.badrequest.domain.recommendation.RecommendationKind;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,9 @@ import java.time.LocalDateTime;
 public class AnswerDto {
     private Long id;
     private String contents;
-    private Integer numberOfRecommendation;
-    private AnswererDto answerer;
+    private Boolean isAnswerer;
+    private Answerer answerer;
+    private Metrics metrics;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
     private LocalDateTime answeredAt;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
@@ -23,9 +25,25 @@ public class AnswerDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class AnswererDto {
+    public static class Answerer {
         private Long id;
         private String nickname;
         private String profileImage;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Metrics {
+        private Integer numberOfRecommendation;
+        private Integer numberOfComment;
+        private Boolean hasRecommendation;
+        private RecommendationKind kind;
+
+        public void setHasRecommendation(RecommendationKind kind) {
+            this.hasRecommendation = true;
+            this.kind = kind;
+        }
+
     }
 }
