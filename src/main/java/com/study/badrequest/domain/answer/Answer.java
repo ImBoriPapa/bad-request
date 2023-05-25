@@ -64,4 +64,12 @@ public class Answer {
         this.exposureStatus = ExposureStatus.DELETE;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void incrementRecommendation() {
+        ++this.numberOfRecommendation;
+    }
+
+    public void decrementRecommendation() {
+        --this.numberOfRecommendation;
+    }
 }

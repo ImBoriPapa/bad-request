@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ANSWER_RECOMMENDATION")
@@ -29,10 +30,25 @@ public class AnswerRecommendation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ANSWER_ID")
     private Answer answer;
+    @Column(name = "CREATED_AT")
+    private LocalDateTime createdAt;
 
-    public AnswerRecommendation(RecommendationKind kind, Member member, Answer answer) {
+    protected AnswerRecommendation(Member member, Answer answer, RecommendationKind kind) {
         this.kind = kind;
         this.member = member;
         this.answer = answer;
+        this.createdAt = LocalDateTime.now();
+    }
+
+    public static AnswerRecommendation createRecommendation(Member member, Answer answer, RecommendationKind kind) {
+
+        AnswerRecommendation recommendation = new AnswerRecommendation(member, answer, kind);
+
+        if (kind == RecommendationKind.RECOMMENDATION) {
+            recommendation.getAnswer().incrementRecommendation();
+        } else if (kind == RecommendationKind.UN_RECOMMENDATION) {
+            recommendation.getAnswer().decrementRecommendation();
+        }
+        return recommendation;
     }
 }

@@ -48,7 +48,7 @@ public class Recommendation {
 
         if (kind == RecommendationKind.RECOMMENDATION) {
             recommendation.changeToRecommendation();
-        } else {
+        } else if(kind == RecommendationKind.UN_RECOMMENDATION){
             recommendation.changeToUnRecommendation();
         }
 

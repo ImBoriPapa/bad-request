@@ -128,7 +128,7 @@ public class TestData {
 
         ArrayList<AnswerRecommendation> answerRecommendation = new ArrayList<>();
         for (Answer answer : answers) {
-            AnswerRecommendation recommendation = new AnswerRecommendation(RecommendationKind.RECOMMENDATION, members.get(new Random().nextInt(members.size() - 1) + 1), answer);
+            AnswerRecommendation recommendation = AnswerRecommendation.createRecommendation(members.get(new Random().nextInt(members.size() - 1) + 1), answer, RecommendationKind.RECOMMENDATION);
             answerRecommendation.add(recommendation);
         }
 
