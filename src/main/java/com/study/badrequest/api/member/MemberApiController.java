@@ -55,11 +55,6 @@ public class MemberApiController {
     }
 
 
-
-
-
-
-
     /**
      * 임시 비밀번호 요청
      *
