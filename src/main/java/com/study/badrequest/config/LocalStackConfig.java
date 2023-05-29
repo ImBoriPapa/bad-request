@@ -17,7 +17,7 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 public class LocalStackConfig {
 
     //docker 이미지 명
-    private static final DockerImageName LOCALSTACK_NAME = DockerImageName.parse("localstack/localstack");
+    private final DockerImageName LOCALSTACK_NAME = DockerImageName.parse("local-s3");
     @Value("${s3-image.bucket-name}")
     public String BUCKET_NAME;
     @Bean(initMethod = "start", destroyMethod = "stop")
@@ -27,7 +27,7 @@ public class LocalStackConfig {
 
     @Bean
     public AmazonS3Client amazonS3Client(LocalStackContainer localStackContainer) {
-        System.out.println("================Local Stack Start======================");
+        System.out.println("================Local S3 Start======================");
 
         AmazonS3 amazonS3 = AmazonS3ClientBuilder
                 .standard()

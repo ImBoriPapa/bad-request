@@ -73,7 +73,6 @@ public class SecurityConfig {
                 //login
                 .antMatchers("/", EMAIL_LOGIN_URL, LOGOUT_URL, TOKEN_REISSUE_URL, ONE_TIME_CODE_LOGIN)
                 .permitAll()
-                //login by one time code
                 //oauth2
                 .antMatchers(HttpMethod.GET, "/oauth", "/api/v2/oauth/authorization/*", "/api/v2/oauth/client/*").permitAll()
                 //members
@@ -88,18 +87,7 @@ public class SecurityConfig {
                 //Answer
                 .antMatchers(HttpMethod.GET, "/api/v2/question/{questionId}/answers")
                 .permitAll()
-                //비회원 Board 읽기 허용
-                .antMatchers(HttpMethod.GET, BOARD_LIST_URL, BOARD_DETAIL_URL)
-                .permitAll()
-                //BoardImage
-                .antMatchers("/api/v1/image/board")
-                .permitAll()
-                //comment
-                .antMatchers("/api/v1/board/{boardId}/comments")
-                .permitAll()
-                //subComment
-                .antMatchers("/api/v1/comments/{commentId}/sub-comments")
-                .permitAll()
+
                 //image
                 .antMatchers("/api/v1/image/board-image")
                 .permitAll()
