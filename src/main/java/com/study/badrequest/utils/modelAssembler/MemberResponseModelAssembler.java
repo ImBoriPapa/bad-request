@@ -23,7 +23,7 @@ public class MemberResponseModelAssembler {
     public EntityModel<MemberResponse.Create> createMemberModel(MemberResponse.Create create) {
 
         List<Link> links = List.of(
-                linkTo(methodOn(MemberApiController.class).createMember(null, null)).withSelfRel(),
+                linkTo(methodOn(MemberApiController.class).createMember(null, null,null)).withSelfRel(),
                 linkTo(methodOn(LoginController.class).loginByEmail(null, null, null)).withRel("Login")
         );
 
@@ -71,7 +71,7 @@ public class MemberResponseModelAssembler {
 
         List<Link> links = List.of(
                 linkTo(methodOn(MemberApiController.class).deleteMember(null, null, null, null)).withSelfRel(),
-                linkTo(methodOn(MemberApiController.class).createMember(null, null)).withRel("Signup Member")
+                linkTo(methodOn(MemberApiController.class).createMember(null, null,null)).withRel("Signup Member")
         );
 
         return EntityModel.of(result, links);

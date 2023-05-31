@@ -1,9 +1,10 @@
-package com.study.badrequest.exception.custom_exception;
+package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import lombok.Getter;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
+
 @Getter
 public class CustomOauth2LoginException extends OAuth2AuthenticationException {
 
@@ -38,4 +39,5 @@ public class CustomOauth2LoginException extends OAuth2AuthenticationException {
     public OAuth2Error getError() {
         return super.getError();
     }
+
 }

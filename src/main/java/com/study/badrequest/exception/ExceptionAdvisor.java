@@ -1,12 +1,9 @@
 package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.JwtAuthenticationExceptionBasic;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
-import com.study.badrequest.exception.custom_exception.TokenExceptionBasic;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

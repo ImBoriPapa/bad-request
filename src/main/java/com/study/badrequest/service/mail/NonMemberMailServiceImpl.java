@@ -1,7 +1,7 @@
 package com.study.badrequest.service.mail;
 
 import com.study.badrequest.domain.mail.NonMemberMail;
-import com.study.badrequest.domain.member.AuthenticationCode;
+import com.study.badrequest.domain.member.EmailAuthenticationCode;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.mail.NonMemberMailRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class NonMemberMailServiceImpl implements NonMemberMailService {
 
     @Override
     @Transactional
-    public void sendAuthenticationMail(AuthenticationCode authenticationCode) {
+    public void sendAuthenticationMail(EmailAuthenticationCode authenticationCode) {
         log.info("비회원 이메일 인증 메일 발송 시작 수신인: {}", authenticationCode.getEmail());
 
         sendMail(

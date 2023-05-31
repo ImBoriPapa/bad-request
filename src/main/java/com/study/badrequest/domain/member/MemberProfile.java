@@ -43,7 +43,7 @@ public class MemberProfile {
         this.selfIntroduce = selfIntroduce;
     }
 
-    public void incrementActivityScore(ActivityScoreEnum activityScoreEnum) {
-        this.activityScore = this.activityScore + activityScoreEnum.getScore();
+    public void incrementActivityScore(int score) {
+        this.activityScore = this.activityScore + score;
     }
 }

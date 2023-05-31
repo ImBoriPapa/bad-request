@@ -28,26 +28,15 @@ public class ActivityServiceImpl implements ActivityService {
 
     @Async(ACTIVITY_ASYNC_EXECUTOR)
     @Transactional
-    public void createQuestionActivity(Member member, String title, LocalDateTime createdAt) {
+    public void createActivity(Member member, String title, ActivityAction action , LocalDateTime createdAt) {
         log.info("활동 내용 저장");
 
-        Activity activity = Activity.createActivity(member, ActivityAction.QUESTION, title, "질문을 등록 했습니다.", createdAt);
+        Activity activity = Activity.createActivity(member, action, title, "질문을 등록 했습니다.", createdAt);
 
         Activity save = activityRepository.save(activity);
 
-        save.getMember().incrementActivityScore(ActivityScoreEnum.WRITE_QUESTION);
     }
 
-    @Async(ACTIVITY_ASYNC_EXECUTOR)
-    @Transactional
-    public void createAnswerActivity(Member member, String simpleContents, LocalDateTime createdAt) {
-        log.info("활동 내용 저장");
-        Activity activity = Activity.createActivity(member, ActivityAction.ANSWER, simpleContents, "답변을 등록 했습니다.", createdAt);
 
-        Activity save = activityRepository.save(activity);
-
-        save.getMember().incrementActivityScore(ActivityScoreEnum.WRITE_ANSWER);
-
-    }
 
 }

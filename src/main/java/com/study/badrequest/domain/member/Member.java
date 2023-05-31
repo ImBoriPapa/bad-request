@@ -1,8 +1,10 @@
 package com.study.badrequest.domain.member;
 
 
+import com.study.badrequest.domain.activity.ActivityAction;
 import com.study.badrequest.domain.activity.ActivityScoreEnum;
 import com.study.badrequest.domain.login.OauthProvider;
+import com.study.badrequest.domain.record.MemberRecord;
 import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.*;
 
@@ -10,6 +12,8 @@ import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
@@ -194,11 +198,6 @@ public class Member {
 
     public void changeProfileImage(String storeFilName, String imageLocation, Long size) {
         this.memberProfile.getProfileImage().replaceProfileImage(storeFilName, imageLocation, size);
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void incrementActivityScore(ActivityScoreEnum activityScoreEnum) {
-        this.memberProfile.incrementActivityScore(activityScoreEnum);
         this.updatedAt = LocalDateTime.now();
     }
 }

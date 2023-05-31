@@ -6,8 +6,8 @@ import com.study.badrequest.domain.login.Oauth2UserInformation;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.member.MemberProfile;
 import com.study.badrequest.domain.member.ProfileImage;
-import com.study.badrequest.event.member.MemberEventDto;
-import com.study.badrequest.exception.custom_exception.CustomOauth2LoginException;
+
+import com.study.badrequest.exception.CustomOauth2LoginException;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.S3ImageUploader;
 import lombok.RequiredArgsConstructor;

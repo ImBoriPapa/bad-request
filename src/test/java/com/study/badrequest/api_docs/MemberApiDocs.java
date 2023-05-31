@@ -16,7 +16,7 @@ import com.study.badrequest.filter.JwtAuthenticationFilter;
 
 import com.study.badrequest.repository.member.MemberQueryRepository;
 import com.study.badrequest.repository.member.query.LoggedInMemberInformation;
-import com.study.badrequest.service.member.MemberCommandService;
+import com.study.badrequest.service.member.MemberService;
 import com.study.badrequest.service.member.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
@@ -85,7 +85,7 @@ public class MemberApiDocs {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private MemberCommandService memberCommandService;
+    private MemberService memberService;
     @MockBean
     private MemberProfileService memberProfileService;
     @MockBean
@@ -106,7 +106,7 @@ public class MemberApiDocs {
         MemberRequestForm.SendAuthenticationEmail authenticationEmail = new MemberRequestForm.SendAuthenticationEmail(email);
         MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt, expiredAt);
         //when
-        given(memberCommandService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
+        given(memberService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
 
         given(memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)).willReturn(
                 EntityModel.of(
@@ -156,7 +156,7 @@ public class MemberApiDocs {
         EntityModel<MemberResponse.Create> entityModel = EntityModel.of(createForm, links);
         //when
         MemberRequestForm.SignUp signUpForm = new MemberRequestForm.SignUp(email, password, nickname, contact, "938304");
-        given(memberCommandService.signupMemberProcessing(any())).willReturn(createForm);
+        given(memberService.signupMember(any(),any())).willReturn(createForm);
 
         given(memberResponseModelAssembler.getLocationUri(any())).willReturn(locationUri);
         given(memberResponseModelAssembler.createMemberModel(any())).willReturn(entityModel);

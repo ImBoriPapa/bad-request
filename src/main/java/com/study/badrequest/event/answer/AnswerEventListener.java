@@ -1,5 +1,6 @@
 package com.study.badrequest.event.answer;
 
+import com.study.badrequest.domain.activity.ActivityAction;
 import com.study.badrequest.service.activity.ActivityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,6 @@ public class AnswerEventListener {
     public void handleRegisterEvent(AnswerEventDto.Register dto) {
         log.info("답변 등록 이벤트");
         String simpleTitle = dto.getAnswer().getContents().substring(0, 10);
-        activityService.createAnswerActivity(dto.getMember(), simpleTitle, dto.getAnswer().getAnsweredAt());
+        activityService.createActivity(dto.getMember(), simpleTitle, ActivityAction.ANSWER,dto.getAnswer().getAnsweredAt());
     }
 }

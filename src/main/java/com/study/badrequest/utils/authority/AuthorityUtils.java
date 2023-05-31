@@ -3,9 +3,7 @@ package com.study.badrequest.utils.authority;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 
-import java.util.Random;
 
 
 public class AuthorityUtils {

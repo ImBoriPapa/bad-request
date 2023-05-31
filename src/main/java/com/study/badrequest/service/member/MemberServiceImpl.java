@@ -6,9 +6,8 @@ import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
-import com.study.badrequest.repository.login.AuthenticationCodeRepository;
 
+import com.study.badrequest.repository.member.EmailAuthenticationCodeRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
@@ -28,11 +28,10 @@ import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 @Transactional(readOnly = true)
 @Slf4j
 @RequiredArgsConstructor
-public class MemberCommandServiceImpl implements MemberCommandService {
+public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
-
-    private final AuthenticationCodeRepository authenticationCodeRepository;
+    private final EmailAuthenticationCodeRepository emailAuthenticationCodeRepository;
     private final ImageUploader imageUploader;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -44,43 +43,51 @@ public class MemberCommandServiceImpl implements MemberCommandService {
      */
     @Override
     @Transactional
-    public MemberResponse.Create signupMemberProcessing(MemberRequestForm.SignUp form) {
+    public MemberResponse.Create signupMember(MemberRequestForm.SignUp form, String ipAddress) {
         log.info("Start SignUp Member Process \n " +
-                        "email    : {}\n" +
-                        "nickname : {}\n" +
-                        "password : PROTECTED \n" +
-                        "contact  : {} \n" +
-                        "authenticationCode : {}"
-                , form.getEmail(), form.getNickname(), form.getContact(), form.getAuthenticationCode());
+                "email    : {}\n" +
+                "nickname : {}\n" +
+                "password : PROTECTED \n" +
+                "contact  : {} \n" +
+                "authenticationCode : {}", form.getEmail(), form.getNickname(), form.getContact(), form.getAuthenticationCode());
 
+        emailDuplicationVerification(form.getEmail());
 
-        if (memberRepository.existsByEmail(form.getEmail())) {
-            throw new MemberExceptionBasic(DUPLICATE_EMAIL);
-        }
+        contactDuplicationVerification(form.getContact());
 
-        ifDuplicateContactThrowException(form.getContact());
-
-
-        AuthenticationCode authenticationCode = authenticationCodeRepository
-                .findByEmail(form.getEmail())
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_AUTHENTICATION_EMAIL));
-        if (!authenticationCode.isMatchCode(form.getAuthenticationCode())) {
-
-            throw new CustomRuntimeException(WRONG_EMAIL_AUTHENTICATION_CODE);
-        }
-
-        if (authenticationCode.isExpiredCode()) {
-            authenticationCodeRepository.deleteById(authenticationCode.getId());
-            throw new CustomRuntimeException(NOTFOUND_AUTHENTICATION_EMAIL);
-        }
+        temporaryEmailAuthenticationCodeVerification(form);
 
         Member member = memberRepository.save(createMemberFromForm(form));
 
-        authenticationCodeRepository.deleteById(authenticationCode.getId());
-
-        eventPublisher.publishEvent(new MemberEventDto.Create(member, "회원 가입", member.getCreatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Create(member, "이메일 회원 가입", member.getCreatedAt(), ipAddress));
 
         return new MemberResponse.Create(member);
+    }
+
+    private void temporaryEmailAuthenticationCodeVerification(MemberRequestForm.SignUp form) {
+        EmailAuthenticationCode authenticationCode = findAuthenticationCodeByEmail(form.getEmail(), NOTFOUND_AUTHENTICATION_EMAIL);
+
+        if (!authenticationCode.getCode().equals(form.getAuthenticationCode())) {
+            throw new CustomRuntimeException(WRONG_EMAIL_AUTHENTICATION_CODE);
+        }
+
+        if (LocalDateTime.now().isAfter(authenticationCode.getExpiredAt())) {
+            throw new CustomRuntimeException(NOTFOUND_AUTHENTICATION_EMAIL);
+        }
+
+        emailAuthenticationCodeRepository.deleteById(authenticationCode.getId());
+    }
+
+    private EmailAuthenticationCode findAuthenticationCodeByEmail(String email, ApiResponseStatus status) {
+        return emailAuthenticationCodeRepository
+                .findByEmail(email)
+                .orElseThrow(() -> new CustomRuntimeException(status));
+    }
+
+    private void emailDuplicationVerification(String email) {
+        if (memberRepository.existsByEmail(email)) {
+            throw new CustomRuntimeException(DUPLICATE_EMAIL);
+        }
     }
 
     @Override
@@ -88,7 +95,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     public MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String email) {
         log.info("Start issuing temporary passwords email: {}", email);
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
 
         final String temporaryPassword = UUID.randomUUID().toString();
 
@@ -105,14 +112,22 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("인증 메일 전송 시작 email: {}", email);
 
         if (memberRepository.existsByEmail(email)) {
-            throw new MemberExceptionBasic(DUPLICATE_EMAIL);
+            throw new CustomRuntimeException(DUPLICATE_EMAIL);
         }
 
-        AuthenticationCode authenticationCode = authenticationCodeRepository.save(AuthenticationCode.createEmailAuthenticationCode(email));
+        EmailAuthenticationCode authenticationCode;
 
-        eventPublisher.publishEvent(new MemberEventDto.SendAuthenticationMail(authenticationCode));
+        Optional<EmailAuthenticationCode> optional = emailAuthenticationCodeRepository.findByEmail(email);
 
-        return new MemberResponse.SendAuthenticationEmail(authenticationCode.getEmail(), authenticationCode.getCreatedAt(), authenticationCode.getEmailAuthenticationExpiredIn());
+        if (optional.isPresent()) {
+            optional.get().replaceCode();
+            authenticationCode = optional.get();
+        } else {
+            authenticationCode = new EmailAuthenticationCode(email);
+        }
+        eventPublisher.publishEvent(new MemberEventDto.SendAuthenticationMail());
+
+        return new MemberResponse.SendAuthenticationEmail(authenticationCode.getEmail(), authenticationCode.getCreatedAt(), authenticationCode.getExpiredAt());
     }
 
     /**
@@ -123,7 +138,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     public MemberResponse.Update updateContactProcessing(Long memberId, String contact) {
         log.info("Update Member Contact memberId: {}, contact: {}", memberId, contact);
 
-        ifDuplicateContactThrowException(contact);
+        contactDuplicationVerification(contact);
 
         Member member = findMemberById(memberId);
         member.changeContact(contact);
@@ -142,7 +157,7 @@ public class MemberCommandServiceImpl implements MemberCommandService {
         log.info("Start Change Password processing => memberId: {}", memberId);
 
         if (form.getCurrentPassword().equals(form.getNewPassword())) {
-            throw new MemberExceptionBasic(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
+            throw new CustomRuntimeException(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
         }
 
         Member member = findMemberById(memberId);
@@ -186,22 +201,22 @@ public class MemberCommandServiceImpl implements MemberCommandService {
     }
 
 
-    private void ifDuplicateContactThrowException(String contact) {
+    private void contactDuplicationVerification(String contact) {
         if (memberRepository.existsByContact(contact)) {
-            throw new MemberExceptionBasic(DUPLICATE_CONTACT);
+            throw new CustomRuntimeException(DUPLICATE_CONTACT);
         }
     }
 
 
-    public Member findMemberById(Long memberId) {
+    private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new MemberExceptionBasic(NOTFOUND_MEMBER));
+                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
     }
 
     //비밀번호 비교
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
-            throw new MemberExceptionBasic(WRONG_PASSWORD);
+            throw new CustomRuntimeException(WRONG_PASSWORD);
         }
     }
 

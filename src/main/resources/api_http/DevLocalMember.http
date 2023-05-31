@@ -15,7 +15,7 @@ Content-Type: application/json
   "password": "member1!@#",
   "nickname": "nickname",
   "contact": "010-1214-234543",
-  "authenticationCode": "149508"
+  "authenticationCode": "417234"
 }
 
 ### 메일 인증

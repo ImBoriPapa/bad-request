@@ -1,11 +1,14 @@
 package com.study.badrequest.service.login;
 
+import com.study.badrequest.domain.login.DisposalAuthenticationCode;
 import com.study.badrequest.domain.login.RefreshToken;
-import com.study.badrequest.domain.member.AuthenticationCode;
+
 import com.study.badrequest.domain.member.Authority;
+import com.study.badrequest.domain.member.EmailAuthenticationCode;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
-import com.study.badrequest.repository.login.AuthenticationCodeRepository;
+
+import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -36,7 +39,7 @@ class LoginServiceImplTest {
     @Mock
     RedisRefreshTokenRepository redisRefreshTokenRepository;
     @Mock
-    AuthenticationCodeRepository authenticationCodeRepository;
+    DisposalAuthenticationRepository disposalAuthenticationRepository;
     @Mock
     JwtUtils jwtUtils;
     @Spy
@@ -88,7 +91,8 @@ class LoginServiceImplTest {
 
         JwtTokenDto jwtTokenDto = new JwtTokenDto("accessToken", "refreshToken", LocalDateTime.now().plusMinutes(10), 60480000L);
 
-        AuthenticationCode authenticationCode = AuthenticationCode.createOnetimeAuthenticationCode(member);
+
+        DisposalAuthenticationCode authenticationCode = new DisposalAuthenticationCode(member);
 
         RefreshToken tokenEntity = RefreshToken.createRefresh()
                 .changeableId(member.getChangeableId())
@@ -97,7 +101,7 @@ class LoginServiceImplTest {
                 .expiration(jwtTokenDto.getRefreshTokenExpirationMill())
                 .build();
         //when
-        when(authenticationCodeRepository.findByCode(any())).thenReturn(Optional.of(authenticationCode));
+        when(disposalAuthenticationRepository.findByCode(any())).thenReturn(Optional.of(authenticationCode));
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         when(jwtUtils.generateJwtTokens(any())).thenReturn(jwtTokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);

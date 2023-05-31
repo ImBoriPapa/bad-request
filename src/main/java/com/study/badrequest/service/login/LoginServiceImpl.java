@@ -1,16 +1,17 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.domain.login.DisposalAuthenticationCode;
 import com.study.badrequest.domain.login.RefreshToken;
 
-import com.study.badrequest.domain.member.AuthenticationCode;
+
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
-import com.study.badrequest.repository.login.AuthenticationCodeRepository;
+
+import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
@@ -50,7 +51,7 @@ public class LoginServiceImpl implements LoginService {
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
-    private final AuthenticationCodeRepository authenticationCodeRepository;
+    private final DisposalAuthenticationRepository disposalAuthenticationRepository;
 
     @Override
     @Transactional
@@ -82,13 +83,13 @@ public class LoginServiceImpl implements LoginService {
     public LoginResponse.LoginDto oneTimeAuthenticationCodeLogin(String code, String ipAddress) {
         log.info("1회용 인증 코드로 로그인 ");
 
-        Optional<AuthenticationCode> optionalAuthenticationCode = authenticationCodeRepository.findByCode(code);
+        Optional<DisposalAuthenticationCode> optionalAuthenticationCode = disposalAuthenticationRepository.findByCode(code);
 
         if (optionalAuthenticationCode.isEmpty()) {
             throw new CustomRuntimeException(WRONG_ONE_TIME_CODE);
         }
 
-        AuthenticationCode authenticationCode = optionalAuthenticationCode.get();
+        DisposalAuthenticationCode authenticationCode = optionalAuthenticationCode.get();
 
         Member member = memberRepository.findById(authenticationCode.getMember().getId())
                 .orElseThrow(() -> new CustomRuntimeException(CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE));
@@ -96,7 +97,7 @@ public class LoginServiceImpl implements LoginService {
 
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
 
-        authenticationCodeRepository.deleteById(authenticationCode.getId());
+        disposalAuthenticationRepository.deleteById(authenticationCode.getId());
 
         //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member, "1회용 인증 코드 로그인", LocalDateTime.now()));
@@ -219,12 +220,11 @@ public class LoginServiceImpl implements LoginService {
     @Transactional
     public String getOneTimeAuthenticationCode(Long memberId) {
         log.info("일회용 인증 코드 생성");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new MemberExceptionBasic(ApiResponseStatus.NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
 
-        return authenticationCodeRepository.save(AuthenticationCode.createOnetimeAuthenticationCode(member)).getCode();
+        return disposalAuthenticationRepository.save(new DisposalAuthenticationCode(member)).getCode();
 
     }
-
 
     private LoginResponse.LoginDto createLoginDto(Member member, JwtTokenDto jwtTokenDto, RefreshToken refreshToken) {
         return LoginResponse.LoginDto.builder()

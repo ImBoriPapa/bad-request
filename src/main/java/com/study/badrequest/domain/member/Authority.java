@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
+import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -68,7 +68,7 @@ public enum Authority {
         Authority member = getAuthorityContainsString(collect, ROLE_MEMBER, Authority.MEMBER);
         if (member != null) return member;
 
-        throw new MemberExceptionBasic(ApiResponseStatus.WRONG_AUTHORITY);
+        throw new CustomRuntimeException(ApiResponseStatus.WRONG_AUTHORITY);
     }
 
     private static Authority getAuthorityContainsString(List<String> collect, String ROLE_ADMIN, Authority admin) {

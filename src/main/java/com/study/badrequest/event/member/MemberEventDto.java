@@ -1,7 +1,8 @@
 package com.study.badrequest.event.member;
 
 
-import com.study.badrequest.domain.member.AuthenticationCode;
+
+import com.study.badrequest.domain.member.EmailAuthenticationCode;
 import com.study.badrequest.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +17,9 @@ public class MemberEventDto {
     @Getter
     public static class Create {
         private Member member;
-        private String specialNote;
+        private String description;
         private LocalDateTime recordTime;
+        private String ipAddress;
     }
 
     @NoArgsConstructor
@@ -25,7 +27,7 @@ public class MemberEventDto {
     @Getter
     public static class Update {
         private Member member;
-        private String specialNote;
+        private String description;
         private LocalDateTime recordTime;
     }
 
@@ -36,7 +38,7 @@ public class MemberEventDto {
 
         private Member member;
 
-        private String specialNote;
+        private String description;
 
         private LocalDateTime recordTime;
     }
@@ -48,7 +50,7 @@ public class MemberEventDto {
 
         private Member member;
 
-        private String specialNote;
+        private String description;
         private LocalDateTime recordTime;
     }
 
@@ -58,7 +60,7 @@ public class MemberEventDto {
     public static class Logout {
 
         private Member member;
-        private String specialNote;
+        private String description;
         private LocalDateTime recordTime;
     }
 
@@ -66,7 +68,7 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class SendAuthenticationMail {
-        private AuthenticationCode authenticationCode;
+        private EmailAuthenticationCode authenticationCode;
     }
 
     @NoArgsConstructor
@@ -75,7 +77,7 @@ public class MemberEventDto {
     public static class IssueTemporaryPassword {
         private Member member;
         private String temporaryPassword;
-        private String specialNote;
+        private String description;
         private LocalDateTime recordTime;
 
     }

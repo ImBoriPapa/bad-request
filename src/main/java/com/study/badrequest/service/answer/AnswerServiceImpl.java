@@ -45,7 +45,7 @@ public class AnswerServiceImpl implements AnswerService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
 
-        if (StringUtils.hasLength(form.getContents())) {
+        if (!StringUtils.hasLength(form.getContents())) {
             throw new CustomRuntimeException(NOT_ALLOW_EMPTY_ANSWER);
         }
 

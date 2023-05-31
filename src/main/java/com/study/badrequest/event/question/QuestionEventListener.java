@@ -1,6 +1,7 @@
 package com.study.badrequest.event.question;
 
 
+import com.study.badrequest.domain.activity.ActivityAction;
 import com.study.badrequest.service.activity.ActivityService;
 
 
@@ -32,7 +33,7 @@ public class QuestionEventListener {
 
         questionImageService.changeTemporaryToSaved(dto.getImages(), dto.getQuestion());
 
-        activityService.createQuestionActivity(dto.getMember(), dto.getQuestion().getTitle(), dto.getQuestion().getAskedAt());
+        activityService.createActivity(dto.getMember(), dto.getQuestion().getTitle(), ActivityAction.QUESTION ,dto.getQuestion().getAskedAt());
     }
 
     @EventListener

@@ -2,7 +2,9 @@ package com.study.badrequest.handler;
 
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.exception.custom_exception.CustomOauth2LoginException;
+
+import com.study.badrequest.exception.CustomOauth2LoginException;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;

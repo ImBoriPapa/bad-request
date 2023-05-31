@@ -9,8 +9,8 @@ import com.study.badrequest.dto.member.MemberResponse;
  * Update(changePermissions,updateContact,resetPassword),
  * Delete(resignMember)
  */
-public interface MemberCommandService {
-    MemberResponse.Create signupMemberProcessing(MemberRequestForm.SignUp form);
+public interface MemberService {
+    MemberResponse.Create signupMember(MemberRequestForm.SignUp form, String ipAddress);
 
     MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String email);
 

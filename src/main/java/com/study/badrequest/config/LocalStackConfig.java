@@ -17,7 +17,7 @@ import static org.testcontainers.containers.localstack.LocalStackContainer.Servi
 public class LocalStackConfig {
 
     //docker 이미지 명
-    private final DockerImageName LOCALSTACK_NAME = DockerImageName.parse("local-s3");
+    private final DockerImageName LOCALSTACK_NAME = DockerImageName.parse("localstack/localstack");
     @Value("${s3-image.bucket-name}")
     public String BUCKET_NAME;
     @Bean(initMethod = "start", destroyMethod = "stop")

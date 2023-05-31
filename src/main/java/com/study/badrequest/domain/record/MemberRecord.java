@@ -2,6 +2,7 @@ package com.study.badrequest.domain.record;
 
 
 import com.study.badrequest.domain.member.Authority;
+import com.study.badrequest.domain.member.Member;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,31 +20,24 @@ public class MemberRecord {
     @Column(name = "ACTION")
     @Enumerated(EnumType.STRING)
     private ActionStatus action;
-    @Column(name = "MEMBER_ID")
-    private Long memberId;
-    @Column(name = "MEMBER_EMAIL")
-    private String memberEmail;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "MEMBER_AUTHORITY")
-    private Authority memberAuthority;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
     @Column(name = "IP_ADDRESS")
     private String ipAddress;
-    @Column(name = "SPECIAL_NOTE")
-    private String specialNote;
+    @Column(name = "DESCRIPTION")
+    private String description;
     @Column(name = "RECORDED_TIME")
     private LocalDateTime recodeTime;
+
     @Builder
-    public MemberRecord(ActionStatus action, Long memberId, String memberEmail, Authority memberAuthority, String ipAddress, String specialNote, LocalDateTime recodeTime) {
+    public MemberRecord(ActionStatus action, Member member, String ipAddress, String description, LocalDateTime recodeTime) {
         this.action = action;
-        this.memberId = memberId;
-        this.memberEmail = memberEmail;
-        this.memberAuthority = memberAuthority;
+        this.member = member;
         this.ipAddress = ipAddress;
-        this.specialNote = specialNote;
+        this.description = description;
         this.recodeTime = recodeTime;
     }
-
-
 
 
 }

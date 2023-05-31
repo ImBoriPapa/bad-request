@@ -52,8 +52,8 @@ public class SampleData {
     @EventListener(ApplicationReadyEvent.class)
     public void initData() {
         createMemberData();
-        createSampleHashTag();
-        createSampleQuestion();
+//        createSampleHashTag();
+//        createSampleQuestion();
     }
 
     public void createMemberData() {

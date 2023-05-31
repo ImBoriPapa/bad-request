@@ -6,7 +6,6 @@ import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.exception.custom_exception.MemberExceptionBasic;
 import com.study.badrequest.repository.member.MemberQueryRepository;
 import com.study.badrequest.repository.member.query.LoggedInMemberInformation;
 import com.study.badrequest.repository.member.query.MemberDetailDto;
@@ -59,7 +58,7 @@ public class MemberQueryApiController {
     public ResponseEntity getLoggedInInformation(@PathVariable Long memberId, @LoggedInMember CurrentMember.Information information) {
 
         if (!memberId.equals(information.getId())) {
-            throw new MemberExceptionBasic(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
+            throw new CustomRuntimeException(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
         }
 
         LoggedInMemberInformation memberInformation = memberQueryRepository.findLoggedInMemberInformation(information.getId())
