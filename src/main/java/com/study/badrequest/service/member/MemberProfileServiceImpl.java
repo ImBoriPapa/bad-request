@@ -32,12 +32,12 @@ public class MemberProfileServiceImpl implements MemberProfileService {
      * 닉네임 변경
      */
     @Transactional
-    public MemberResponse.Update changeNickname(Long memberId, MemberRequestForm.ChangeNickname form) {
+    public MemberResponse.Update changeNickname(Long memberId, MemberRequestForm.ChangeNickname form, String ipAddress) {
         log.info("Start change Nickname memberId: {}", memberId);
         Member member = findMemberById(memberId);
         member.changeNickname(form.getNickname());
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member, "닉네임 변경", member.getUpdatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "닉네임 변경", ipAddress, member.getUpdatedAt()));
 
         return new MemberResponse.Update(member);
     }
@@ -51,12 +51,12 @@ public class MemberProfileServiceImpl implements MemberProfileService {
      */
 
     @Transactional
-    public MemberResponse.Update changeIntroduce(Long memberId, MemberRequestForm.ChangeIntroduce form) {
+    public MemberResponse.Update changeIntroduce(Long memberId, MemberRequestForm.ChangeIntroduce form, String ipAddress) {
         log.info("Start change Introduce memberId: {}", memberId);
         Member member = findMemberById(memberId);
         member.changeIntroduce(form.getSelfIntroduce());
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member, "자기 소개 변경 변경", member.getUpdatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "자기 소개 변경 변경", ipAddress, member.getUpdatedAt()));
 
         return new MemberResponse.Update(member);
     }
@@ -65,7 +65,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
      * 프로필 이미지 삭제
      */
     @Transactional
-    public MemberResponse.Delete deleteProfileImage(Long memberId) {
+    public MemberResponse.Delete deleteProfileImage(Long memberId, String ipAddress) {
         log.info("Start change Profile Image To Default memberId: {}", memberId);
 
         Member member = findMemberById(memberId);
@@ -79,7 +79,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
 
         member.changeProfileImageToDefault(imageUploader.getDefaultProfileImage());
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member, "프로필 이미지 삭제 -> 기본 이미지로 변경", member.getUpdatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "프로필 이미지 삭제 -> 기본 이미지로 변경", ipAddress, member.getUpdatedAt()));
 
         return new MemberResponse.Delete();
     }
@@ -88,7 +88,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
      * 프로필 이미지 변경
      */
     @Transactional
-    public MemberResponse.Update changeProfileImage(Long memberId, MultipartFile image) {
+    public MemberResponse.Update changeProfileImage(Long memberId, MultipartFile image, String ipAddress) {
         log.info("Start change Profile Image memberId: {}", memberId);
 
         Member member = findMemberById(memberId);
@@ -107,7 +107,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
                 uploadedFile.getSize()
         );
 
-        eventPublisher.publishEvent(new MemberEventDto.Update(member, "프로필 이미지 변경", member.getUpdatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "프로필 이미지 변경", ipAddress, member.getUpdatedAt()));
 
         return new MemberResponse.Update(member);
     }

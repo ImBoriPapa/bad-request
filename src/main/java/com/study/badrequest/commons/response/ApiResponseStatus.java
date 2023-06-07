@@ -56,11 +56,9 @@ public enum ApiResponseStatus {
     NOTFOUND_AUTHENTICATION_EMAIL(2006, "인증 메일 요청 정보를 찾을수 없습니다. 이메일 혹은 인증메일 만료 시간을 확인해 주세요", HttpStatus.BAD_REQUEST),
     NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT(2007, "새 비밀번호는 기존 비밀과 같을 수 없습니다.", HttpStatus.BAD_REQUEST),
     NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER(2008, "요청된 회원과 로그인된 회원의 정보가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
-    DUPLICATE_EMAIL(2005, "이미 사용중인 이메일입니다.", HttpStatus.BAD_REQUEST),
-    DUPLICATE_CONTACT(2006, "이미 사용중인 연락처 입니다.", HttpStatus.BAD_REQUEST),
-    WRONG_PARAMETER(2007, "파라미터값을 확인해 주세요.", HttpStatus.BAD_REQUEST),
-    NOT_EXIST_CATEGORY(2008, "존재하지 않는 카테고리 입니다.", HttpStatus.BAD_REQUEST),
-    NOT_EXIST_TOPIC(2009, "존재하지 않는 카테고리 입니다.", HttpStatus.BAD_REQUEST),
+    DUPLICATE_EMAIL(2009, "이미 사용중인 이메일입니다.", HttpStatus.BAD_REQUEST),
+    DUPLICATE_CONTACT(2010, "이미 사용중인 연락처 입니다.", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_TEMPORARY_PASSWORD(2011, "임시비밀번호 정보를 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
     /**
      * 질문
      */
@@ -98,7 +96,7 @@ public enum ApiResponseStatus {
     /**
      * 메일
      */
-    FAIL_SEND_MAIL(5000,"메일 발송에 실패했습니다.",HttpStatus.INTERNAL_SERVER_ERROR);
+    FAIL_SEND_MAIL(5000, "메일 발송에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     private final int code;
     private final String message;
     private final HttpStatus httpStatus;

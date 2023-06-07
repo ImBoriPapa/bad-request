@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.login;
+package com.study.badrequest.domain.member;
 
 import com.study.badrequest.domain.member.Member;
 import lombok.AccessLevel;
@@ -21,7 +21,7 @@ public class DisposalAuthenticationCode {
     private Long id;
     @Column(name = "CODE")
     private String code;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
     private Member member;
     @Column(name = "CREATED_AT")

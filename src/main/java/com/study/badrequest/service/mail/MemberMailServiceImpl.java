@@ -5,6 +5,7 @@ import com.study.badrequest.domain.mail.MemberMail;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.mail.MemberMailRepository;
+import com.study.badrequest.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,14 +31,19 @@ public class MemberMailServiceImpl implements MemberMailService {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
     private final MemberMailRepository mailRepository;
+
+    private final MemberRepository memberRepository;
+
     @Value("${mail.temporary-password}")
     public String temporaryPasswordSubject;
 
 
     @Transactional
     @Override
-    public void sendTemporaryPassword(Member member, String temporaryPassword) {
-        log.info("회원 임시 비밀번호 메일 발송 시작 수신인: {}", member.getEmail());
+    public void sendTemporaryPassword(Long memberId, String temporaryPassword) {
+        log.info("회원 임시 비밀번호 메일 발송 시작");
+
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
 
         sendMail(
                 member.getEmail(),

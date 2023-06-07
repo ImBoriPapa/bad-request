@@ -18,16 +18,16 @@ import java.time.LocalDateTime;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class RecordServiceImpl implements RecordService{
+public class RecordServiceImpl implements RecordService {
 
     private final MemberRepository memberRepository;
     private final MemberRecordRepository memberRecordRepository;
 
     @Transactional
     public void recordMemberInformation(MemberRecordRequest request) {
-        log.info("Saving a Member Activity History- action: {},memberId: {}, time: {}", request.getActionStatus(), request.getMember().getId(), LocalDateTime.now());
+        log.info("Saving a Member Activity History- action: {},memberId: {}, time: {}", request.getActionStatus(), request.getMemberId(), LocalDateTime.now());
 
-        Member member = memberRepository.findById(request.getMember().getId()).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
 
         MemberRecord memberRecord = MemberRecord.builder()
                 .action(request.getActionStatus())

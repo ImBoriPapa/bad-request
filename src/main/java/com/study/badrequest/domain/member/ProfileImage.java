@@ -27,7 +27,7 @@ public class ProfileImage {
         this.isDefault = isDefault;
     }
 
-    public static ProfileImage createDefault(String imageLocation) {
+    public static ProfileImage createDefaultImage(String imageLocation) {
         return new ProfileImage("default image", imageLocation, 1L, true);
     }
 

@@ -5,7 +5,7 @@ import com.study.badrequest.domain.member.Member;
 
 public interface MemberMailService {
 
-    void sendTemporaryPassword(Member member, String temporaryPassword);
+    void sendTemporaryPassword(Long memberId, String temporaryPassword);
 
 
 }

@@ -13,11 +13,11 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class MemberRecordRequest {
     private ActionStatus actionStatus;
-    private Member member;
+    private Long memberId;
     private String ipAddress;
     private String description;
     private LocalDateTime recordTime;
+
 }

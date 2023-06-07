@@ -63,11 +63,11 @@ public class SampleData {
 
         IntStream intStream = IntStream.rangeClosed(1, 10);
 
-        Member sampleMember = Member.createSelfRegisteredMember(
+        Member sampleMember = Member.createMemberWithEmail(
                 "sample@gmail.com",
                 passwordEncoder.encode("sample1234!@"),
                 "01011111111",
-                new MemberProfile("샘플유저", ProfileImage.createDefault(imageUploader.getDefaultProfileImage()))
+                new MemberProfile("샘플유저", ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage()))
         );
 
         memberList.add(sampleMember);
@@ -81,11 +81,11 @@ public class SampleData {
             String contact = "010" + String.format("%08d", new Random().nextInt(90000000) + 10000000);
 
 
-            Member member = Member.createSelfRegisteredMember(
+            Member member = Member.createMemberWithEmail(
                     email + index + domain,
                     passwordEncoder.encode(password),
                     contact,
-                    new MemberProfile(nickname + index, ProfileImage.createDefault(imageUploader.getDefaultProfileImage()))
+                    new MemberProfile(nickname + index, ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage()))
             );
             memberList.add(member);
         });

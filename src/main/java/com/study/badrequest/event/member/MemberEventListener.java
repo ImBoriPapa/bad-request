@@ -2,6 +2,7 @@ package com.study.badrequest.event.member;
 
 import com.study.badrequest.domain.record.ActionStatus;
 import com.study.badrequest.dto.record.MemberRecordRequest;
+
 import com.study.badrequest.service.mail.MemberMailService;
 import com.study.badrequest.service.mail.NonMemberMailService;
 import com.study.badrequest.service.record.RecordService;
@@ -32,15 +33,9 @@ public class MemberEventListener {
     public void handleCreateEvent(MemberEventDto.Create dto) {
         log.info("Create Member Event");
 
-        MemberRecordRequest recordRequest = MemberRecordRequest.builder()
-                .actionStatus(ActionStatus.CREATED)
-                .member(dto.getMember())
-                .ipAddress(dto.getIpAddress())
-                .description(dto.getDescription())
-                .recordTime(dto.getRecordTime())
-                .build();
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.CREATED, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        recordService.recordMemberInformation(recordRequest);
+        recordService.recordMemberInformation(memberRecordRequest);
     }
 
     @Async(RECORD_ASYNC_EXECUTOR)
@@ -55,14 +50,10 @@ public class MemberEventListener {
     public void handleUpdateEvent(MemberEventDto.Update dto) {
         log.info("회원 업데이트 이벤트 ");
 
-        MemberRecordRequest recordRequest = MemberRecordRequest.builder()
-                .actionStatus(ActionStatus.UPDATED)
-                .member(dto.getMember())
-                .description(dto.getDescription())
-                .recordTime(dto.getRecordTime())
-                .build();
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.UPDATED, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        recordService.recordMemberInformation(recordRequest);
+
+        recordService.recordMemberInformation(memberRecordRequest);
     }
 
     @Async(RECORD_ASYNC_EXECUTOR)
@@ -70,14 +61,9 @@ public class MemberEventListener {
     public void handleDeleteEvent(MemberEventDto.Delete dto) {
         log.info("회원 삭제 이벤트 ");
 
-        MemberRecordRequest recordRequest = MemberRecordRequest.builder()
-                .actionStatus(ActionStatus.DELETED)
-                .member(dto.getMember())
-                .description(dto.getDescription())
-                .recordTime(dto.getRecordTime())
-                .build();
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.DELETED, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        recordService.recordMemberInformation(recordRequest);
+        recordService.recordMemberInformation(memberRecordRequest);
     }
 
     @Async(RECORD_ASYNC_EXECUTOR)
@@ -85,15 +71,10 @@ public class MemberEventListener {
     public void handleIssueTemporaryPassword(MemberEventDto.IssueTemporaryPassword dto) {
         log.info("회원 임시 비밀번호 이벤트 ");
 
-        MemberRecordRequest recordRequest = MemberRecordRequest.builder()
-                .actionStatus(ActionStatus.ISSUE_TEMPORARY_PASSWORD)
-                .member(dto.getMember())
-                .description(dto.getDescription())
-                .recordTime(dto.getRecordTime())
-                .build();
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.ISSUE_TEMPORARY_PASSWORD, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        mailService.sendTemporaryPassword(dto.getMember(), dto.getTemporaryPassword());
-        recordService.recordMemberInformation(recordRequest);
+        mailService.sendTemporaryPassword(dto.getMemberId(), dto.getTemporaryPassword());
+        recordService.recordMemberInformation(memberRecordRequest);
     }
 
     @Async(RECORD_ASYNC_EXECUTOR)
@@ -101,14 +82,9 @@ public class MemberEventListener {
     public void handleLoginEvent(MemberEventDto.Login dto) {
         log.info("회원 로그인 이벤트 ");
 
-        MemberRecordRequest recordRequest = MemberRecordRequest.builder()
-                .actionStatus(ActionStatus.LOGIN)
-                .member(dto.getMember())
-                .description(dto.getDescription())
-                .recordTime(dto.getRecordTime())
-                .build();
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.LOGIN, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        recordService.recordMemberInformation(recordRequest);
+        recordService.recordMemberInformation(memberRecordRequest);
     }
 
     @Async(RECORD_ASYNC_EXECUTOR)
@@ -116,13 +92,8 @@ public class MemberEventListener {
     public void handleLogoutEvent(MemberEventDto.Logout dto) {
         log.info("회원 로그아웃 이벤트 ");
 
-        MemberRecordRequest recordRequest = MemberRecordRequest.builder()
-                .actionStatus(ActionStatus.LOGOUT)
-                .member(dto.getMember())
-                .description(dto.getDescription())
-                .recordTime(dto.getRecordTime())
-                .build();
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.LOGOUT, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        recordService.recordMemberInformation(recordRequest);
+        recordService.recordMemberInformation(memberRecordRequest);
     }
 }

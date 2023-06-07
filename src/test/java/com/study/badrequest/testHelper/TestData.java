@@ -54,11 +54,11 @@ public class TestData {
     public List<Member> createSampleMembers() {
         List<Member> memberList = new ArrayList<>();
         IntStream.rangeClosed(1, 10).forEach(index -> {
-                    Member member = Member.createSelfRegisteredMember(
+                    Member member = Member.createMemberWithEmail(
                             "sample" + index + "@gmail.com",
                             passwordEncoder.encode("sample1234!@"),
                             "010" + new Random().nextInt(10000000) + 1,
-                            new MemberProfile("샘플유저", ProfileImage.createDefault("image")));
+                            new MemberProfile("샘플유저", ProfileImage.createDefaultImage("image")));
                     memberList.add(member);
                 }
         );

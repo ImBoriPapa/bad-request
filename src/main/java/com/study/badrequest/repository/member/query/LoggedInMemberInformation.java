@@ -1,7 +1,7 @@
 package com.study.badrequest.repository.member.query;
 
 
-import com.study.badrequest.domain.login.OauthProvider;
+import com.study.badrequest.domain.member.RegistrationType;
 import com.study.badrequest.domain.member.Authority;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,5 +15,5 @@ public class LoggedInMemberInformation {
     private Authority authority;
     private String nickname;
     private String profileImage;
-    private OauthProvider loggedInAs;
+    private RegistrationType loggedInAs;
 }

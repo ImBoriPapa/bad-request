@@ -1,11 +1,13 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.login.DisposalAuthenticationCode;
+import com.study.badrequest.domain.member.DisposalAuthenticationCode;
 import com.study.badrequest.domain.login.RefreshToken;
 
 
+import com.study.badrequest.domain.member.AccountStatus;
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.domain.member.TemporaryPassword;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 
@@ -15,6 +17,7 @@ import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 
+import com.study.badrequest.repository.member.TemporaryPasswordRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -32,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -39,6 +43,7 @@ import static com.study.badrequest.commons.constants.AuthenticationHeaders.REFRE
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
+
 
 
 @Service
@@ -52,6 +57,8 @@ public class LoginServiceImpl implements LoginService {
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
     private final DisposalAuthenticationRepository disposalAuthenticationRepository;
+    private final TemporaryPasswordRepository temporaryPasswordRepository;
+
 
     @Override
     @Transactional
@@ -60,12 +67,41 @@ public class LoginServiceImpl implements LoginService {
         //이메일 확인
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.LOGIN_FAIL));
-        //비밀번호 확인
+
+        if (member.getAccountStatus() == AccountStatus.PASSWORD_IS_TEMPORARY) {
+            checkTemporary(password, member);
+            return getLoginDto(ipAddress, member);
+        }
+
+        if (member.getAccountStatus() == AccountStatus.REQUIRED_MAIL_CONFIRMED) {
+            throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
+        }
+
         compareRequestedPasswordWithStored(password, member.getPassword());
-        //이메일 인증 여부 확인
-        member.checkConfirmedMail();
-        //임시 비밀번호 여부 확인
-        member.checkTemporaryPassword();
+        return getLoginDto(ipAddress, member);
+
+    }
+
+    private void checkTemporary(String password, Member member) {
+        //임시 비밀번호 확인
+
+        if (member.getAccountStatus() == AccountStatus.PASSWORD_IS_TEMPORARY) {
+
+            TemporaryPassword temporaryPassword = temporaryPasswordRepository.findByMember(member)
+                    .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_TEMPORARY_PASSWORD));
+
+            if (temporaryPassword.getExpiredDate().equals(LocalDate.now()) || temporaryPassword.getExpiredDate().isAfter(LocalDate.now())) {
+                throw new CustomRuntimeException(IS_EXPIRED_TEMPORARY_PASSWORD);
+            }
+            //비밀번호 확인
+            if (!passwordEncoder.matches(password, temporaryPassword.getPassword())) {
+                throw new CustomRuntimeException(LOGIN_FAIL);
+            }
+
+        }
+    }
+
+    private LoginResponse.LoginDto getLoginDto(String ipAddress, Member member) {
         //토큰 생성
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //RefreshToken 저장
@@ -73,7 +109,7 @@ public class LoginServiceImpl implements LoginService {
         //요청 IP 저장
         member.setLastLoginIP(ipAddress);
 
-        eventPublisher.publishEvent(new MemberEventDto.Login(member, "일반 로그인", LocalDateTime.now()));
+        eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "일반 로그인", ipAddress, LocalDateTime.now()));
 
         return createLoginDto(member, jwtTokenDto, refreshToken);
     }
@@ -100,7 +136,7 @@ public class LoginServiceImpl implements LoginService {
         disposalAuthenticationRepository.deleteById(authenticationCode.getId());
 
         //After Commit
-        eventPublisher.publishEvent(new MemberEventDto.Login(member, "1회용 인증 코드 로그인", LocalDateTime.now()));
+        eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "1회용 인증 코드 로그인", ipAddress, LocalDateTime.now()));
 
         return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto));
 
@@ -139,7 +175,7 @@ public class LoginServiceImpl implements LoginService {
         CookieUtils.deleteCookie(request, response, REFRESH_TOKEN_COOKIE);
         request.getSession().invalidate();
 
-        eventPublisher.publishEvent(new MemberEventDto.Logout(member, "로그아웃", LocalDateTime.now()));
+        eventPublisher.publishEvent(new MemberEventDto.Logout(member.getId(), "로그아웃", null, LocalDateTime.now()));
 
         return new LoginResponse.LogoutResult();
     }
@@ -221,7 +257,6 @@ public class LoginServiceImpl implements LoginService {
     public String getOneTimeAuthenticationCode(Long memberId) {
         log.info("일회용 인증 코드 생성");
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-
         return disposalAuthenticationRepository.save(new DisposalAuthenticationCode(member)).getCode();
 
     }

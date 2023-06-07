@@ -50,4 +50,8 @@ public class EmailAuthenticationCode {
         this.expiredAt = LocalDateTime.now().plusMinutes(5);
     }
 
+    public void changeExpiredAt(LocalDateTime expiredAt) {
+        this.expiredAt = expiredAt;
+    }
+
 }

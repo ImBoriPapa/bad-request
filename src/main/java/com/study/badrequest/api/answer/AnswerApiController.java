@@ -32,7 +32,8 @@ public class AnswerApiController {
     public ResponseEntity register(@PathVariable Long questionId,
                                    @LoggedInMember CurrentMember.Information information,
                                    @Validated @RequestBody AnswerRequest.Register request, BindingResult bindingResult) {
-        log.info("답변 등록 요청");
+        log.info("Create Answer Request");
+
         if(bindingResult.hasErrors()){
             throw new CustomRuntimeException(VALIDATION_ERROR);
         }

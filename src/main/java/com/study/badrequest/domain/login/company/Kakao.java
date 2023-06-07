@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.login.company;
 
 import com.study.badrequest.domain.login.Oauth2UserInformation;
-import com.study.badrequest.domain.login.OauthProvider;
+import com.study.badrequest.domain.member.RegistrationType;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public class Kakao extends Oauth2UserInformation {
 
     @Override
     public String getProvider() {
-        return OauthProvider.KAKAO.name();
+        return RegistrationType.KAKAO.name();
     }
 
     @Override

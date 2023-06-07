@@ -88,7 +88,7 @@ public class MemberProfileApiDocs {
         );
         SecurityContextHolder.createEmptyContext().setAuthentication(authenticationToken);
         //when
-        given(memberProfileService.changeNickname(any(), any())).willReturn(update);
+        given(memberProfileService.changeNickname(any(), any(),any())).willReturn(update);
         //then
         mockMvc.perform(patch(PATCH_MEMBER_NICKNAME, memberId)
                         .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + token)

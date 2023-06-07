@@ -1,6 +1,8 @@
 package com.study.badrequest.service.question;
 
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.domain.member.MemberProfile;
+import com.study.badrequest.domain.member.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
@@ -95,9 +97,7 @@ class QuestionServiceImplTest {
         List<String> tags = List.of("tag1", "tag2", "tag3");
         List<Long> emptyLong = List.of();
         QuestionRequest.Create request = new QuestionRequest.Create(title, contents, tags, emptyLong);
-        Member member = Member.builder()
-                .email("email@email.com")
-                .build();
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         Question question = Question.createQuestion()
                 .member(member)

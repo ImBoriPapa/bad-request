@@ -1,11 +1,8 @@
 package com.study.badrequest.service.login;
 
-import com.study.badrequest.domain.login.DisposalAuthenticationCode;
+import com.study.badrequest.domain.member.*;
 import com.study.badrequest.domain.login.RefreshToken;
 
-import com.study.badrequest.domain.member.Authority;
-import com.study.badrequest.domain.member.EmailAuthenticationCode;
-import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.dto.login.LoginResponse;
 
 import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
@@ -56,11 +53,7 @@ class LoginServiceImplTest {
         String ipAddress = "ipAddress";
         String accessToken = "";
         String refreshToken = "";
-        Member member = Member.builder()
-                .email(email)
-                .password(passwordEncoder.encode(password))
-                .authority(Authority.MEMBER)
-                .build();
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         JwtTokenDto jwtTokenDto = new JwtTokenDto(accessToken, refreshToken, LocalDateTime.now().plusMinutes(10), 60480000L);
 
@@ -83,10 +76,7 @@ class LoginServiceImplTest {
     @DisplayName("1회용 인증 코드로 로그인")
     void oneTimeCodeLoginTest() throws Exception {
         //given
-        Member member = Member.builder()
-                .email("email@email.com")
-                .authority(Authority.MEMBER)
-                .build();
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
 
         JwtTokenDto jwtTokenDto = new JwtTokenDto("accessToken", "refreshToken", LocalDateTime.now().plusMinutes(10), 60480000L);

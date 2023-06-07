@@ -7,7 +7,7 @@ import com.study.badrequest.api.member.MemberApiController;
 
 import com.study.badrequest.api.member.MemberQueryApiController;
 import com.study.badrequest.domain.login.CurrentMember;
-import com.study.badrequest.domain.login.OauthProvider;
+import com.study.badrequest.domain.member.RegistrationType;
 
 
 import com.study.badrequest.dto.member.MemberRequestForm;
@@ -156,7 +156,7 @@ public class MemberApiDocs {
         EntityModel<MemberResponse.Create> entityModel = EntityModel.of(createForm, links);
         //when
         MemberRequestForm.SignUp signUpForm = new MemberRequestForm.SignUp(email, password, nickname, contact, "938304");
-        given(memberService.signupMember(any(),any())).willReturn(createForm);
+        given(memberService.processingMembershipByEmail(any(),any())).willReturn(createForm);
 
         given(memberResponseModelAssembler.getLocationUri(any())).willReturn(locationUri);
         given(memberResponseModelAssembler.createMemberModel(any())).willReturn(entityModel);
@@ -199,7 +199,7 @@ public class MemberApiDocs {
         Long memberId = 2341L;
         CurrentMember currentMember = new CurrentMember(UUID.randomUUID().toString(), memberId, MEMBER.getAuthorities());
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(currentMember, "", MEMBER.getAuthorities());
-        LoggedInMemberInformation memberInformation = new LoggedInMemberInformation(memberId, MEMBER, "닉네임1", "", OauthProvider.GITHUB);
+        LoggedInMemberInformation memberInformation = new LoggedInMemberInformation(memberId, MEMBER, "닉네임1", "", RegistrationType.GITHUB);
         //when
         SecurityContextHolder.createEmptyContext().setAuthentication(authenticationToken);
         given(memberQueryRepository.findLoggedInMemberInformation(any())).willReturn(Optional.of(memberInformation));

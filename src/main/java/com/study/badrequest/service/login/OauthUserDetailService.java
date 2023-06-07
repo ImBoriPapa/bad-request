@@ -3,6 +3,7 @@ package com.study.badrequest.service.login;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.MemberPrincipal;
 import com.study.badrequest.domain.login.Oauth2UserInformation;
+import com.study.badrequest.domain.member.RegistrationType;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.member.MemberProfile;
 import com.study.badrequest.domain.member.ProfileImage;
@@ -22,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.study.badrequest.domain.login.OauthProvider.getOauth2UserInformation;
+import static com.study.badrequest.domain.member.RegistrationType.getOauth2UserInformation;
 
 
 @Component
@@ -49,11 +50,11 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
     }
 
     private MemberPrincipal createNewOauth2Member(Oauth2UserInformation oauth2UserInformation) {
-        Member oauthMember = Member.createOauthMember(
+        Member oauthMember = Member.createMemberWithOauth(
                 oauth2UserInformation.getEmail(),
                 oauth2UserInformation.getId(),
                 getOauth2UserInformation(oauth2UserInformation.getProvider()),
-                new MemberProfile(oauth2UserInformation.getName(), ProfileImage.createDefault(imageUploader.DEFAULT_PROFILE_IMAGE))
+                new MemberProfile(oauth2UserInformation.getName(), ProfileImage.createDefaultImage(imageUploader.DEFAULT_PROFILE_IMAGE))
         );
 
         Member member = memberRepository.save(oauthMember);
@@ -63,11 +64,11 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
 
     private MemberPrincipal renewOauth2Member(Oauth2UserInformation oauth2UserInformation, Member member) {
 
-        if (!member.getIsOauthLogin()) {
+        if (member.getRegistrationType() == RegistrationType.BAD_REQUEST) {
             throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_SELF_LOGIN_EMAIL);
         }
 
-        if (member.getOauthProvider() != getOauth2UserInformation(oauth2UserInformation.getProvider())) {
+        if (member.getRegistrationType() != getOauth2UserInformation(oauth2UserInformation.getProvider())) {
             throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_OAUTH2_EMAIL);
         }
 

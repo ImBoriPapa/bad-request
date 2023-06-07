@@ -43,7 +43,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                                 member.memberProfile.selfIntroduce.as("selfIntroduce"),
                                 member.memberProfile.profileImage.imageLocation.as("profileImage"),
                                 member.authority.as("authority"),
-                                member.oauthProvider.as("loginType"),
+                                member.registrationType.as("loginType"),
                                 member.createdAt.as("createdAt"),
                                 member.updatedAt.as("updatedAt")
                         )
@@ -138,6 +138,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
 
         return memberProfileDto == null ? Optional.empty() : Optional.of(memberProfileDto);
     }
+
     @Override
     public Optional<LoggedInMemberInformation> findLoggedInMemberInformation(Long memberId) {
 
@@ -147,7 +148,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         member.authority.as("authority"),
                         member.memberProfile.nickname.as("nickname"),
                         member.memberProfile.profileImage.imageLocation.as("profileImage"),
-                        member.oauthProvider.as("loggedInAs")
+                        member.registrationType.as("loggedInAs")
                 ))
                 .from(member)
                 .where(member.id.eq(memberId))

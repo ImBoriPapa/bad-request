@@ -47,7 +47,7 @@ public class MemberApiController {
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
-        MemberResponse.Create create = memberService.signupMember(form, ipAddress);
+        MemberResponse.Create create = memberService.processingMembershipByEmail(form, ipAddress);
 
         URI locationUri = memberResponseModelAssembler.getLocationUri(create.getId());
 
@@ -66,12 +66,16 @@ public class MemberApiController {
     @PostMapping(value = POST_MEMBER_TEMPORARY_PASSWORD_ISSUE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity issueTemporaryPassword(@Validated
                                                  @RequestBody MemberRequestForm.IssueTemporaryPassword form,
-                                                 BindingResult bindingResult) {
+                                                 BindingResult bindingResult,
+                                                 HttpServletRequest request
+    ) {
         log.info("[임시 비밀번호 요청 email: {}]", form.getEmail());
+
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberResponse.TemporaryPassword issueTemporaryPassword = memberService.issueTemporaryPasswordProcessing(form.getEmail());
+        MemberResponse.TemporaryPassword issueTemporaryPassword = memberService.issueTemporaryPasswordProcessing(form.getEmail(), ipAddress);
 
         return ResponseEntity
                 .ok()
@@ -110,15 +114,18 @@ public class MemberApiController {
                                         @PathVariable Long memberId,
                                         @RequestBody MemberRequestForm.ChangePassword form,
                                         @LoggedInMember CurrentMember.Information information,
-                                        BindingResult bindingResult
+                                        BindingResult bindingResult,
+                                        HttpServletRequest request
     ) {
         log.info("[비밀번호 변경 요청 memberId: {}, password: {}, password: {}]", memberId, "PROTECTED", "PROTECTED");
+
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberResponse.Update update = memberService.changePasswordProcessing(memberId, form);
+        MemberResponse.Update update = memberService.changePasswordProcessing(memberId, form, ipAddress);
 
         return ResponseEntity
                 .ok()
@@ -138,14 +145,18 @@ public class MemberApiController {
                                        @PathVariable Long memberId,
                                        @RequestBody MemberRequestForm.UpdateContact form,
                                        @LoggedInMember CurrentMember.Information information,
-                                       BindingResult bindingResult) {
+                                       BindingResult bindingResult,
+                                       HttpServletRequest request
+    ) {
         log.info("[연락처 변경 요청 memberId: {}, contact: {}]", memberId, form.getContact());
+
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberResponse.Update update = memberService.updateContactProcessing(memberId, form.getContact());
+        MemberResponse.Update update = memberService.updateContactProcessing(memberId, form.getContact(), ipAddress);
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
@@ -162,15 +173,19 @@ public class MemberApiController {
     public ResponseEntity deleteMember(@Validated @PathVariable Long memberId,
                                        @RequestBody MemberRequestForm.DeleteMember form,
                                        @LoggedInMember CurrentMember.Information information,
-                                       BindingResult bindingResult) {
+                                       BindingResult bindingResult,
+                                       HttpServletRequest request
+    ) {
 
         log.info("[회원 탈퇴 요청 memberId: {}, password: {}]", memberId, "PROTECTED");
+
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberResponse.Delete delete = memberService.resignMemberProcessing(memberId, form.getPassword());
+        MemberResponse.Delete delete = memberService.resignMemberProcessing(memberId, form.getPassword(), ipAddress);
 
         EntityModel<MemberResponse.Delete> deleteResultEntityModel = memberResponseModelAssembler.getDeleteModel(delete);
 

@@ -16,19 +16,21 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class Create {
-        private Member member;
+        private Long memberId;
         private String description;
-        private LocalDateTime recordTime;
         private String ipAddress;
+        private LocalDateTime recordTime;
     }
 
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
     public static class Update {
-        private Member member;
+        private Long memberId;
         private String description;
+        private String ipAddress;
         private LocalDateTime recordTime;
+
     }
 
     @NoArgsConstructor
@@ -36,10 +38,10 @@ public class MemberEventDto {
     @Getter
     public static class Delete {
 
-        private Member member;
-
+        private Long memberId;
         private String description;
 
+        private String ipAddress;
         private LocalDateTime recordTime;
     }
 
@@ -47,10 +49,9 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class Login {
-
-        private Member member;
-
+        private Long memberId;
         private String description;
+        private String ipAddress;
         private LocalDateTime recordTime;
     }
 
@@ -58,9 +59,9 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class Logout {
-
-        private Member member;
+        private Long memberId;
         private String description;
+        private String ipAddress;
         private LocalDateTime recordTime;
     }
 
@@ -75,9 +76,10 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class IssueTemporaryPassword {
-        private Member member;
+        private Long memberId;
         private String temporaryPassword;
         private String description;
+        private String ipAddress;
         private LocalDateTime recordTime;
 
     }

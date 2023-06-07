@@ -1,5 +1,6 @@
-package com.study.badrequest.domain.login;
+package com.study.badrequest.domain.member;
 
+import com.study.badrequest.domain.login.Oauth2UserInformation;
 import com.study.badrequest.domain.login.company.Github;
 import com.study.badrequest.domain.login.company.Google;
 import com.study.badrequest.domain.login.company.Kakao;
@@ -9,7 +10,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.NoSuchElementException;
 @Getter
-public enum OauthProvider {
+public enum RegistrationType {
 
     GITHUB("Github") {
         @Override
@@ -38,7 +39,7 @@ public enum OauthProvider {
 
     private final String providerName;
 
-    OauthProvider(String providerName) {
+    RegistrationType(String providerName) {
         this.providerName = providerName;
     }
 
@@ -54,7 +55,7 @@ public enum OauthProvider {
                 .of(attributes);
     }
 
-    public static OauthProvider getOauth2UserInformation(String oauthProvider) {
+    public static RegistrationType getOauth2UserInformation(String oauthProvider) {
         return Arrays.stream(values())
                 .filter(oauthProvider1 -> oauthProvider1.providerName.equalsIgnoreCase(oauthProvider))
                 .findFirst()

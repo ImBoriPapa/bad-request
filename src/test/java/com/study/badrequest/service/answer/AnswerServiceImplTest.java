@@ -48,7 +48,7 @@ class AnswerServiceImplTest {
         Long memberId = 41L;
         Long questionId = 2154L;
         String contents = "답변 내용입니다.";
-        Member member = Member.createSelfRegisteredMember("email@email.com", "password1234", "01011111234", new MemberProfile("nickname", ProfileImage.createDefault("default")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password1234", "01011111234", new MemberProfile("nickname", ProfileImage.createDefaultImage("default")));
 
         Question question = Question.createQuestion()
                 .title("제목입니다.")
@@ -80,7 +80,7 @@ class AnswerServiceImplTest {
         Long memberId = 41L;
         Long questionId = 2154L;
         String contents = "답변 내용입니다.";
-        Member member = Member.createSelfRegisteredMember("email@email.com", "password1234", "01011111234", new MemberProfile("nickname", ProfileImage.createDefault("default")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password1234", "01011111234", new MemberProfile("nickname", ProfileImage.createDefaultImage("default")));
 
         Question question = Question.createQuestion()
                 .title("제목입니다.")

@@ -1,7 +1,7 @@
 package com.study.badrequest.repository.member.query;
 
 
-import com.study.badrequest.domain.login.OauthProvider;
+import com.study.badrequest.domain.member.RegistrationType;
 import com.study.badrequest.domain.member.Authority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +18,7 @@ public class MemberDetailDto {
     private String selfIntroduce;
     private String profileImage;
     private Authority authority;
-    private OauthProvider loginType;
+    private RegistrationType loginType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -10,16 +10,16 @@ import com.study.badrequest.dto.member.MemberResponse;
  * Delete(resignMember)
  */
 public interface MemberService {
-    MemberResponse.Create signupMember(MemberRequestForm.SignUp form, String ipAddress);
+    MemberResponse.Create processingMembershipByEmail(MemberRequestForm.SignUp form, String ipAddress);
 
     MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String email);
 
-    MemberResponse.Update updateContactProcessing(Long memberId, String contact);
+    MemberResponse.Update updateContactProcessing(Long memberId, String contact,String ipAddress);
 
-    MemberResponse.Update changePasswordProcessing(Long memberId, MemberRequestForm.ChangePassword form);
+    MemberResponse.Update changePasswordProcessing(Long memberId, MemberRequestForm.ChangePassword form,String ipAddress);
 
-    MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String email);
+    MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String email,String ipAddress);
 
-    MemberResponse.Delete resignMemberProcessing(Long memberId, String password);
+    MemberResponse.Delete resignMemberProcessing(Long memberId, String password,String ipAddress);
 
 }

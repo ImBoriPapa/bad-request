@@ -31,13 +31,14 @@ public class MemberResponse {
     @NoArgsConstructor
 
     @Getter
-    public static class SendAuthenticationEmail{
+    public static class SendAuthenticationEmail {
         private String email;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime startedAt;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime expiredAt;
-        public SendAuthenticationEmail(String email,LocalDateTime createdAt,LocalDateTime expiredAt) {
+
+        public SendAuthenticationEmail(String email, LocalDateTime createdAt, LocalDateTime expiredAt) {
             this.email = email;
             this.startedAt = createdAt;
             this.expiredAt = expiredAt;
@@ -73,16 +74,15 @@ public class MemberResponse {
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class TemporaryPassword {
 
         private String email;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime issuedAt;
 
-        public TemporaryPassword(Member member) {
-            this.email = member.getEmail();
-            this.issuedAt = member.getUpdatedAt();
+        public TemporaryPassword(String email, LocalDateTime issuedAt) {
+            this.email = email;
+            this.issuedAt = issuedAt;
         }
     }
 
