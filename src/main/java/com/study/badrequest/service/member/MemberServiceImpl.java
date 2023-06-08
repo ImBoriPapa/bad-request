@@ -194,13 +194,10 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponse.Update(member);
     }
 
-    /**
-     * 비밀번호 변경
-     */
     @Transactional
     @Override
     public MemberResponse.Update changePasswordProcessing(Long memberId, MemberRequestForm.ChangePassword form, String ipAddress) {
-        log.info("Start Change Password processing => memberId: {}", memberId);
+        log.info("Change Password Processing memberId: {}", memberId);
 
         if (form.getCurrentPassword().equals(form.getNewPassword())) {
             throw new CustomRuntimeException(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
