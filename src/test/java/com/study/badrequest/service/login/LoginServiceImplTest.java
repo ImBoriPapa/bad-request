@@ -53,7 +53,7 @@ class LoginServiceImplTest {
         String ipAddress = "ipAddress";
         String accessToken = "";
         String refreshToken = "";
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createMemberWithEmail(email, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         JwtTokenDto jwtTokenDto = new JwtTokenDto(accessToken, refreshToken, LocalDateTime.now().plusMinutes(10), 60480000L);
 

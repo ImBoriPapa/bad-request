@@ -20,6 +20,6 @@ public interface MemberService {
 
     MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String email,String ipAddress);
 
-    MemberResponse.Delete resignMemberProcessing(Long memberId, String password,String ipAddress);
+    MemberResponse.Delete withdrawalMemberProcessing(Long memberId, String password, String ipAddress);
 
 }

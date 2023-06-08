@@ -185,7 +185,7 @@ public class MemberApiController {
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberResponse.Delete delete = memberService.resignMemberProcessing(memberId, form.getPassword(), ipAddress);
+        MemberResponse.Delete delete = memberService.withdrawalMemberProcessing(memberId, form.getPassword(), ipAddress);
 
         EntityModel<MemberResponse.Delete> deleteResultEntityModel = memberResponseModelAssembler.getDeleteModel(delete);
 

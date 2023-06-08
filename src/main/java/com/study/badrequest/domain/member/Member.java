@@ -149,6 +149,11 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void changeToWithDrawn() {
+        this.accountStatus = AccountStatus.WITHDRAWN;
+        this.deletedAt = LocalDateTime.now();
+    }
+
     public static Long getCreatedAtInChangeableId(String changeableId) {
         return Long.valueOf(changeableId.split("-")[5]);
     }

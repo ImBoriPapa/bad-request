@@ -214,30 +214,26 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponse.Update(member);
     }
 
-    /**
-     * 회원 탈퇴
-     * memberEventPublisher 로 이벤트 발행
-     */
     @Transactional
     @Override
-    public MemberResponse.Delete resignMemberProcessing(Long memberId, String password, String ipAddress) {
-        log.info("Start Resign Member Process => memberId: {}", memberId);
+    public MemberResponse.Delete withdrawalMemberProcessing(Long memberId, String password, String ipAddress) {
+        log.info("Withdrawal Member Process memberId: {}", memberId);
         Member member = findMemberById(memberId);
 
         passwordCheck(password, member.getPassword());
 
-        member.changeStatus(AccountStatus.WITHDRAWN);
+        member.changeToWithDrawn();
 
-        eventPublisher.publishEvent(new MemberEventDto.Delete(member.getId(), "회원 탈퇴 요청", ipAddress, LocalDateTime.now()));
+        eventPublisher.publishEvent(new MemberEventDto.Delete(member.getId(), "회원 탈퇴 요청", ipAddress, member.getDeletedAt()));
 
         return new MemberResponse.Delete();
     }
 
 
     private Member createMemberFromForm(String email, String password, String contact, String nickname) {
-        return Member.createMemberWithEmail(
-                email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage()))
-        );
+        ProfileImage defaultProfileImage = ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage());
+        MemberProfile memberProfile = new MemberProfile(nickname, defaultProfileImage);
+        return Member.createMemberWithEmail(email, password, contact, memberProfile);
     }
 
     private Member findMemberById(Long memberId) {
