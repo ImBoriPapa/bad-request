@@ -174,17 +174,19 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponse.SendAuthenticationEmail(emailAuthenticationCode.getEmail(), emailAuthenticationCode.getCreatedAt(), emailAuthenticationCode.getExpiredAt());
     }
 
-    /**
-     * 연락처 변경
-     */
     @Transactional
     @Override
-    public MemberResponse.Update updateContactProcessing(Long memberId, String contact, String ipAddress) {
+    public MemberResponse.Update changeContactProcessing(Long memberId, String contact, String ipAddress) {
         log.info("Update Member Contact memberId: {}, contact: {}", memberId, contact);
 
         contactDuplicationVerification(contact);
 
         Member member = findMemberById(memberId);
+
+        if (member.getAccountStatus() == AccountStatus.WITHDRAWN) {
+            throw new CustomRuntimeException(NOTFOUND_MEMBER);
+        }
+
         member.changeContact(contact);
 
         eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "연락처 변경", ipAddress, member.getUpdatedAt()));

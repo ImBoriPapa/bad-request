@@ -14,7 +14,7 @@ public interface MemberService {
 
     MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String email);
 
-    MemberResponse.Update updateContactProcessing(Long memberId, String contact,String ipAddress);
+    MemberResponse.Update changeContactProcessing(Long memberId, String contact, String ipAddress);
 
     MemberResponse.Update changePasswordProcessing(Long memberId, MemberRequestForm.ChangePassword form,String ipAddress);
 

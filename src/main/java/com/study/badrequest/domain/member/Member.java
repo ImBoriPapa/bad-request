@@ -141,10 +141,12 @@ public class Member {
     public void changePassword(String password) {
         this.password = password;
         this.accountStatus = AccountStatus.STEADY;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void changeContact(String contact) {
         this.contact = contact;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public static Long getCreatedAtInChangeableId(String changeableId) {

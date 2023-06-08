@@ -156,7 +156,7 @@ public class MemberApiController {
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberResponse.Update update = memberService.updateContactProcessing(memberId, form.getContact(), ipAddress);
+        MemberResponse.Update update = memberService.changeContactProcessing(memberId, form.getContact(), ipAddress);
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
