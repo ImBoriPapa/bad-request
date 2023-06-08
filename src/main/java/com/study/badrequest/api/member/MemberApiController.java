@@ -47,7 +47,7 @@ public class MemberApiController {
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
-        MemberResponse.Create create = memberService.processingMembershipByEmail(form, ipAddress);
+        MemberResponse.Create create = memberService.signupMemberProcessingByEmail(form, ipAddress);
 
         URI locationUri = memberResponseModelAssembler.getLocationUri(create.getId());
 

@@ -13,12 +13,14 @@ import com.study.badrequest.repository.member.TemporaryPasswordRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,13 +46,14 @@ public class MemberServiceImpl implements MemberService {
      */
     @Override
     @Transactional
-    public MemberResponse.Create processingMembershipByEmail(MemberRequestForm.SignUp form, String ipAddress) {
-        log.info("Processing Membership By Email \n " +
+    public MemberResponse.Create signupMemberProcessingByEmail(MemberRequestForm.SignUp form, String ipAddress) {
+        log.info("SignUp Member Processing By Email \n " +
                 "email    : {}\n" +
                 "nickname : {}\n" +
                 "password : PROTECTED \n" +
                 "contact  : {} \n" +
-                "authenticationCode : {}", form.getEmail(), form.getNickname(), form.getContact(), form.getAuthenticationCode());
+                "authenticationCode : {} \n" +
+                "requested At: {}", form.getEmail(), form.getNickname(), form.getContact(), form.getAuthenticationCode(), LocalDateTime.now());
 
         final String email = form.getEmail().toLowerCase();
         final String encodedPassword = passwordEncoder.encode(form.getPassword());
@@ -113,19 +116,38 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String email, String ipAddress) {
-        log.info("Start issuing temporary passwords email: {}", email);
+    public MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String requestedEmail, String ipAddress) {
+        log.info("issuing temporary passwords email: {}", requestedEmail);
 
-        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+        final String email = requestedEmail.toLowerCase();
 
-        final String temporaryPassword = UUID.randomUUID().toString().replace("-", "");
+        List<Member> members = memberRepository.findMembersByEmail(email);
 
-        TemporaryPassword savedPassword = temporaryPasswordRepository.save(TemporaryPassword.createTemporaryPassword(passwordEncoder.encode(temporaryPassword), member));
+        if (members.isEmpty()) {
+            throw new CustomRuntimeException(NOTFOUND_MEMBER);
+        }
 
-        eventPublisher.publishEvent(new MemberEventDto.IssueTemporaryPassword(
-                member.getId(), temporaryPassword, "임시 비밀번호 발급", ipAddress, savedPassword.getCreatedAt()));
+        Member activeMember = getActiveMember(members);
 
-        return new MemberResponse.TemporaryPassword(member.getEmail(), savedPassword.getCreatedAt());
+        final String rawTemporaryPassword = generateTemporaryPassword();
+        final String encodedTemporaryPassword = passwordEncoder.encode(rawTemporaryPassword);
+
+        TemporaryPassword savedPassword = temporaryPasswordRepository.save(TemporaryPassword.createTemporaryPassword(encodedTemporaryPassword, activeMember));
+
+        eventPublisher.publishEvent(new MemberEventDto.IssueTemporaryPassword(activeMember.getId(), rawTemporaryPassword, "임시 비밀번호 발급", ipAddress, savedPassword.getCreatedAt()));
+
+        return new MemberResponse.TemporaryPassword(activeMember.getEmail(), savedPassword.getCreatedAt());
+    }
+
+    private String generateTemporaryPassword() {
+        return UUID.randomUUID().toString().replace("-", "");
+    }
+
+    private Member getActiveMember(List<Member> members) {
+        return members.stream()
+                .filter(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN)
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
     }
 
     @Override

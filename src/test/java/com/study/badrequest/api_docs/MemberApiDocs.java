@@ -156,7 +156,7 @@ public class MemberApiDocs {
         EntityModel<MemberResponse.Create> entityModel = EntityModel.of(createForm, links);
         //when
         MemberRequestForm.SignUp signUpForm = new MemberRequestForm.SignUp(email, password, nickname, contact, "938304");
-        given(memberService.processingMembershipByEmail(any(),any())).willReturn(createForm);
+        given(memberService.signupMemberProcessingByEmail(any(),any())).willReturn(createForm);
 
         given(memberResponseModelAssembler.getLocationUri(any())).willReturn(locationUri);
         given(memberResponseModelAssembler.createMemberModel(any())).willReturn(entityModel);

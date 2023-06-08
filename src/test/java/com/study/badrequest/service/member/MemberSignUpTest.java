@@ -5,18 +5,14 @@ import com.study.badrequest.domain.member.*;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.member.EmailAuthenticationCodeRepository;
-import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.utils.image.ImageUploader;
+
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -29,19 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class MemberSignUpTest {
-    @InjectMocks
-    private MemberServiceImpl memberService;
-    @Mock
-    private PasswordEncoder passwordEncoder;
-    @Mock
-    private MemberRepository memberRepository;
-    @Mock
-    private EmailAuthenticationCodeRepository emailAuthenticationCodeRepository;
-    @Mock
-    private ImageUploader imageUploader;
-    @Mock
-    private ApplicationEventPublisher eventPublisher;
+class MemberSignUpTest extends MemberServiceTestBase {
 
     @Test
     @DisplayName("회원 생성 실패 테스트: 이메일 중복")
@@ -61,7 +45,7 @@ class MemberSignUpTest {
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
         //then
-        assertThatThrownBy(() -> memberService.processingMembershipByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.DUPLICATE_EMAIL.getMessage());
     }
@@ -84,7 +68,7 @@ class MemberSignUpTest {
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(members);
         //then
-        assertThatThrownBy(() -> memberService.processingMembershipByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.DUPLICATE_CONTACT.getMessage());
     }
@@ -106,7 +90,7 @@ class MemberSignUpTest {
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.empty());
         //then
-        assertThatThrownBy(() -> memberService.processingMembershipByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOTFOUND_AUTHENTICATION_EMAIL.getMessage());
         verify(emailAuthenticationCodeRepository).findByEmail(email);
@@ -131,7 +115,7 @@ class MemberSignUpTest {
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
         //then
-        assertThatThrownBy(() -> memberService.processingMembershipByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.WRONG_EMAIL_AUTHENTICATION_CODE.getMessage());
     }
@@ -156,7 +140,7 @@ class MemberSignUpTest {
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
 
         //then
-        assertThatThrownBy(() -> memberService.processingMembershipByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOTFOUND_AUTHENTICATION_EMAIL.getMessage());
     }
@@ -179,7 +163,7 @@ class MemberSignUpTest {
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
         given(memberRepository.save(any())).willReturn(member);
-        memberService.processingMembershipByEmail(form, ipAddress);
+        memberService.signupMemberProcessingByEmail(form, ipAddress);
         //then
         verify(memberRepository).findMembersByEmail(email);
         verify(memberRepository).findMembersByContact(contact);

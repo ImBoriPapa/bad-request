@@ -71,9 +71,9 @@ public class MemberEventListener {
     public void handleIssueTemporaryPassword(MemberEventDto.IssueTemporaryPassword dto) {
         log.info("회원 임시 비밀번호 이벤트 ");
 
-        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.ISSUE_TEMPORARY_PASSWORD, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
-
         mailService.sendTemporaryPassword(dto.getMemberId(), dto.getTemporaryPassword());
+
+        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.ISSUE_TEMPORARY_PASSWORD, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
         recordService.recordMemberInformation(memberRecordRequest);
     }
 

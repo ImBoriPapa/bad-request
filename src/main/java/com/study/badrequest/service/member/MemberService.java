@@ -10,7 +10,7 @@ import com.study.badrequest.dto.member.MemberResponse;
  * Delete(resignMember)
  */
 public interface MemberService {
-    MemberResponse.Create processingMembershipByEmail(MemberRequestForm.SignUp form, String ipAddress);
+    MemberResponse.Create signupMemberProcessingByEmail(MemberRequestForm.SignUp form, String ipAddress);
 
     MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String email);
 
