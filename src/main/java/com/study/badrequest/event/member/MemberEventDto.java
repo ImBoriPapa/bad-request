@@ -69,7 +69,8 @@ public class MemberEventDto {
     @AllArgsConstructor
     @Getter
     public static class SendAuthenticationMail {
-        private EmailAuthenticationCode authenticationCode;
+        private String email;
+        private String code;
     }
 
     @NoArgsConstructor

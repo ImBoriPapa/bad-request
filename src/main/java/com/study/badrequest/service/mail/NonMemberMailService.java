@@ -6,5 +6,5 @@ import com.study.badrequest.domain.member.EmailAuthenticationCode;
 
 
 public interface NonMemberMailService {
-    void sendAuthenticationMail(EmailAuthenticationCode authenticationCode);
+    void sendAuthenticationMail(String email,String code);
 }

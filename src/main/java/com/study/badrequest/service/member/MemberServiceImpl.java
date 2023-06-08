@@ -13,7 +13,6 @@ import com.study.badrequest.repository.member.TemporaryPasswordRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -152,26 +151,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String email) {
-        log.info("인증 메일 전송 시작 email: {}", email);
+    public MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String requestedEmail) {
+        log.info("Send Authentication Mail requestedEmail: {}", requestedEmail);
 
-        if (memberRepository.existsByEmail(email)) {
-            throw new CustomRuntimeException(DUPLICATE_EMAIL);
-        }
+        final String email = requestedEmail.toLowerCase();
 
-        EmailAuthenticationCode authenticationCode;
+        emailDuplicateVerification(email);
 
-        Optional<EmailAuthenticationCode> optional = emailAuthenticationCodeRepository.findByEmail(email);
+        final EmailAuthenticationCode emailAuthenticationCode;
 
-        if (optional.isPresent()) {
-            optional.get().replaceCode();
-            authenticationCode = optional.get();
+        Optional<EmailAuthenticationCode> optionalEmailAuthenticationCode = emailAuthenticationCodeRepository.findByEmail(email);
+
+        if (optionalEmailAuthenticationCode.isPresent()) {
+            optionalEmailAuthenticationCode.get().renewAuthenticationCode();
+            emailAuthenticationCode = optionalEmailAuthenticationCode.get();
         } else {
-            authenticationCode = new EmailAuthenticationCode(email);
+            emailAuthenticationCode = emailAuthenticationCodeRepository.save(new EmailAuthenticationCode(email));
         }
-        eventPublisher.publishEvent(new MemberEventDto.SendAuthenticationMail());
 
-        return new MemberResponse.SendAuthenticationEmail(authenticationCode.getEmail(), authenticationCode.getCreatedAt(), authenticationCode.getExpiredAt());
+        eventPublisher.publishEvent(new MemberEventDto.SendAuthenticationMail(emailAuthenticationCode.getEmail(), emailAuthenticationCode.getCode()));
+
+        return new MemberResponse.SendAuthenticationEmail(emailAuthenticationCode.getEmail(), emailAuthenticationCode.getCreatedAt(), emailAuthenticationCode.getExpiredAt());
     }
 
     /**

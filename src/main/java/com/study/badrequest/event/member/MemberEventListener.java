@@ -42,7 +42,7 @@ public class MemberEventListener {
     @EventListener
     public void handleSendAuthenticationEmail(MemberEventDto.SendAuthenticationMail dto) {
         log.info("인증 메일 발송 이벤트 ");
-        nonMemberMailService.sendAuthenticationMail(dto.getAuthenticationCode());
+        nonMemberMailService.sendAuthenticationMail(dto.getEmail(),dto.getCode());
     }
 
     @Async(RECORD_ASYNC_EXECUTOR)

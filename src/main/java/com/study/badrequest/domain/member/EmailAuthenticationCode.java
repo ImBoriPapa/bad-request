@@ -45,7 +45,7 @@ public class EmailAuthenticationCode {
         return String.format("%06d", anInt);
     }
 
-    public void replaceCode() {
+    public void renewAuthenticationCode() {
         this.code = generateCode();
         this.expiredAt = LocalDateTime.now().plusMinutes(5);
     }

@@ -35,18 +35,18 @@ public class NonMemberMailServiceImpl implements NonMemberMailService {
 
     @Override
     @Transactional
-    public void sendAuthenticationMail(EmailAuthenticationCode authenticationCode) {
-        log.info("비회원 이메일 인증 메일 발송 시작 수신인: {}", authenticationCode.getEmail());
+    public void sendAuthenticationMail(String email,String code) {
+        log.info("비회원 이메일 인증 메일 발송 시작 수신인: {}", email);
 
         sendMail(
-                authenticationCode.getEmail(),
+                email,
                 authenticationSubject,
                 mailSender.createMimeMessage(),
-                createAuthenticationMailBody(authenticationCode.getCode()),
-                NonMemberMail.createAuthenticationMail(authenticationCode.getEmail(), authenticationSubject)
+                createAuthenticationMailBody(code),
+                NonMemberMail.createAuthenticationMail(email, authenticationSubject)
         );
 
-        log.info("비회원 이메일 인증 메일 발송 완료 수신인: {}", authenticationCode.getEmail());
+        log.info("비회원 이메일 인증 메일 발송 완료");
     }
 
     private void sendMail(String email, String subject, MimeMessage mimeMessage, String mailText, NonMemberMail nonMemberMail) {
