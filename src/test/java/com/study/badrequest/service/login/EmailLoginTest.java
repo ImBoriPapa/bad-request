@@ -35,9 +35,9 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
 
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
-                .hasMessage(ApiResponseStatus.LOGIN_FAIL.getMessage());
+                .hasMessage(ApiResponseStatus.THIS_IS_NOT_REGISTERED_AS_MEMBER.getMessage());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
 
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS.getMessage());
     }
@@ -73,7 +73,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
 
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.THIS_IS_NOT_REGISTERED_AS_MEMBER.getMessage());
     }
@@ -91,7 +91,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(List.of(oauth2Member));
 
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.ALREADY_REGISTERED_BY_OAUTH2.getMessage());
     }
@@ -112,7 +112,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
 
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.IS_NOT_CONFIRMED_MAIL.getMessage());
     }
@@ -134,7 +134,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.empty());
 
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOT_FOUND_TEMPORARY_PASSWORD.getMessage());
     }
@@ -158,7 +158,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.of(temporaryPassword));
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.IS_EXPIRED_TEMPORARY_PASSWORD.getMessage());
     }
@@ -182,7 +182,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.of(temporaryPassword));
         given(passwordEncoder.matches(any(), any())).willReturn(false);
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.LOGIN_FAIL.getMessage());
     }
@@ -206,7 +206,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(passwordEncoder.matches(any(), any())).willReturn(false);
         //then
-        assertThatThrownBy(() -> loginService.emailLogin(requestedEmail, password, ipAddress))
+        assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.LOGIN_FAIL.getMessage());
     }
@@ -246,7 +246,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(jwtUtils.generateJwtTokens(any())).willReturn(tokenDto);
         given(redisRefreshTokenRepository.save(any())).willReturn(refreshToken);
-        loginService.emailLogin(requestedEmail, password, ipAddress);
+        loginService.emailLoginProcessing(requestedEmail, password, ipAddress);
         //then
         verify(memberRepository).findMembersByEmail(requestedEmail);
         verify(temporaryPasswordRepository).findByMember(member);
@@ -255,6 +255,5 @@ public class EmailLoginTest extends LoginServiceTestBase {
         verify(jwtUtils).generateJwtTokens(member.getChangeableId());
         verify(redisRefreshTokenRepository).save(any());
         verify(eventPublisher).publishEvent(new MemberEventDto.Login(any(), "이메일 로그인", ipAddress, LocalDateTime.now()));
-
     }
 }

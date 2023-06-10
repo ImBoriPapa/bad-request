@@ -1,7 +1,6 @@
 package com.study.badrequest.api_docs;
 
 import com.study.badrequest.api.login.LoginController;
-import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.member.MemberProfile;
 import com.study.badrequest.domain.member.ProfileImage;
@@ -84,7 +83,7 @@ public class LoginApiDocs {
         LoginResponse.LoginDto loginDto = new LoginResponse.LoginDto(523L, ACCESS_TOKEN_PREFIX + "accessToken", tokenCookie, LocalDateTime.now());
 
         //when
-        given(loginService.emailLogin(any(), any(), any())).willReturn(loginDto);
+        given(loginService.emailLoginProcessing(any(), any(), any())).willReturn(loginDto);
 
         //then
         mockMvc.perform(post(EMAIL_LOGIN_URL)

@@ -52,7 +52,7 @@ public class LoginController {
             throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
         }
 
-        LoginResponse.LoginDto dto = loginService.emailLogin(form.getEmail(), form.getPassword(), ipAddressResolver(request));
+        LoginResponse.LoginDto dto = loginService.emailLoginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
 
         EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(dto.getId(), dto.getLoggedIn()));
 

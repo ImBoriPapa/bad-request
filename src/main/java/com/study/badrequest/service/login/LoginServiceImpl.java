@@ -40,6 +40,7 @@ import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.domain.member.RegistrationType.*;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
 
@@ -59,31 +60,36 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public LoginResponse.LoginDto emailLogin(String requestedEmail, String password, String ipAddress) {
-        log.info("이메일 로그인 : {}", requestedEmail);
+    public LoginResponse.LoginDto emailLoginProcessing(String requestedEmail, String password, String ipAddress) {
+        log.info("Login By Email requestedEmail: {}", requestedEmail);
 
         final String email = EmailUtils.convertDomainToLowercase(requestedEmail);
 
         List<Member> members = memberRepository.findMembersByEmail(email);
 
-        List<Member> activeMembers = members.stream()
-                .filter(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN)
-                .collect(Collectors.toList());
+        List<Member> activeMembers = findActiveMembers(members);
 
-        if (activeMembers.size() > 1) {
-            Object array = activeMembers.stream().map(Member::getId).toArray();
-            log.error("Duplicate Email members Occurrence ids: {}", array);
-            throw new CustomRuntimeException(FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS);
-        }
+        emailDuplicationMemberVerification(activeMembers);
 
-        Member activeMember = activeMembers.stream()
-                .findFirst()
-                .orElseThrow(() -> new CustomRuntimeException(THIS_IS_NOT_REGISTERED_AS_MEMBER));
+        Member activeMember = findActiveMember(activeMembers);
 
-        if (activeMember.getRegistrationType() != RegistrationType.BAD_REQUEST) {
-            throw new CustomRuntimeException(ALREADY_REGISTERED_BY_OAUTH2);
-        }
+        registrationTypeVerification(activeMember.getRegistrationType(), BAD_REQUEST);
 
+        verifyingPasswordsByAccountStatus(password, activeMember);
+
+        activeMember.setLastLoginIP(ipAddress);
+
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(activeMember.getChangeableId());
+
+        RefreshToken refreshToken = createNewRefreshToken(activeMember, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill());
+
+        eventPublisher.publishEvent(new MemberEventDto.Login(activeMember.getId(), "이메일 로그인", ipAddress, LocalDateTime.now()));
+
+        return createLoginDto(activeMember, jwtTokenDto, refreshToken);
+
+    }
+
+    private void verifyingPasswordsByAccountStatus(String password, Member activeMember) {
         switch (activeMember.getAccountStatus()) {
             case ACTIVE:
                 compareRequestedPasswordWithStored(password, activeMember.getPassword());
@@ -94,9 +100,32 @@ public class LoginServiceImpl implements LoginService {
             case REQUIRED_MAIL_CONFIRMED:
                 throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
         }
+    }
 
-        return getLoginDto(ipAddress, activeMember);
+    private void registrationTypeVerification(RegistrationType targetType,RegistrationType expectedType) {
+        if (targetType != expectedType) {
+            throw new CustomRuntimeException(ALREADY_REGISTERED_BY_OAUTH2);
+        }
+    }
 
+    private Member findActiveMember(List<Member> activeMembers) {
+        return activeMembers.stream()
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(THIS_IS_NOT_REGISTERED_AS_MEMBER));
+    }
+
+    private static void emailDuplicationMemberVerification(List<Member> activeMembers) {
+        if (activeMembers.size() > 1) {
+            Object array = activeMembers.stream().map(Member::getId).toArray();
+            log.error("Duplicate Email members Occurrence ids: {}", array);
+            throw new CustomRuntimeException(FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS);
+        }
+    }
+
+    private List<Member> findActiveMembers(List<Member> members) {
+        return members.stream()
+                .filter(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN)
+                .collect(Collectors.toList());
     }
 
     private void checkTemporaryPassword(String password, Member member) {
@@ -113,18 +142,6 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    private LoginResponse.LoginDto getLoginDto(String ipAddress, Member member) {
-        //토큰 생성
-        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
-        //RefreshToken 저장
-        RefreshToken refreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(),jwtTokenDto.getRefreshTokenExpirationMill());
-        //요청 IP 저장
-        member.setLastLoginIP(ipAddress);
-
-        eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "이메일 로그인", ipAddress, LocalDateTime.now()));
-
-        return createLoginDto(member, jwtTokenDto, refreshToken);
-    }
 
     @Override
     @Transactional
@@ -150,7 +167,7 @@ public class LoginServiceImpl implements LoginService {
         //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "1회용 인증 코드 로그인", ipAddress, LocalDateTime.now()));
 
-        return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto.getRefreshToken(),jwtTokenDto.getRefreshTokenExpirationMill()));
+        return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill()));
 
     }
 
@@ -217,7 +234,7 @@ public class LoginServiceImpl implements LoginService {
         //8. 새로운 토큰 생성
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //9  새로운 Refresh 토큰 저장
-        RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(),jwtTokenDto.getRefreshTokenExpirationMill());
+        RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill());
         //10. 기존 인증정보 삭제
         SecurityContextHolder.clearContext();
 
@@ -247,7 +264,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
-    private RefreshToken createNewRefreshToken(Member member, String refreshToken,long expiration) {
+    private RefreshToken createNewRefreshToken(Member member, String refreshToken, long expiration) {
         RefreshToken token = RefreshToken.createRefresh()
                 .changeableId(member.getChangeableId())
                 .memberId(member.getId())

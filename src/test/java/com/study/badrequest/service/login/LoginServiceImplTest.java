@@ -67,7 +67,7 @@ class LoginServiceImplTest {
         when(memberRepository.findByEmail(any())).thenReturn(Optional.of(member));
         when(jwtUtils.generateJwtTokens(any())).thenReturn(jwtTokenDto);
         when(redisRefreshTokenRepository.save(any())).thenReturn(tokenEntity);
-        LoginResponse.LoginDto loginDto = loginService.emailLogin(email, password, ipAddress);
+        LoginResponse.LoginDto loginDto = loginService.emailLoginProcessing(email, password, ipAddress);
         //then
         verify(memberRepository).findByEmail(email);
     }
