@@ -1,13 +1,10 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.DisposalAuthenticationCode;
+import com.study.badrequest.domain.member.*;
 import com.study.badrequest.domain.login.RefreshToken;
 
 
-import com.study.badrequest.domain.member.AccountStatus;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.TemporaryPassword;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 
@@ -20,6 +17,7 @@ import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.member.TemporaryPasswordRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.utils.email.EmailUtils;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
@@ -35,15 +33,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
-
 
 
 @Service
@@ -59,45 +57,59 @@ public class LoginServiceImpl implements LoginService {
     private final DisposalAuthenticationRepository disposalAuthenticationRepository;
     private final TemporaryPasswordRepository temporaryPasswordRepository;
 
-
     @Override
     @Transactional
-    public LoginResponse.LoginDto emailLogin(String email, String password, String ipAddress) {
-        log.info("이메일 로그인 : {}", email);
-        //이메일 확인
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.LOGIN_FAIL));
+    public LoginResponse.LoginDto emailLogin(String requestedEmail, String password, String ipAddress) {
+        log.info("이메일 로그인 : {}", requestedEmail);
 
-        if (member.getAccountStatus() == AccountStatus.PASSWORD_IS_TEMPORARY) {
-            checkTemporary(password, member);
-            return getLoginDto(ipAddress, member);
+        final String email = EmailUtils.convertDomainToLowercase(requestedEmail);
+
+        List<Member> members = memberRepository.findMembersByEmail(email);
+
+        List<Member> activeMembers = members.stream()
+                .filter(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN)
+                .collect(Collectors.toList());
+
+        if (activeMembers.size() > 1) {
+            Object array = activeMembers.stream().map(Member::getId).toArray();
+            log.error("Duplicate Email members Occurrence ids: {}", array);
+            throw new CustomRuntimeException(FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS);
         }
 
-        if (member.getAccountStatus() == AccountStatus.REQUIRED_MAIL_CONFIRMED) {
-            throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
+        Member activeMember = activeMembers.stream()
+                .findFirst()
+                .orElseThrow(() -> new CustomRuntimeException(THIS_IS_NOT_REGISTERED_AS_MEMBER));
+
+        if (activeMember.getRegistrationType() != RegistrationType.BAD_REQUEST) {
+            throw new CustomRuntimeException(ALREADY_REGISTERED_BY_OAUTH2);
         }
 
-        compareRequestedPasswordWithStored(password, member.getPassword());
-        return getLoginDto(ipAddress, member);
+        switch (activeMember.getAccountStatus()) {
+            case ACTIVE:
+                compareRequestedPasswordWithStored(password, activeMember.getPassword());
+                break;
+            case PASSWORD_IS_TEMPORARY:
+                checkTemporaryPassword(password, activeMember);
+                break;
+            case REQUIRED_MAIL_CONFIRMED:
+                throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
+        }
+
+        return getLoginDto(ipAddress, activeMember);
 
     }
 
-    private void checkTemporary(String password, Member member) {
+    private void checkTemporaryPassword(String password, Member member) {
         //임시 비밀번호 확인
+        TemporaryPassword temporaryPassword = temporaryPasswordRepository.findByMember(member)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_TEMPORARY_PASSWORD));
 
-        if (member.getAccountStatus() == AccountStatus.PASSWORD_IS_TEMPORARY) {
-
-            TemporaryPassword temporaryPassword = temporaryPasswordRepository.findByMember(member)
-                    .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_TEMPORARY_PASSWORD));
-
-            if (temporaryPassword.getExpiredDate().equals(LocalDate.now()) || temporaryPassword.getExpiredDate().isAfter(LocalDate.now())) {
-                throw new CustomRuntimeException(IS_EXPIRED_TEMPORARY_PASSWORD);
-            }
-            //비밀번호 확인
-            if (!passwordEncoder.matches(password, temporaryPassword.getPassword())) {
-                throw new CustomRuntimeException(LOGIN_FAIL);
-            }
-
+        if (LocalDateTime.now().isAfter(temporaryPassword.getExpiredAt())) {
+            throw new CustomRuntimeException(IS_EXPIRED_TEMPORARY_PASSWORD);
+        }
+        //비밀번호 확인
+        if (!passwordEncoder.matches(password, temporaryPassword.getPassword())) {
+            throw new CustomRuntimeException(LOGIN_FAIL);
         }
     }
 
@@ -105,11 +117,11 @@ public class LoginServiceImpl implements LoginService {
         //토큰 생성
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //RefreshToken 저장
-        RefreshToken refreshToken = createNewRefreshToken(member, jwtTokenDto);
+        RefreshToken refreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(),jwtTokenDto.getRefreshTokenExpirationMill());
         //요청 IP 저장
         member.setLastLoginIP(ipAddress);
 
-        eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "일반 로그인", ipAddress, LocalDateTime.now()));
+        eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "이메일 로그인", ipAddress, LocalDateTime.now()));
 
         return createLoginDto(member, jwtTokenDto, refreshToken);
     }
@@ -138,7 +150,7 @@ public class LoginServiceImpl implements LoginService {
         //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "1회용 인증 코드 로그인", ipAddress, LocalDateTime.now()));
 
-        return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto));
+        return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto.getRefreshToken(),jwtTokenDto.getRefreshTokenExpirationMill()));
 
     }
 
@@ -205,7 +217,7 @@ public class LoginServiceImpl implements LoginService {
         //8. 새로운 토큰 생성
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
         //9  새로운 Refresh 토큰 저장
-        RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto);
+        RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(),jwtTokenDto.getRefreshTokenExpirationMill());
         //10. 기존 인증정보 삭제
         SecurityContextHolder.clearContext();
 
@@ -235,13 +247,13 @@ public class LoginServiceImpl implements LoginService {
     }
 
 
-    private RefreshToken createNewRefreshToken(Member member, JwtTokenDto jwtTokenDto) {
+    private RefreshToken createNewRefreshToken(Member member, String refreshToken,long expiration) {
         RefreshToken token = RefreshToken.createRefresh()
                 .changeableId(member.getChangeableId())
                 .memberId(member.getId())
-                .token(jwtTokenDto.getRefreshToken())
+                .token(refreshToken)
                 .authority(member.getAuthority())
-                .expiration(jwtTokenDto.getRefreshTokenExpirationMill())
+                .expiration(expiration)
                 .build();
         return redisRefreshTokenRepository.save(token);
     }

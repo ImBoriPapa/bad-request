@@ -84,7 +84,7 @@ public class Member {
                 .contact(contact)
                 .memberProfile(memberProfile)
                 .authority(Authority.MEMBER)
-                .accountStatus(AccountStatus.STEADY)
+                .accountStatus(AccountStatus.ACTIVE)
                 .build();
     }
 
@@ -97,7 +97,7 @@ public class Member {
                 .contact(null)
                 .authority(Authority.MEMBER)
                 .memberProfile(memberProfile)
-                .accountStatus(AccountStatus.STEADY)
+                .accountStatus(AccountStatus.ACTIVE)
                 .build();
     }
 
@@ -140,7 +140,7 @@ public class Member {
 
     public void changePassword(String password) {
         this.password = password;
-        this.accountStatus = AccountStatus.STEADY;
+        this.accountStatus = AccountStatus.ACTIVE;
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -177,4 +177,5 @@ public class Member {
         this.memberProfile.getProfileImage().replaceProfileImage(storeFilName, imageLocation, size);
         this.updatedAt = LocalDateTime.now();
     }
+
 }

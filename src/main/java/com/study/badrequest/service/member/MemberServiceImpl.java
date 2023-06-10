@@ -10,6 +10,7 @@ import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.EmailAuthenticationCodeRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.member.TemporaryPasswordRepository;
+import com.study.badrequest.utils.email.EmailUtils;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +55,7 @@ public class MemberServiceImpl implements MemberService {
                 "authenticationCode : {} \n" +
                 "requested At: {}", form.getEmail(), form.getNickname(), form.getContact(), form.getAuthenticationCode(), LocalDateTime.now());
 
-        final String email = form.getEmail().toLowerCase();
+        final String email = EmailUtils.convertDomainToLowercase(form.getEmail());
         final String encodedPassword = passwordEncoder.encode(form.getPassword());
         final String contact = form.getContact();
         final String nickname = form.getNickname();
@@ -154,7 +155,7 @@ public class MemberServiceImpl implements MemberService {
     public MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String requestedEmail) {
         log.info("Send Authentication Mail requestedEmail: {}", requestedEmail);
 
-        final String email = requestedEmail.toLowerCase();
+        final String email = EmailUtils.convertDomainToLowercase(requestedEmail);
 
         emailDuplicateVerification(email);
 

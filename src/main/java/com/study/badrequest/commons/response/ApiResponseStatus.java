@@ -13,7 +13,9 @@ public enum ApiResponseStatus {
     ERROR(1002, "서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(1003, "요청 값 검증에 실패했습니다.", HttpStatus.BAD_REQUEST),
     PERMISSION_DENIED(1004, "접근 권한이 없습니다.", HttpStatus.BAD_REQUEST),
-    BANNED_WORD(1005, "사용 금지된 단어를 사용하였습니다..", HttpStatus.BAD_REQUEST),
+    BANNED_WORD(1005, "사용 금지된 단어를 사용하였습니다.", HttpStatus.BAD_REQUEST),
+    INVALID_EMAIL_FORM(1006, "잘못된 이메일 형식입니다.", HttpStatus.BAD_REQUEST),
+    FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS(1007, "중복된 이메일로 활동중인 회원을 발견했습니다.", HttpStatus.BAD_REQUEST),
 
     /**
      * 파일 업로드 관련
@@ -29,20 +31,22 @@ public enum ApiResponseStatus {
      */
     IS_NOT_CONFIRMED_MAIL(1200, "이메일 인증 후 로그인 해주세요", HttpStatus.UNAUTHORIZED),
     IS_EXPIRED_TEMPORARY_PASSWORD(1201, "만료된 임시 비밀번호입니다.", HttpStatus.UNAUTHORIZED),
-    TOKEN_NOT_MATCH(1500, "저장된 토큰과 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_EMPTY(1501, "AccessToken 이 없습니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_EXPIRED(1502, "토큰의 유효기간이 만료되었S습니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_DENIED(1503, "잘못된 토큰입니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_ERROR(1504, "문제가 있는 토큰입니다.", HttpStatus.BAD_REQUEST),
-    REFRESH_COOKIE_IS_EMPTY(1505, "리프레시 토큰 쿠키를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
-    LOGIN_FAIL(1600, "로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
-    ALREADY_LOGOUT(1601, "로그아웃된 계정입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST),
-    WRONG_ONE_TIME_CODE(1602, "잘못된 1회용 인증 코드입니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
-    CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE(1603, "발급된 인증코드로 회원정보를 찾을 수 없습니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
-    EMPTY_ONE_TIME_CODE(1604, "발급된 인증코드와 필요합니다.. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    TOKEN_NOT_MATCH(1203, "저장된 토큰과 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
+    TOKEN_IS_EMPTY(1204, "AccessToken 이 없습니다.", HttpStatus.BAD_REQUEST),
+    TOKEN_IS_EXPIRED(1205, "토큰의 유효기간이 만료되었S습니다.", HttpStatus.BAD_REQUEST),
+    TOKEN_IS_DENIED(1206, "잘못된 토큰입니다.", HttpStatus.BAD_REQUEST),
+    TOKEN_IS_ERROR(1207, "문제가 있는 토큰입니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_COOKIE_IS_EMPTY(1208, "리프레시 토큰 쿠키를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    LOGIN_FAIL(129, "로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+    ALREADY_LOGOUT(1210, "로그아웃된 계정입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST),
+    WRONG_ONE_TIME_CODE(1211, "잘못된 1회용 인증 코드입니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE(1212, "발급된 인증코드로 회원정보를 찾을 수 없습니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    EMPTY_ONE_TIME_CODE(1213, "발급된 인증코드와 필요합니다.. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
     //OAUTH2
-    ALREADY_REGISTERED_OAUTH2_EMAIL(1700, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
-    ALREADY_REGISTERED_SELF_LOGIN_EMAIL(1701, "요청 하신 이메일은 Bad-Request 에서 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REGISTERED_BY_OAUTH2(1214, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REGISTERED_BY_EMAIL(1215, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    IS_WITHDRAWN_MEMBER(1216, "탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST),
+    THIS_IS_NOT_REGISTERED_AS_MEMBER(1217, "회원 가입되지 않은 이메일입니다.", HttpStatus.BAD_REQUEST),
     /**
      * 회원 관련
      * code: 2000~

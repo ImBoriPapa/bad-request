@@ -65,11 +65,11 @@ public class OauthUserDetailService extends DefaultOAuth2UserService {
     private MemberPrincipal renewOauth2Member(Oauth2UserInformation oauth2UserInformation, Member member) {
 
         if (member.getRegistrationType() == RegistrationType.BAD_REQUEST) {
-            throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_SELF_LOGIN_EMAIL);
+            throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_BY_EMAIL);
         }
 
         if (member.getRegistrationType() != getOauth2UserInformation(oauth2UserInformation.getProvider())) {
-            throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_OAUTH2_EMAIL);
+            throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_BY_OAUTH2);
         }
 
         if (member.updateOauthMember(oauth2UserInformation.getId(), oauth2UserInformation.getName())) {

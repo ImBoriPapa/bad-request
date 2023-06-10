@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,22 +17,27 @@ public class TemporaryPassword {
     private Long id;
     private String password;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
     private LocalDateTime createdAt;
-    private LocalDate expiredDate;
+    private LocalDateTime expiredAt;
 
-    protected TemporaryPassword(String password, Member member, LocalDateTime createdAt) {
+    protected TemporaryPassword(String password, Member member, LocalDateTime createdAt, LocalDateTime expiredAt) {
         this.password = password;
         this.member = member;
         this.createdAt = createdAt;
-        this.expiredDate = createdAt.plusDays(1).toLocalDate();
+        this.expiredAt = expiredAt;
     }
 
     public static TemporaryPassword createTemporaryPassword(String password, Member member) {
-        TemporaryPassword temporaryPassword = new TemporaryPassword(password, member, LocalDateTime.now());
+        LocalDateTime createdAt = LocalDateTime.now();
+        LocalDateTime expiredAt = createdAt.plusHours(24);
+        TemporaryPassword temporaryPassword = new TemporaryPassword(password, member, createdAt, expiredAt);
         member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
-
         return temporaryPassword;
     }
 
+    public void changeExpiredAt(LocalDateTime expiredAt) {
+        this.expiredAt = expiredAt;
+    }
 }
