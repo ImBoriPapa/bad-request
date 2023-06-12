@@ -16,10 +16,10 @@ public class HttpHeaderResolver {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
 
         if (bearerToken != null && bearerToken.startsWith(ACCESS_TOKEN_PREFIX)) {
-            log.debug("Resolve AccessToken Token ={}", bearerToken);
+            log.info("Resolve AccessToken Token ={}", bearerToken);
             return bearerToken.substring(7);
         }
-        log.debug("Resolve AccessToken Token = NULL");
+        log.info("Resolve AccessToken Token = NULL");
         return null;
     }
 

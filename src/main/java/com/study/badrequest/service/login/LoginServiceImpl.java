@@ -182,27 +182,20 @@ public class LoginServiceImpl implements LoginService {
     @Override
     @Transactional
     public LoginResponse.LogoutResult logoutProcessing(HttpServletRequest request, HttpServletResponse response) {
-        log.info("logoutProcessing accessToken");
+        log.info("Logout Processing");
         String accessToken = accessTokenResolver(request);
 
         if (accessToken == null) {
             throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
         }
 
-        switch (jwtUtils.validateToken(accessToken)) {
-            case ACCESS:
-                break;
-            case DENIED:
-                throw new CustomRuntimeException(PERMISSION_DENIED);
-            case EXPIRED:
-                throw new CustomRuntimeException(ACCESS_TOKEN_IS_EXPIRED);
-            case ERROR:
-                throw new CustomRuntimeException(ACCESS_TOKEN_IS_ERROR);
-        }
+        verifyingAccessToken(accessToken);
 
         String changeAbleId = jwtUtils.extractChangeableIdInToken(accessToken);
 
-        redisRefreshTokenRepository.findById(changeAbleId).ifPresent(redisRefreshTokenRepository::delete);
+        redisRefreshTokenRepository
+                .findById(changeAbleId)
+                .ifPresent(redisRefreshTokenRepository::delete);
 
         Member member = findMemberByChangeAbleId(changeAbleId);
         member.replaceChangeableId();
@@ -215,6 +208,17 @@ public class LoginServiceImpl implements LoginService {
         eventPublisher.publishEvent(new MemberEventDto.Logout(member.getId(), "로그아웃", null, LocalDateTime.now()));
 
         return new LoginResponse.LogoutResult();
+    }
+
+    private void verifyingAccessToken(String accessToken) {
+        switch (jwtUtils.validateToken(accessToken)) {
+            case DENIED:
+                throw new CustomRuntimeException(ACCESS_TOKEN_IS_DENIED);
+            case EXPIRED:
+                throw new CustomRuntimeException(ACCESS_TOKEN_IS_EXPIRED);
+            case ERROR:
+                throw new CustomRuntimeException(ACCESS_TOKEN_IS_ERROR);
+        }
     }
 
 
