@@ -138,7 +138,7 @@ public class LoginApiDocs {
 
         LoginRequest.LoginByOneTimeCode code = new LoginRequest.LoginByOneTimeCode(authenticationCode);
         //when
-        when(loginService.oneTimeAuthenticationCodeLogin(any(), any())).thenReturn(loginDto);
+        when(loginService.disposableAuthenticationCodeLoginProcessing(any(), any())).thenReturn(loginDto);
         //then
         mockMvc.perform(post(ONE_TIME_CODE_LOGIN)
                         .content(objectMapper.writeValueAsString(code))

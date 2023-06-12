@@ -117,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public MemberResponse.TemporaryPassword issueTemporaryPasswordProcessing(String requestedEmail, String ipAddress) {
-        log.info("issuing temporary passwords email: {}", requestedEmail);
+        log.info("Issuing Temporary Passwords email: {}", requestedEmail);
 
         final String email = requestedEmail.toLowerCase();
 

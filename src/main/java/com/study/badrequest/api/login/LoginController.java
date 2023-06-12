@@ -106,7 +106,7 @@ public class LoginController {
             throw new CustomRuntimeException(ApiResponseStatus.EMPTY_ONE_TIME_CODE);
         }
 
-        LoginResponse.LoginDto loginDto = loginService.oneTimeAuthenticationCodeLogin(form.getCode(), ipAddressResolver(request));
+        LoginResponse.LoginDto loginDto = loginService.disposableAuthenticationCodeLoginProcessing(form.getCode(), ipAddressResolver(request));
 
         EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getLoggedIn()));
 

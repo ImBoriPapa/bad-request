@@ -1,6 +1,5 @@
 package com.study.badrequest.domain.member;
 
-import com.study.badrequest.domain.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,25 +11,30 @@ import java.util.UUID;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "DISPOSAL_AUTHENTICATION_CODE",
-            indexes = {@Index(name = "CODE_IDX",columnList = "CODE")}
-        )
-public class DisposalAuthenticationCode {
+@Table(name = "disposable_authentication_code",
+        indexes = {@Index(name = "CODE_IDX", columnList = "CODE")}
+)
+public class DisposableAuthenticationCode {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "CODE")
+    @Column(name = "code")
     private String code;
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @JoinColumn(name = "member_id")
     private Member member;
-    @Column(name = "CREATED_AT")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    public DisposalAuthenticationCode(Member member) {
+
+    protected DisposableAuthenticationCode(String code, Member member, LocalDateTime createdAt) {
         this.code = UUID.randomUUID().toString();
         this.member = member;
         this.createdAt = LocalDateTime.now();
     }
 
+    public static DisposableAuthenticationCode createDisposableAuthenticationCode(Member member) {
+        final String code = UUID.randomUUID().toString();
+        return new DisposableAuthenticationCode(code, member, LocalDateTime.now());
+    }
 
 }

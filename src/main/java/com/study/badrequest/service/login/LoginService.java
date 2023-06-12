@@ -16,5 +16,5 @@ public interface LoginService {
 
     String getOneTimeAuthenticationCode(Long memberId);
 
-    LoginResponse.LoginDto oneTimeAuthenticationCodeLogin(String temporaryCode, String ipAddress);
+    LoginResponse.LoginDto disposableAuthenticationCodeLoginProcessing(String temporaryCode, String ipAddress);
 }

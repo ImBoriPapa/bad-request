@@ -65,13 +65,7 @@ public class LoginServiceImpl implements LoginService {
 
         final String email = EmailUtils.convertDomainToLowercase(requestedEmail);
 
-        List<Member> members = memberRepository.findMembersByEmail(email);
-
-        List<Member> activeMembers = findActiveMembers(members);
-
-        emailDuplicationMemberVerification(activeMembers);
-
-        Member activeMember = findActiveMember(activeMembers);
+        Member activeMember = findActiveMemberByEmail(email);
 
         registrationTypeVerification(activeMember.getRegistrationType(), BAD_REQUEST);
 
@@ -89,6 +83,16 @@ public class LoginServiceImpl implements LoginService {
 
     }
 
+    private Member findActiveMemberByEmail(String email) {
+        List<Member> members = memberRepository.findMembersByEmail(email);
+
+        List<Member> activeMembers = findActiveMembers(members);
+
+        emailDuplicationMemberVerification(activeMembers);
+
+        return findActiveMember(activeMembers);
+    }
+
     private void verifyingPasswordsByAccountStatus(String password, Member activeMember) {
         switch (activeMember.getAccountStatus()) {
             case ACTIVE:
@@ -102,7 +106,7 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    private void registrationTypeVerification(RegistrationType targetType,RegistrationType expectedType) {
+    private void registrationTypeVerification(RegistrationType targetType, RegistrationType expectedType) {
         if (targetType != expectedType) {
             throw new CustomRuntimeException(ALREADY_REGISTERED_BY_OAUTH2);
         }
@@ -114,7 +118,7 @@ public class LoginServiceImpl implements LoginService {
                 .orElseThrow(() -> new CustomRuntimeException(THIS_IS_NOT_REGISTERED_AS_MEMBER));
     }
 
-    private static void emailDuplicationMemberVerification(List<Member> activeMembers) {
+    private void emailDuplicationMemberVerification(List<Member> activeMembers) {
         if (activeMembers.size() > 1) {
             Object array = activeMembers.stream().map(Member::getId).toArray();
             log.error("Duplicate Email members Occurrence ids: {}", array);
@@ -145,30 +149,34 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public LoginResponse.LoginDto oneTimeAuthenticationCodeLogin(String code, String ipAddress) {
-        log.info("1회용 인증 코드로 로그인 ");
+    public LoginResponse.LoginDto disposableAuthenticationCodeLoginProcessing(String code, String ipAddress) {
+        log.info("Login By Disposable AuthenticationCode");
 
-        Optional<DisposalAuthenticationCode> optionalAuthenticationCode = disposalAuthenticationRepository.findByCode(code);
+        Optional<DisposableAuthenticationCode> optionalAuthenticationCode = disposalAuthenticationRepository.findByCode(code);
 
         if (optionalAuthenticationCode.isEmpty()) {
             throw new CustomRuntimeException(WRONG_ONE_TIME_CODE);
         }
 
-        DisposalAuthenticationCode authenticationCode = optionalAuthenticationCode.get();
+        DisposableAuthenticationCode authenticationCode = optionalAuthenticationCode.get();
+        final Long memberId = authenticationCode.getMember().getId();
 
-        Member member = memberRepository.findById(authenticationCode.getMember().getId())
-                .orElseThrow(() -> new CustomRuntimeException(CAN_NOT_FIND_MEMBER_BY_ONE_TIME_CODE));
+        Member member = findMemberByIdOrElseThrowRuntimeException(memberId, CAN_NOT_FIND_MEMBER_BY_DISPOSABLE_AUTHENTICATION_CODE);
         member.setLastLoginIP(ipAddress);
 
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
 
         disposalAuthenticationRepository.deleteById(authenticationCode.getId());
 
-        //After Commit
         eventPublisher.publishEvent(new MemberEventDto.Login(member.getId(), "1회용 인증 코드 로그인", ipAddress, LocalDateTime.now()));
 
         return createLoginDto(member, jwtTokenDto, createNewRefreshToken(member, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill()));
 
+    }
+
+    private Member findMemberByIdOrElseThrowRuntimeException(Long memberId, ApiResponseStatus status) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomRuntimeException(status));
     }
 
     @Override
@@ -286,7 +294,8 @@ public class LoginServiceImpl implements LoginService {
     public String getOneTimeAuthenticationCode(Long memberId) {
         log.info("일회용 인증 코드 생성");
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-        return disposalAuthenticationRepository.save(new DisposalAuthenticationCode(member)).getCode();
+        DisposableAuthenticationCode disposableAuthenticationCode = DisposableAuthenticationCode.createDisposableAuthenticationCode(member);
+        return disposalAuthenticationRepository.save(disposableAuthenticationCode).getCode();
 
     }
 
