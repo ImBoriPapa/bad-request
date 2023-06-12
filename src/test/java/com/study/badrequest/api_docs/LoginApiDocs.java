@@ -189,7 +189,7 @@ public class LoginApiDocs {
 
         LoginResponse.LoginDto loginDto = new LoginResponse.LoginDto(523L, newAccessToken, tokenCookie, LocalDateTime.now());
         //when
-        when(loginService.reissueToken(any(), any())).thenReturn(loginDto);
+        when(loginService.reissueTokenProcessing(any(), any())).thenReturn(loginDto);
         //then
         mockMvc.perform(post(TOKEN_REISSUE_URL)
                         .header(HttpHeaders.AUTHORIZATION, accessToken)

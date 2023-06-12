@@ -27,9 +27,9 @@ public class DisposableAuthenticationCode {
     private LocalDateTime createdAt;
 
     protected DisposableAuthenticationCode(String code, Member member, LocalDateTime createdAt) {
-        this.code = UUID.randomUUID().toString();
+        this.code = code;
         this.member = member;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = createdAt;
     }
 
     public static DisposableAuthenticationCode createDisposableAuthenticationCode(Member member) {

@@ -80,7 +80,7 @@ public class LoginController {
 
         if (accessToken == null) {
             log.info("Access Token is Null");
-            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_EMPTY);
+            throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
         }
 
         if (!StringUtils.hasLength(refreshTokenValue)) {
@@ -88,7 +88,7 @@ public class LoginController {
             throw new CustomRuntimeException(REFRESH_COOKIE_IS_EMPTY);
         }
 
-        LoginResponse.LoginDto result = loginService.reissueToken(accessToken, refreshTokenValue);
+        LoginResponse.LoginDto result = loginService.reissueTokenProcessing(accessToken, refreshTokenValue);
 
         EntityModel<LoginResponse.ReIssueResult> entityModel = modelAssembler.createReissueModel(new LoginResponse.ReIssueResult(result.getId(), result.getLoggedIn()));
 

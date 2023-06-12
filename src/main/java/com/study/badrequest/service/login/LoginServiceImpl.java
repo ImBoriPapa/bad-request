@@ -186,7 +186,7 @@ public class LoginServiceImpl implements LoginService {
         String accessToken = accessTokenResolver(request);
 
         if (accessToken == null) {
-            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_EMPTY);
+            throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
         }
 
         switch (jwtUtils.validateToken(accessToken)) {
@@ -195,12 +195,12 @@ public class LoginServiceImpl implements LoginService {
             case DENIED:
                 throw new CustomRuntimeException(PERMISSION_DENIED);
             case EXPIRED:
-                throw new CustomRuntimeException(TOKEN_IS_EXPIRED);
+                throw new CustomRuntimeException(ACCESS_TOKEN_IS_EXPIRED);
             case ERROR:
-                throw new CustomRuntimeException(TOKEN_IS_ERROR);
+                throw new CustomRuntimeException(ACCESS_TOKEN_IS_ERROR);
         }
 
-        String changeAbleId = jwtUtils.getChangeableIdInToken(accessToken);
+        String changeAbleId = jwtUtils.extractChangeableIdInToken(accessToken);
 
         redisRefreshTokenRepository.findById(changeAbleId).ifPresent(redisRefreshTokenRepository::delete);
 
@@ -220,30 +220,28 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken) {
-        log.info("토큰 재발급 시작 accessToken={}, refreshToken= {}", accessToken, refreshToken);
-        //1 AccessToken 검증
+    public LoginResponse.LoginDto reissueTokenProcessing(String accessToken, String refreshToken) {
+        log.info("Reissue Token Processing accessToken={}, refreshToken= {}", accessToken, refreshToken);
+
         validateAccessToken(accessToken);
-        //2 RefreshToken 검증
+
         validateRefreshToken(refreshToken);
 
-        //3. Refresh 토큰으로 조회시 정보가 없으면 로그아웃으로 간주
-        String changeableId = jwtUtils.getChangeableIdInToken(accessToken);
+        String changeableId = jwtUtils.extractChangeableIdInToken(accessToken);
 
         RefreshToken refresh = findRefreshTokenByChangeableToken(changeableId);
-        //4. 저장된 리프레시 토큰과 요청한 토큰을 비교
-        compareRefreshTokenRequestedWithStored(refresh.getToken(), refreshToken);
-        //5. 존재하는 회원인지 확인
+
+        verifiyingRequestedRefreshToken(refresh.getToken(), refreshToken);
+
         Member member = findMemberByChangeAbleId(changeableId);
-        //6. changeableId 변경
         member.replaceChangeableId();
-        //7. 기존 Refresh 토큰 삭제
+
         redisRefreshTokenRepository.deleteById(refresh.getChangeableId());
-        //8. 새로운 토큰 생성
+
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
-        //9  새로운 Refresh 토큰 저장
+
         RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill());
-        //10. 기존 인증정보 삭제
+
         SecurityContextHolder.clearContext();
 
         return createLoginDto(member, jwtTokenDto, savedRefreshToken);
@@ -251,21 +249,25 @@ public class LoginServiceImpl implements LoginService {
 
     private void validateRefreshToken(String refreshToken) {
         JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
+
         if (refreshStatus == JwtStatus.DENIED || refreshStatus == JwtStatus.ERROR) {
-            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new CustomRuntimeException(REFRESH_TOKEN_IS_DENIED);
+
         } else if (refreshStatus == JwtStatus.EXPIRED) {
-            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_EXPIRED);
+            throw new CustomRuntimeException(REFRESH_TOKEN_IS_EXPIRED);
         }
     }
 
     private void validateAccessToken(String accessToken) {
-
         JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
         if (accessStatus == JwtStatus.DENIED || accessStatus == JwtStatus.ERROR) {
-            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_DENIED);
         }
     }
 
+    /**
+     * 리프레시 토큰을 찾지 못할 경우 로그아웃된 계정으로 간주
+     */
     private RefreshToken findRefreshTokenByChangeableToken(String changeableToken) {
         return redisRefreshTokenRepository.findById(changeableToken)
                 .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.ALREADY_LOGOUT));
@@ -291,12 +293,17 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     @Transactional
-    public String getOneTimeAuthenticationCode(Long memberId) {
-        log.info("일회용 인증 코드 생성");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-        DisposableAuthenticationCode disposableAuthenticationCode = DisposableAuthenticationCode.createDisposableAuthenticationCode(member);
-        return disposalAuthenticationRepository.save(disposableAuthenticationCode).getCode();
+    public String getDisposableAuthenticationCode(Long memberId) {
+        log.info("Get Disposable Authentication Code");
+        Member member = findMemberById(memberId);
 
+        DisposableAuthenticationCode disposableAuthenticationCode = DisposableAuthenticationCode.createDisposableAuthenticationCode(member);
+
+        return disposalAuthenticationRepository.save(disposableAuthenticationCode).getCode();
+    }
+
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
     private LoginResponse.LoginDto createLoginDto(Member member, JwtTokenDto jwtTokenDto, RefreshToken refreshToken) {
@@ -314,9 +321,9 @@ public class LoginServiceImpl implements LoginService {
         }
     }
 
-    private void compareRefreshTokenRequestedWithStored(String StoredRefreshToken, String refreshToken) {
+    private void verifiyingRequestedRefreshToken(String StoredRefreshToken, String refreshToken) {
         if (!StoredRefreshToken.equals(refreshToken)) {
-            throw new CustomRuntimeException(ApiResponseStatus.TOKEN_IS_DENIED);
+            throw new CustomRuntimeException(REFRESH_TOKEN_IS_DENIED);
         }
     }
 

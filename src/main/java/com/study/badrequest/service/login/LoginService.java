@@ -12,9 +12,9 @@ public interface LoginService {
 
     LoginResponse.LogoutResult logoutProcessing(HttpServletRequest request, HttpServletResponse response);
 
-    LoginResponse.LoginDto reissueToken(String accessToken, String refreshToken);
+    LoginResponse.LoginDto reissueTokenProcessing(String accessToken, String refreshToken);
 
-    String getOneTimeAuthenticationCode(Long memberId);
+    String getDisposableAuthenticationCode(Long memberId);
 
     LoginResponse.LoginDto disposableAuthenticationCodeLoginProcessing(String temporaryCode, String ipAddress);
 }

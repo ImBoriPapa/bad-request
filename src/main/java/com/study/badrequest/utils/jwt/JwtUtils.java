@@ -140,12 +140,12 @@ public class JwtUtils {
 
 
     /**
-     * 토큰 바디에 저장된 Username 반환
+     * 토큰 바디에 저장된 ChangeableId 반환
      *
      * @param token
-     * @return username
+     * @return String ChangeableId
      */
-    public String getChangeableIdInToken(String token) {
+    public String extractChangeableIdInToken(String token) {
         return getClaimsJws(token).getBody().getSubject();
     }
 

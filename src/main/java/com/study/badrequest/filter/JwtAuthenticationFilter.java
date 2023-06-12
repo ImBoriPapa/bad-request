@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleJwtStatus(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
         switch (jwtStatus) {
             case ACCESS:
-                String changeableId = jwtUtils.getChangeableIdInToken(accessToken);
+                String changeableId = jwtUtils.extractChangeableIdInToken(accessToken);
                 if (loginServiceImpl.setAuthenticationInContextHolderByChangeableId(changeableId)) {
                     log.info("Access Token 정상 처리");
                     break;

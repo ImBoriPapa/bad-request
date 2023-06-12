@@ -26,11 +26,11 @@ public class JwtAuthenticationEntryPointFilter implements AuthenticationEntryPoi
     private final EnumMap<JwtStatus, ApiResponseStatus> jwtStatusEnumMap = new EnumMap<>(JwtStatus.class);
 
     {
-        jwtStatusEnumMap.put(JwtStatus.EMPTY_TOKEN, ApiResponseStatus.TOKEN_IS_EMPTY);
-        jwtStatusEnumMap.put(JwtStatus.EXPIRED, ApiResponseStatus.TOKEN_IS_EXPIRED);
-        jwtStatusEnumMap.put(JwtStatus.DENIED, ApiResponseStatus.TOKEN_IS_DENIED);
+        jwtStatusEnumMap.put(JwtStatus.EMPTY_TOKEN, ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
+        jwtStatusEnumMap.put(JwtStatus.EXPIRED, ApiResponseStatus.ACCESS_TOKEN_IS_EXPIRED);
+        jwtStatusEnumMap.put(JwtStatus.DENIED, ApiResponseStatus.ACCESS_TOKEN_IS_DENIED);
         jwtStatusEnumMap.put(JwtStatus.LOGOUT, ApiResponseStatus.ALREADY_LOGOUT);
-        jwtStatusEnumMap.put(JwtStatus.ERROR, ApiResponseStatus.TOKEN_IS_ERROR);
+        jwtStatusEnumMap.put(JwtStatus.ERROR, ApiResponseStatus.ACCESS_TOKEN_IS_ERROR);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class JwtAuthenticationEntryPointFilter implements AuthenticationEntryPoi
 
         JwtStatus jwtStatus = (JwtStatus) request.getAttribute(JWT_STATUS_HEADER);
 
-        ApiResponseStatus apiResponseStatus = jwtStatusEnumMap.getOrDefault(jwtStatus, ApiResponseStatus.TOKEN_IS_ERROR);
+        ApiResponseStatus apiResponseStatus = jwtStatusEnumMap.getOrDefault(jwtStatus, ApiResponseStatus.ACCESS_TOKEN_IS_ERROR);
 
         jwtAuthenticationFilterResponseFactory.setErrorResponse(request, response, apiResponseStatus);
 

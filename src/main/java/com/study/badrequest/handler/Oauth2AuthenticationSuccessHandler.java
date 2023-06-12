@@ -38,7 +38,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         MemberPrincipal principal = (MemberPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String temporaryAuthenticationCode = loginService.getOneTimeAuthenticationCode(principal.getMemberId());
+        String temporaryAuthenticationCode = loginService.getDisposableAuthenticationCode(principal.getMemberId());
 
         String targetUrl = determineTargetUrl(request, response, authentication, temporaryAuthenticationCode);
 

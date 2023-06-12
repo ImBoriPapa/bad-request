@@ -32,21 +32,25 @@ public enum ApiResponseStatus {
     IS_NOT_CONFIRMED_MAIL(1200, "이메일 인증 후 로그인 해주세요", HttpStatus.UNAUTHORIZED),
     IS_EXPIRED_TEMPORARY_PASSWORD(1201, "만료된 임시 비밀번호입니다.", HttpStatus.UNAUTHORIZED),
     TOKEN_NOT_MATCH(1203, "저장된 토큰과 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_EMPTY(1204, "AccessToken 이 없습니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_EXPIRED(1205, "토큰의 유효기간이 만료되었S습니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_DENIED(1206, "잘못된 토큰입니다.", HttpStatus.BAD_REQUEST),
-    TOKEN_IS_ERROR(1207, "문제가 있는 토큰입니다.", HttpStatus.BAD_REQUEST),
-    REFRESH_COOKIE_IS_EMPTY(1208, "리프레시 토큰 쿠키를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
-    LOGIN_FAIL(129, "로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
-    ALREADY_LOGOUT(1210, "로그아웃된 계정입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST),
-    WRONG_ONE_TIME_CODE(1211, "잘못된 1회용 인증 코드입니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
-    CAN_NOT_FIND_MEMBER_BY_DISPOSABLE_AUTHENTICATION_CODE(1212, "발급된 인증코드로 회원정보를 찾을 수 없습니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
-    EMPTY_ONE_TIME_CODE(1213, "발급된 인증코드와 필요합니다.. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    ACCESS_TOKEN_IS_EMPTY(1204, "Access Token 이 없습니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_IS_EMPTY(1205, "Refresh Token 이 없습니다.", HttpStatus.BAD_REQUEST),
+    ACCESS_TOKEN_IS_EXPIRED(1206, "Access Token의 유효기간이 만료되었습니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_IS_EXPIRED(1207, "Refresh Token의 유효기간이 만료되었습니다.", HttpStatus.BAD_REQUEST),
+    ACCESS_TOKEN_IS_DENIED(1208, "잘못된 Access Token입니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_IS_DENIED(1209, "잘못된 Refresh Token입니다.", HttpStatus.BAD_REQUEST),
+    ACCESS_TOKEN_IS_ERROR(1210, "문제가 있는 Access Token 입니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_TOKEN_IS_ERROR(1211, "문제가 있는 Refresh Token 입니다.", HttpStatus.BAD_REQUEST),
+    REFRESH_COOKIE_IS_EMPTY(1212, "리프레시 토큰 쿠키를 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    LOGIN_FAIL(1300, "로그인에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+    ALREADY_LOGOUT(1301, "로그아웃된 계정입니다. 다시 로그인 해주세요.", HttpStatus.BAD_REQUEST),
+    WRONG_ONE_TIME_CODE(1302, "잘못된 1회용 인증 코드입니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    CAN_NOT_FIND_MEMBER_BY_DISPOSABLE_AUTHENTICATION_CODE(1303, "발급된 인증코드로 회원정보를 찾을 수 없습니다. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
+    EMPTY_ONE_TIME_CODE(1304, "발급된 인증코드와 필요합니다.. 코드를 확인해 주세요", HttpStatus.UNAUTHORIZED),
     //OAUTH2
-    ALREADY_REGISTERED_BY_OAUTH2(1214, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
-    ALREADY_REGISTERED_BY_EMAIL(1215, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
-    IS_WITHDRAWN_MEMBER(1216, "탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST),
-    THIS_IS_NOT_REGISTERED_AS_MEMBER(1217, "회원 가입되지 않은 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REGISTERED_BY_OAUTH2(1305, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    ALREADY_REGISTERED_BY_EMAIL(1306, "요청 하신 이메일은 이미 등록된 이메일입니다.", HttpStatus.BAD_REQUEST),
+    IS_WITHDRAWN_MEMBER(1307, "탈퇴한 회원입니다.", HttpStatus.BAD_REQUEST),
+    THIS_IS_NOT_REGISTERED_AS_MEMBER(1308, "회원 가입되지 않은 이메일입니다.", HttpStatus.BAD_REQUEST),
     /**
      * 회원 관련
      * code: 2000~
@@ -63,6 +67,7 @@ public enum ApiResponseStatus {
     DUPLICATE_EMAIL(2009, "이미 사용중인 이메일입니다.", HttpStatus.BAD_REQUEST),
     DUPLICATE_CONTACT(2010, "이미 사용중인 연락처 입니다.", HttpStatus.BAD_REQUEST),
     NOT_FOUND_TEMPORARY_PASSWORD(2011, "임시비밀번호 정보를 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
+    FAIL_GET_OAUTH2_USER_INFO(2012, "Oauth 유저 정보를 받아오는것에 실패했습니다.", HttpStatus.UNAUTHORIZED),
     /**
      * 질문
      */
