@@ -84,7 +84,8 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private Member findActiveMemberByEmail(String email) {
-        List<Member> members = memberRepository.findMembersByEmail(email);
+        List<Member> members = memberRepository.findAllByEmail(email);
+        log.info("is true:{}",members.isEmpty());
 
         List<Member> activeMembers = findActiveMembers(members);
 

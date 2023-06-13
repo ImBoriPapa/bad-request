@@ -52,11 +52,10 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Transactional
-    public QuestionResponse.Modify modifyQuestion(Long memberId, Long questionId, QuestionRequest.Modify form) {
-        log.info("질문 수정 시작");
+    public QuestionResponse.Modify modifyQuestionProcessing(Long memberId, Long questionId, QuestionRequest.Modify form) {
+        log.info("Modify Question Processing");
 
-        Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+        Question question = findQuestionById(questionId);
 
         if (!question.getMember().getId().equals(memberId)) {
             throw new CustomRuntimeException(PERMISSION_DENIED);
@@ -70,7 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionResponse.Delete deleteQuestion(Long memberId, Long questionId) {
         log.info("질문 삭제 시작 요청 회원: {}, 질문 아이디: {}", memberId, questionId);
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+        Question question = findQuestionById(questionId);
 
         if (!question.getMember().getId().equals(memberId)) {
             throw new CustomRuntimeException(PERMISSION_DENIED);
@@ -81,6 +80,11 @@ public class QuestionServiceImpl implements QuestionService {
         applicationEventPublisher.publishEvent(new QuestionEventDto.DeleteEvent(question));
 
         return new QuestionResponse.Delete(questionId, question.getDeletedAt());
+    }
+
+    private Question findQuestionById(Long questionId) {
+        return questionRepository.findById(questionId)
+                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
     }
 
 

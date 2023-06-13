@@ -53,7 +53,7 @@ public class QuestionApiController {
                                  @RequestBody QuestionRequest.Modify form,
                                  @LoggedInMember CurrentMember.Information information) {
         log.info("Question Modify Request");
-        QuestionResponse.Modify response = questionService.modifyQuestion(information.getId(), questionId, form);
+        QuestionResponse.Modify response = questionService.modifyQuestionProcessing(information.getId(), questionId, form);
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success(modelAssembler.createModifyModel(response)));

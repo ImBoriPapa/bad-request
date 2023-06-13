@@ -29,7 +29,7 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
         //when
-        given(memberRepository.findMembersByEmail(any())).willThrow(new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        given(memberRepository.findAllByEmail(any())).willThrow(new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
         //then
         Assertions.assertThatThrownBy(() -> memberService.issueTemporaryPasswordProcessing(email, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
@@ -48,7 +48,7 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
 
         List<Member> members = List.of(withdrawnMember);
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         //then
         Assertions.assertThatThrownBy(() -> memberService.issueTemporaryPasswordProcessing(email, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
@@ -70,11 +70,11 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         List<Member> members = List.of(withDrawnMember, activeMember);
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword("", activeMember);
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.save(any())).willReturn(temporaryPassword);
         memberService.issueTemporaryPasswordProcessing(email, ipAddress);
         //then
-        verify(memberRepository).findMembersByEmail(email);
+        verify(memberRepository).findAllByEmail(email);
         verify(passwordEncoder).encode(any());
         verify(temporaryPasswordRepository).save(any());
         verify(eventPublisher).publishEvent(new MemberEventDto.IssueTemporaryPassword(any(), UUID.randomUUID().toString(), "임시 비밀번호 발급", ipAddress, temporaryPassword.getCreatedAt()));

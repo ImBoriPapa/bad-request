@@ -1,0 +1,54 @@
+package com.study.badrequest.domain.question;
+
+import com.study.badrequest.domain.activity.ActivityScore;
+import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.domain.member.MemberProfile;
+import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.repository.question.QuestionRepository;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import javax.persistence.EntityManager;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+@DataJpaTest
+@ActiveProfiles("test")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+class QuestionTest extends QuestionEntityTestBase {
+
+    @Test
+    @DisplayName("질문 생성 테스트")
+    void test1() throws Exception {
+        //given
+        String title = "title";
+        String contents = "contents";
+
+        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member save = memberRepository.save(member);
+
+        QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
+        Question question = Question.createQuestion(title, contents, save, questionMetrics);
+        //when
+        Question savedQuestion = questionRepository.save(question);
+        Question findById = questionRepository.findById(savedQuestion.getId()).get();
+        //then
+        System.out.println(member.getMemberProfile().getActivityScore());
+        System.out.println(findById.getMember().getMemberProfile().getActivityScore());
+        assertThat(findById.getId()).isEqualTo(savedQuestion.getId());
+        assertThat(findById.getMember().getId()).isEqualTo(member.getId());
+        assertThat(findById.getMember().getMemberProfile().getId()).isEqualTo(member.getMemberProfile().getId());
+        assertThat(findById.getMember().getMemberProfile().getActivityScore()).isEqualTo(member.getMemberProfile().getActivityScore() + ActivityScore.WRITE_QUESTION.getScore());
+
+    }
+
+}

@@ -52,7 +52,7 @@ public class OAuthUserDetailService extends DefaultOAuth2UserService {
 
         final String email = EmailUtils.convertDomainToLowercase(oauth2UserInformation.getEmail());
 
-        List<Member> members = memberRepository.findMembersByEmail(email);
+        List<Member> members = memberRepository.findAllByEmail(email);
         return members.stream()
                 .filter(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN)
                 .findAny().map(member -> renewOauth2Member(oauth2UserInformation, member))

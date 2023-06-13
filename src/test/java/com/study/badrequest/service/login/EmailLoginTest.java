@@ -32,7 +32,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
 
         //then
         assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
@@ -53,7 +53,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
 
         List<Member> members = List.of(member1, member2);
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
 
         //then
         assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
@@ -70,7 +70,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String ipAddress = "ipAddress";
 
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
 
         //then
         assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
@@ -88,7 +88,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String oauthId = "12345";
         Member oauth2Member = Member.createMemberWithOauth(requestedEmail, oauthId, RegistrationType.GOOGLE, new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(List.of(oauth2Member));
+        given(memberRepository.findAllByEmail(any())).willReturn(List.of(oauth2Member));
 
         //then
         assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
@@ -109,7 +109,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
 
         List<Member> members = List.of(member);
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
 
         //then
         assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
@@ -130,7 +130,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
 
         List<Member> members = List.of(member);
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.empty());
 
         //then
@@ -155,7 +155,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         temporaryPassword.changeExpiredAt(LocalDateTime.now().minusHours(24));
 
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.of(temporaryPassword));
         //then
         assertThatThrownBy(() -> loginService.emailLoginProcessing(requestedEmail, password, ipAddress))
@@ -178,7 +178,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
 
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.of(temporaryPassword));
         given(passwordEncoder.matches(any(), any())).willReturn(false);
         //then
@@ -201,7 +201,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
 
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.of(temporaryPassword));
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(passwordEncoder.matches(any(), any())).willReturn(false);
@@ -240,7 +240,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
                 .build();
 
         //when
-        given(memberRepository.findMembersByEmail(any())).willReturn(members);
+        given(memberRepository.findAllByEmail(any())).willReturn(members);
         given(temporaryPasswordRepository.findByMember(member)).willReturn(Optional.of(temporaryPassword));
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(passwordEncoder.matches(any(), any())).willReturn(true);
@@ -248,7 +248,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(redisRefreshTokenRepository.save(any())).willReturn(refreshToken);
         loginService.emailLoginProcessing(requestedEmail, password, ipAddress);
         //then
-        verify(memberRepository).findMembersByEmail(requestedEmail);
+        verify(memberRepository).findAllByEmail(requestedEmail);
         verify(temporaryPasswordRepository).findByMember(member);
         verify(passwordEncoder).matches(any(), any());
         verify(passwordEncoder).matches(any(), any());

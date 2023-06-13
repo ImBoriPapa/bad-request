@@ -146,7 +146,7 @@ public class QuestionApiDocs {
         QuestionRequest.Modify request = new QuestionRequest.Modify(title, markdownContents, imageIds);
         QuestionResponse.Modify response = new QuestionResponse.Modify(questionId, LocalDateTime.now());
         //when
-        when(questionService.modifyQuestion(any(), any(), any())).thenReturn(response);
+        when(questionService.modifyQuestionProcessing(any(), any(), any())).thenReturn(response);
         //then
         mockMvc.perform(patch(QUESTION_PATCH_URL, questionId)
                         .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)
