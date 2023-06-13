@@ -14,49 +14,48 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
-@Table(name = "MEMBER", indexes = {
-        @Index(name = "MEMBER_EMAIL_IDX", columnList = "EMAIL"),
-        @Index(name = "MEMBER_CONTACT_IDX", columnList = "CONTACT"),
-        @Index(name = "MEMBER_CREATE_DATE_TIME_IDX", columnList = "DATE_INDEX")
+@Table(name = "member", indexes = {
+        @Index(name = "MEMBER_EMAIL_IDX", columnList = "email"),
+        @Index(name = "MEMBER_CONTACT_IDX", columnList = "contact"),
+        @Index(name = "MEMBER_CREATE_DATE_TIME_IDX", columnList = "date_index")
 })
 public class Member {
-    // TODO: 2023/06/03 탈퇴 처리 계획 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_ID")
+    @Column(name = "member_id")
     private Long id;
-    @Column(name = "CHANGE_ABLE_ID", unique = true, nullable = false)
+    @Column(name = "change_able_id", unique = true, nullable = false)
     private String changeableId;
-    @Column(name = "OAUTH_ID")
+    @Column(name = "oauth_id",nullable = true)
     private String oauthId;
-    @Column(name = "EMAIL", nullable = false)
+    @Column(name = "email", nullable = false)
     private String email;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "MEMBER_PROFILE_ID")
+    @JoinColumn(name = "member_profile_id")
     private MemberProfile memberProfile;
     @Enumerated(EnumType.STRING)
-    @Column(name = "REGISTRATION_TYPE")
+    @Column(name = "registration_type")
     private RegistrationType registrationType;
-    @Column(name = "PASSWORD")
+    @Column(name = "password")
     private String password;
-    @Column(name = "CONTACT")
+    @Column(name = "contact")
     private String contact;
-    @Column(name = "AUTHORITY", nullable = false)
+    @Column(name = "authority", nullable = false)
     @Enumerated(EnumType.STRING)
     private Authority authority;
-    @Column(name = "IP_ADDRESS")
+    @Column(name = "ip_address")
     private String ipAddress;
-    @Column(name = "ACCOUNT_STATUS")
+    @Column(name = "account_status")
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
-    @Column(name = "CREATED_AT")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    @Column(name = "UPDATED_AT")
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-    @Column(name = "DELETED_AT")
+    @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-    @Column(name = "DATE_INDEX")
-    private Long createDateTimeIndex;
+    @Column(name = "date_index")
+    private Long dateIndex;
 
     @Builder(access = AccessLevel.PROTECTED)
     protected Member(String oauthId, RegistrationType registrationType, String email, String password, String contact, Authority authority, String ipAddress, MemberProfile memberProfile, AccountStatus accountStatus) {
@@ -72,7 +71,7 @@ public class Member {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.deletedAt = LocalDateTime.now();
-        this.createDateTimeIndex = timeToDateIndex(this.createdAt);
+        this.dateIndex = timeToDateIndex(this.createdAt);
     }
 
     public static Member createMemberWithEmail(String email, String password, String contact, MemberProfile memberProfile) {
@@ -127,7 +126,7 @@ public class Member {
 
     @PrePersist
     private void generateChangeableId() {
-        this.changeableId = UUID.randomUUID() + "-" + this.createDateTimeIndex;
+        this.changeableId = UUID.randomUUID() + "-" + this.dateIndex;
     }
 
     public void replaceChangeableId() {
@@ -136,11 +135,12 @@ public class Member {
 
     public void changePermissions(Authority authority) {
         this.authority = authority;
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public void changePassword(String password) {
+    public void changePassword(String password,AccountStatus status) {
         this.password = password;
-        this.accountStatus = AccountStatus.ACTIVE;
+        this.accountStatus = status;
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -154,7 +154,7 @@ public class Member {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public static Long getCreatedAtInChangeableId(String changeableId) {
+    public static Long getDateIndexInChangeableId(String changeableId) {
         return Long.valueOf(changeableId.split("-")[5]);
     }
 

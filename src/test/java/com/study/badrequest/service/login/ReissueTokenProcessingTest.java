@@ -164,7 +164,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
         given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
-        given(memberRepository.findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId)))
+        given(memberRepository.findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId)))
                 .willReturn(Optional.empty());
         //then
         Assertions.assertThatThrownBy(() -> loginService.reissueTokenProcessing(accessToken, refreshToken))
@@ -209,7 +209,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
         given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
-        given(memberRepository.findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId))).willReturn(Optional.of(member));
+        given(memberRepository.findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId))).willReturn(Optional.of(member));
         given(jwtUtils.generateJwtTokens(any())).willReturn(jwtTokenDto);
         given(redisRefreshTokenRepository.save(any())).willReturn(newRefreshToken);
         loginService.reissueTokenProcessing(accessToken, refreshToken);
@@ -218,7 +218,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         verify(jwtUtils).validateToken(refreshToken);
         verify(jwtUtils).extractChangeableIdInToken(accessToken);
         verify(redisRefreshTokenRepository).findById(any());
-        verify(memberRepository).findMemberByChangeableIdAndCreateDateTimeIndex(any(),any());
+        verify(memberRepository).findMemberByChangeableIdAndDateIndex(any(),any());
         verify(jwtUtils).generateJwtTokens(any());
         verify(redisRefreshTokenRepository).save(any());
     }

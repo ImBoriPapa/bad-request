@@ -5,7 +5,7 @@ import com.study.badrequest.dto.question.QuestionResponse;
 
 public interface QuestionService {
 
-    QuestionResponse.Create createQuestion(Long memberId, QuestionRequest.Create form);
+    QuestionResponse.Create createQuestionProcessing(Long memberId, QuestionRequest.Create form);
 
     QuestionResponse.Modify modifyQuestion(Long memberId, Long questionId, QuestionRequest.Modify form);
 

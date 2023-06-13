@@ -96,7 +96,7 @@ public class QuestionApiDocs {
         QuestionRequest.Create create = new QuestionRequest.Create(title, markdownContents, tags, imageIds);
         QuestionResponse.Create response = new QuestionResponse.Create(questionId, LocalDateTime.now());
         //when
-        when(questionService.createQuestion(any(), any())).thenReturn(response);
+        when(questionService.createQuestionProcessing(any(), any())).thenReturn(response);
         //then
         mockMvc.perform(post(QUESTION_BASE_URL)
                         .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)

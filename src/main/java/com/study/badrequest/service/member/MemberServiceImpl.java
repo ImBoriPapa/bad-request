@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.domain.member.AccountStatus.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -77,7 +78,7 @@ public class MemberServiceImpl implements MemberService {
     private void emailDuplicateVerification(String email) {
         boolean isDuplicateEmail = memberRepository.findMembersByEmail(email)
                 .stream()
-                .anyMatch(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN);
+                .anyMatch(member -> member.getAccountStatus() != WITHDRAWN);
 
         if (isDuplicateEmail) {
             throw new CustomRuntimeException(DUPLICATE_EMAIL);
@@ -87,7 +88,7 @@ public class MemberServiceImpl implements MemberService {
     private void contactDuplicationVerification(String contact) {
         boolean isDuplicateContact = memberRepository.findMembersByContact(contact)
                 .stream()
-                .anyMatch(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN);
+                .anyMatch(member -> member.getAccountStatus() != WITHDRAWN);
 
         if (isDuplicateContact) {
             throw new CustomRuntimeException(DUPLICATE_CONTACT);
@@ -145,7 +146,7 @@ public class MemberServiceImpl implements MemberService {
 
     private Member getActiveMember(List<Member> members) {
         return members.stream()
-                .filter(member -> member.getAccountStatus() != AccountStatus.WITHDRAWN)
+                .filter(member -> member.getAccountStatus() != WITHDRAWN)
                 .findFirst()
                 .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
     }
@@ -184,7 +185,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = findMemberById(memberId);
 
-        if (member.getAccountStatus() == AccountStatus.WITHDRAWN) {
+        if (member.getAccountStatus() == WITHDRAWN) {
             throw new CustomRuntimeException(NOTFOUND_MEMBER);
         }
 
@@ -208,7 +209,7 @@ public class MemberServiceImpl implements MemberService {
 
         passwordCheck(form.getCurrentPassword(), member.getPassword());
 
-        member.changePassword(passwordEncoder.encode(form.getNewPassword()));
+        member.changePassword(passwordEncoder.encode(form.getNewPassword()), ACTIVE);
 
         eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "비밀번호 변경", ipAddress, member.getUpdatedAt()));
 

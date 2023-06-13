@@ -291,7 +291,7 @@ public class LoginServiceImpl implements LoginService {
 
     private Member findMemberByChangeAbleId(String changeableId) {
         return memberRepository
-                .findMemberByChangeableIdAndCreateDateTimeIndex(changeableId, Member.getCreatedAtInChangeableId(changeableId))
+                .findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId))
                 .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 

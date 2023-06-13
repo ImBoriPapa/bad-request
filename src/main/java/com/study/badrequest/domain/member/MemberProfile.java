@@ -1,7 +1,7 @@
 package com.study.badrequest.domain.member;
 
 
-import com.study.badrequest.domain.activity.ActivityScoreEnum;
+import com.study.badrequest.domain.activity.ActivityScore;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -43,7 +43,7 @@ public class MemberProfile {
         this.selfIntroduce = selfIntroduce;
     }
 
-    public void incrementActivityScore(int score) {
-        this.activityScore = this.activityScore + score;
+    public void incrementActivityScore(ActivityScore score) {
+        this.activityScore = this.activityScore + score.getScore();
     }
 }

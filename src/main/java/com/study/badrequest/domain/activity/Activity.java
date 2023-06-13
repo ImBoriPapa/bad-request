@@ -39,9 +39,7 @@ public class Activity {
     }
 
     public static Activity createActivity(Member member, ActivityAction action, String title, String description, LocalDateTime createdAt) {
-        Activity activity = new Activity(member, action, title, description, createdAt);
-        activity.getMember().getMemberProfile().incrementActivityScore(action.getScore());
-        return activity;
+        return new Activity(member, action, title, description, createdAt);
     }
 
 }

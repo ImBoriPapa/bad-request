@@ -72,12 +72,9 @@ public class TestData {
         IntStream.rangeClosed(1, 15).forEach(
                 index -> {
                     int randomMemberId = new Random().nextInt(sampleMembers.size() - 1) + 1;
-                    Question question = Question.createQuestion()
-                            .title("제목")
-                            .contents("내용")
-                            .member(sampleMembers.get(randomMemberId))
-                            .build();
-                    question.addQuestionMetrics(QuestionMetrics.createQuestionMetrics());
+
+                    Question question = Question.createQuestion("제목", "내용", sampleMembers.get(randomMemberId), QuestionMetrics.createQuestionMetrics());
+
                     list.add(question);
 
                     HashTag hashTag1 = hashTagRepository.save(new HashTag("#tag" + new Random().nextInt(10) + 1));

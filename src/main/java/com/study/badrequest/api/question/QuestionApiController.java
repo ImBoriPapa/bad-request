@@ -41,7 +41,7 @@ public class QuestionApiController {
             throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
         }
 
-        QuestionResponse.Create response = questionService.createQuestion(information.getId(), form);
+        QuestionResponse.Create response = questionService.createQuestionProcessing(information.getId(), form);
 
         return ResponseEntity
                 .created(linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(response.getId(), null, null, null)).toUri())

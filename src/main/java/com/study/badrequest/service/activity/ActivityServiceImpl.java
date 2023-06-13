@@ -2,7 +2,6 @@ package com.study.badrequest.service.activity;
 
 import com.study.badrequest.domain.activity.Activity;
 import com.study.badrequest.domain.activity.ActivityAction;
-import com.study.badrequest.domain.activity.ActivityScoreEnum;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.repository.activity.ActivityRepository;
 

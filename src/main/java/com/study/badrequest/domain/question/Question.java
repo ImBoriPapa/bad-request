@@ -2,6 +2,7 @@ package com.study.badrequest.domain.question;
 
 
 import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.domain.activity.ActivityScore;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;
@@ -11,50 +12,71 @@ import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "QUESTION", indexes = {
-        @Index(name = "QUESTION_EXPOSURE_IDX", columnList = "EXPOSURE")
-}
-)
+@Table(name = "question", indexes = {
+        @Index(name = "QUESTION_EXPOSURE_IDX", columnList = "exposure")
+})
 @EqualsAndHashCode(of = "id")
 @Getter
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "QUESTION_ID")
+    @Column(name = "question_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @JoinColumn(name = "member_id")
     private Member member;
-    @Column(name = "TITLE")
+    @Column(name = "title")
     private String title;
-    @Column(name = "CONTENTS")
+    @Column(name = "contents")
     @Lob
     private String contents;
-    @Column(name = "PREVIEW")
+    @Column(name = "preview")
     private String preview;
     @Enumerated(EnumType.STRING)
-    @Column(name = "EXPOSURE")
+    @Column(name = "exposure")
     private ExposureStatus exposure;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "QUESTION_METRICS_ID")
+    @JoinColumn(name = "question_metrics_id")
     private QuestionMetrics questionMetrics;
-    @Column(name = "ASKED_DATE_TIME")
+    @Column(name = "asked_at")
     private LocalDateTime askedAt;
-    @Column(name = "MODIFIED_DATE_TIME")
+    @Column(name = "modified_at")
     private LocalDateTime modifiedAt;
-    @Column(name = "DELETED_REQUEST_DATE_TIME")
-    private LocalDateTime deletedRequestAt;
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
 
-    @Builder(builderMethodName = "createQuestion")
-    public Question(Member member, String title, String contents) {
+    @Builder(access = AccessLevel.PROTECTED)
+    protected Question(Member member, String title, String contents, String preview, ExposureStatus exposure, LocalDateTime askedAt, LocalDateTime modifiedAt, LocalDateTime deletedAt) {
         this.member = member;
         this.title = title;
-        this.contents = setContents(contents);
-        this.preview = setPreview(contents);
-        this.exposure = ExposureStatus.PUBLIC;
-        this.askedAt = LocalDateTime.now();
-        this.modifiedAt = LocalDateTime.now();
-        this.deletedRequestAt = null;
+        this.contents = contents;
+        this.preview = preview;
+        this.exposure = exposure;
+        this.askedAt = askedAt;
+        this.modifiedAt = modifiedAt;
+        this.deletedAt = deletedAt;
+    }
+
+    public static Question createQuestion(String title, String contents, Member member, QuestionMetrics questionMetrics) {
+
+        final String htmlContents = MarkdownUtils.parseMarkdownToHtml(contents);
+        final String preview = makePreview(htmlContents);
+
+        final Question question = Question.builder()
+                .title(title)
+                .contents(htmlContents)
+                .preview(preview)
+                .exposure(ExposureStatus.PUBLIC)
+                .askedAt(LocalDateTime.now())
+                .modifiedAt(LocalDateTime.now())
+                .deletedAt(LocalDateTime.now().plusYears(10))
+                .member(member)
+                .build();
+
+        question.addQuestionMetrics(questionMetrics);
+        member.getMemberProfile().incrementActivityScore(ActivityScore.WRITE_QUESTION);
+
+        return question;
     }
 
     public void addQuestionMetrics(QuestionMetrics questionMetrics) {
@@ -66,7 +88,7 @@ public class Question {
         return MarkdownUtils.parseMarkdownToHtml(contents);
     }
 
-    private String setPreview(String contents) {
+    private static String makePreview(String contents) {
         String plainText = MarkdownUtils.markdownToPlainText(contents);
         if (plainText.length() > 50) {
             return plainText.substring(0, 50) + "...";
@@ -78,13 +100,13 @@ public class Question {
     public void changeExposure(ExposureStatus status) {
         this.exposure = status;
         this.questionMetrics.changeExposure(status);
-        this.deletedRequestAt = LocalDateTime.now();
+        this.deletedAt = LocalDateTime.now();
     }
 
     public void modify(String title, String contents) {
         this.title = title;
         this.contents = setContents(contents);
-        this.preview = setPreview(contents);
+        this.preview = makePreview(contents);
         this.modifiedAt = LocalDateTime.now();
     }
 }

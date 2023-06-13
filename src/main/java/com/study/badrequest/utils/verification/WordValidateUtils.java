@@ -14,7 +14,6 @@ public class WordValidateUtils {
         List<String> bannedWords = List.of("시팔", "십팔", "fucking", "좆같");
 
         for (String bannedWord : bannedWords) {
-
             if (bannedWord.equalsIgnoreCase(word)) {
                 throw new CustomRuntimeException(BANNED_WORD);
             }
