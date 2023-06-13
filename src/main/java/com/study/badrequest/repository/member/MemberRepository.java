@@ -12,6 +12,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findMemberByChangeableIdAndDateIndex(String username, Long createDateTimeIndex);
     boolean existsByEmail(String email);
     boolean existsByContact(String password);
-    List<Member> findAllByEmail(String email);
+    List<Member> findMembersByEmail(String email);
     List<Member> findMembersByContact(String contact);
 }

@@ -76,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void emailDuplicateVerification(String email) {
-        boolean isDuplicateEmail = memberRepository.findAllByEmail(email)
+        boolean isDuplicateEmail = memberRepository.findMembersByEmail(email)
                 .stream()
                 .anyMatch(member -> member.getAccountStatus() != WITHDRAWN);
 
@@ -122,7 +122,7 @@ public class MemberServiceImpl implements MemberService {
 
         final String email = requestedEmail.toLowerCase();
 
-        List<Member> members = memberRepository.findAllByEmail(email);
+        List<Member> members = memberRepository.findMembersByEmail(email);
 
         if (members.isEmpty()) {
             throw new CustomRuntimeException(NOTFOUND_MEMBER);

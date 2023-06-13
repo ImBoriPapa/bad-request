@@ -43,7 +43,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
 
         List<Member> members = List.of(activeMember);
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(members);
+        given(memberRepository.findMembersByEmail(any())).willReturn(members);
         //then
         assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
@@ -65,7 +65,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         Member member = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("image")));
         List<Member> members = List.of(member);
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(members);
         //then
         assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
@@ -86,7 +86,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
 
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.empty());
         //then
@@ -111,7 +111,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
 
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
         //then
@@ -135,7 +135,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, code.getCode());
 
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
 
@@ -159,13 +159,13 @@ class MemberSignUpTest extends MemberServiceTestBase {
         Member member = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("image")));
 
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(new ArrayList<>());
+        given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
         given(memberRepository.save(any())).willReturn(member);
         memberService.signupMemberProcessingByEmail(form, ipAddress);
         //then
-        verify(memberRepository).findAllByEmail(email);
+        verify(memberRepository).findMembersByEmail(email);
         verify(memberRepository).findMembersByContact(contact);
         verify(emailAuthenticationCodeRepository).findByEmail(email);
         verify(emailAuthenticationCodeRepository).delete(code);

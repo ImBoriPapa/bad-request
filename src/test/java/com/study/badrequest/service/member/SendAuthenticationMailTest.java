@@ -29,7 +29,7 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
         Member activeMember = Member.createMemberWithEmail(email, "", "", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
         List<Member> members = List.of(activeMember);
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(members);
+        given(memberRepository.findMembersByEmail(any())).willReturn(members);
         //then
         assertThatThrownBy(() -> memberService.sendAuthenticationMailProcessing(email))
                 .isInstanceOf(CustomRuntimeException.class)
@@ -48,11 +48,11 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
         EmailAuthenticationCode emailAuthenticationCode = new EmailAuthenticationCode(email);
 
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(members);
+        given(memberRepository.findMembersByEmail(any())).willReturn(members);
         given(emailAuthenticationCodeRepository.findByEmail(email)).willReturn(Optional.of(emailAuthenticationCode));
         memberService.sendAuthenticationMailProcessing(email);
         //then
-        verify(memberRepository).findAllByEmail(email);
+        verify(memberRepository).findMembersByEmail(email);
         verify(emailAuthenticationCodeRepository).findByEmail(email);
         verify(eventPublisher).publishEvent(new MemberEventDto.SendAuthenticationMail(email, any()));
     }
@@ -69,12 +69,12 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
         EmailAuthenticationCode emailAuthenticationCode = new EmailAuthenticationCode(email);
 
         //when
-        given(memberRepository.findAllByEmail(any())).willReturn(members);
+        given(memberRepository.findMembersByEmail(any())).willReturn(members);
         given(emailAuthenticationCodeRepository.findByEmail(email)).willReturn(Optional.empty());
         given(emailAuthenticationCodeRepository.save(any())).willReturn(emailAuthenticationCode);
         memberService.sendAuthenticationMailProcessing(email);
         //then
-        verify(memberRepository).findAllByEmail(email);
+        verify(memberRepository).findMembersByEmail(email);
         verify(emailAuthenticationCodeRepository).findByEmail(email);
         verify(emailAuthenticationCodeRepository).save(emailAuthenticationCode);
         verify(eventPublisher).publishEvent(new MemberEventDto.SendAuthenticationMail(email, any()));
