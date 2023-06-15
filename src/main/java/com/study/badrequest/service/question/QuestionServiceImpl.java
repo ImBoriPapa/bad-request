@@ -57,8 +57,8 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionResponse.Modify modifyQuestionProcessing(Long memberId, Long questionId, QuestionRequest.Modify form) {
         log.info("Modify Question Processing");
 
-        Member requester = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+        Member requester = findMemberById(memberId);
+
         Question question = findQuestionById(questionId);
 
         checkPermissions(requester, question);
@@ -80,12 +80,12 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Transactional
     public QuestionResponse.Delete deleteQuestionProcess(Long memberId, Long questionId) {
-        log.info("질문 삭제 시작 요청 회원: {}, 질문 아이디: {}", memberId, questionId);
+        log.info("Delete Question Process");
+        Member requester = findMemberById(memberId);
+
         Question question = findQuestionById(questionId);
 
-        if (!question.getMember().getId().equals(memberId)) {
-            throw new CustomRuntimeException(PERMISSION_DENIED);
-        }
+        checkPermissions(requester, question);
 
         question.changeExposure(DELETE);
 
