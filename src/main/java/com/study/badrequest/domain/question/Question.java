@@ -84,10 +84,6 @@ public class Question {
         questionMetrics.addQuestion(this);
     }
 
-    private String setContents(String contents) {
-        return MarkdownUtils.parseMarkdownToHtml(contents);
-    }
-
     private static String makePreview(String contents) {
         String plainText = MarkdownUtils.markdownToPlainText(contents);
         if (plainText.length() > 50) {
@@ -105,7 +101,7 @@ public class Question {
 
     public void modify(String title, String contents) {
         this.title = title;
-        this.contents = setContents(contents);
+        this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
         this.preview = makePreview(contents);
         this.modifiedAt = LocalDateTime.now();
     }

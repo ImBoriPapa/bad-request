@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.question;
 
 import com.study.badrequest.commons.status.ExposureStatus;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import javax.persistence.criteria.CriteriaBuilder;
         @Index(name = "ANSWER_IDX", columnList = "count_of_answer"),
         @Index(name = "EXPOSURE_IDX", columnList = "exposure")
 })
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @EqualsAndHashCode(of = "id")
 public class QuestionMetrics {
@@ -32,7 +33,7 @@ public class QuestionMetrics {
     @Enumerated(EnumType.STRING)
     @Column(name = "exposure")
     private ExposureStatus exposure;
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "questionMetrics")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "questionMetrics")
     private Question question;
 
     protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Integer countOfAnswer, ExposureStatus exposure) {

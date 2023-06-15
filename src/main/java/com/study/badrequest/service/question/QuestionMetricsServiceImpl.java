@@ -54,8 +54,12 @@ public class QuestionMetricsServiceImpl implements QuestionMetricsService {
 
     @Transactional
     public QuestionResponse.Modify deleteRecommendation(Long memberId, Long questionId) {
-        Recommendation recommendation = recommendationRepository.findByMemberIdAndQuestionId(memberId, questionId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는다."));
-        recommendation.getQuestion().getQuestionMetrics().decrementCountOfRecommendations();
+        Recommendation recommendation = recommendationRepository.findByMemberIdAndQuestionId(memberId, questionId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는다."));
+        recommendation
+                .getQuestion()
+                .getQuestionMetrics()
+                .decrementCountOfRecommendations();
         recommendationRepository.deleteById(recommendation.getId());
         return new QuestionResponse.Modify(questionId, LocalDateTime.now());
     }

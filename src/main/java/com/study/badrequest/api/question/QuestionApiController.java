@@ -63,7 +63,7 @@ public class QuestionApiController {
     public ResponseEntity delete(@PathVariable Long questionId,
                                  @LoggedInMember CurrentMember.Information information) {
         log.info("Question Delete Request");
-        QuestionResponse.Delete response = questionService.deleteQuestion(information.getId(), questionId);
+        QuestionResponse.Delete response = questionService.deleteQuestionProcess(information.getId(), questionId);
 
         return ResponseEntity
                 .ok()

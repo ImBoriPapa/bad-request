@@ -187,7 +187,7 @@ public class QuestionApiDocs {
         String accessToken = UUID.randomUUID().toString();
         QuestionResponse.Delete response = new QuestionResponse.Delete(questionId, LocalDateTime.now());
         //when
-        given(questionService.deleteQuestion(any(), any())).willReturn(response);
+        given(questionService.deleteQuestionProcess(any(), any())).willReturn(response);
         //then
         mockMvc.perform(delete(QUESTION_DELETE_URL, questionId)
                         .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken))

@@ -9,6 +9,6 @@ public interface QuestionService {
 
     QuestionResponse.Modify modifyQuestionProcessing(Long memberId, Long questionId, QuestionRequest.Modify form);
 
-    QuestionResponse.Delete deleteQuestion(Long memberId, Long questionId);
+    QuestionResponse.Delete deleteQuestionProcess(Long memberId, Long questionId);
 
 }

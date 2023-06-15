@@ -1,5 +1,6 @@
 package com.study.badrequest.service.question;
 
+import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.question.*;
 import com.study.badrequest.dto.question.QuestionRequest;
@@ -26,8 +27,9 @@ import static com.study.badrequest.commons.status.ExposureStatus.*;
 public class QuestionServiceImpl implements QuestionService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
+    @Override
     @Transactional
     public QuestionResponse.Create createQuestionProcessing(Long memberId, QuestionRequest.Create form) {
         log.info("Create Question Processing memberId: {}, title: {}", memberId, form.getTitle());
@@ -39,7 +41,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.save(questionEntity);
 
         //이벤트: 1.태그 저장 2.이미지 상태 변경
-        applicationEventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member, question, form.getTags(), form.getImageIds()));
+        eventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member, question, form.getTags(), form.getImageIds()));
 
         return new QuestionResponse.Create(question.getId(), question.getAskedAt());
     }
@@ -50,24 +52,34 @@ public class QuestionServiceImpl implements QuestionService {
                 .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
     }
 
-
+    @Override
     @Transactional
     public QuestionResponse.Modify modifyQuestionProcessing(Long memberId, Long questionId, QuestionRequest.Modify form) {
         log.info("Modify Question Processing");
 
+        Member requester = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
         Question question = findQuestionById(questionId);
 
-        if (!question.getMember().getId().equals(memberId)) {
-            throw new CustomRuntimeException(PERMISSION_DENIED);
-        }
+        checkPermissions(requester, question);
 
-        applicationEventPublisher.publishEvent(new QuestionEventDto.ModifyEvent(question, form.getImageIds()));
+        question.modify(form.getTitle(), form.getContents());
+
+        eventPublisher.publishEvent(new QuestionEventDto.ModifyEvent(question, form.getImageIds()));
 
         return new QuestionResponse.Modify(question.getId(), question.getModifiedAt());
     }
 
+    private void checkPermissions(Member requester, Question question) {
+        if (requester.getAuthority() != Authority.ADMIN) {
+            if (!requester.equals(question.getMember())) {
+                throw new CustomRuntimeException(PERMISSION_DENIED);
+            }
+        }
+    }
+
     @Transactional
-    public QuestionResponse.Delete deleteQuestion(Long memberId, Long questionId) {
+    public QuestionResponse.Delete deleteQuestionProcess(Long memberId, Long questionId) {
         log.info("질문 삭제 시작 요청 회원: {}, 질문 아이디: {}", memberId, questionId);
         Question question = findQuestionById(questionId);
 
@@ -77,7 +89,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         question.changeExposure(DELETE);
 
-        applicationEventPublisher.publishEvent(new QuestionEventDto.DeleteEvent(question));
+        eventPublisher.publishEvent(new QuestionEventDto.DeleteEvent(question));
 
         return new QuestionResponse.Delete(questionId, question.getDeletedAt());
     }
