@@ -39,12 +39,6 @@ public class MemberServiceImpl implements MemberService {
     private final ImageUploader imageUploader;
     private final ApplicationEventPublisher eventPublisher;
 
-    /**
-     * 회원 가입
-     * 회원 가입시 기본 프로필 이미지 경로 저장
-     * 비밀번호 암호화
-     * Authority == MEMBER
-     */
     @Override
     @Transactional
     public MemberResponse.Create signupMemberProcessingByEmail(MemberRequestForm.SignUp form, String ipAddress) {
@@ -72,7 +66,7 @@ public class MemberServiceImpl implements MemberService {
 
         eventPublisher.publishEvent(new MemberEventDto.Create(newMember.getId(), "이메일 회원 가입", ipAddress, newMember.getCreatedAt()));
 
-        return new MemberResponse.Create(newMember);
+        return new MemberResponse.Create(newMember.getId(), newMember.getCreatedAt());
     }
 
     private void emailDuplicateVerification(String email) {

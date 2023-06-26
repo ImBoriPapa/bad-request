@@ -15,16 +15,15 @@ import java.util.Map;
 public class MemberResponse {
 
     @NoArgsConstructor
-    @AllArgsConstructor
     @Getter
     public static class Create {
         private Long id;
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        public Create(Member member) {
-            this.id = member.getId();
-            this.createdAt = member.getCreatedAt();
+        public Create(Long memberId, LocalDateTime createdAt) {
+            this.id = memberId;
+            this.createdAt = createdAt;
         }
     }
 

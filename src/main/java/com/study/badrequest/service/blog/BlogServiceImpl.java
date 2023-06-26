@@ -18,10 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class BlogServiceImpl {
+public class BlogServiceImpl implements BlogService{
     private final BlogRepository blogRepository;
     private final MemberRepository memberRepository;
-
     @Transactional
     public Blog createBlog(Long memberId) {
         log.info("Create Blog Request MemberId: {}", memberId);

@@ -27,16 +27,17 @@ import static com.study.badrequest.domain.mail.MemberMail.createTemporaryPasswor
 @Slf4j
 @Transactional(readOnly = true)
 public class MemberMailServiceImpl implements MemberMailService {
-
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
     private final MemberMailRepository mailRepository;
-
     private final MemberRepository memberRepository;
 
     @Value("${mail.temporary-password}")
-    public String temporaryPasswordSubject;
+    private String temporaryPasswordSubject;
 
+    public void sendWelcome(Long memberId) {
+        log.info("Send Welcome Mail");
+    }
 
     @Transactional
     @Override

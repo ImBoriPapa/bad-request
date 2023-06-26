@@ -14,20 +14,20 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class AsyncConfig implements AsyncConfigurer {
 
-    public static final String RECORD_ASYNC_EXECUTOR = "recordAsyncExecutor";
+    public static final String WELCOME_MAIL_ASYNC_EXECUTOR = "welcomeMailAsyncExecutor";
     public static final String ACTIVITY_ASYNC_EXECUTOR = "activityAsyncExecutor";
     public static final String QUESTION_IMAGE_ASYNC_EXECUTOR = "questionImageAsyncExecutor";
-    private int CORE_POOL_SIZE = 3;
-    private int MAX_POOL_SIZE = 10;
-    private int QUEUE_CAPACITY = 100_1000;
+    private final int CORE_POOL_SIZE = 3;
+    private final int MAX_POOL_SIZE = 10;
+    private final int QUEUE_CAPACITY = 100_1000;
 
-    @Bean(name = RECORD_ASYNC_EXECUTOR)
+    @Bean(name = WELCOME_MAIL_ASYNC_EXECUTOR)
     public Executor threadPoolTaskExecutor1() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(CORE_POOL_SIZE);
         executor.setMaxPoolSize(MAX_POOL_SIZE);
         executor.setQueueCapacity(QUEUE_CAPACITY);
-        executor.setThreadNamePrefix("record-exec-" + executor.getActiveCount());
+        executor.setThreadNamePrefix("wm-exec-" + executor.getActiveCount());
         return executor;
     }
 

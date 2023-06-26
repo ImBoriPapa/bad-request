@@ -104,6 +104,8 @@ logging:
     org.springframework.data.*.*: INFO
     org.springframework.cache.*: INFO
 
+oauth:
+  authorizedRedirectUris: http://localhost:8080
 
 cloud:
   aws:

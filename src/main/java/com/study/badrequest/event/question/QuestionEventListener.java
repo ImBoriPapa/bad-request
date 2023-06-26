@@ -2,19 +2,31 @@ package com.study.badrequest.event.question;
 
 
 import com.study.badrequest.domain.activity.ActivityAction;
+import com.study.badrequest.domain.record.ActionStatus;
+import com.study.badrequest.dto.record.MemberRecordRequest;
 import com.study.badrequest.service.activity.ActivityService;
 
 
 import com.study.badrequest.service.image.QuestionImageService;
 import com.study.badrequest.service.question.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionTagService;
+import com.study.badrequest.service.record.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.event.EventListener;
 
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.study.badrequest.config.AsyncConfig.QUESTION_IMAGE_ASYNC_EXECUTOR;
 
 
 @Component
@@ -25,15 +37,16 @@ public class QuestionEventListener {
     private final QuestionImageService questionImageService;
     private final QuestionMetricsService questionMetricsService;
     private final ActivityService activityService;
-    @EventListener
+
+    @TransactionalEventListener
     public void handleCreateEvent(QuestionEventDto.CreateEvent dto) {
-        log.info("질문 생성 이벤트 수신");
+        log.info("Question Create Event Occurs");
 
         questionTagService.createQuestionTag(dto.getTags(), dto.getQuestion());
 
         questionImageService.changeTemporaryToSaved(dto.getImages(), dto.getQuestion());
 
-        activityService.createActivity(dto.getMember(), dto.getQuestion().getTitle(), ActivityAction.QUESTION ,dto.getQuestion().getAskedAt());
+        activityService.createActivity(dto.getMember(), dto.getQuestion().getTitle(), ActivityAction.QUESTION, dto.getQuestion().getAskedAt());
     }
 
     @EventListener
@@ -45,7 +58,7 @@ public class QuestionEventListener {
     }
 
     @EventListener
-    public void handleDeleteEvent(QuestionEventDto.DeleteEvent dto){
+    public void handleDeleteEvent(QuestionEventDto.DeleteEvent dto) {
         log.info("질문 삭제 이벤트");
 
 

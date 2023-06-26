@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import static com.study.badrequest.config.AsyncConfig.RECORD_ASYNC_EXECUTOR;
+import static com.study.badrequest.config.AsyncConfig.WELCOME_MAIL_ASYNC_EXECUTOR;
 
 @Component
 @Slf4j
@@ -28,24 +28,16 @@ public class MemberEventListener {
     private final NonMemberMailService nonMemberMailService;
     private final RecordService recordService;
 
-    @Async(RECORD_ASYNC_EXECUTOR)
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleCreateEvent(MemberEventDto.Create dto) {
-        log.info("Create Member Event");
 
-        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.CREATED, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
 
-        recordService.recordMemberInformation(memberRecordRequest);
-    }
-
-    @Async(RECORD_ASYNC_EXECUTOR)
+    @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @EventListener
     public void handleSendAuthenticationEmail(MemberEventDto.SendAuthenticationMail dto) {
         log.info("인증 메일 발송 이벤트 ");
         nonMemberMailService.sendAuthenticationMail(dto.getEmail(),dto.getCode());
     }
 
-    @Async(RECORD_ASYNC_EXECUTOR)
+    @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @EventListener
     public void handleUpdateEvent(MemberEventDto.Update dto) {
         log.info("회원 업데이트 이벤트 ");
@@ -56,7 +48,7 @@ public class MemberEventListener {
         recordService.recordMemberInformation(memberRecordRequest);
     }
 
-    @Async(RECORD_ASYNC_EXECUTOR)
+    @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @EventListener
     public void handleDeleteEvent(MemberEventDto.Delete dto) {
         log.info("회원 삭제 이벤트 ");
@@ -66,7 +58,7 @@ public class MemberEventListener {
         recordService.recordMemberInformation(memberRecordRequest);
     }
 
-    @Async(RECORD_ASYNC_EXECUTOR)
+    @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @EventListener
     public void handleIssueTemporaryPassword(MemberEventDto.IssueTemporaryPassword dto) {
         log.info("회원 임시 비밀번호 이벤트 ");
@@ -77,7 +69,7 @@ public class MemberEventListener {
         recordService.recordMemberInformation(memberRecordRequest);
     }
 
-    @Async(RECORD_ASYNC_EXECUTOR)
+    @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleLoginEvent(MemberEventDto.Login dto) {
         log.info("회원 로그인 이벤트 ");
@@ -87,7 +79,7 @@ public class MemberEventListener {
         recordService.recordMemberInformation(memberRecordRequest);
     }
 
-    @Async(RECORD_ASYNC_EXECUTOR)
+    @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @EventListener
     public void handleLogoutEvent(MemberEventDto.Logout dto) {
         log.info("회원 로그아웃 이벤트 ");
