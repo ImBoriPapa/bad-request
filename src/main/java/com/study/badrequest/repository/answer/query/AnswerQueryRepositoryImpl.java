@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 import static com.study.badrequest.domain.answer.QAnswer.answer;
 import static com.study.badrequest.domain.answerRecommendation.QAnswerRecommendation.*;
 import static com.study.badrequest.domain.member.QMember.*;
-import static com.study.badrequest.domain.member.QMemberProfile.*;
+import static com.study.badrequest.domain.memberProfile.QMemberProfile.memberProfile;
+
 
 @Repository
 @Transactional(readOnly = true)

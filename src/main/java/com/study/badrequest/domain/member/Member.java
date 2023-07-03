@@ -1,6 +1,7 @@
 package com.study.badrequest.domain.member;
 
 
+import com.study.badrequest.domain.memberProfile.MemberProfile;
 import lombok.*;
 
 
@@ -26,7 +27,7 @@ public class Member {
     private Long id;
     @Column(name = "change_able_id", unique = true, nullable = false)
     private String changeableId;
-    @Column(name = "oauth_id",nullable = true)
+    @Column(name = "oauth_id", nullable = true)
     private String oauthId;
     @Column(name = "email", nullable = false)
     private String email;
@@ -58,7 +59,7 @@ public class Member {
     private Long dateIndex;
 
     @Builder(access = AccessLevel.PROTECTED)
-    protected Member(String oauthId, RegistrationType registrationType, String email, String password, String contact, Authority authority, String ipAddress, MemberProfile memberProfile, AccountStatus accountStatus) {
+    protected Member(String oauthId, RegistrationType registrationType, String email, String password, String contact, Authority authority, String ipAddress, AccountStatus accountStatus) {
         this.oauthId = oauthId;
         this.registrationType = registrationType;
         this.email = email;
@@ -66,7 +67,6 @@ public class Member {
         this.contact = contact;
         this.authority = authority;
         this.ipAddress = ipAddress;
-        this.memberProfile = memberProfile;
         this.accountStatus = accountStatus;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -74,20 +74,19 @@ public class Member {
         this.dateIndex = timeToDateIndex(this.createdAt);
     }
 
-    public static Member createMemberWithEmail(String email, String password, String contact, MemberProfile memberProfile) {
+    public static Member createMemberWithEmail(String email, String password, String contact) {
         return Member.builder()
                 .email(email)
                 .oauthId(null)
                 .password(password)
                 .registrationType(RegistrationType.BAD_REQUEST)
                 .contact(contact)
-                .memberProfile(memberProfile)
                 .authority(Authority.MEMBER)
                 .accountStatus(AccountStatus.ACTIVE)
                 .build();
     }
 
-    public static Member createMemberWithOauth(String email, String oauthId, RegistrationType registrationType, MemberProfile memberProfile) {
+    public static Member createMemberWithOauth(String email, String oauthId, RegistrationType registrationType) {
         return Member.builder()
                 .email(email)
                 .oauthId(oauthId)
@@ -95,9 +94,12 @@ public class Member {
                 .registrationType(registrationType)
                 .contact(null)
                 .authority(Authority.MEMBER)
-                .memberProfile(memberProfile)
                 .accountStatus(AccountStatus.ACTIVE)
                 .build();
+    }
+
+    public void addMemberProfile(MemberProfile memberProfile) {
+        this.memberProfile = memberProfile;
     }
 
     public void changeStatus(AccountStatus accountStatus) {
@@ -138,7 +140,7 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void changePassword(String password,AccountStatus status) {
+    public void changePassword(String password, AccountStatus status) {
         this.password = password;
         this.accountStatus = status;
         this.updatedAt = LocalDateTime.now();

@@ -2,8 +2,8 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.dto.question.QuestionRequest;
@@ -54,7 +54,7 @@ public class CreateQuestionTest extends QuestionServiceTestBase {
         List<Long> imageIds = new ArrayList<>();
         QuestionRequest.Create request = new QuestionRequest.Create(title, contents, tags, imageIds);
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "contact", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "contact");
         Question question = Question.createQuestion(title, contents, member, questionMetrics);
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));

@@ -5,8 +5,8 @@ import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.domain.login.RefreshToken;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
@@ -189,7 +189,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
                 .expiration(604800L)
                 .build();
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
 
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
                 .accessToken("newAccessToken")

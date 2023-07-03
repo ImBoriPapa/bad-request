@@ -1,9 +1,8 @@
 package com.study.badrequest.domain.question;
 
-import com.study.badrequest.domain.activity.ActivityScore;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +14,6 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @ActiveProfiles("test")
@@ -29,7 +27,7 @@ class QuestionTest extends QuestionEntityTestBase {
         String title = "title";
         String contents = "contents";
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234");
         Member save = memberRepository.save(member);
 
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
@@ -53,7 +51,7 @@ class QuestionTest extends QuestionEntityTestBase {
         String title = "title";
         String contents = "contents";
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234");
         Member save = memberRepository.save(member);
 
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();

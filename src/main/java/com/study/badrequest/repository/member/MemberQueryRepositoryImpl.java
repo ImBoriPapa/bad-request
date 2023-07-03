@@ -40,7 +40,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                                 member.email.as("email"),
                                 member.contact.as("contact"),
                                 member.memberProfile.nickname.as("nickname"),
-                                member.memberProfile.selfIntroduce.as("selfIntroduce"),
+                                member.memberProfile.introduce.as("selfIntroduce"),
                                 member.memberProfile.profileImage.imageLocation.as("profileImage"),
                                 member.authority.as("authority"),
                                 member.registrationType.as("loginType"),
@@ -128,7 +128,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
                         Projections.fields(MemberProfileDto.class,
                                 member.id.as("memberId"),
                                 member.memberProfile.nickname.as("nickname"),
-                                member.memberProfile.selfIntroduce.as("selfIntroduce"),
+                                member.memberProfile.introduce.as("selfIntroduce"),
                                 member.memberProfile.profileImage.imageLocation.as("profileImage")
                         )
                 )

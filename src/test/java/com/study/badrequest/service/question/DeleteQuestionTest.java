@@ -2,8 +2,8 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.event.question.QuestionEventDto;
@@ -60,7 +60,7 @@ public class DeleteQuestionTest extends QuestionServiceTestBase {
         //given
         Long memberId = 123L;
         Long questionId = 1234L;
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
         Question question = Question.createQuestion("title", "contents", member, QuestionMetrics.createQuestionMetrics());
         //when
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));

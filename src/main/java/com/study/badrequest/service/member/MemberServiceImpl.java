@@ -2,6 +2,8 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.event.member.MemberEventDto;
@@ -60,11 +62,11 @@ public class MemberServiceImpl implements MemberService {
 
         contactDuplicationVerification(contact);
 
-        emailAuthenticationCodeVerification(email, emailAuthenticationCode);
+//        emailAuthenticationCodeVerification(email, emailAuthenticationCode);
 
-        Member newMember = memberRepository.save(createMemberFromForm(email, encodedPassword, contact, nickname));
+        Member newMember = memberRepository.save(Member.createMemberWithEmail(email, encodedPassword, contact));
 
-        eventPublisher.publishEvent(new MemberEventDto.Create(newMember.getId(), "이메일 회원 가입", ipAddress, newMember.getCreatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Create(newMember.getId(), nickname, "이메일 회원 가입", ipAddress, newMember.getCreatedAt()));
 
         return new MemberResponse.Create(newMember.getId(), newMember.getCreatedAt());
     }
@@ -225,12 +227,6 @@ public class MemberServiceImpl implements MemberService {
         return new MemberResponse.Delete();
     }
 
-
-    private Member createMemberFromForm(String email, String password, String contact, String nickname) {
-        ProfileImage defaultProfileImage = ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage());
-        MemberProfile memberProfile = new MemberProfile(nickname, defaultProfileImage);
-        return Member.createMemberWithEmail(email, password, contact, memberProfile);
-    }
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)

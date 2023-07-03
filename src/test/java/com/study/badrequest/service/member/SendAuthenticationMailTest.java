@@ -2,6 +2,8 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
@@ -26,7 +28,7 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
     void 인증메일발송테스트1() throws Exception {
         //given
         String email = "email@email.com";
-        Member activeMember = Member.createMemberWithEmail(email, "", "", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member activeMember = Member.createMemberWithEmail(email, "", "");
         List<Member> members = List.of(activeMember);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
@@ -41,7 +43,7 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
     void 인증메일발송테스트2() throws Exception {
         //given
         String email = "email@email.com";
-        Member withDrawnMember = Member.createMemberWithEmail(email, "", "", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member withDrawnMember = Member.createMemberWithEmail(email, "", "");
         withDrawnMember.changeStatus(AccountStatus.WITHDRAWN);
         List<Member> members = List.of(withDrawnMember);
 
@@ -62,7 +64,7 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
     void 인증메일발송테스트3() throws Exception {
         //given
         String email = "email@email.com";
-        Member withDrawnMember = Member.createMemberWithEmail(email, "", "", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member withDrawnMember = Member.createMemberWithEmail(email, "", "");
         withDrawnMember.changeStatus(AccountStatus.WITHDRAWN);
         List<Member> members = List.of(withDrawnMember);
 

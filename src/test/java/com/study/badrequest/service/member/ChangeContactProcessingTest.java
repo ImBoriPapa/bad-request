@@ -3,8 +3,8 @@ package com.study.badrequest.service.member;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.AccountStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
@@ -32,7 +32,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member activeMember = Member.createMemberWithEmail("email@email.com", "", contact, new MemberProfile("", ProfileImage.createDefaultImage("")));
+        Member activeMember = Member.createMemberWithEmail("email@email.com", "", contact);
         List<Member> members = List.of(activeMember);
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(members);
@@ -68,7 +68,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member widrawnMember = Member.createMemberWithEmail("email@email.com", "", contact, new MemberProfile("", ProfileImage.createDefaultImage("")));
+        Member widrawnMember = Member.createMemberWithEmail("email@email.com", "", contact);
         widrawnMember.changeStatus(AccountStatus.WITHDRAWN);
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
@@ -87,7 +87,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member member = Member.createMemberWithEmail("email@email.com", "", contact, new MemberProfile("", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "", contact);
 
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());

@@ -63,13 +63,11 @@ public class OAuthUserDetailService extends DefaultOAuth2UserService {
         Member oauthMember = Member.createMemberWithOauth(
                 oauth2UserInformation.getEmail(),
                 oauth2UserInformation.getId(),
-                getOauth2UserInformation(oauth2UserInformation.getProvider()),
-                new MemberProfile(oauth2UserInformation.getName(), ProfileImage.createDefaultImage(imageUploader.DEFAULT_PROFILE_IMAGE))
-        );
+                getOauth2UserInformation(oauth2UserInformation.getProvider()));
 
         Member member = memberRepository.save(oauthMember);
 
-        eventPublisher.publishEvent(new MemberEventDto.Create(member.getId(), "Oauth2 회원가입", "Oath2", member.getCreatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Create(member.getId(),oauth2UserInformation.getName(), "Oauth2 회원가입", "Oath2", member.getCreatedAt()));
 
         return new MemberPrincipal(member.getId(), member.getChangeableId(), member.getAuthority().getAuthorities());
     }

@@ -3,6 +3,8 @@ package com.study.badrequest.service.login;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.RefreshToken;
 import com.study.badrequest.domain.member.*;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
@@ -48,8 +50,8 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member1 = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
-        Member member2 = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member1 = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
+        Member member2 = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
 
         List<Member> members = List.of(member1, member2);
         //when
@@ -86,7 +88,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
         String oauthId = "12345";
-        Member oauth2Member = Member.createMemberWithOauth(requestedEmail, oauthId, RegistrationType.GOOGLE, new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member oauth2Member = Member.createMemberWithOauth(requestedEmail, oauthId, RegistrationType.GOOGLE);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(List.of(oauth2Member));
 
@@ -104,7 +106,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
         member.changeStatus(AccountStatus.REQUIRED_MAIL_CONFIRMED);
 
         List<Member> members = List.of(member);
@@ -125,7 +127,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
         member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
 
         List<Member> members = List.of(member);
@@ -147,7 +149,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
         member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
         List<Member> members = List.of(member);
 
@@ -171,7 +173,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
         member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
         List<Member> members = List.of(member);
 
@@ -195,7 +197,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
         List<Member> members = List.of(member);
 
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
@@ -219,7 +221,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
         List<Member> members = List.of(member);
 
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);

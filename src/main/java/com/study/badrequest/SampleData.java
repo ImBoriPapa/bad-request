@@ -3,8 +3,8 @@ package com.study.badrequest;
 
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.question.QuestionRequest;
@@ -66,8 +66,7 @@ public class SampleData {
         Member sampleMember = Member.createMemberWithEmail(
                 "sample@gmail.com",
                 passwordEncoder.encode("sample1234!@"),
-                "01011111111",
-                new MemberProfile("샘플유저", ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage()))
+                "01011111111"
         );
 
         memberList.add(sampleMember);
@@ -84,8 +83,7 @@ public class SampleData {
             Member member = Member.createMemberWithEmail(
                     email + index + domain,
                     passwordEncoder.encode(password),
-                    contact,
-                    new MemberProfile(nickname + index, ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage()))
+                    contact
             );
             memberList.add(member);
         });

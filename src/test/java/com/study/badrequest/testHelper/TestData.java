@@ -5,8 +5,8 @@ import com.study.badrequest.domain.answer.Answer;
 import com.study.badrequest.domain.answerRecommendation.AnswerRecommendation;
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.domain.question.QuestionTag;
@@ -57,8 +57,7 @@ public class TestData {
                     Member member = Member.createMemberWithEmail(
                             "sample" + index + "@gmail.com",
                             passwordEncoder.encode("sample1234!@"),
-                            "010" + new Random().nextInt(10000000) + 1,
-                            new MemberProfile("샘플유저", ProfileImage.createDefaultImage("image")));
+                            "010" + new Random().nextInt(10000000) + 1);
                     memberList.add(member);
                 }
         );

@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.member;
+package com.study.badrequest.domain.memberProfile;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,13 +11,13 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ProfileImage {
-    @Column(name = "STORED_NAME")
+    @Column(name = "stored_file_name")
     private String storedFileName;
-    @Column(name = "IMAGE_LOCATION")
+    @Column(name = "image_location")
     private String imageLocation;
-    @Column(name = "SIZE")
+    @Column(name = "size")
     private Long size;
-    @Column(name = "IS_DEFAULT")
+    @Column(name = "is_default")
     private Boolean isDefault;
 
     protected ProfileImage(String storedFileName, String imageLocation, Long size, Boolean isDefault) {

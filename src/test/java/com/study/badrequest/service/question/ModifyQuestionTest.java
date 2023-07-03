@@ -2,15 +2,13 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.service.question.QuestionServiceTestBase;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +48,7 @@ public class ModifyQuestionTest extends QuestionServiceTestBase {
         Long memberId = 123L;
         Long questionId = 1324L;
         QuestionRequest.Modify request = new QuestionRequest.Modify();
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
 
         Question question = Question.createQuestion("", "", member, QuestionMetrics.createQuestionMetrics());
 
@@ -71,8 +69,8 @@ public class ModifyQuestionTest extends QuestionServiceTestBase {
         Long questionId = 1324L;
         QuestionRequest.Modify request = new QuestionRequest.Modify("New Title", "New Contents", List.of(1L, 2L, 3L));
 
-        Member questioner = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
-        Member requester = Member.createMemberWithEmail("email@email.com", "password", "01012341234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member questioner = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
+        Member requester = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
 
         Question question = Question.createQuestion("title", "contents", questioner, QuestionMetrics.createQuestionMetrics());
         //when

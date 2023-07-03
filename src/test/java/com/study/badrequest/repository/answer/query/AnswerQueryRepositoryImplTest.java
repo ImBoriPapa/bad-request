@@ -1,11 +1,6 @@
 package com.study.badrequest.repository.answer.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
-import com.study.badrequest.domain.answer.Answer;
-import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.testHelper.TestConfig;
 import com.study.badrequest.testHelper.TestData;
 import lombok.extern.slf4j.Slf4j;

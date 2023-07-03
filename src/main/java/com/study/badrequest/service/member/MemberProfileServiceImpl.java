@@ -1,14 +1,16 @@
 package com.study.badrequest.service.member;
 
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.dto.member.MemberResponse;
+import com.study.badrequest.dto.memberProfile.MemberProfileResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
+import com.study.badrequest.utils.image.ImageUploader;
 import com.study.badrequest.utils.image.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +27,21 @@ import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 @Slf4j
 public class MemberProfileServiceImpl implements MemberProfileService {
     private final MemberRepository memberRepository;
+    private final ImageUploader imageUploader;
     private final ApplicationEventPublisher eventPublisher;
-    private final S3ImageUploader imageUploader;
 
-    /**
-     * 닉네임 변경
-     */
+    @Transactional
+    public MemberProfileResponse.Create createMemberProfileProcessing(Long memberId, String nickname) {
+        log.info("Create Member Profile Processing");
+        Member member = findMemberById(memberId);
+
+        ProfileImage defaultImage = ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage());
+
+        member.addMemberProfile(MemberProfile.createMemberProfile(nickname, defaultImage));
+
+        return new MemberProfileResponse.Create(member.getMemberProfile().getId(), member.getCreatedAt());
+    }
+
     @Transactional
     public MemberResponse.Update changeNickname(Long memberId, MemberRequestForm.ChangeNickname form, String ipAddress) {
         log.info("Start change Nickname memberId: {}", memberId);

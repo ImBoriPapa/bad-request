@@ -2,8 +2,8 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.member.MemberProfile;
-import com.study.badrequest.domain.member.ProfileImage;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
@@ -66,7 +66,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequestForm.ChangePassword form = new MemberRequestForm.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234");
 
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
@@ -87,7 +87,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequestForm.ChangePassword form = new MemberRequestForm.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234", new MemberProfile("nickname", ProfileImage.createDefaultImage("")));
+        Member member = Member.createMemberWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234");
 
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));

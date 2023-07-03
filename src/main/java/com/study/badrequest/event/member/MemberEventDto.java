@@ -17,6 +17,7 @@ public class MemberEventDto {
     @Getter
     public static class Create {
         private Long memberId;
+        private String nickname;
         private String description;
         private String ipAddress;
         private LocalDateTime recordTime;

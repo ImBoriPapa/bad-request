@@ -2,6 +2,8 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequestForm;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
@@ -39,7 +41,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
 
-        Member activeMember = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("image")));
+        Member activeMember = Member.createMemberWithEmail(email, password, contact);
 
         List<Member> members = List.of(activeMember);
         //when
@@ -62,7 +64,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
 
-        Member member = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("image")));
+        Member member = Member.createMemberWithEmail(email, password, contact);
         List<Member> members = List.of(member);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -156,7 +158,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, code.getCode());
-        Member member = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("image")));
+        Member member = Member.createMemberWithEmail(email, password, contact);
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -170,7 +172,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         verify(emailAuthenticationCodeRepository).findByEmail(email);
         verify(emailAuthenticationCodeRepository).delete(code);
         verify(memberRepository).save(member);
-        verify(eventPublisher).publishEvent(new MemberEventDto.Create(any(),"이메일 회원 가입",ipAddress,member.getCreatedAt()));
+        verify(eventPublisher).publishEvent(new MemberEventDto.Create(any(),nickname,"이메일 회원 가입",ipAddress,member.getCreatedAt()));
     }
 
 

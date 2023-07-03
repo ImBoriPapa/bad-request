@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.member;
+package com.study.badrequest.domain.memberProfile;
 
 
 import com.study.badrequest.domain.activity.ActivityScore;
@@ -12,27 +12,33 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "MEMBER_PROFILE")
+@Table(name = "member_profile")
 @EqualsAndHashCode(of = "id")
 public class MemberProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMBER_PROFILE_ID")
+    @Column(name = "member_profile_id")
     private Long id;
-    @Column(name = "MEMBER_NICKNAME")
+    @Column(name = "nickname")
     private String nickname;
-    @Column(name = "SELF_INTRODUCE")
-    private String selfIntroduce;
+    @Column(name = "introduce")
+    private String introduce;
     @Embedded
     private ProfileImage profileImage;
-    @Column(name = "ACTIVITY_SCORE")
+    @Column(name = "activity_score")
     private Integer activityScore;
 
-    public MemberProfile(String nickname, ProfileImage profileImage) {
+    protected MemberProfile(String nickname, String introduce, ProfileImage profileImage, Integer activityScore) {
         this.nickname = nickname;
-        this.selfIntroduce = "자기 소개를 입력해 주세요";
+        this.introduce = introduce;
         this.profileImage = profileImage;
-        this.activityScore = 10;
+        this.activityScore = activityScore;
+    }
+
+    public static MemberProfile createMemberProfile(String nickname, ProfileImage profileImage) {
+        final String introduce = "자기 소개를 입력해 주세요";
+        final int score = 10;
+        return new MemberProfile(nickname, introduce, profileImage, score);
     }
 
     public void changeNickname(String nickname) {
@@ -40,7 +46,7 @@ public class MemberProfile {
     }
 
     public void changeIntroduce(String selfIntroduce) {
-        this.selfIntroduce = selfIntroduce;
+        this.introduce = selfIntroduce;
     }
 
     public void incrementActivityScore(ActivityScore score) {

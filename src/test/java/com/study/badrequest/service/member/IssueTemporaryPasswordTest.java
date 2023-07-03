@@ -2,6 +2,8 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
@@ -43,7 +45,7 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
 
-        Member withdrawnMember = Member.createMemberWithEmail(email, "", "01011111223", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member withdrawnMember = Member.createMemberWithEmail(email, "", "01011111223");
         withdrawnMember.changeStatus(AccountStatus.WITHDRAWN);
 
         List<Member> members = List.of(withdrawnMember);
@@ -62,10 +64,10 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
 
-        Member withDrawnMember = Member.createMemberWithEmail(email, "", "01011111223", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member withDrawnMember = Member.createMemberWithEmail(email, "", "01011111223");
         withDrawnMember.changeStatus(AccountStatus.WITHDRAWN);
 
-        Member activeMember = Member.createMemberWithEmail(email, "", "01011111223", new MemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member activeMember = Member.createMemberWithEmail(email, "", "01011111223");
 
         List<Member> members = List.of(withDrawnMember, activeMember);
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword("", activeMember);

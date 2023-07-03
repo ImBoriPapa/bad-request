@@ -1,8 +1,9 @@
 package com.study.badrequest.domain.member;
 
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.repository.member.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -31,11 +31,8 @@ class MemberTest extends MemberEntityTestBase {
         String email = "email@email.com";
         String password = "password1234!@";
         String contact = "01012341234";
-        String nickname = "닉네임";
-        ProfileImage profileImage = ProfileImage.createDefaultImage("default");
-        MemberProfile memberProfile = new MemberProfile(nickname, profileImage);
 
-        Member member = Member.createMemberWithEmail(email, password, contact, memberProfile);
+        Member member = Member.createMemberWithEmail(email, password, contact);
 
         //when
         Member saved = memberRepository.save(member);
@@ -52,13 +49,13 @@ class MemberTest extends MemberEntityTestBase {
         String password = "password1234!@";
         String contact = "01012341234";
         String nickname = "닉네임";
-        Member member1 = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("default")));
+        Member member1 = Member.createMemberWithEmail(email, password, contact);
         member1.changeStatus(AccountStatus.WITHDRAWN);
 
-        Member member2 = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("default")));
+        Member member2 = Member.createMemberWithEmail(email, password, contact);
         member2.changeStatus(AccountStatus.WITHDRAWN);
 
-        Member member3 = Member.createMemberWithEmail(email, password, contact, new MemberProfile(nickname, ProfileImage.createDefaultImage("default")));
+        Member member3 = Member.createMemberWithEmail(email, password, contact);
         member3.changeStatus(AccountStatus.ACTIVE);
         List<Member> members = List.of(member1, member2, member3);
         //when
