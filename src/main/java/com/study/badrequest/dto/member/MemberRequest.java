@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 
 import static com.study.badrequest.commons.constants.Regex.PASSWORD;
 
-public class MemberRequestForm {
+public class MemberRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter

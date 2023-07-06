@@ -1,6 +1,6 @@
 package com.study.badrequest.filter;
 
-import com.study.badrequest.service.login.LoginServiceImpl;
+import com.study.badrequest.service.login.LoginService;
 import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenRe
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtUtils jwtUtils;
-    private final LoginServiceImpl loginServiceImpl;
+    private final LoginService loginServiceImpl;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -41,35 +41,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * JWT Status 에 따라서 인증 처리
-     */
     private void handleJwtStatus(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
         switch (jwtStatus) {
             case ACCESS:
                 String changeableId = jwtUtils.extractChangeableIdInToken(accessToken);
                 if (loginServiceImpl.setAuthenticationInContextHolderByChangeableId(changeableId)) {
-                    log.info("Access Token 정상 처리");
+                    log.info("Access token processed successfully");
                     break;
                 } else {
-                    log.info("[JwtAuthenticationFilter is Logout token]");
+                    log.info("Access token status is Logout token");
                     jwtStatus = JwtStatus.LOGOUT;
                 }
                 break;
             case EXPIRED:
-                log.info("[JwtAuthenticationFilter is EXPIRED token]");
+                log.info("[Access token status is EXPIRED token]");
                 jwtStatus = JwtStatus.EXPIRED;
                 break;
             case DENIED:
-                log.info("[JwtAuthenticationFilter is DENIED token]");
+                log.info("[Access token status is DENIED token]");
                 jwtStatus = JwtStatus.DENIED;
                 break;
             case EMPTY_TOKEN:
-                log.info("[JwtAuthenticationFilter is EMPTY token]");
+                log.info("[Access token status is EMPTY token]");
                 jwtStatus = JwtStatus.EMPTY_TOKEN;
                 break;
             default:
-                log.info("[JwtAuthenticationFilter is ERROR token]");
+                log.info("[Access token status is ERROR token]");
                 jwtStatus = JwtStatus.ERROR;
         }
         request.setAttribute(JWT_STATUS_HEADER, jwtStatus);

@@ -2,9 +2,7 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
@@ -39,7 +37,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
-        MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
+        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
 
         Member activeMember = Member.createMemberWithEmail(email, password, contact);
 
@@ -62,7 +60,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
-        MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
+        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
 
         Member member = Member.createMemberWithEmail(email, password, contact);
         List<Member> members = List.of(member);
@@ -85,7 +83,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
-        MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
+        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -110,7 +108,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
 
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         String authenticationCode = code.getCode() + 313;
-        MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, authenticationCode);
+        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -134,7 +132,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
 
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         code.changeExpiredAt(LocalDateTime.now().minusSeconds(1));
-        MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, code.getCode());
+        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, code.getCode());
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -157,7 +155,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String ipAddress = "ipAddress";
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
-        MemberRequestForm.SignUp form = new MemberRequestForm.SignUp(email, password, nickname, contact, code.getCode());
+        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, code.getCode());
         Member member = Member.createMemberWithEmail(email, password, contact);
 
         //when

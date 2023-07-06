@@ -2,9 +2,7 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
@@ -13,7 +11,6 @@ import com.study.badrequest.repository.member.EmailAuthenticationCodeRepository;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.member.TemporaryPasswordRepository;
 import com.study.badrequest.utils.email.EmailUtils;
-import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,12 +35,11 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final EmailAuthenticationCodeRepository emailAuthenticationCodeRepository;
     private final TemporaryPasswordRepository temporaryPasswordRepository;
-    private final ImageUploader imageUploader;
     private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
-    public MemberResponse.Create signupMemberProcessingByEmail(MemberRequestForm.SignUp form, String ipAddress) {
+    public MemberResponse.Create signupMemberProcessingByEmail(MemberRequest.SignUp form, String ipAddress) {
         log.info("SignUp Member Processing By Email \n " +
                 "email    : {}\n" +
                 "nickname : {}\n" +
@@ -62,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
 
         contactDuplicationVerification(contact);
 
-//        emailAuthenticationCodeVerification(email, emailAuthenticationCode);
+        emailAuthenticationProcessing(email, emailAuthenticationCode);
 
         Member newMember = memberRepository.save(Member.createMemberWithEmail(email, encodedPassword, contact));
 
@@ -91,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private void emailAuthenticationCodeVerification(String email, String authenticationCode) {
+    private void emailAuthenticationProcessing(String email, String authenticationCode) {
         EmailAuthenticationCode emailAuthenticationCode = findAuthenticationCodeByEmail(email, NOTFOUND_AUTHENTICATION_EMAIL);
 
         if (!emailAuthenticationCode.getCode().equals(authenticationCode)) {
@@ -194,7 +190,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Transactional
     @Override
-    public MemberResponse.Update changePasswordProcessing(Long memberId, MemberRequestForm.ChangePassword form, String ipAddress) {
+    public MemberResponse.Update changePasswordProcessing(Long memberId, MemberRequest.ChangePassword form, String ipAddress) {
         log.info("Change Password Processing memberId: {}", memberId);
 
         if (form.getCurrentPassword().equals(form.getNewPassword())) {

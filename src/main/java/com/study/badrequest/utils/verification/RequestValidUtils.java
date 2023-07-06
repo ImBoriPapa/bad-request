@@ -20,7 +20,7 @@ public class RequestValidUtils {
 
     public static void throwValidationExceptionIfErrors(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            log.error("Member Validation Error");
+            log.error("Validation Error");
             throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
         }
     }

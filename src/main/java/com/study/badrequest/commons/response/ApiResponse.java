@@ -47,20 +47,20 @@ public class ApiResponse {
     public static class Error {
         private String status;
         private String requestPath;
-        private int errorCode;
+        private int code;
         private List<String> message;
 
         public Error(Exception ex, String request) {
             this.status = ApiResponseStatus.ERROR.name();
             this.requestPath = request;
-            this.errorCode = ApiResponseStatus.ERROR.getCode();
+            this.code = ApiResponseStatus.ERROR.getCode();
             this.message = List.of(ex.getMessage());
         }
 
         public Error(BasicCustomException ex, String request) {
             this.status = ex.getStatus().name();
             this.requestPath = request;
-            this.errorCode = ex.getErrorCode();
+            this.code = ex.getErrorCode();
             this.message = ex.getErrorMessage();
         }
     }

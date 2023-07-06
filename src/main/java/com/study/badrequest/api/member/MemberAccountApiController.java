@@ -4,7 +4,7 @@ package com.study.badrequest.api.member;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentMember;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.service.member.MemberService;
 
@@ -30,19 +30,11 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class MemberApiController {
+public class MemberAccountApiController {
     private final MemberService memberService;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
-
-    /**
-     * 회원가입
-     *
-     * @param form: String email, String password, String nickname, String contact
-     * @return 201 created, memberId, createdAt
-     */
     @PostMapping(value = POST_MEMBER_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity createMember(HttpServletRequest request,
-                                       @Validated @RequestBody MemberRequestForm.SignUp form, BindingResult bindingResult) {
+    public ResponseEntity<?> createMember(HttpServletRequest request, @Validated @RequestBody MemberRequest.SignUp form, BindingResult bindingResult) {
         log.info("Create Member Request");
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
@@ -56,16 +48,9 @@ public class MemberApiController {
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.createMemberModel(create)));
     }
 
-
-    /**
-     * 임시 비밀번호 요청
-     *
-     * @param form: String email
-     * @return 200 : String email, LocalDateTime issuedAt
-     */
     @PostMapping(value = POST_MEMBER_TEMPORARY_PASSWORD_ISSUE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity issueTemporaryPassword(@Validated
-                                                 @RequestBody MemberRequestForm.IssueTemporaryPassword form,
+    public ResponseEntity<?> issueTemporaryPassword(@Validated
+                                                 @RequestBody MemberRequest.IssueTemporaryPassword form,
                                                  BindingResult bindingResult,
                                                  HttpServletRequest request
     ) {
@@ -82,14 +67,9 @@ public class MemberApiController {
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getIssuePasswordModel(issueTemporaryPassword)));
     }
 
-    /**
-     * 인증메일 발송 요청
-     *
-     * @param form : String
-     * @return 200 ok
-     */
+
     @PostMapping(POST_MEMBER_SEND_EMAIL_AUTHENTICATION_CODE)
-    public ResponseEntity sendAuthenticationEmail(@Validated @RequestBody MemberRequestForm.SendAuthenticationEmail form, BindingResult bindingResult) {
+    public ResponseEntity<?> sendAuthenticationEmail(@Validated @RequestBody MemberRequest.SendAuthenticationEmail form, BindingResult bindingResult) {
         log.info("[이메일 인증 번호 요청 email: {}]", form.getEmail());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
@@ -101,18 +81,10 @@ public class MemberApiController {
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)));
     }
 
-
-    /**
-     * 비밀변호 변경
-     *
-     * @param memberId : Long memberId
-     * @param form     : String password, String newPassword
-     * @return 200 Ok, memberId, updatedAt
-     */
     @PatchMapping(value = PATCH_MEMBER_PASSWORD_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity patchPassword(@Validated
+    public ResponseEntity<?> patchPassword(@Validated
                                         @PathVariable Long memberId,
-                                        @RequestBody MemberRequestForm.ChangePassword form,
+                                        @RequestBody MemberRequest.ChangePassword form,
                                         @LoggedInMember CurrentMember.Information information,
                                         BindingResult bindingResult,
                                         HttpServletRequest request
@@ -133,17 +105,10 @@ public class MemberApiController {
     }
 
 
-    /**
-     * 연락처 변경
-     *
-     * @param memberId : Long memberId
-     * @param form:    String contact
-     * @return 200 Ok, memberId, updatedAt
-     */
     @PatchMapping(value = PATCH_MEMBER_CONTACT_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity patchContact(@Validated
+    public ResponseEntity<?> patchContact(@Validated
                                        @PathVariable Long memberId,
-                                       @RequestBody MemberRequestForm.UpdateContact form,
+                                       @RequestBody MemberRequest.UpdateContact form,
                                        @LoggedInMember CurrentMember.Information information,
                                        BindingResult bindingResult,
                                        HttpServletRequest request
@@ -162,16 +127,10 @@ public class MemberApiController {
                 .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.getChangeContactModel(update)));
     }
 
-    /**
-     * 회원 탈퇴
-     *
-     * @param memberId : Long memberId
-     * @param form:    String password
-     * @return 200 Ok
-     */
+
     @DeleteMapping(DELETE_MEMBER_URL)
-    public ResponseEntity deleteMember(@Validated @PathVariable Long memberId,
-                                       @RequestBody MemberRequestForm.DeleteMember form,
+    public ResponseEntity<?> deleteMember(@Validated @PathVariable Long memberId,
+                                       @RequestBody MemberRequest.DeleteMember form,
                                        @LoggedInMember CurrentMember.Information information,
                                        BindingResult bindingResult,
                                        HttpServletRequest request

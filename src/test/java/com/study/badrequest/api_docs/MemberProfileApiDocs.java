@@ -3,7 +3,7 @@ package com.study.badrequest.api_docs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.member.MemberProfileApiController;
 import com.study.badrequest.domain.login.CurrentMember;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.service.member.MemberProfileService;
@@ -76,7 +76,7 @@ public class MemberProfileApiDocs {
         Long memberId = 12314L;
         String nickname = "변경된닉네임";
         UUID token = UUID.randomUUID();
-        MemberRequestForm.ChangeNickname changeNickname = new MemberRequestForm.ChangeNickname(nickname);
+        MemberRequest.ChangeNickname changeNickname = new MemberRequest.ChangeNickname(nickname);
         MemberResponse.Update update = new MemberResponse.Update(memberId, LocalDateTime.now());
         EntityModel<MemberResponse.Update> entityModel = EntityModel.of(update,
                 Link.of("https://www.bad-request.kr/api/v2/members/" + memberId + "/nickname")

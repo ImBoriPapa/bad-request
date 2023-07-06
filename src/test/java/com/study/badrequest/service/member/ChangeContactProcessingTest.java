@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -37,7 +38,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(members);
         //then
-        Assertions.assertThatThrownBy(() -> memberService.changeContactProcessing(memberId, newContact, ipAddress))
+        assertThatThrownBy(() -> memberService.changeContactProcessing(memberId, newContact, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.DUPLICATE_CONTACT.getMessage());
     }
@@ -55,7 +56,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(memberRepository.findById(memberId)).willReturn(Optional.empty());
         //then
-        Assertions.assertThatThrownBy(() -> memberService.changeContactProcessing(memberId, newContact, ipAddress))
+        assertThatThrownBy(() -> memberService.changeContactProcessing(memberId, newContact, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOTFOUND_MEMBER.getMessage());
     }
@@ -74,7 +75,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(memberRepository.findById(memberId)).willReturn(Optional.of(widrawnMember));
         //then
-        Assertions.assertThatThrownBy(() -> memberService.changeContactProcessing(memberId, newContact, ipAddress))
+        assertThatThrownBy(() -> memberService.changeContactProcessing(memberId, newContact, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOTFOUND_MEMBER.getMessage());
     }

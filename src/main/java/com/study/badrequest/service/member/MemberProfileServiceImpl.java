@@ -3,7 +3,7 @@ package com.study.badrequest.service.member;
 import com.study.badrequest.domain.member.Member;
 import com.study.badrequest.domain.memberProfile.MemberProfile;
 import com.study.badrequest.domain.memberProfile.ProfileImage;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.dto.memberProfile.MemberProfileResponse;
 import com.study.badrequest.event.member.MemberEventDto;
@@ -11,7 +11,6 @@ import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.ImageUploader;
-import com.study.badrequest.utils.image.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,7 +42,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
     }
 
     @Transactional
-    public MemberResponse.Update changeNickname(Long memberId, MemberRequestForm.ChangeNickname form, String ipAddress) {
+    public MemberResponse.Update changeNickname(Long memberId, MemberRequest.ChangeNickname form, String ipAddress) {
         log.info("Start change Nickname memberId: {}", memberId);
         Member member = findMemberById(memberId);
         member.changeNickname(form.getNickname());
@@ -62,7 +61,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
      */
 
     @Transactional
-    public MemberResponse.Update changeIntroduce(Long memberId, MemberRequestForm.ChangeIntroduce form, String ipAddress) {
+    public MemberResponse.Update changeIntroduce(Long memberId, MemberRequest.ChangeIntroduce form, String ipAddress) {
         log.info("Start change Introduce memberId: {}", memberId);
         Member member = findMemberById(memberId);
         member.changeIntroduce(form.getSelfIntroduce());

@@ -3,7 +3,7 @@ package com.study.badrequest.api.member;
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.domain.login.CurrentMember;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.service.member.MemberProfileService;
@@ -36,7 +36,7 @@ public class MemberProfileApiController {
      */
     @PatchMapping(value = PATCH_MEMBER_NICKNAME, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeNickname(@PathVariable Long memberId,
-                                         @Validated @RequestBody MemberRequestForm.ChangeNickname form, BindingResult bindingResult,
+                                         @Validated @RequestBody MemberRequest.ChangeNickname form, BindingResult bindingResult,
                                          @LoggedInMember CurrentMember.Information information,
                                          HttpServletRequest request
     ) {
@@ -99,7 +99,7 @@ public class MemberProfileApiController {
      */
     @PatchMapping(value = PATCH_MEMBER_INTRODUCE, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeIntroduce(@PathVariable Long memberId,
-                                          @RequestBody MemberRequestForm.ChangeIntroduce form,
+                                          @RequestBody MemberRequest.ChangeIntroduce form,
                                           HttpServletRequest request) {
         log.info("Change Introduce Request");
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);

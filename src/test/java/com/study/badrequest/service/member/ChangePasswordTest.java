@@ -2,9 +2,7 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
@@ -29,7 +27,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         Long memberId = 124L;
         String password = "password1234!@";
         String newPassword = "password1234!@";
-        MemberRequestForm.ChangePassword form = new MemberRequestForm.ChangePassword(password, newPassword);
+        MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
         //when
 
@@ -46,7 +44,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         Long memberId = 124L;
         String password = "password1234!@";
         String newPassword = "newPassword1234!@";
-        MemberRequestForm.ChangePassword form = new MemberRequestForm.ChangePassword(password, newPassword);
+        MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
         //when
         given(memberRepository.findById(any())).willThrow(new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
@@ -63,7 +61,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         Long memberId = 124L;
         String password = "password1234!@";
         String newPassword = "newPassword1234!@";
-        MemberRequestForm.ChangePassword form = new MemberRequestForm.ChangePassword(password, newPassword);
+        MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
         Member member = Member.createMemberWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234");
@@ -84,7 +82,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         Long memberId = 124L;
         String password = "password1234!@";
         String newPassword = "newPassword1234!@";
-        MemberRequestForm.ChangePassword form = new MemberRequestForm.ChangePassword(password, newPassword);
+        MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
         Member member = Member.createMemberWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234");

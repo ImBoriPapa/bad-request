@@ -24,11 +24,10 @@ import static com.study.badrequest.config.AsyncConfig.WELCOME_MAIL_ASYNC_EXECUTO
 @EnableAsync
 @Transactional
 public class MemberCreateEventListener {
-
     private final MemberProfileService memberProfileService;
     private final RecordService recordService;
     private final BlogService blogService;
-    private final MemberMailService mailService;
+    private final MemberMailService memberMailService;
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleCreateEvent(MemberEventDto.Create dto) {
@@ -46,6 +45,6 @@ public class MemberCreateEventListener {
     @Async(WELCOME_MAIL_ASYNC_EXECUTOR)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void async(MemberEventDto.Create dto) {
-        mailService.sendWelcome(dto.getMemberId());
+        memberMailService.sendWelcome(dto.getMemberId());
     }
 }

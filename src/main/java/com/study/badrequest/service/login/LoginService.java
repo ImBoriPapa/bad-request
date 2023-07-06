@@ -17,4 +17,6 @@ public interface LoginService {
     String getDisposableAuthenticationCode(Long memberId);
 
     LoginResponse.LoginDto disposableAuthenticationCodeLoginProcessing(String temporaryCode, String ipAddress);
+
+    boolean setAuthenticationInContextHolderByChangeableId(String changeableId);
 }

@@ -3,14 +3,14 @@ package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.study.badrequest.api.member.MemberApiController;
+import com.study.badrequest.api.member.MemberAccountApiController;
 
 import com.study.badrequest.api.member.MemberQueryApiController;
 import com.study.badrequest.domain.login.CurrentMember;
 import com.study.badrequest.domain.member.RegistrationType;
 
 
-import com.study.badrequest.dto.member.MemberRequestForm;
+import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 
@@ -71,7 +71,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 
 
 @WebMvcTest(
-        controllers = {MemberApiController.class, MemberQueryApiController.class}
+        controllers = {MemberAccountApiController.class, MemberQueryApiController.class}
 //        excludeFilters = {
 //                @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
 //        }
@@ -103,7 +103,7 @@ public class MemberApiDocs {
         String email = "member1@gmail.com";
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiredAt = createdAt.plusMinutes(5);
-        MemberRequestForm.SendAuthenticationEmail authenticationEmail = new MemberRequestForm.SendAuthenticationEmail(email);
+        MemberRequest.SendAuthenticationEmail authenticationEmail = new MemberRequest.SendAuthenticationEmail(email);
         MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt, expiredAt);
         //when
         given(memberService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
@@ -155,7 +155,7 @@ public class MemberApiDocs {
         );
         EntityModel<MemberResponse.Create> entityModel = EntityModel.of(createForm, links);
         //when
-        MemberRequestForm.SignUp signUpForm = new MemberRequestForm.SignUp(email, password, nickname, contact, "938304");
+        MemberRequest.SignUp signUpForm = new MemberRequest.SignUp(email, password, nickname, contact, "938304");
         given(memberService.signupMemberProcessingByEmail(any(),any())).willReturn(createForm);
 
         given(memberResponseModelAssembler.getLocationUri(any())).willReturn(locationUri);
