@@ -60,16 +60,16 @@ public class OAuthUserDetailService extends DefaultOAuth2UserService {
     }
 
     private MemberPrincipal createNewOauth2Member(Oauth2UserInformation oauth2UserInformation) {
-        Member oauthMember = Member.createMemberWithOauth(
+        Member oauthMember = Member.createWithOauth2(
                 oauth2UserInformation.getEmail(),
                 oauth2UserInformation.getId(),
                 getOauth2UserInformation(oauth2UserInformation.getProvider()));
 
         Member member = memberRepository.save(oauthMember);
 
-        eventPublisher.publishEvent(new MemberEventDto.Create(member.getId(),oauth2UserInformation.getName(), "Oauth2 회원가입", "Oath2", member.getCreatedAt()));
+        eventPublisher.publishEvent(new MemberEventDto.Create(member.getId(), oauth2UserInformation.getName(), "Oauth2 회원가입", "Oath2", member.getCreatedAt()));
 
-        return new MemberPrincipal(member.getId(), member.getChangeableId(), member.getAuthority().getAuthorities());
+        return new MemberPrincipal(member.getId(), member.getAuthenticationCode(), member.getAuthority().getAuthorities());
     }
 
     private MemberPrincipal renewOauth2Member(Oauth2UserInformation oauth2UserInformation, Member member) {
@@ -82,10 +82,8 @@ public class OAuthUserDetailService extends DefaultOAuth2UserService {
             throw new CustomOauth2LoginException(ApiResponseStatus.ALREADY_REGISTERED_BY_OAUTH2);
         }
 
-        if (member.updateOauthMember(oauth2UserInformation.getId(), oauth2UserInformation.getName())) {
-            eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "Oauth2 닉네임 변경", "Oauth 접속", member.getUpdatedAt()));
-        }
+        eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "Oauth2 로그인", "Oauth 접속", member.getUpdatedAt()));
 
-        return new MemberPrincipal(member.getId(), member.getChangeableId(), member.getAuthority().getAuthorities());
+        return new MemberPrincipal(member.getId(), member.getAuthenticationCode(), member.getAuthority().getAuthorities());
     }
 }

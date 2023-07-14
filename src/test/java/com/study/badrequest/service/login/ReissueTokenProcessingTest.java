@@ -5,8 +5,6 @@ import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.domain.login.RefreshToken;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
@@ -164,7 +162,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
         given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
-        given(memberRepository.findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId)))
+        given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId)))
                 .willReturn(Optional.empty());
         //then
         Assertions.assertThatThrownBy(() -> loginService.reissueTokenProcessing(accessToken, refreshToken))
@@ -189,7 +187,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
                 .expiration(604800L)
                 .build();
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password", "01012341234");
 
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
                 .accessToken("newAccessToken")
@@ -209,7 +207,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
         given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
-        given(memberRepository.findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId))).willReturn(Optional.of(member));
+        given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))).willReturn(Optional.of(member));
         given(jwtUtils.generateJwtTokens(any())).willReturn(jwtTokenDto);
         given(redisRefreshTokenRepository.save(any())).willReturn(newRefreshToken);
         loginService.reissueTokenProcessing(accessToken, refreshToken);
@@ -218,7 +216,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         verify(jwtUtils).validateToken(refreshToken);
         verify(jwtUtils).extractChangeableIdInToken(accessToken);
         verify(redisRefreshTokenRepository).findById(any());
-        verify(memberRepository).findMemberByChangeableIdAndDateIndex(any(),any());
+        verify(memberRepository).findMemberByAuthenticationCodeAndDateIndex(any(),any());
         verify(jwtUtils).generateJwtTokens(any());
         verify(redisRefreshTokenRepository).save(any());
     }

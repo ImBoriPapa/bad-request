@@ -2,8 +2,6 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.*;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
@@ -28,7 +26,7 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
     void 인증메일발송테스트1() throws Exception {
         //given
         String email = "email@email.com";
-        Member activeMember = Member.createMemberWithEmail(email, "", "");
+        Member activeMember = Member.createWithEmail(email, "", "");
         List<Member> members = List.of(activeMember);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
@@ -43,8 +41,8 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
     void 인증메일발송테스트2() throws Exception {
         //given
         String email = "email@email.com";
-        Member withDrawnMember = Member.createMemberWithEmail(email, "", "");
-        withDrawnMember.changeStatus(AccountStatus.WITHDRAWN);
+        Member withDrawnMember = Member.createWithEmail(email, "", "");
+        withDrawnMember.withdrawn();
         List<Member> members = List.of(withDrawnMember);
 
         EmailAuthenticationCode emailAuthenticationCode = new EmailAuthenticationCode(email);
@@ -64,8 +62,8 @@ public class SendAuthenticationMailTest extends MemberServiceTestBase {
     void 인증메일발송테스트3() throws Exception {
         //given
         String email = "email@email.com";
-        Member withDrawnMember = Member.createMemberWithEmail(email, "", "");
-        withDrawnMember.changeStatus(AccountStatus.WITHDRAWN);
+        Member withDrawnMember = Member.createWithEmail(email, "", "");
+        withDrawnMember.withdrawn();
         List<Member> members = List.of(withDrawnMember);
 
         EmailAuthenticationCode emailAuthenticationCode = new EmailAuthenticationCode(email);

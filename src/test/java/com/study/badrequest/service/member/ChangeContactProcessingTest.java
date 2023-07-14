@@ -3,11 +3,8 @@ package com.study.badrequest.service.member;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.AccountStatus;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,7 +30,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member activeMember = Member.createMemberWithEmail("email@email.com", "", contact);
+        Member activeMember = Member.createWithEmail("email@email.com", "", contact);
         List<Member> members = List.of(activeMember);
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(members);
@@ -69,8 +66,8 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member widrawnMember = Member.createMemberWithEmail("email@email.com", "", contact);
-        widrawnMember.changeStatus(AccountStatus.WITHDRAWN);
+        Member widrawnMember = Member.createWithEmail("email@email.com", "", contact);
+        widrawnMember.withdrawn();
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(memberRepository.findById(memberId)).willReturn(Optional.of(widrawnMember));
@@ -88,7 +85,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member member = Member.createMemberWithEmail("email@email.com", "", contact);
+        Member member = Member.createWithEmail("email@email.com", "", contact);
 
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());

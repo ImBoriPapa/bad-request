@@ -3,8 +3,6 @@ package com.study.badrequest.service.login;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.login.RefreshToken;
 import com.study.badrequest.domain.member.*;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
@@ -50,8 +48,8 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member1 = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
-        Member member2 = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
+        Member member1 = Member.createWithEmail(requestedEmail, password, "01012341234");
+        Member member2 = Member.createWithEmail(requestedEmail, password, "01012341234");
 
         List<Member> members = List.of(member1, member2);
         //when
@@ -88,7 +86,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
         String oauthId = "12345";
-        Member oauth2Member = Member.createMemberWithOauth(requestedEmail, oauthId, RegistrationType.GOOGLE);
+        Member oauth2Member = Member.createWithOauth2(requestedEmail, oauthId, RegistrationType.GOOGLE);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(List.of(oauth2Member));
 
@@ -106,8 +104,8 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
-        member.changeStatus(AccountStatus.REQUIRED_MAIL_CONFIRMED);
+        Member member = Member.createWithEmail(requestedEmail, password, "01012341234");
+        member.useNotConfirmed();
 
         List<Member> members = List.of(member);
         //when
@@ -127,8 +125,8 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
-        member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
+        Member member = Member.createWithEmail(requestedEmail, password, "01012341234");
+        member.useTemporaryPassword();
 
         List<Member> members = List.of(member);
         //when
@@ -149,8 +147,8 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
-        member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
+        Member member = Member.createWithEmail(requestedEmail, password, "01012341234");
+        member.useTemporaryPassword();
         List<Member> members = List.of(member);
 
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
@@ -173,8 +171,8 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
-        member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
+        Member member = Member.createWithEmail(requestedEmail, password, "01012341234");
+        member.useTemporaryPassword();
         List<Member> members = List.of(member);
 
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
@@ -197,7 +195,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
+        Member member = Member.createWithEmail(requestedEmail, password, "01012341234");
         List<Member> members = List.of(member);
 
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
@@ -221,7 +219,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         String password = "password1234!@";
         String ipAddress = "ipAddress";
 
-        Member member = Member.createMemberWithEmail(requestedEmail, password, "01012341234");
+        Member member = Member.createWithEmail(requestedEmail, password, "01012341234");
         List<Member> members = List.of(member);
 
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(password, member);
@@ -234,7 +232,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
                 .build();
 
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .changeableId(member.getChangeableId())
+                .changeableId(member.getAuthenticationCode())
                 .memberId(1L)
                 .token(tokenDto.getRefreshToken())
                 .authority(Authority.MEMBER)
@@ -254,7 +252,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         verify(temporaryPasswordRepository).findByMember(member);
         verify(passwordEncoder).matches(any(), any());
         verify(passwordEncoder).matches(any(), any());
-        verify(jwtUtils).generateJwtTokens(member.getChangeableId());
+        verify(jwtUtils).generateJwtTokens(member.getAuthenticationCode());
         verify(redisRefreshTokenRepository).save(any());
         verify(eventPublisher).publishEvent(new MemberEventDto.Login(any(), "이메일 로그인", ipAddress, LocalDateTime.now()));
     }

@@ -39,7 +39,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
 
-        Member activeMember = Member.createMemberWithEmail(email, password, contact);
+        Member activeMember = Member.createWithEmail(email, password, contact);
 
         List<Member> members = List.of(activeMember);
         //when
@@ -62,7 +62,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
 
-        Member member = Member.createMemberWithEmail(email, password, contact);
+        Member member = Member.createWithEmail(email, password, contact);
         List<Member> members = List.of(member);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -156,7 +156,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, code.getCode());
-        Member member = Member.createMemberWithEmail(email, password, contact);
+        Member member = Member.createWithEmail(email, password, contact);
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());

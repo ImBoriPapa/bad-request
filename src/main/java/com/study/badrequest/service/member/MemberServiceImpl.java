@@ -60,7 +60,7 @@ public class MemberServiceImpl implements MemberService {
 
         emailAuthenticationProcessing(email, emailAuthenticationCode);
 
-        Member newMember = memberRepository.save(Member.createMemberWithEmail(email, encodedPassword, contact));
+        Member newMember = memberRepository.save(Member.createWithEmail(email, encodedPassword, contact));
 
         eventPublisher.publishEvent(new MemberEventDto.Create(newMember.getId(), nickname, "이메일 회원 가입", ipAddress, newMember.getCreatedAt()));
 

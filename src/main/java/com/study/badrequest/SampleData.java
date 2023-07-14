@@ -3,8 +3,6 @@ package com.study.badrequest;
 
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.question.QuestionRequest;
@@ -63,7 +61,7 @@ public class SampleData {
 
         IntStream intStream = IntStream.rangeClosed(1, 10);
 
-        Member sampleMember = Member.createMemberWithEmail(
+        Member sampleMember = Member.createWithEmail(
                 "sample@gmail.com",
                 passwordEncoder.encode("sample1234!@"),
                 "01011111111"
@@ -80,7 +78,7 @@ public class SampleData {
             String contact = "010" + String.format("%08d", new Random().nextInt(90000000) + 10000000);
 
 
-            Member member = Member.createMemberWithEmail(
+            Member member = Member.createWithEmail(
                     email + index + domain,
                     passwordEncoder.encode(password),
                     contact

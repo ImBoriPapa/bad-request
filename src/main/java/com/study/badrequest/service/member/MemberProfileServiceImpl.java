@@ -36,7 +36,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
 
         ProfileImage defaultImage = ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage());
 
-        member.addMemberProfile(MemberProfile.createMemberProfile(nickname, defaultImage));
+        member.assignMemberProfile(MemberProfile.createMemberProfile(nickname, defaultImage));
 
         return new MemberProfileResponse.Create(member.getMemberProfile().getId(), member.getCreatedAt());
     }

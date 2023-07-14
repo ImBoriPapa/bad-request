@@ -1,8 +1,6 @@
 package com.study.badrequest.domain.question;
 
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +25,7 @@ class QuestionTest extends QuestionEntityTestBase {
         String title = "title";
         String contents = "contents";
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234");
         Member save = memberRepository.save(member);
 
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
@@ -51,7 +49,7 @@ class QuestionTest extends QuestionEntityTestBase {
         String title = "title";
         String contents = "contents";
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password1234!@", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234");
         Member save = memberRepository.save(member);
 
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();

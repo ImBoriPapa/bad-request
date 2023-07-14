@@ -5,8 +5,6 @@ import com.study.badrequest.domain.answer.Answer;
 import com.study.badrequest.domain.answerRecommendation.AnswerRecommendation;
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.domain.question.QuestionTag;
@@ -54,7 +52,7 @@ public class TestData {
     public List<Member> createSampleMembers() {
         List<Member> memberList = new ArrayList<>();
         IntStream.rangeClosed(1, 10).forEach(index -> {
-                    Member member = Member.createMemberWithEmail(
+                    Member member = Member.createWithEmail(
                             "sample" + index + "@gmail.com",
                             passwordEncoder.encode("sample1234!@"),
                             "010" + new Random().nextInt(10000000) + 1);

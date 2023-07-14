@@ -25,8 +25,8 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
-    @Column(name = "change_able_id", unique = true, nullable = false)
-    private String changeableId;
+    @Column(name = "authentication_code", unique = true, nullable = false)
+    private String authenticationCode;
     @Column(name = "oauth_id", nullable = true)
     private String oauthId;
     @Column(name = "email", nullable = false)
@@ -49,17 +49,17 @@ public class Member {
     @Column(name = "account_status")
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
+    @Column(name = "date_index")
+    private Long dateIndex;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
-    @Column(name = "date_index")
-    private Long dateIndex;
 
     @Builder(access = AccessLevel.PROTECTED)
-    protected Member(String oauthId, RegistrationType registrationType, String email, String password, String contact, Authority authority, String ipAddress, AccountStatus accountStatus) {
+    protected Member(String oauthId, RegistrationType registrationType, String email, String password, String contact, Authority authority, String ipAddress, AccountStatus accountStatus, LocalDateTime createdAt, LocalDateTime updatedAt, LocalDateTime deletedAt) {
         this.oauthId = oauthId;
         this.registrationType = registrationType;
         this.email = email;
@@ -68,14 +68,14 @@ public class Member {
         this.authority = authority;
         this.ipAddress = ipAddress;
         this.accountStatus = accountStatus;
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-        this.deletedAt = LocalDateTime.now();
-        this.dateIndex = timeToDateIndex(this.createdAt);
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
     }
 
-    public static Member createMemberWithEmail(String email, String password, String contact) {
-        return Member.builder()
+    public static Member createWithEmail(String email, String password, String contact) {
+
+        Member member = Member.builder()
                 .email(email)
                 .oauthId(null)
                 .password(password)
@@ -83,11 +83,20 @@ public class Member {
                 .contact(contact)
                 .authority(Authority.MEMBER)
                 .accountStatus(AccountStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(null)
+                .deletedAt(null)
                 .build();
+
+        member.generateDateTimeIndex();
+        member.generateAuthenticationCode();
+
+        return member;
     }
 
-    public static Member createMemberWithOauth(String email, String oauthId, RegistrationType registrationType) {
-        return Member.builder()
+    public static Member createWithOauth2(String email, String oauthId, RegistrationType registrationType) {
+
+        Member member = Member.builder()
                 .email(email)
                 .oauthId(oauthId)
                 .password(null)
@@ -95,44 +104,57 @@ public class Member {
                 .contact(null)
                 .authority(Authority.MEMBER)
                 .accountStatus(AccountStatus.ACTIVE)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(null)
+                .deletedAt(null)
                 .build();
+
+        member.generateDateTimeIndex();
+        member.generateAuthenticationCode();
+
+        return member;
     }
 
-    public void addMemberProfile(MemberProfile memberProfile) {
+    public void withdrawn() {
+        this.deletedAt = LocalDateTime.now();
+        this.changeStatus(AccountStatus.WITHDRAWN);
+    }
+
+    public void useTemporaryPassword() {
+        this.updatedAt = LocalDateTime.now();
+        this.changeStatus(AccountStatus.USING_TEMPORARY_PASSWORD);
+    }
+
+    public void useNotConfirmed() {
+        this.updatedAt = LocalDateTime.now();
+        this.changeStatus(AccountStatus.USING_NOT_CONFIRMED_EMAIL);
+    }
+
+    public void assignMemberProfile(MemberProfile memberProfile) {
         this.memberProfile = memberProfile;
     }
 
-    public void changeStatus(AccountStatus accountStatus) {
+    private void changeStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
         this.updatedAt = LocalDateTime.now();
     }
 
-    private long timeToDateIndex(LocalDateTime localDateTime) {
-        return Long.parseLong(localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
+    private void generateDateTimeIndex() {
+        this.dateIndex = Long.parseLong(this.createdAt.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
     }
 
-    public void setLastLoginIP(String ipAddress) {
+    public void assignIpAddress(String ipAddress) {
         if (ipAddress != null) {
             this.ipAddress = ipAddress;
         }
     }
 
-    public boolean updateOauthMember(String oauthId, String name) {
-        if (!this.getMemberProfile().getNickname().equals(name)) {
-            this.oauthId = oauthId;
-            this.getMemberProfile().changeNickname(name);
-            return true;
-        }
-        return false;
+    private void generateAuthenticationCode() {
+        this.authenticationCode = UUID.randomUUID() + "-" + this.dateIndex;
     }
 
-    @PrePersist
-    private void generateChangeableId() {
-        this.changeableId = UUID.randomUUID() + "-" + this.dateIndex;
-    }
-
-    public void replaceChangeableId() {
-        generateChangeableId();
+    public void replaceAuthenticationCode() {
+        generateAuthenticationCode();
     }
 
     public void changePermissions(Authority authority) {
@@ -156,8 +178,8 @@ public class Member {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public static Long getDateIndexInChangeableId(String changeableId) {
-        return Long.valueOf(changeableId.split("-")[5]);
+    public static Long getDateIndexInAuthenticationCode(String authenticationCode) {
+        return Long.valueOf(authenticationCode.split("-")[5]);
     }
 
     public void changeNickname(String nickname) {

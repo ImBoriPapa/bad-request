@@ -20,19 +20,15 @@ import org.springframework.stereotype.Service;
 public class JwtUserDetailService implements UserDetailsService {
     private final MemberRepository memberRepository;
 
-    /**
-     * Member.getUsername = String username == UUID
-     */
     @Override
-    @CustomLogTracer
     public UserDetails loadUserByUsername(String changeableId) throws UsernameNotFoundException {
         log.info("Load User By Username");
         return memberRepository
-                .findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId))
+                .findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))
                 .map(member ->
                         new MemberPrincipal(
                                 member.getId(),
-                                member.getChangeableId(),
+                                member.getAuthenticationCode(),
                                 member.getAuthority().getAuthorities())
                 )
                 .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));

@@ -32,9 +32,10 @@ public class TemporaryPassword {
     public static TemporaryPassword createTemporaryPassword(String password, Member member) {
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiredAt = createdAt.plusHours(24);
-        TemporaryPassword temporaryPassword = new TemporaryPassword(password, member, createdAt, expiredAt);
-        member.changeStatus(AccountStatus.PASSWORD_IS_TEMPORARY);
-        return temporaryPassword;
+
+        member.useTemporaryPassword();
+
+        return new TemporaryPassword(password, member, createdAt, expiredAt);
     }
 
     public void changeExpiredAt(LocalDateTime expiredAt) {

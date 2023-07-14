@@ -5,8 +5,6 @@ import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.domain.login.RefreshToken;
 import com.study.badrequest.domain.member.Authority;
 import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
@@ -110,7 +108,7 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
                 .authority(Authority.MEMBER)
                 .build();
 
-        Member member = Member.createMemberWithEmail("email@email.com", "password", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password", "01012341234");
 
         HttpSession mockSession = mock(HttpSession.class);
         //when
@@ -118,7 +116,7 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(any())).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(any())).willReturn(changeAbleId);
         given(redisRefreshTokenRepository.findById(changeAbleId)).willReturn(Optional.of(refreshToken));
-        given(memberRepository.findMemberByChangeableIdAndDateIndex(any(), any())).willReturn(Optional.of(member));
+        given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(any(), any())).willReturn(Optional.of(member));
         given(request.getSession()).willReturn(mockSession);
         loginService.logoutProcessing(request, response);
         //then
@@ -127,7 +125,7 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         verify(jwtUtils).extractChangeableIdInToken(any());
         verify(redisRefreshTokenRepository).findById(any());
         verify(redisRefreshTokenRepository).delete(any());
-        verify(memberRepository).findMemberByChangeableIdAndDateIndex(any(), any());
+        verify(memberRepository).findMemberByAuthenticationCodeAndDateIndex(any(), any());
         verify(mockSession).invalidate();
         verify(eventPublisher).publishEvent(new MemberEventDto.Logout(any(), "로그아웃", null, LocalDateTime.now()));
     }

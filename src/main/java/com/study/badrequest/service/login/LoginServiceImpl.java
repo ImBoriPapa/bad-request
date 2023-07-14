@@ -71,9 +71,9 @@ public class LoginServiceImpl implements LoginService {
 
         verifyingPasswordsByAccountStatus(password, activeMember);
 
-        activeMember.setLastLoginIP(ipAddress);
+        activeMember.assignIpAddress(ipAddress);
 
-        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(activeMember.getChangeableId());
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(activeMember.getAuthenticationCode());
 
         RefreshToken refreshToken = createNewRefreshToken(activeMember, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill());
 
@@ -99,10 +99,10 @@ public class LoginServiceImpl implements LoginService {
             case ACTIVE:
                 compareRequestedPasswordWithStored(password, activeMember.getPassword());
                 break;
-            case PASSWORD_IS_TEMPORARY:
+            case USING_TEMPORARY_PASSWORD:
                 checkTemporaryPassword(password, activeMember);
                 break;
-            case REQUIRED_MAIL_CONFIRMED:
+            case USING_NOT_CONFIRMED_EMAIL:
                 throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
         }
     }
@@ -163,9 +163,9 @@ public class LoginServiceImpl implements LoginService {
         final Long memberId = authenticationCode.getMember().getId();
 
         Member member = findMemberByIdOrElseThrowRuntimeException(memberId, CAN_NOT_FIND_MEMBER_BY_DISPOSABLE_AUTHENTICATION_CODE);
-        member.setLastLoginIP(ipAddress);
+        member.assignIpAddress(ipAddress);
 
-        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getAuthenticationCode());
 
         disposalAuthenticationRepository.deleteById(authenticationCode.getId());
 
@@ -199,7 +199,7 @@ public class LoginServiceImpl implements LoginService {
                 .ifPresent(redisRefreshTokenRepository::delete);
 
         Member member = findMemberByChangeAbleId(changeAbleId);
-        member.replaceChangeableId();
+        member.replaceAuthenticationCode();
 
         SecurityContextHolder.clearContext();
         CookieUtils.deleteCookie(request, response, "JSESSIONID");
@@ -239,11 +239,11 @@ public class LoginServiceImpl implements LoginService {
         verifiyingRequestedRefreshToken(refresh.getToken(), refreshToken);
 
         Member member = findMemberByChangeAbleId(changeableId);
-        member.replaceChangeableId();
+        member.replaceAuthenticationCode();
 
         redisRefreshTokenRepository.deleteById(refresh.getChangeableId());
 
-        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getChangeableId());
+        JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getAuthenticationCode());
 
         RefreshToken savedRefreshToken = createNewRefreshToken(member, jwtTokenDto.getRefreshToken(), jwtTokenDto.getRefreshTokenExpirationMill());
 
@@ -281,7 +281,7 @@ public class LoginServiceImpl implements LoginService {
 
     private RefreshToken createNewRefreshToken(Member member, String refreshToken, long expiration) {
         RefreshToken token = RefreshToken.createRefresh()
-                .changeableId(member.getChangeableId())
+                .changeableId(member.getAuthenticationCode())
                 .memberId(member.getId())
                 .token(refreshToken)
                 .authority(member.getAuthority())
@@ -292,7 +292,7 @@ public class LoginServiceImpl implements LoginService {
 
     private Member findMemberByChangeAbleId(String changeableId) {
         return memberRepository
-                .findMemberByChangeableIdAndDateIndex(changeableId, Member.getDateIndexInChangeableId(changeableId))
+                .findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))
                 .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 

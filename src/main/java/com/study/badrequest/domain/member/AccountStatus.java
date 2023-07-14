@@ -2,7 +2,7 @@ package com.study.badrequest.domain.member;
 
 public enum AccountStatus {
     ACTIVE,
-    REQUIRED_MAIL_CONFIRMED,
-    PASSWORD_IS_TEMPORARY,
+    USING_NOT_CONFIRMED_EMAIL,
+    USING_TEMPORARY_PASSWORD,
     WITHDRAWN
 }
