@@ -34,8 +34,8 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
     public AnswerCommentResponse.Add addComment(Long memberId, Long answerId, AnswerCommentRequest.Add form) {
         log.info("답변 댓글 추가");
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOT_FOUND_ANSWER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_ANSWER));
 
         AnswerComment answerComment = AnswerComment.builder()
                 .contents(form.getContents())
@@ -53,8 +53,8 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
     @Transactional
     public AnswerCommentResponse.Delete deleteComment(Long memberId, Long answerId) {
         log.info("답변 댓글 삭제");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOT_FOUND_ANSWER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_ANSWER));
         answer.statusToDelete();
         return new AnswerCommentResponse.Delete(answer.getDeletedAt());
     }

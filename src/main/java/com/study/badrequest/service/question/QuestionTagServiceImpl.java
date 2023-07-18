@@ -31,6 +31,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
     private final QuestionTagRepository questionTagRepository;
     private final HashTagRepository hashTagRepository;
     private final QuestionRepository questionRepository;
+
     @Transactional
     public void createQuestionTag(List<String> tags, Question question) {
         log.info("질문 태그 생성 시작 - QuestionId: {}, Requested Tag name: {}", question.getId(), tags.toArray());
@@ -87,7 +88,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
     @Transactional
     public void addQuestionTag(Long questionId, String questionTag) {
         log.info("질문 태그 추가 시작");
-        Question question = questionRepository.findById(questionId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
 
         String hashTag = HashTagUtils.stringToHashTagString(questionTag);
 
@@ -101,7 +102,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
     @Transactional
     public void deleteQuestionTag(Long questionTagId) {
-        QuestionTag questionTag = questionTagRepository.findById(questionTagId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION_TAG));
+        QuestionTag questionTag = questionTagRepository.findById(questionTagId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION_TAG));
         questionTagRepository.delete(questionTag);
 
     }

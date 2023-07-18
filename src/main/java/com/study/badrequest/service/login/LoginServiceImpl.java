@@ -85,7 +85,7 @@ public class LoginServiceImpl implements LoginService {
 
     private Member findActiveMemberByEmail(String email) {
         List<Member> members = memberRepository.findMembersByEmail(email);
-        log.info("is true:{}",members.isEmpty());
+        log.info("is true:{}", members.isEmpty());
 
         List<Member> activeMembers = findActiveMembers(members);
 
@@ -103,27 +103,27 @@ public class LoginServiceImpl implements LoginService {
                 checkTemporaryPassword(password, activeMember);
                 break;
             case USING_NOT_CONFIRMED_EMAIL:
-                throw new CustomRuntimeException(IS_NOT_CONFIRMED_MAIL);
+                throw CustomRuntimeException.createWithApiResponseStatus(IS_NOT_CONFIRMED_MAIL);
         }
     }
 
     private void registrationTypeVerification(RegistrationType targetType, RegistrationType expectedType) {
         if (targetType != expectedType) {
-            throw new CustomRuntimeException(ALREADY_REGISTERED_BY_OAUTH2);
+            throw CustomRuntimeException.createWithApiResponseStatus(ALREADY_REGISTERED_BY_OAUTH2);
         }
     }
 
     private Member findActiveMember(List<Member> activeMembers) {
         return activeMembers.stream()
                 .findFirst()
-                .orElseThrow(() -> new CustomRuntimeException(THIS_IS_NOT_REGISTERED_AS_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(THIS_IS_NOT_REGISTERED_AS_MEMBER));
     }
 
     private void emailDuplicationMemberVerification(List<Member> activeMembers) {
         if (activeMembers.size() > 1) {
             Object array = activeMembers.stream().map(Member::getId).toArray();
             log.error("Duplicate Email members Occurrence ids: {}", array);
-            throw new CustomRuntimeException(FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS);
+            throw CustomRuntimeException.createWithApiResponseStatus(FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS);
         }
     }
 
@@ -136,14 +136,14 @@ public class LoginServiceImpl implements LoginService {
     private void checkTemporaryPassword(String password, Member member) {
         //임시 비밀번호 확인
         TemporaryPassword temporaryPassword = temporaryPasswordRepository.findByMember(member)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_TEMPORARY_PASSWORD));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_TEMPORARY_PASSWORD));
 
         if (LocalDateTime.now().isAfter(temporaryPassword.getExpiredAt())) {
-            throw new CustomRuntimeException(IS_EXPIRED_TEMPORARY_PASSWORD);
+            throw CustomRuntimeException.createWithApiResponseStatus(IS_EXPIRED_TEMPORARY_PASSWORD);
         }
         //비밀번호 확인
         if (!passwordEncoder.matches(password, temporaryPassword.getPassword())) {
-            throw new CustomRuntimeException(LOGIN_FAIL);
+            throw CustomRuntimeException.createWithApiResponseStatus(LOGIN_FAIL);
         }
     }
 
@@ -156,7 +156,7 @@ public class LoginServiceImpl implements LoginService {
         Optional<DisposableAuthenticationCode> optionalAuthenticationCode = disposalAuthenticationRepository.findByCode(code);
 
         if (optionalAuthenticationCode.isEmpty()) {
-            throw new CustomRuntimeException(WRONG_ONE_TIME_CODE);
+            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_ONE_TIME_CODE);
         }
 
         DisposableAuthenticationCode authenticationCode = optionalAuthenticationCode.get();
@@ -177,7 +177,7 @@ public class LoginServiceImpl implements LoginService {
 
     private Member findMemberByIdOrElseThrowRuntimeException(Long memberId, ApiResponseStatus status) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(status));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(status));
     }
 
     @Override
@@ -187,7 +187,7 @@ public class LoginServiceImpl implements LoginService {
         String accessToken = accessTokenResolver(request);
 
         if (accessToken == null) {
-            throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
         }
 
         verifyingAccessToken(accessToken);
@@ -214,11 +214,11 @@ public class LoginServiceImpl implements LoginService {
     private void verifyingAccessToken(String accessToken) {
         switch (jwtUtils.validateToken(accessToken)) {
             case DENIED:
-                throw new CustomRuntimeException(ACCESS_TOKEN_IS_DENIED);
+                throw CustomRuntimeException.createWithApiResponseStatus(ACCESS_TOKEN_IS_DENIED);
             case EXPIRED:
-                throw new CustomRuntimeException(ACCESS_TOKEN_IS_EXPIRED);
+                throw CustomRuntimeException.createWithApiResponseStatus(ACCESS_TOKEN_IS_EXPIRED);
             case ERROR:
-                throw new CustomRuntimeException(ACCESS_TOKEN_IS_ERROR);
+                throw CustomRuntimeException.createWithApiResponseStatus(ACCESS_TOKEN_IS_ERROR);
         }
     }
 
@@ -256,17 +256,17 @@ public class LoginServiceImpl implements LoginService {
         JwtStatus refreshStatus = jwtUtils.validateToken(refreshToken);
 
         if (refreshStatus == JwtStatus.DENIED || refreshStatus == JwtStatus.ERROR) {
-            throw new CustomRuntimeException(REFRESH_TOKEN_IS_DENIED);
+            throw CustomRuntimeException.createWithApiResponseStatus(REFRESH_TOKEN_IS_DENIED);
 
         } else if (refreshStatus == JwtStatus.EXPIRED) {
-            throw new CustomRuntimeException(REFRESH_TOKEN_IS_EXPIRED);
+            throw CustomRuntimeException.createWithApiResponseStatus(REFRESH_TOKEN_IS_EXPIRED);
         }
     }
 
     private void validateAccessToken(String accessToken) {
         JwtStatus accessStatus = jwtUtils.validateToken(accessToken);
         if (accessStatus == JwtStatus.DENIED || accessStatus == JwtStatus.ERROR) {
-            throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_DENIED);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.ACCESS_TOKEN_IS_DENIED);
         }
     }
 
@@ -275,7 +275,7 @@ public class LoginServiceImpl implements LoginService {
      */
     private RefreshToken findRefreshTokenByChangeableToken(String changeableToken) {
         return redisRefreshTokenRepository.findById(changeableToken)
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.ALREADY_LOGOUT));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.ALREADY_LOGOUT));
     }
 
 
@@ -293,7 +293,7 @@ public class LoginServiceImpl implements LoginService {
     private Member findMemberByChangeAbleId(String changeableId) {
         return memberRepository
                 .findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
     @Override
@@ -308,7 +308,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        return memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
     private LoginResponse.LoginDto createLoginDto(Member member, JwtTokenDto jwtTokenDto, RefreshToken refreshToken) {
@@ -322,13 +322,13 @@ public class LoginServiceImpl implements LoginService {
 
     private void compareRequestedPasswordWithStored(String requestedPassword, String storedPassword) {
         if (!passwordEncoder.matches(requestedPassword, storedPassword)) {
-            throw new CustomRuntimeException(ApiResponseStatus.LOGIN_FAIL);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.LOGIN_FAIL);
         }
     }
 
     private void verifiyingRequestedRefreshToken(String StoredRefreshToken, String refreshToken) {
         if (!StoredRefreshToken.equals(refreshToken)) {
-            throw new CustomRuntimeException(REFRESH_TOKEN_IS_DENIED);
+            throw CustomRuntimeException.createWithApiResponseStatus(REFRESH_TOKEN_IS_DENIED);
         }
     }
 

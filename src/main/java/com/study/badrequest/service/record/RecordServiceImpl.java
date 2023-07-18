@@ -28,7 +28,7 @@ public class RecordServiceImpl implements RecordService {
     public void recordMemberInformation(MemberRecordRequest request) {
         log.info("Saving a Member Activity History- action: {},memberId: {}, time: {}", request.getActionStatus(), request.getMemberId(), LocalDateTime.now());
 
-        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(request.getMemberId()).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
 
         MemberRecord memberRecord = MemberRecord.builder()
                 .action(request.getActionStatus())

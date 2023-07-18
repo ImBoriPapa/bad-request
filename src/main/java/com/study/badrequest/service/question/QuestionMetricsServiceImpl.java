@@ -95,7 +95,7 @@ public class QuestionMetricsServiceImpl implements QuestionMetricsService {
         log.info("조회수 증가");
         Question question = questionRepository
                 .findById(questionId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
         question.getQuestionMetrics().incrementCountOfView();
 
     }

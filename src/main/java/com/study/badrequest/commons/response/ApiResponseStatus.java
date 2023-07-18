@@ -7,12 +7,12 @@ import java.util.Arrays;
 
 @Getter
 public enum ApiResponseStatus {
-    // TODO: 2023/04/18 정리
+
     SUCCESS(1000, "요청에 성공했습니다.", HttpStatus.OK),
     LOGOUT_SUCCESS(1001, "로그아웃 요청이 성공했습니다.", HttpStatus.OK),
-    ERROR(1002, "서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    SERVER_ERROR(1002, "서버에 문제가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     VALIDATION_ERROR(1003, "요청 값 검증에 실패했습니다.", HttpStatus.BAD_REQUEST),
-    PERMISSION_DENIED(1004, "접근 권한이 없습니다.", HttpStatus.BAD_REQUEST),
+    PERMISSION_DENIED(1004, "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
     BANNED_WORD(1005, "사용 금지된 단어를 사용하였습니다.", HttpStatus.BAD_REQUEST),
     INVALID_EMAIL_FORM(1006, "잘못된 이메일 형식입니다.", HttpStatus.BAD_REQUEST),
     FOUND_ACTIVE_MEMBERS_WITH_DUPLICATE_EMAILS(1007, "중복된 이메일로 활동중인 회원을 발견했습니다.", HttpStatus.BAD_REQUEST),

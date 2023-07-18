@@ -31,6 +31,6 @@ public class JwtUserDetailService implements UserDetailsService {
                                 member.getAuthenticationCode(),
                                 member.getAuthority().getAuthorities())
                 )
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 }

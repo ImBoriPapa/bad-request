@@ -49,7 +49,7 @@ public class LoginController {
         log.info("이메일 로그인 요청");
 
         if (bindingResult.hasErrors()) {
-            throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
+            throw CustomRuntimeException.createWithBindingResults(VALIDATION_ERROR, bindingResult);
         }
 
         LoginResponse.LoginDto dto = loginService.emailLoginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
@@ -80,12 +80,12 @@ public class LoginController {
 
         if (accessToken == null) {
             log.info("Access Token is Null");
-            throw new CustomRuntimeException(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.ACCESS_TOKEN_IS_EMPTY);
         }
 
         if (!StringUtils.hasLength(refreshTokenValue)) {
             log.info("Refresh Token is Null");
-            throw new CustomRuntimeException(REFRESH_COOKIE_IS_EMPTY);
+            throw CustomRuntimeException.createWithApiResponseStatus(REFRESH_COOKIE_IS_EMPTY);
         }
 
         LoginResponse.LoginDto result = loginService.reissueTokenProcessing(accessToken, refreshTokenValue);
@@ -103,7 +103,7 @@ public class LoginController {
         log.info("일회용 코드로 로그인");
 
         if (form.getCode() == null) {
-            throw new CustomRuntimeException(ApiResponseStatus.EMPTY_ONE_TIME_CODE);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.EMPTY_ONE_TIME_CODE);
         }
 
         LoginResponse.LoginDto loginDto = loginService.disposableAuthenticationCodeLoginProcessing(form.getCode(), ipAddressResolver(request));

@@ -65,11 +65,11 @@ public class MemberProfileApiController {
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
         if (image == null) {
-            throw new CustomRuntimeException(NOT_FOUND_IMAGE_FILE);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_IMAGE_FILE);
         }
 
         if (image.getSize() > 500000) {
-            throw new CustomRuntimeException(TOO_BIG_PROFILE_IMAGE_SIZE);
+            throw CustomRuntimeException.createWithApiResponseStatus(TOO_BIG_PROFILE_IMAGE_SIZE);
         }
 
         MemberResponse.Update response = memberProfileService.changeProfileImage(memberId, image, ipAddress);

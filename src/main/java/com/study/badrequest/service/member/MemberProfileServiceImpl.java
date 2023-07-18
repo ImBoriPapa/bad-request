@@ -53,7 +53,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
     }
 
     public Member findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+        return memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
     }
 
     /**
@@ -83,7 +83,7 @@ public class MemberProfileServiceImpl implements MemberProfileService {
         ProfileImage profileImage = member.getMemberProfile().getProfileImage();
 
         if (profileImage.getIsDefault()) {
-            throw new CustomRuntimeException(CAN_NOT_DELETE_DEFAULT_IMAGE);
+            throw CustomRuntimeException.createWithApiResponseStatus(CAN_NOT_DELETE_DEFAULT_IMAGE);
         }
         imageUploader.deleteFileByStoredNames(profileImage.getStoredFileName());
 

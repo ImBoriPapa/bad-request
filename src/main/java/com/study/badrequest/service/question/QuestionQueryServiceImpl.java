@@ -29,7 +29,7 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
         Long memberId = information == null ? null : information.getId();
 
         QuestionDetail questionDetail = questionQueryRepository.findQuestionDetail(questionId, memberId, ExposureStatus.PUBLIC)
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOT_FOUND_QUESTION));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_QUESTION));
 
         eventPublisher.publishEvent(new QuestionEventDto.ViewEvent(request, response, questionId));
 

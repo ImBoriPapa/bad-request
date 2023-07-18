@@ -32,7 +32,7 @@ public class ImageApiController {
 
         if (image == null) {
             log.error("질문 게시글 이미지 파일이 없습니다.");
-            throw new CustomRuntimeException(NOT_FOUND_IMAGE_FILE);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_IMAGE_FILE);
         }
 
         log.info("질문 게시글 이미지 임시저장 요청 이미지 파일명: {}", image.getOriginalFilename());

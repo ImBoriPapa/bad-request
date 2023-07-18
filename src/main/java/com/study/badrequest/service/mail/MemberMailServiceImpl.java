@@ -44,7 +44,7 @@ public class MemberMailServiceImpl implements MemberMailService {
     public void sendTemporaryPassword(Long memberId, String temporaryPassword) {
         log.info("회원 임시 비밀번호 메일 발송 시작");
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
 
         sendMail(
                 member.getEmail(),
@@ -68,7 +68,7 @@ public class MemberMailServiceImpl implements MemberMailService {
             memberMail.sentFail();
             mailRepository.save(memberMail);
             log.info("회원 {} 메일 발송 실패 수신인: {} message: {}", subject, email, e.getLocalizedMessage());
-            throw new CustomRuntimeException(ApiResponseStatus.FAIL_SEND_MAIL);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.FAIL_SEND_MAIL);
         }
     }
 

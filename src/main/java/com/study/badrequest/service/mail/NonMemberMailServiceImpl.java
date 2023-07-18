@@ -60,7 +60,7 @@ public class NonMemberMailServiceImpl implements NonMemberMailService {
         } catch (MessagingException e) {
             nonMemberMail.sentFail();
             log.error("비회원 {} 메일 발송 실패 수신인: {}, Message: {}", subject, email,e.getLocalizedMessage());
-            throw new CustomRuntimeException(FAIL_SEND_MAIL);
+            throw CustomRuntimeException.createWithApiResponseStatus(FAIL_SEND_MAIL);
         }
     }
 

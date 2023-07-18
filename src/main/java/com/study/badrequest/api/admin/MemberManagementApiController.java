@@ -37,7 +37,7 @@ public class MemberManagementApiController {
                                                 @LoggedInMember CurrentMember.Information information) {
 
         if (information.getAuthority() != Authority.ADMIN) {
-            throw new CustomRuntimeException(ApiResponseStatus.PERMISSION_DENIED);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.PERMISSION_DENIED);
         }
 
         AdministratorActivityHistory history = memberManagementService.changeMemberAuthority(information.getId(), memberId, form.getAuthority(), form.getReason());

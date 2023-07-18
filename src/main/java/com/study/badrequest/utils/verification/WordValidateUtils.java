@@ -15,7 +15,7 @@ public class WordValidateUtils {
 
         for (String bannedWord : bannedWords) {
             if (bannedWord.equalsIgnoreCase(word)) {
-                throw new CustomRuntimeException(BANNED_WORD);
+                throw CustomRuntimeException.createWithApiResponseStatus(BANNED_WORD);
             }
         }
 

@@ -68,7 +68,7 @@ public enum Authority {
         Authority member = getAuthorityContainsString(collect, ROLE_MEMBER, Authority.MEMBER);
         if (member != null) return member;
 
-        throw new CustomRuntimeException(ApiResponseStatus.WRONG_AUTHORITY);
+        throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.WRONG_AUTHORITY);
     }
 
     private static Authority getAuthorityContainsString(List<String> collect, String ROLE_ADMIN, Authority admin) {

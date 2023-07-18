@@ -40,13 +40,13 @@ public class AnswerServiceImpl implements AnswerService {
     public AnswerResponse.Register createAnswer(Long memberId, Long questionId, AnswerRequest.Register form) {
         log.info("Create Answer Start");
         Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
 
         if (!StringUtils.hasLength(form.getContents())) {
-            throw new CustomRuntimeException(NOT_ALLOW_EMPTY_ANSWER);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOT_ALLOW_EMPTY_ANSWER);
         }
 
         findBannedWord(form.getContents());
@@ -68,9 +68,9 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Modify modifyAnswer(Long memberId, Long answerId, AnswerRequest.Modify form) {
         log.info("Modify Answer");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
-        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ANSWER));
+        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_ANSWER));
 
         verifyPermission(answer.getMember().getId(), member.getId(), member.getAuthority(), NOT_ALLOW_MODIFY_ANSWER);
 
@@ -83,9 +83,9 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Delete deleteAnswer(Long memberId, Long answerId) {
         log.info("Delete Answer");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
-        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_ANSWER));
+        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_ANSWER));
 
         verifyPermission(answer.getMember().getId(), member.getId(), member.getAuthority(), NOT_ALLOW_DELETE_ANSWER);
 

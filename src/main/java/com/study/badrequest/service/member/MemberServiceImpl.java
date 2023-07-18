@@ -73,7 +73,7 @@ public class MemberServiceImpl implements MemberService {
                 .anyMatch(member -> member.getAccountStatus() != WITHDRAWN);
 
         if (isDuplicateEmail) {
-            throw new CustomRuntimeException(DUPLICATE_EMAIL);
+            throw CustomRuntimeException.createWithApiResponseStatus(DUPLICATE_EMAIL);
         }
     }
 
@@ -83,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
                 .anyMatch(member -> member.getAccountStatus() != WITHDRAWN);
 
         if (isDuplicateContact) {
-            throw new CustomRuntimeException(DUPLICATE_CONTACT);
+            throw CustomRuntimeException.createWithApiResponseStatus(DUPLICATE_CONTACT);
         }
     }
 
@@ -91,11 +91,11 @@ public class MemberServiceImpl implements MemberService {
         EmailAuthenticationCode emailAuthenticationCode = findAuthenticationCodeByEmail(email, NOTFOUND_AUTHENTICATION_EMAIL);
 
         if (!emailAuthenticationCode.getCode().equals(authenticationCode)) {
-            throw new CustomRuntimeException(WRONG_EMAIL_AUTHENTICATION_CODE);
+            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_EMAIL_AUTHENTICATION_CODE);
         }
 
         if (LocalDateTime.now().isAfter(emailAuthenticationCode.getExpiredAt())) {
-            throw new CustomRuntimeException(NOTFOUND_AUTHENTICATION_EMAIL);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_AUTHENTICATION_EMAIL);
         }
 
         emailAuthenticationCodeRepository.delete(emailAuthenticationCode);
@@ -104,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
     private EmailAuthenticationCode findAuthenticationCodeByEmail(String email, ApiResponseStatus status) {
         return emailAuthenticationCodeRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new CustomRuntimeException(status));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(status));
     }
 
     @Override
@@ -117,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
         List<Member> members = memberRepository.findMembersByEmail(email);
 
         if (members.isEmpty()) {
-            throw new CustomRuntimeException(NOTFOUND_MEMBER);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER);
         }
 
         Member activeMember = getActiveMember(members);
@@ -140,7 +140,7 @@ public class MemberServiceImpl implements MemberService {
         return members.stream()
                 .filter(member -> member.getAccountStatus() != WITHDRAWN)
                 .findFirst()
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
     }
 
     @Override
@@ -178,7 +178,7 @@ public class MemberServiceImpl implements MemberService {
         Member member = findMemberById(memberId);
 
         if (member.getAccountStatus() == WITHDRAWN) {
-            throw new CustomRuntimeException(NOTFOUND_MEMBER);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER);
         }
 
         member.changeContact(contact);
@@ -194,7 +194,7 @@ public class MemberServiceImpl implements MemberService {
         log.info("Change Password Processing memberId: {}", memberId);
 
         if (form.getCurrentPassword().equals(form.getNewPassword())) {
-            throw new CustomRuntimeException(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
+            throw CustomRuntimeException.createWithApiResponseStatus(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
         }
 
         Member member = findMemberById(memberId);
@@ -226,13 +226,13 @@ public class MemberServiceImpl implements MemberService {
 
     private Member findMemberById(Long memberId) {
         return memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
     }
 
     //비밀번호 비교
     private void passwordCheck(String password, String storedPassword) {
         if (!passwordEncoder.matches(password, storedPassword)) {
-            throw new CustomRuntimeException(WRONG_PASSWORD);
+            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_PASSWORD);
         }
     }
 

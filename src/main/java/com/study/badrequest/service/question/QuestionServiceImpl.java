@@ -49,7 +49,7 @@ public class QuestionServiceImpl implements QuestionService {
     private Member findMemberById(Long memberId) {
         return memberRepository
                 .findById(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class QuestionServiceImpl implements QuestionService {
     private void checkPermissions(Member requester, Question question) {
         if (requester.getAuthority() != Authority.ADMIN) {
             if (!requester.equals(question.getMember())) {
-                throw new CustomRuntimeException(PERMISSION_DENIED);
+                throw CustomRuntimeException.createWithApiResponseStatus(PERMISSION_DENIED);
             }
         }
     }
@@ -96,7 +96,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     private Question findQuestionById(Long questionId) {
         return questionRepository.findById(questionId)
-                .orElseThrow(() -> new CustomRuntimeException(NOT_FOUND_QUESTION));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
     }
 
 

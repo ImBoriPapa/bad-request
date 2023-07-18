@@ -29,7 +29,7 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
         //when
-        given(memberRepository.findMembersByEmail(any())).willThrow(new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        given(memberRepository.findMembersByEmail(any())).willThrow(CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
         //then
         Assertions.assertThatThrownBy(() -> memberService.issueTemporaryPasswordProcessing(email, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)

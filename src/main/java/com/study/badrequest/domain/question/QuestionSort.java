@@ -22,6 +22,6 @@ public enum QuestionSort {
             }
         }
 
-        throw new CustomRuntimeException(ApiResponseStatus.NOT_EXIST_SORT_VALUE);
+        throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_EXIST_SORT_VALUE);
     }
 }

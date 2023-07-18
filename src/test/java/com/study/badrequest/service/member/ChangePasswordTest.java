@@ -47,7 +47,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
         //when
-        given(memberRepository.findById(any())).willThrow(new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+        given(memberRepository.findById(any())).willThrow(CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
         //then
         Assertions.assertThatThrownBy(() -> memberService.changePasswordProcessing(memberId, form, ipAddress))
                 .isInstanceOf(CustomRuntimeException.class)

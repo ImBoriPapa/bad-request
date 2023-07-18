@@ -16,6 +16,6 @@ public class EmailUtils {
             return localPart + "@" + convertedDomainPart;
         }
 
-        throw new CustomRuntimeException(INVALID_EMAIL_FORM);
+        throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
     }
 }

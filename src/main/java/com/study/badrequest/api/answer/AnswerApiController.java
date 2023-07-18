@@ -35,7 +35,7 @@ public class AnswerApiController {
         log.info("Create Answer Request");
 
         if(bindingResult.hasErrors()){
-            throw new CustomRuntimeException(VALIDATION_ERROR);
+            throw CustomRuntimeException.createWithApiResponseStatus(VALIDATION_ERROR);
         }
 
         AnswerResponse.Register register = answerService.createAnswer(information.getId(), questionId, request);

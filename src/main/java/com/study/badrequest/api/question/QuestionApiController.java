@@ -38,7 +38,7 @@ public class QuestionApiController {
         log.info("Question Create Request");
 
         if (bindingResult.hasErrors()) {
-            throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
+            throw CustomRuntimeException.createWithBindingResults(VALIDATION_ERROR, bindingResult);
         }
 
         QuestionResponse.Create response = questionService.createQuestionProcessing(information.getId(), form);

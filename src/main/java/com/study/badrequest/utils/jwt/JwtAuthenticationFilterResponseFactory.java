@@ -32,7 +32,7 @@ public class JwtAuthenticationFilterResponseFactory {
     }
 
     private ApiResponse.Error getErrorResponse(HttpServletRequest request, ApiResponseStatus status) {
-        return ApiResponse.error(new CustomRuntimeException(status), request.getRequestURI());
+        return ApiResponse.error(CustomRuntimeException.createWithApiResponseStatus(status), request.getRequestURI());
 
     }
 

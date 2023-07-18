@@ -36,10 +36,10 @@ public class AdministratorActivityHistory {
         this.activityAt = activityAt;
     }
 
-    public static AdministratorActivityHistory createAdministratorActivityHistory(String activityDetails, String reason, Member admin,LocalDateTime activityAt) {
+    public static AdministratorActivityHistory createAdministratorActivityHistory(String activityDetails, String reason, Member admin, LocalDateTime activityAt) {
 
         if (admin.getAuthority() != Authority.ADMIN) {
-            throw new CustomRuntimeException(ApiResponseStatus.PERMISSION_DENIED);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.PERMISSION_DENIED);
         }
 
         return new AdministratorActivityHistory(activityDetails, reason, admin, activityAt);

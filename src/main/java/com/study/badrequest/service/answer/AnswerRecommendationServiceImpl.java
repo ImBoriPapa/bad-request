@@ -28,8 +28,8 @@ public class AnswerRecommendationServiceImpl implements AnswerRecommendationServ
     @Transactional
     public void createRecommendation(Long memberId, Long answerId, RecommendationKind kind) {
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
-        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOT_FOUND_ANSWER));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_ANSWER));
         AnswerRecommendation recommendation = AnswerRecommendation.createRecommendation(member, answer, kind);
 
         AnswerRecommendation answerRecommendation = answerRecommendationRepository.save(recommendation);

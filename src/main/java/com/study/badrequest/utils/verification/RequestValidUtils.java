@@ -14,14 +14,14 @@ public class RequestValidUtils {
     public static void throwMemberExceptionIfNotMatchMemberId(Long memberId, Long loggedInMemberId) {
         log.info("Requested ID: {}, Current Id: {}", memberId, loggedInMemberId);
         if (!loggedInMemberId.equals(memberId)) {
-            throw new CustomRuntimeException(ApiResponseStatus.NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
         }
     }
 
     public static void throwValidationExceptionIfErrors(BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             log.error("Validation Error");
-            throw new CustomRuntimeException(VALIDATION_ERROR, bindingResult);
+            throw CustomRuntimeException.createWithBindingResults(VALIDATION_ERROR, bindingResult);
         }
     }
 }

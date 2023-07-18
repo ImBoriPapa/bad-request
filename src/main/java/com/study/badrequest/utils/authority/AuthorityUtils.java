@@ -13,7 +13,7 @@ public class AuthorityUtils {
      */
     public static void verifyPermission(Long targetMemberId, Long requestMemberId, Authority requestMemberAuthority, ApiResponseStatus status) {
         if (!isRequestingMemberAuthorized(targetMemberId, requestMemberId, requestMemberAuthority)) {
-            throw new CustomRuntimeException(status);
+            throw CustomRuntimeException.createWithApiResponseStatus(status);
         }
     }
 

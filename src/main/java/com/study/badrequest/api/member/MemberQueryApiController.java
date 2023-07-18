@@ -39,10 +39,10 @@ public class MemberQueryApiController {
     public ResponseEntity retrieveMemberAccount(@LoggedInMember CurrentMember.Information information, @PathVariable Long memberId) {
         log.info("계정정보 조회 요청 요청계정 Id: {}, 요청자 id: {}, 요청자 권한: {}", memberId, information.getId(), information.getAuthority());
 
-        verifyPermission(memberId,information.getId(),information.getAuthority(),ApiResponseStatus.PERMISSION_DENIED);
+        verifyPermission(memberId, information.getId(), information.getAuthority(), ApiResponseStatus.PERMISSION_DENIED);
 
         MemberDetailDto memberDetailDto = memberQueryRepository.findMemberDetail(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
         EntityModel<MemberDetailDto> entityModel = memberResponseModelAssembler.retrieveMemberModel(memberDetailDto);
 
@@ -58,11 +58,11 @@ public class MemberQueryApiController {
     public ResponseEntity getLoggedInInformation(@PathVariable Long memberId, @LoggedInMember CurrentMember.Information information) {
 
         if (!memberId.equals(information.getId())) {
-            throw new CustomRuntimeException(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
+            throw CustomRuntimeException.createWithApiResponseStatus(NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER);
         }
 
         LoggedInMemberInformation memberInformation = memberQueryRepository.findLoggedInMemberInformation(information.getId())
-                .orElseThrow(() -> new CustomRuntimeException(NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
         EntityModel<LoggedInMemberInformation> entityModel = EntityModel.of(memberInformation);
         entityModel.add(linkTo(methodOn(MemberQueryApiController.class).getLoggedInInformation(memberId, null)).withSelfRel());
@@ -87,7 +87,7 @@ public class MemberQueryApiController {
         log.info("프로필 조회 요청 memberId: {}", memberId);
 
         MemberProfileDto memberProfileDto = memberQueryRepository.findMemberProfileByMemberId(memberId)
-                .orElseThrow(() -> new CustomRuntimeException(ApiResponseStatus.NOTFOUND_MEMBER));
+                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
 
         return ResponseEntity
                 .ok()
