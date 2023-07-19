@@ -23,7 +23,7 @@ public class CustomRuntimeException extends RuntimeException {
     }
 
     private CustomRuntimeException(HttpStatus httpStatus, String status, int errorCode, String errorMessage) {
-        super(status);
+        super(errorMessage);
         this.httpStatus = httpStatus;
         this.status = status;
         this.errorCode = errorCode;
@@ -35,7 +35,7 @@ public class CustomRuntimeException extends RuntimeException {
     }
 
     public static CustomRuntimeException createWithBindingResults(ApiResponseStatus status, BindingResult bindingResult) {
-        return new CustomRuntimeException(status.getHttpStatus(), status.getMessage(), status.getCode(), extractErrorMessageFromBindingResults(bindingResult));
+        return new CustomRuntimeException(status.getHttpStatus(), status.name(), status.getCode(), extractErrorMessageFromBindingResults(bindingResult));
     }
 
     private static String extractErrorMessageFromBindingResults(BindingResult bindingResult) {

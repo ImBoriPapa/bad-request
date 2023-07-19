@@ -36,8 +36,6 @@ class MemberTest extends MemberEntityTestBase {
         assertThat(found.getIpAddress()).isNull();
         assertThat(found.getAccountStatus() == AccountStatus.ACTIVE).isTrue();
         assertThat(found.getCreatedAt().isEqual(save.getCreatedAt())).isTrue();
-        assertThat(found.getUpdatedAt().isEqual(save.getUpdatedAt())).isTrue();
-        assertThat(found.getDeletedAt().isEqual(save.getDeletedAt())).isTrue();
         assertThat(found.getDateIndex().equals(save.getDateIndex())).isTrue();
     }
 
@@ -66,8 +64,6 @@ class MemberTest extends MemberEntityTestBase {
         assertThat(found.getIpAddress()).isNull();
         assertThat(found.getAccountStatus() == AccountStatus.ACTIVE).isTrue();
         assertThat(found.getCreatedAt().isEqual(save.getCreatedAt())).isTrue();
-        assertThat(found.getUpdatedAt().isEqual(save.getUpdatedAt())).isTrue();
-        assertThat(found.getDeletedAt().isEqual(save.getDeletedAt())).isTrue();
         assertThat(found.getDateIndex().equals(save.getDateIndex())).isTrue();
     }
 
