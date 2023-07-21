@@ -59,8 +59,12 @@ Version: 2.0.0
 | 1. 회원 활동 내용 | 회원의 활동 내용을 저장 및 확인하는 기능을 구현하였습니다. |
 | 2. 블로그 API  | 간단한 블로그 기능을 구현중입니다.               |
 
-## Troubleshooting
-[트러블 슈팅 문서](https://github.com/ImBoriPapa/study-note/tree/main/troubleshooting/bad-request%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)
+## Troubleshootings
+[트러블 슈팅 문서 보기](https://github.com/ImBoriPapa/study-note/tree/main/troubleshooting/bad-request%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)
+1. Builder 패턴과 정적 팩토리 메서드 패턴을 활용한 엔티티 생성
+2. EventListener를 활용한 Service Layer의 의존성과 관심사의 분리
+3. 사용자 정의 예외클래스와 Enum을 활용한 에러응답
+4. CI/CD 구축
 *** 
 
 ## [API 문서 보기](https://www.bad-request.kr/docs/index.html)
