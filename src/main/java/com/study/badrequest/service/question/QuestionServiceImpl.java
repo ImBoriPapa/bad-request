@@ -7,14 +7,20 @@ import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
+
 import com.study.badrequest.repository.member.MemberRepository;
 import com.study.badrequest.repository.question.QuestionRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
+import java.util.Collections;
+import java.util.List;
 
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
 import static com.study.badrequest.commons.status.ExposureStatus.*;
@@ -34,16 +40,27 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionResponse.Create createQuestionProcessing(Long memberId, QuestionRequest.Create form) {
         log.info("Create Question Processing memberId: {}, title: {}", memberId, form.getTitle());
 
+        checkNumberOfTags(form.getTags());
+
+        final List<Long> imageIds = form.getImageIds() == null ? Collections.emptyList() : form.getImageIds();
+
         Member member = findMemberById(memberId);
 
-        QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
-        Question questionEntity = Question.createQuestion(form.getTitle(), form.getContents(), member, questionMetrics);
-        Question question = questionRepository.save(questionEntity);
+        Question question = questionRepository.save(createQuestionEntity(form.getTitle(), form.getContents(), member));
 
-        //이벤트: 1.태그 저장 2.이미지 상태 변경
-        eventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member, question, form.getTags(), form.getImageIds()));
+        eventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member.getId(), question.getId(), form.getTags(), imageIds));
 
         return new QuestionResponse.Create(question.getId(), question.getAskedAt());
+    }
+
+    private void checkNumberOfTags(List<String> tags) {
+        if (tags == null || tags.isEmpty() || tags.size() > 5) {
+            throw CustomRuntimeException.createWithApiResponseStatus(AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED);
+        }
+    }
+
+    private Question createQuestionEntity(String title, String contents, Member member) {
+        return Question.createQuestion(title, contents, member, QuestionMetrics.createQuestionMetrics());
     }
 
     private Member findMemberById(Long memberId) {

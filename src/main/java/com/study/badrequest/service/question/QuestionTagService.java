@@ -5,5 +5,5 @@ import com.study.badrequest.domain.question.Question;
 import java.util.List;
 
 public interface QuestionTagService {
-    void createQuestionTag(List<String> tags, Question question);
+    void createQuestionTag(Long questionId,List<String> tags);
 }

@@ -1,10 +1,13 @@
 package com.study.badrequest.service.image;
 
+import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.image.ImageStatus;
 import com.study.badrequest.domain.image.QuestionImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.image.QuestionImageResponse;
+import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.image.QuestionImageRepository;
+import com.study.badrequest.repository.question.QuestionRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +29,7 @@ import static com.study.badrequest.config.AsyncConfig.QUESTION_IMAGE_ASYNC_EXECU
 @RequiredArgsConstructor
 public class QuestionImageServiceImpl implements QuestionImageService {
     private final ImageUploader imageUploader;
+    private final QuestionRepository questionRepository;
     private final QuestionImageRepository questionImageRepository;
     private final String FOLDER_NAME = "QUESTIONS";
     @Transactional
@@ -39,14 +43,16 @@ public class QuestionImageServiceImpl implements QuestionImageService {
         return new QuestionImageResponse.Temporary(savedImage.getId(), savedImage.getOriginalFileName(), savedImage.getImageLocation(), savedImage.getSavedAt());
     }
 
-    @Async(QUESTION_IMAGE_ASYNC_EXECUTOR)
+
     @Transactional
-    public void changeTemporaryToSaved(List<Long> imageIds, Question question) {
+    public void changeTemporaryToSaved(Long questionId,List<Long> imageIds) {
         log.info("질문 게시판 임시 이미지 저장완료로 변경");
 
         List<QuestionImage> images = questionImageRepository.findAllById(imageIds);
 
         if (!images.isEmpty()) {
+
+            Question question = questionRepository.findById(questionId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_QUESTION));
 
             images.forEach(image -> {
                 log.info("이미지 id:{}, storedName: {} 저장완료로 변경", image.getId(), image.getStoredFileName());

@@ -74,8 +74,8 @@ public class TestData {
 
                     list.add(question);
 
-                    HashTag hashTag1 = hashTagRepository.save(new HashTag("#tag" + new Random().nextInt(10) + 1));
-                    HashTag hashTag2 = hashTagRepository.save(new HashTag("#tag" + new Random().nextInt(10) + 1));
+                    HashTag hashTag1 = hashTagRepository.save(HashTag.createHashTag("#tag" + new Random().nextInt(10) + 1));
+                    HashTag hashTag2 = hashTagRepository.save(HashTag.createHashTag("#tag" + new Random().nextInt(10) + 1));
 
                     QuestionTag questionTag1 = QuestionTag.createQuestionTag(question, hashTag1);
                     QuestionTag questionTag2 = QuestionTag.createQuestionTag(question, hashTag2);

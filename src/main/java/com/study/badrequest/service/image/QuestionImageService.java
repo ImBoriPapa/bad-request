@@ -12,7 +12,7 @@ public interface QuestionImageService {
 
     QuestionImageResponse.Temporary saveTemporaryImage(MultipartFile image);
 
-    void changeTemporaryToSaved(List<Long> imageIds, Question question) throws UrgentCheckedException;
+    void changeTemporaryToSaved(Long questionId,List<Long> imageIds);
 
     void update(List<Long> imageIds, Question question);
 }

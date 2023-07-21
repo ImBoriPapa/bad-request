@@ -36,18 +36,7 @@ public class QuestionEventListener {
     private final QuestionTagService questionTagService;
     private final QuestionImageService questionImageService;
     private final QuestionMetricsService questionMetricsService;
-    private final ActivityService activityService;
-
-    @TransactionalEventListener
-    public void handleCreateEvent(QuestionEventDto.CreateEvent dto) {
-        log.info("Question Create Event Occurs");
-
-        questionTagService.createQuestionTag(dto.getTags(), dto.getQuestion());
-
-        questionImageService.changeTemporaryToSaved(dto.getImages(), dto.getQuestion());
-
-        activityService.createActivity(dto.getMember(), dto.getQuestion().getTitle(), ActivityAction.QUESTION, dto.getQuestion().getAskedAt());
-    }
+    private final RecordService recordService;
 
     @EventListener
     public void handleModifyEvent(QuestionEventDto.ModifyEvent dto) {

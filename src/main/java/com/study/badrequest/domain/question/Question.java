@@ -85,12 +85,8 @@ public class Question {
     }
 
     private static String makePreview(String contents) {
-        String plainText = MarkdownUtils.markdownToPlainText(contents);
-        if (plainText.length() > 50) {
-            return plainText.substring(0, 50) + "...";
-        } else {
-            return plainText;
-        }
+        final String preview = MarkdownUtils.markdownToPlainText(contents);
+        return preview.length() > 50 ? preview.substring(0, 50) : preview;
     }
 
     public void changeExposure(ExposureStatus status) {

@@ -21,8 +21,8 @@ public class QuestionRequest {
         @Size(message = "질문 내용은 최소 5글자 이상입니다.", min = 5)
         private String contents;
         @Size(message = "태그는 최소 1개 최대 5개를 사용해야합니다.", min = 1, max = 5)
-        private List<String> tags = new ArrayList<>();
-        private List<Long> imageIds = new ArrayList<>();
+        private List<String> tags;
+        private List<Long> imageIds;
 
     }
 

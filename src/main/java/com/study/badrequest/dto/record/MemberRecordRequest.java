@@ -19,5 +19,4 @@ public class MemberRecordRequest {
     private String ipAddress;
     private String description;
     private LocalDateTime recordTime;
-
 }

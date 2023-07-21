@@ -11,23 +11,27 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id", "hashTagName"})
-@Table(name = "HASH_TAG", indexes = {
-        @Index(name = "HASH_TAG_NAME_IDX", columnList = "HASH_TAG_NAME")
+@Table(name = "hash_tag", indexes = {
+        @Index(name = "HASH_TAG_NAME_IDX", columnList = "hash_tag_name")
 })
 @Getter
 public class HashTag {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "HASHTAG_ID")
+    @Column(name = "hash_tag_id")
     private Long id;
-    @Column(name = "HASH_TAG_NAME")
+    @Column(name = "hash_tag_name")
     private String hashTagName;
-    @Column(name = "COUNT_OF_USAGE")
+    @Column(name = "count_of_usage")
     private Integer countOfUsage;
 
-    public HashTag(String hashTagName) {
+    protected HashTag(String hashTagName, Integer countOfUsage) {
         this.hashTagName = hashTagName;
-        this.countOfUsage = 0;
+        this.countOfUsage = countOfUsage;
+    }
+
+    public static HashTag createHashTag(String hashTagName) {
+        return new HashTag(hashTagName, 0);
     }
 
     public void incrementUsage() {

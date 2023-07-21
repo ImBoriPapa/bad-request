@@ -1,5 +1,6 @@
 package com.study.badrequest.service.question;
 
+import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionTag;
@@ -33,8 +34,10 @@ public class QuestionTagServiceImpl implements QuestionTagService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public void createQuestionTag(List<String> tags, Question question) {
-        log.info("질문 태그 생성 시작 - QuestionId: {}, Requested Tag name: {}", question.getId(), tags.toArray());
+    public void createQuestionTag(Long questionId, List<String> tags) {
+        log.info("질문 태그 생성 시작 - QuestionId: {}, Requested Tag name: {}", questionId, tags.toArray());
+
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
 
         Set<String> requestedTags = tags.stream().map(HashTagUtils::stringToHashTagString).collect(Collectors.toSet());
 
@@ -74,7 +77,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
     private List<HashTag> requestedTagMapToHashTags(Set<String> requestedTags) {
         return requestedTags.stream()
-                .map(HashTag::new)
+                .map(HashTag::createHashTag)
                 .collect(Collectors.toList());
     }
 
@@ -95,7 +98,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
         QuestionTag newQuestionTag = hashTagRepository
                 .findByHashTagName(hashTag)
                 .map(tag -> QuestionTag.createQuestionTag(question, tag))
-                .orElseGet(() -> QuestionTag.createQuestionTag(question, new HashTag(hashTag)));
+                .orElseGet(() -> QuestionTag.createQuestionTag(question, HashTag.createHashTag(hashTag)));
 
         questionTagRepository.save(newQuestionTag);
     }

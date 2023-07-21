@@ -19,10 +19,10 @@ public class QuestionEventDto {
     @AllArgsConstructor
     @Getter
     public static class CreateEvent {
-        private Member member;
-        private Question question;
-        private List<String> tags = new ArrayList<>();
-        private List<Long> images = new ArrayList<>();
+        private Long memberId;
+        private Long questionId;
+        private List<String> tags;
+        private List<Long> images;
     }
 
     @NoArgsConstructor
@@ -37,7 +37,7 @@ public class QuestionEventDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class DeleteEvent{
+    public static class DeleteEvent {
         private Question question;
     }
 

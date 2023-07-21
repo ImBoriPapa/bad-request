@@ -7,5 +7,6 @@ public enum ActionStatus {
     DELETED,
     LOGIN,
     LOGOUT,
-    ISSUE_TEMPORARY_PASSWORD
+    ISSUE_TEMPORARY_PASSWORD,
+    CREATE_QUESTION
 }

@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@Profile({"dev","prod"})
+@Profile({"dev", "prod"})
 @Component
 @RequiredArgsConstructor
 @Transactional
@@ -95,7 +95,7 @@ public class SampleData {
 
         List<HashTag> hashTags = tagStrings.stream()
                 .map(HashTagUtils::stringToHashTagString)
-                .map(HashTag::new)
+                .map(HashTag::createHashTag)
                 .collect(Collectors.toList());
 
         hashTagRepository.saveAll(hashTags);
@@ -130,7 +130,7 @@ public class SampleData {
             String topic = topicsByTechnology.get(technology).get(rand.nextInt(5));
             String title = titlePrefix + " " + technology + " ?";
             String content = contentPrefix + " " + technology + ". This is question number " + i;
-            creates.add(new QuestionRequest.Create(title, content, List.of(technology, topic),null));
+            creates.add(new QuestionRequest.Create(title, content, List.of(technology, topic), null));
         }
 
         ArrayList<Long> ids = new ArrayList<>();
@@ -146,7 +146,7 @@ public class SampleData {
     }
 
 
-    public void sampleAnswerData(){
+    public void sampleAnswerData() {
 
     }
 }
