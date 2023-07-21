@@ -8,5 +8,6 @@ public enum ActionStatus {
     LOGIN,
     LOGOUT,
     ISSUE_TEMPORARY_PASSWORD,
-    CREATE_QUESTION
+    CREATE_QUESTION,
+    UPDATE_QUESTION
 }

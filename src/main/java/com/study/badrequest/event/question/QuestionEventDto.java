@@ -30,7 +30,8 @@ public class QuestionEventDto {
     @Getter
     public static class ModifyEvent {
 
-        private Question question;
+        private Long memberId;
+        private Long questionId;
         private List<Long> images = new ArrayList<>();
     }
 

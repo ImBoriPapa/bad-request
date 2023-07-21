@@ -77,9 +77,11 @@ public class QuestionImageServiceImpl implements QuestionImageService {
 
     @Override
     @Transactional
-    public void update(List<Long> imageIds, Question question) {
+    public void update(List<Long> imageIds, Long questionId) {
         log.info("이미지 업데이트 시작");
         //수정 요청에 imageId가 없다면 전체 삭제
+
+        Question question = questionRepository.findById(questionId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_QUESTION));
 
         if (imageIds.isEmpty()) {
             log.info("요청된 이미지 없음");

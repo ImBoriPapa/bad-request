@@ -34,17 +34,11 @@ import static com.study.badrequest.config.AsyncConfig.QUESTION_IMAGE_ASYNC_EXECU
 @RequiredArgsConstructor
 public class QuestionEventListener {
     private final QuestionTagService questionTagService;
-    private final QuestionImageService questionImageService;
+
     private final QuestionMetricsService questionMetricsService;
     private final RecordService recordService;
 
-    @EventListener
-    public void handleModifyEvent(QuestionEventDto.ModifyEvent dto) {
-        log.info("질문 수정 이벤트");
 
-        questionImageService.update(dto.getImages(), dto.getQuestion());
-
-    }
 
     @EventListener
     public void handleDeleteEvent(QuestionEventDto.DeleteEvent dto) {

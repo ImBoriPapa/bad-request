@@ -14,5 +14,5 @@ public interface QuestionImageService {
 
     void changeTemporaryToSaved(Long questionId,List<Long> imageIds);
 
-    void update(List<Long> imageIds, Question question);
+    void update(List<Long> imageIds, Long questionId);
 }

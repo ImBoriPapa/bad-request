@@ -1,11 +1,13 @@
 package com.study.badrequest.domain.question;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.domain.member.Member;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -63,4 +65,6 @@ class QuestionTest extends QuestionEntityTestBase {
         //then
         Assertions.assertThat(findById.getQuestionMetrics().getCountOfView()).isEqualTo(1);
     }
+
+
 }

@@ -82,7 +82,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         question.modify(form.getTitle(), form.getContents());
 
-        eventPublisher.publishEvent(new QuestionEventDto.ModifyEvent(question, form.getImageIds()));
+        eventPublisher.publishEvent(new QuestionEventDto.ModifyEvent(requester.getId(), question.getId(), form.getImageIds()));
 
         return new QuestionResponse.Modify(question.getId(), question.getModifiedAt());
     }
