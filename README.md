@@ -13,7 +13,7 @@ Version: 2.0.0
 
 ## 프로젝트 개발 및 운영 인원: 
 #### Backend 
-- boriPapa: [gitghub](https://github.com/ImBoriPapa) 
+- ImBoriPapa: [gitghub](https://github.com/ImBoriPapa) 
 #### Frontend
 - EunjuHan: [github](https://github.com/eunju0209)
 
