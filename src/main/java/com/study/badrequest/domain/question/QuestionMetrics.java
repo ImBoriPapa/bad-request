@@ -26,7 +26,7 @@ public class QuestionMetrics {
     private Long id;
     @Column(name = "count_of_recommend")
     private Integer countOfRecommend;
-    @Column(name = "COUNT_OF_VIEW")
+    @Column(name = "count_of_view")
     private Integer countOfView;
     @Column(name = "count_of_answer")
     private Integer countOfAnswer;

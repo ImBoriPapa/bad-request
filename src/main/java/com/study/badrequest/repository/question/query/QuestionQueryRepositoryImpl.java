@@ -51,7 +51,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
      * Updated 2023/5/23
      */
     public Optional<QuestionDetail> findQuestionDetail(Long questionId, Long loggedInMemberId, ExposureStatus exposureStatus) {
-        log.info("[QUERY]=> findQuestionDetail- Question ID: {}", questionId);
+        log.info("findQuestionDetail questionId: {}", questionId);
         Optional<QuestionDetail> detailOptional = getQuestionDetailByQuestionIdAndExposureStatus(questionId, exposureStatus);
 
         detailOptional.ifPresent(detail -> organizeQuestionDetail(loggedInMemberId, detail));
@@ -167,14 +167,15 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
      */
     @Override
     public QuestionListResult findQuestionListByCondition(QuestionSearchCondition condition) {
-        log.info("[QUERY]=> findQuestionListByCondition LastOfData: {}, SORT: {}, SIZE: {}", condition.getLastOfData(), condition.getSort(), condition.getSize());
+        log.info("findQuestionListByCondition");
         final int limitSize = setLimitSize(condition.getSize());
+        final QuestionSort questionSort = condition.getSort() == null ? QuestionSort.NEW_EAST : condition.getSort();
 
-        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfData(), limitSize, condition.getSort());
+        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfData(), limitSize, questionSort);
 
         List<QuestionDto> questionListDto = selectQuestionDtoInIds(questionIdList);
 
-        sortListByQuestionSort(condition.getSort(), questionListDto);
+        sortListByQuestionSort(questionSort, questionListDto);
 
         addQuestionTagToListDto(questionListDto);
 
@@ -252,8 +253,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         NEW_EAST: questionId 로 Order By questionId DESC 로 정렬 불필요
     */
     private void sortListByQuestionSort(QuestionSort sort, List<QuestionDto> questionListDto) {
-        log.debug("[QUERY]==> sortListByQuestionSort Sort: {}",sort);
-        if (sort != null) {
+        log.debug("sortListByQuestionSort() sort: {}", sort);
 
             final Comparator<QuestionDto> comparator;
 
@@ -266,25 +266,23 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                     comparator = Comparator.comparing(q -> q.getMetrics().getCountOfView());
                     questionListDto.sort(comparator.reversed());
                     break;
-
             }
-        }
     }
 
     /**
      * Question.questionId 리스트 조회
      *
-     * @param lastOfData  :  조회 시작 위치
-     * @param limitSize :  조회 데이터 크기
+     * @param lastOfData :  조회 시작 위치
+     * @param limitSize  :  조회 데이터 크기
      * @param sort
      * @return List<Long>: Question ID
      */
     private List<Long> selectQuestionIdList(Long lastOfData, Integer limitSize, QuestionSort sort) {
-        log.debug("[QUERY]==> selectQuestionIdList- LastOfData: {}, LimitSize: {}, SORT: {}", lastOfData, limitSize, sort);
+        log.info("selectQuestionIdList- LastOfData: {}, LimitSize: {}, SORT: {}", lastOfData, limitSize, sort);
         final JPAQuery<Long> selectIdFromQuestion = jpaQueryFactory.select(question.id).from(question);
 
         if (sort == null) {
-            log.debug("[QUERY]===> selectIdFromQuestion SortBy NEW");
+            log.info("selectIdFromQuestion SortBy NEW_EAST");
             selectIdFromQuestion
                     .where(lastIndexCursor(lastOfData), eqExposure(PUBLIC))
                     .orderBy(question.id.desc())
@@ -294,7 +292,8 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         if (sort != null) {
             List<Long> questionIds = selectQuestionIdWithSort(lastOfData, limitSize, sort);
             selectIdFromQuestion
-                    .where(question.id.in(questionIds));
+                    .where(question.id.in(questionIds))
+                    .orderBy(question.id.desc());
         }
 
         List<Long> results = selectIdFromQuestion.fetch();
@@ -303,7 +302,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private List<Long> selectQuestionIdWithSort(Long lastData, Integer limitSize, QuestionSort sort) {
-        log.debug("[QUERY]===> selectQuestionIdWithSort SORT: {}",sort);
+        log.debug("selectQuestionIdWithSort SORT: {}", sort);
         final JPAQuery<Long> queryWithSort = jpaQueryFactory
                 .select(questionMetrics.question.id)
                 .from(questionMetrics);
@@ -340,7 +339,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private List<QuestionDto> selectQuestionDtoInIds(List<Long> questionIds) {
-        log.debug("[QUERY]==> selectQuestionDtoInIds- QuestionID: {}",questionIds);
+        log.debug("selectQuestionDtoInIds- QuestionID: {}", questionIds);
         return jpaQueryFactory
                 .select(Projections.fields(QuestionDto.class,
                         question.id.as("id"),
@@ -370,7 +369,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     private List<QuestionTagDto> findQuestionTagDtoByQuestionIds(List<Long> ids) {
         List<Long> questionTagIds = findQuestionTagsInQuestionIds(ids);
 
-        if(CollectionUtils.isNullOrEmpty(questionTagIds)){
+        if (CollectionUtils.isNullOrEmpty(questionTagIds)) {
             log.error("[QUERY]===> findQuestionTagsInQuestionIds Not Allow EMPTY");
         }
 
@@ -395,7 +394,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private List<Long> findQuestionTagsInQuestionIds(List<Long> questionIds) {
-        log.debug("[QUERY]==> findQuestionTagsInQuestionIds QuestionID: {}",questionIds);
+        log.debug("[QUERY]==> findQuestionTagsInQuestionIds QuestionID: {}", questionIds);
         return jpaQueryFactory
                 .select(questionTag.id)
                 .from(questionTag)
