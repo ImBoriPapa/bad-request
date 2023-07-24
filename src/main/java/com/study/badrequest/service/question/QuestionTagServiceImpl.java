@@ -4,6 +4,7 @@ import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionTag;
+import com.study.badrequest.dto.question.QuestionTagResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 import com.study.badrequest.repository.hashTag.HashTagRepository;
@@ -34,7 +35,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public void createQuestionTag(Long questionId, List<String> tags) {
+    public QuestionTagResponse.Create createQuestionTagProcessing(Long questionId, List<String> tags) {
         log.info("질문 태그 생성 시작 - QuestionId: {}, Requested Tag name: {}", questionId, tags.toArray());
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
@@ -43,14 +44,19 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
         List<HashTag> findHashTagByRequestedTags = hashTagRepository.findAllByHashTagNameIn(requestedTags);
 
+        List<QuestionTag> questionTags;
+
         // 기존에 저장된 해시태그가 없을 경우
         if (findHashTagByRequestedTags.isEmpty()) {
-            saveQuestionTags(question, requestedTags);
+            questionTags = saveQuestionTags(question, requestedTags);
         } else
-            saveQuestionTags(question, requestedTags, findHashTagByRequestedTags);
+            questionTags = saveQuestionTags(question, requestedTags, findHashTagByRequestedTags);
+
+        return new QuestionTagResponse.Create(questionTags.stream().map(QuestionTag::getId).collect(Collectors.toList()));
+
     }
 
-    private void saveQuestionTags(Question question, Set<String> requestedTags, List<HashTag> findHashTagByRequestedTags) {
+    private List<QuestionTag> saveQuestionTags(Question question, Set<String> requestedTags, List<HashTag> findHashTagByRequestedTags) {
         Map<String, QuestionTag> haveToSave = new HashMap<>();
         // 이미 등록된 해시태그로 질문 태그를 생성해서 haveToSave 에 저장
         findHashTagByRequestedTags.stream()
@@ -66,13 +72,13 @@ public class QuestionTagServiceImpl implements QuestionTagService {
         hashTagMapQuestionTag(question, newHashTags).forEach(questionTag -> haveToSave.put(questionTag.getHashTag().getHashTagName(), questionTag));
 
         //만들어진 모든 질문 태그를 저장
-        questionTagRepository.saveAll(haveToSave.values());
+        return questionTagRepository.saveAll(haveToSave.values());
     }
 
-    private void saveQuestionTags(Question question, Set<String> requestedTags) {
+    private List<QuestionTag> saveQuestionTags(Question question, Set<String> requestedTags) {
         List<HashTag> newHashTags = requestedTagMapToHashTags(requestedTags);
 
-        questionTagRepository.saveAll(hashTagMapQuestionTag(question, newHashTags));
+        return questionTagRepository.saveAll(hashTagMapQuestionTag(question, newHashTags));
     }
 
     private List<HashTag> requestedTagMapToHashTags(Set<String> requestedTags) {

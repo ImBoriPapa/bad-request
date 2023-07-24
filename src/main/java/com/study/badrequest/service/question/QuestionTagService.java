@@ -1,9 +1,9 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.dto.question.QuestionTagResponse;
 
 import java.util.List;
 
 public interface QuestionTagService {
-    void createQuestionTag(Long questionId,List<String> tags);
+    QuestionTagResponse.Create createQuestionTagProcessing(Long questionId, List<String> tags);
 }

@@ -31,7 +31,7 @@ public class QuestionCreateEventListener {
         final Long memberId = dto.getMemberId();
         final Long questionId = dto.getQuestionId();
 
-        questionTagService.createQuestionTag(questionId, dto.getTags());
+        questionTagService.createQuestionTagProcessing(questionId, dto.getTags());
         
         if (!dto.getImages().isEmpty()) {
             questionImageService.changeTemporaryToSaved(questionId, dto.getImages());

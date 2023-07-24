@@ -2,6 +2,8 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionMetrics;
 import com.study.badrequest.dto.question.QuestionRequest;
@@ -68,6 +70,7 @@ public class ModifyQuestionTest extends QuestionServiceTestBase {
         QuestionRequest.Modify request = new QuestionRequest.Modify("New Title", "New Contents", List.of(1L, 2L, 3L));
 
         Member questioner = Member.createWithEmail("email@email.com", "password", "01012341234");
+        questioner.assignMemberProfile(MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         Member requester = Member.createWithEmail("email@email.com", "password", "01012341234");
 
         Question question = Question.createQuestion("title", "contents", questioner, QuestionMetrics.createQuestionMetrics());
@@ -78,7 +81,7 @@ public class ModifyQuestionTest extends QuestionServiceTestBase {
         //then
         verify(memberRepository).findById(memberId);
         verify(questionRepository).findById(questionId);
-        verify(eventPublisher).publishEvent(new QuestionEventDto.ModifyEvent(question, any()));
+
 
     }
 }

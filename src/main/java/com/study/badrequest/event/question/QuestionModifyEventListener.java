@@ -22,7 +22,7 @@ public class QuestionModifyEventListener {
     private final RecordService recordService;
     @EventListener
     public void handleModifyEvent(QuestionEventDto.ModifyEvent dto) {
-        log.info("질문 수정 이벤트");
+        log.info("Question Modify Event");
 
         questionImageService.update(dto.getImages(), dto.getQuestionId());
 
