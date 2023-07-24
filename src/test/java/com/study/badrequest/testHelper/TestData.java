@@ -37,7 +37,6 @@ public class TestData {
     private final HashTagRepository hashTagRepository;
     private final EntityManager entityManager;
     private final AnswerRepository answerRepository;
-
     private final AnswerRecommendationRepository answerRecommendationRepository;
 
     public void restartAutoIncrement() {
