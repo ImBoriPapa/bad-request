@@ -9,7 +9,6 @@ import com.study.badrequest.repository.question.QuestionRepository;
 import com.study.badrequest.testHelper.TestConfig;
 import com.study.badrequest.testHelper.TestData;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +18,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-
-import javax.persistence.EntityManager;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -120,7 +117,7 @@ class QuestionQueryRepositoryImplTest {
     void 질문리스트조회2() throws Exception{
         //given
         QuestionSearchCondition condition = new QuestionSearchCondition();
-        condition.setSort(QuestionSort.VIEW);
+        condition.setSort(QuestionSortType.VIEW);
         //when
         Question question1 = questionRepository.findById(5L).get();
         question1.getQuestionMetrics().incrementCountOfView();
@@ -147,7 +144,7 @@ class QuestionQueryRepositoryImplTest {
     void 질문리스트조회3() throws Exception{
         //given
         QuestionSearchCondition condition = new QuestionSearchCondition();
-        condition.setSort(QuestionSort.RECOMMEND);
+        condition.setSort(QuestionSortType.RECOMMEND);
         //when
         Question question1 = questionRepository.findById(10L).get();
         question1.getQuestionMetrics().incrementCountOfRecommendations();

@@ -4,8 +4,7 @@ import com.study.badrequest.api.member.MemberQueryApiController;
 import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionMetricsApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.question.QuestionSort;
-import com.study.badrequest.domain.recommendation.RecommendationKind;
+import com.study.badrequest.domain.question.QuestionSortType;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.repository.question.query.QuestionDetail;
 import com.study.badrequest.repository.question.query.TagDto;
@@ -107,22 +106,22 @@ public class QuestionModelAssembler {
 
     private void addSortLink(QuestionSearchCondition condition, List<Link> links) {
 
-        if (condition.getSort() != QuestionSort.NEW_EAST) {
+        if (condition.getSort() != QuestionSortType.NEW_EAST) {
             Link sortByNew = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
                     .withRel("sort by new-east");
             links.add(sortByNew);
         }
 
-        if (condition.getSort() != QuestionSort.VIEW) {
+        if (condition.getSort() != QuestionSortType.VIEW) {
             Link sortByView = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
-                    .slash("?sort=" + QuestionSort.VIEW.toString().toLowerCase())
+                    .slash("?sort=" + QuestionSortType.VIEW.toString().toLowerCase())
                     .withRel("sort by view");
             links.add(sortByView);
 
         }
-        if (condition.getSort() != QuestionSort.RECOMMEND) {
+        if (condition.getSort() != QuestionSortType.RECOMMEND) {
             Link sortByRecommend = linkTo(methodOn(QuestionQueryApiController.class).getQuestions(condition))
-                    .slash("?sort=" + QuestionSort.RECOMMEND.toString().toLowerCase())
+                    .slash("?sort=" + QuestionSortType.RECOMMEND.toString().toLowerCase())
                     .withRel("sort by recommend");
             links.add(sortByRecommend);
 

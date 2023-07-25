@@ -1,6 +1,7 @@
 package com.study.badrequest.repository.question.query;
 
 import com.amazonaws.util.CollectionUtils;
+import com.querydsl.core.support.QueryBase;
 import com.querydsl.core.types.*;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
@@ -8,11 +9,13 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 
+import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.question.*;
 import com.study.badrequest.domain.recommendation.Recommendation;
 
 
+import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +34,7 @@ import static com.study.badrequest.domain.memberProfile.QMemberProfile.memberPro
 import static com.study.badrequest.domain.question.QQuestion.*;
 import static com.study.badrequest.domain.question.QQuestionMetrics.*;
 import static com.study.badrequest.domain.question.QQuestionTag.*;
+import static com.study.badrequest.domain.question.QuestionSortType.*;
 import static com.study.badrequest.domain.recommendation.QRecommendation.recommendation;
 
 
@@ -161,37 +165,58 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
      *
      * @param condition: Long lastOfData: 다음 데이터를 조회하기 위한 마지막 데이터의 식별 값 입니다.,
      *                   Integer size: 조회당 요청 데이터의 개수입니다.,
-     *                   QuestionSort sort: 데이터 정렬 조건입니다.
+     *                   QuestionSortType sort: 조회 정렬 조건입니다.
      * @return QuestionListResult
      * updated: 2023/5/23
      */
     @Override
     public QuestionListResult findQuestionListByCondition(QuestionSearchCondition condition) {
         log.info("findQuestionListByCondition");
-        final int limitSize = setLimitSize(condition.getSize());
-        final QuestionSort questionSort = condition.getSort() == null ? QuestionSort.NEW_EAST : condition.getSort();
+        final long LAST_OF_DATA = initializationLastOfData(condition.getLastOfData());
+        final int LIMIT_SIZE = initializationLimitSize(condition.getSize());
+        final QuestionSortType SORT_TYPE = initializationSortType(condition.getSort());
 
-        List<Long> questionIdList = selectQuestionIdList(condition.getLastOfData(), limitSize, questionSort);
+        List<Long> questionIdList = selectQuestionIdList(LAST_OF_DATA, LIMIT_SIZE, SORT_TYPE);
 
         List<QuestionDto> questionListDto = selectQuestionDtoInIds(questionIdList);
 
-        sortListByQuestionSort(questionSort, questionListDto);
+        sortListByQuestionSortType(SORT_TYPE, questionListDto);
 
-        addQuestionTagToListDto(questionListDto);
+        addQuestionTagsToQuestionListDto(questionListDto);
 
+        return createQuestionListResult(LIMIT_SIZE, SORT_TYPE, questionListDto);
+
+    }
+
+    private long initializationLastOfData(Long lastOfData) {
+        return lastOfData == null ? -1L : lastOfData;
+    }
+
+
+    private QuestionListResult createQuestionListResult(int LIMIT_SIZE, QuestionSortType SORT_TYPE, List<QuestionDto> questionListDto) {
+        boolean hasNext = questionListDto.size() > LIMIT_SIZE;
+
+        int resultSize = initializationResultSize(LIMIT_SIZE, questionListDto, hasNext);
+
+        long lastOfData = initializationLastOfData(SORT_TYPE, questionListDto);
+
+        return new QuestionListResult(resultSize, hasNext, SORT_TYPE, lastOfData, questionListDto);
+    }
+
+    private int initializationResultSize(int LIMIT_SIZE, List<QuestionDto> questionListDto, boolean hasNext) {
         int resultSize = questionListDto.size();
 
-        boolean hasNext = resultSize > limitSize;
-
         if (hasNext) {
-            questionListDto.remove(limitSize);
+            questionListDto.remove(LIMIT_SIZE);
             --resultSize;
         }
+        return resultSize;
+    }
 
+    private long initializationLastOfData(QuestionSortType SORT_TYPE, List<QuestionDto> questionListDto) {
         long lastData = 0L;
 
-        QuestionSort sortBy = condition.getSort() == null ? QuestionSort.NEW_EAST : condition.getSort();
-        switch (sortBy) {
+        switch (SORT_TYPE) {
             case NEW_EAST:
                 lastData = questionListDto.stream()
                         .mapToLong(QuestionDto::getId)
@@ -212,14 +237,16 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                         .orElse(0);
                 break;
         }
+        return lastData;
+    }
 
-        return new QuestionListResult(resultSize, hasNext, sortBy, lastData, questionListDto);
-
+    private static QuestionSortType initializationSortType(QuestionSortType sortType) {
+        return sortType == null ? NEW_EAST : sortType;
     }
 
     public QuestionListResult findQuestionListByHashTag(QuestionSearchConditionWithHashTag condition) {
 
-        int limitSize = setLimitSize(condition.getSize());
+        int limitSize = initializationLimitSize(condition.getSize());
 
         if (!isHashTag(condition.getTag())) {
             throw new IllegalArgumentException("IS NOT HASH TAG");
@@ -241,7 +268,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
 
         List<QuestionDto> questionListDto = selectQuestionDtoInIds(questionIds);
 
-        addQuestionTagToListDto(questionListDto);
+        addQuestionTagsToQuestionListDto(questionListDto);
 
         questionListDto.sort(Comparator.comparing(QuestionDto::getAskedAt));
 
@@ -252,91 +279,80 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         QuestionSort 에 따라 쿼리해온 데이터 정렬
         NEW_EAST: questionId 로 Order By questionId DESC 로 정렬 불필요
     */
-    private void sortListByQuestionSort(QuestionSort sort, List<QuestionDto> questionListDto) {
-        log.debug("sortListByQuestionSort() sort: {}", sort);
+    private void sortListByQuestionSortType(QuestionSortType sort, List<QuestionDto> questionListDto) {
+        log.info("sortListByQuestionSort() sort: {}", sort);
 
-            final Comparator<QuestionDto> comparator;
-
-            switch (sort) {
-                case RECOMMEND:
-                    comparator = Comparator.comparing(q -> q.getMetrics().getCountOfRecommend());
-                    questionListDto.sort(comparator.reversed());
-                    break;
-                case VIEW:
-                    comparator = Comparator.comparing(q -> q.getMetrics().getCountOfView());
-                    questionListDto.sort(comparator.reversed());
-                    break;
-            }
-    }
-
-    /**
-     * Question.questionId 리스트 조회
-     *
-     * @param lastOfData :  조회 시작 위치
-     * @param limitSize  :  조회 데이터 크기
-     * @param sort
-     * @return List<Long>: Question ID
-     */
-    private List<Long> selectQuestionIdList(Long lastOfData, Integer limitSize, QuestionSort sort) {
-        log.info("selectQuestionIdList- LastOfData: {}, LimitSize: {}, SORT: {}", lastOfData, limitSize, sort);
-        final JPAQuery<Long> selectIdFromQuestion = jpaQueryFactory.select(question.id).from(question);
-
-        if (sort == null) {
-            log.info("selectIdFromQuestion SortBy NEW_EAST");
-            selectIdFromQuestion
-                    .where(lastIndexCursor(lastOfData), eqExposure(PUBLIC))
-                    .orderBy(question.id.desc())
-                    .limit(limitSize + 1);
-        }
-
-        if (sort != null) {
-            List<Long> questionIds = selectQuestionIdWithSort(lastOfData, limitSize, sort);
-            selectIdFromQuestion
-                    .where(question.id.in(questionIds))
-                    .orderBy(question.id.desc());
-        }
-
-        List<Long> results = selectIdFromQuestion.fetch();
-
-        return CollectionUtils.isNullOrEmpty(results) ? new ArrayList<>() : results;
-    }
-
-    private List<Long> selectQuestionIdWithSort(Long lastData, Integer limitSize, QuestionSort sort) {
-        log.debug("selectQuestionIdWithSort SORT: {}", sort);
-        final JPAQuery<Long> queryWithSort = jpaQueryFactory
-                .select(questionMetrics.question.id)
-                .from(questionMetrics);
+        final Comparator<QuestionDto> comparator;
 
         switch (sort) {
-            case VIEW:
-                return queryWithSort.where(
-                                lastViewCursor(lastData),
-                                questionMetrics.exposure.eq(PUBLIC))
-                        .orderBy(questionMetrics.countOfView.desc(), questionMetrics.id.desc())
-                        .limit(limitSize + 1)
-                        .fetch();
-
             case RECOMMEND:
-                return queryWithSort.where(
-                                lastRecommendCursor(lastData),
-                                questionMetrics.exposure.eq(PUBLIC))
-                        .orderBy(questionMetrics.countOfRecommend.desc(), questionMetrics.id.desc())
-                        .limit(limitSize + 1)
-                        .fetch();
-
+                comparator = Comparator.comparing(q -> q.getMetrics().getCountOfRecommend());
+                questionListDto.sort(comparator.reversed());
+                break;
+            case VIEW:
+                comparator = Comparator.comparing(q -> q.getMetrics().getCountOfView());
+                questionListDto.sort(comparator.reversed());
+                break;
         }
-        return new ArrayList<>();
     }
 
+    /*
+     *  Question ID
+     *  QuestionSortType == NEW_EAST : Question Primary key로 조회
+     *  QuestionSortType != NEW_EAST : QuestionMetrics 에서 조회
+     */
+    private List<Long> selectQuestionIdList(Long lastOfData, Integer limitSize, QuestionSortType sort) {
+        log.info("selectQuestionIdList() lastOfData: {}, limitSize: {}, sortType: {}", lastOfData, limitSize, sort);
 
-    private Predicate lastRecommendCursor(Long lastOfData) {
-        return lastOfData == null ? questionMetrics.countOfRecommend.lt(Integer.MAX_VALUE) : questionMetrics.countOfRecommend.lt(lastOfData.intValue());
+        if (sort != NEW_EAST) {
+            return findQuestionIdWithSortType(lastOfData, limitSize, sort);
+        }
+
+        return findQuestionIdById(lastOfData, limitSize);
     }
 
-
-    private Predicate lastViewCursor(Long lastOfData) {
-        return lastOfData == null ? questionMetrics.countOfView.lt(Integer.MAX_VALUE) : questionMetrics.countOfView.lt(lastOfData.intValue());
+    private List<Long> findQuestionIdById(Long lastOfData, Integer limitSize) {
+        log.info("selectIdFromQuestion sortBy: NEW_EAST");
+        List<Long> fetch = jpaQueryFactory
+                .select(question.id)
+                .from(question)
+                .where(lastIndexCursor(lastOfData), eqExposure(PUBLIC))
+                .orderBy(question.id.desc())
+                .limit(limitSize + 1)
+                .fetch();
+        return CollectionUtils.isNullOrEmpty(fetch) ? new ArrayList<>() : fetch;
     }
+
+    private List<Long> findQuestionIdWithSortType(Long lastData, Integer limitSize, QuestionSortType sort) {
+        log.info("selectQuestionIdWithSort sortType: {}", sort);
+        final JPAQuery<Long> queryWithSort = jpaQueryFactory
+                .select(questionMetrics.question.id)
+                .from(questionMetrics)
+                .join(questionMetrics.question, question);
+        final BooleanExpression exposure = questionMetrics.exposure.eq(PUBLIC);
+        final OrderSpecifier<Integer> variableSortingCriteria;
+
+        final Predicate cursor;
+
+        if (sort == VIEW) {
+            cursor = lastViewCursor(lastData);
+            variableSortingCriteria = questionMetrics.countOfView.desc();
+        } else if (sort == RECOMMEND) {
+            cursor = lastRecommendCursor(lastData);
+            variableSortingCriteria = questionMetrics.countOfRecommend.desc();
+        } else {
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_EXIST_SORT_VALUE);
+        }
+
+        List<Long> questionIds = queryWithSort
+                .where(cursor, exposure)
+                .orderBy(variableSortingCriteria)
+                .limit(limitSize + 1)
+                .fetch();
+
+        return CollectionUtils.isNullOrEmpty(questionIds) ? new ArrayList<>() : questionIds;
+    }
+
 
     private List<QuestionDto> selectQuestionDtoInIds(List<Long> questionIds) {
         log.debug("selectQuestionDtoInIds- QuestionID: {}", questionIds);
@@ -402,7 +418,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .fetch();
     }
 
-    private void addQuestionTagToListDto(List<QuestionDto> questionListDto) {
+    private void addQuestionTagsToQuestionListDto(List<QuestionDto> questionListDto) {
 
         List<Long> questionsIds = getQuestionsIds(questionListDto);
 
@@ -446,10 +462,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return hashTags.size() > 1 ? tagNamesIn(hashTags) : eqTagName(hashTags.get(0));
     }
 
-    private BooleanExpression containsTitle(String keyword) {
-        return keyword == null ? null : question.title.containsIgnoreCase(keyword);
-    }
-
     private BooleanExpression eqExposure(ExposureStatus status) {
         return status == null ? question.exposure.eq(PUBLIC) : question.exposure.eq(status);
     }
@@ -459,15 +471,37 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .collect(Collectors.groupingBy(QuestionTagDto::getQuestionId));
     }
 
-    private BooleanExpression lastIndexCursor(Long questionId) {
+    private BooleanExpression lastIndexCursor(Long lastOfData) {
 
+        long index = initializationIndex(lastOfData);
+
+        return index <= 0 ? null : question.id.lt(lastOfData);
+    }
+
+    private Predicate lastRecommendCursor(Long lastOfData) {
+
+        long index = initializationIndex(lastOfData);
+
+        return index <= 0 ? questionMetrics.countOfRecommend.lt(Integer.MAX_VALUE) : questionMetrics.countOfRecommend.lt(lastOfData.intValue());
+    }
+
+
+    private Predicate lastViewCursor(Long lastOfData) {
+
+        long index = initializationIndex(lastOfData);
+
+        return index <= 0 ? questionMetrics.countOfView.lt(Integer.MAX_VALUE) : questionMetrics.countOfView.lt(lastOfData.intValue());
+    }
+
+    private long initializationIndex(Long lastOfData) {
         long index = 0L;
 
-        if (questionId != null) {
-            index = questionId;
+        if (lastOfData != null) {
+            index = lastOfData <= -1 ? 0 : lastOfData;
         }
-        return index <= 0 ? null : question.id.lt(questionId);
+        return index;
     }
+
 
     private BooleanExpression hashTagCursor(Long questionId) {
         long index = 0L;
@@ -478,7 +512,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return index <= 0 ? null : questionTag.question.id.lt(questionId);
     }
 
-    private int setLimitSize(Integer limitSize) {
+    private int initializationLimitSize(Integer limitSize) {
 
         final int defaultLimitSize = 10;
 

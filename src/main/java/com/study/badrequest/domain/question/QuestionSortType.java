@@ -5,18 +5,18 @@ import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.springframework.util.StringUtils;
 
-public enum QuestionSort {
+public enum QuestionSortType {
 
     NEW_EAST,
     RECOMMEND,
     VIEW;
 
-    public static QuestionSort convert(String source) {
+    public static QuestionSortType convert(String source) {
         if (!StringUtils.hasText(source)) {
             return null;
         }
 
-        for (QuestionSort sort : QuestionSort.values()) {
+        for (QuestionSortType sort : QuestionSortType.values()) {
             if (sort.name().equalsIgnoreCase(source)) {
                 return sort;
             }

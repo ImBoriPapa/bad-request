@@ -67,7 +67,7 @@ public class QuestionQueryTestBase {
         List<Member> sampleMembers = createSampleMembers();
         List<Question> list = new ArrayList<>();
 
-        IntStream.rangeClosed(1, 15).forEach(
+        IntStream.rangeClosed(1, numberOfQuestions).forEach(
                 index -> {
                     int randomMemberId = new Random().nextInt(sampleMembers.size() - 1) + 1;
 

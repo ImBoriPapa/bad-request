@@ -3,7 +3,7 @@ package com.study.badrequest.api_docs;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.question.QuestionApiController;
 import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.question.QuestionSort;
+import com.study.badrequest.domain.question.QuestionSortType;
 import com.study.badrequest.domain.recommendation.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
@@ -245,7 +245,7 @@ public class QuestionApiDocs {
                 new QuestionDto(97L, "질문1", "질문내용 미리보기1..", metrics3, questioner3, tagDtos3, LocalDateTime.now())
         );
 
-        QuestionListResult questionListResult = new QuestionListResult(3, true, QuestionSort.NEW_EAST, 97L, questionDtos);
+        QuestionListResult questionListResult = new QuestionListResult(3, true, QuestionSortType.NEW_EAST, 97L, questionDtos);
         //when
         given(questionQueryService.getQuestionList(any())).willReturn(questionListResult);
         //then
