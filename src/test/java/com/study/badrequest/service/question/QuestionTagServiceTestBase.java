@@ -6,7 +6,7 @@ import com.study.badrequest.repository.question.QuestionTagRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-public abstract class QuestionTagTestBase {
+public abstract class QuestionTagServiceTestBase {
 
     @InjectMocks
     protected QuestionTagServiceImpl questionTagService;

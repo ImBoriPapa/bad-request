@@ -12,6 +12,7 @@ import com.study.badrequest.repository.question.QuestionTagRepository;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,16 +45,21 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
         final Set<String> hashtagNames = convertToHashTagNames(tags);
 
-        final List<HashTag> existsHashTags = findExistsHashTagByHashTagNames(hashtagNames);
+        final List<QuestionTag> questionTags = saveQuestionTags(question, hashtagNames);
 
+        return new QuestionTagResponse.Create(getQuestionTagIds(questionTags));
+    }
+
+    private List<QuestionTag> saveQuestionTags(Question question, Set<String> hashtagNames) {
         final List<QuestionTag> questionTags;
+        final List<HashTag> existsHashTags = findExistsHashTagByHashTagNames(hashtagNames);
 
         if (existsHashTags.isEmpty()) {
             questionTags = saveQuestionTagsWithNewHashTagNames(question, hashtagNames);
         } else
             questionTags = saveQuestionTagsWithNewHashTagNamesAndExistHashTags(question, hashtagNames, existsHashTags);
 
-        return new QuestionTagResponse.Create(getQuestionTagIds(questionTags));
+        return questionTags;
     }
 
     private List<Long> getQuestionTagIds(List<QuestionTag> questionTags) {
@@ -84,16 +90,17 @@ public class QuestionTagServiceImpl implements QuestionTagService {
         Map<String, QuestionTag> haveToSave = new HashMap<>();
 
         addQuestionTagsToHaveToSave(question, existsHashTas, haveToSave);
-        
+
         addQuestionTagsToHaveToSave(question, createNewHashTags(newHastTagNames, haveToSave), haveToSave);
 
         return questionTagRepository.saveAll(haveToSave.values());
     }
+
     private void addQuestionTagsToHaveToSave(Question question, List<HashTag> existsHashTas, Map<String, QuestionTag> haveToSave) {
         List<QuestionTag> questionTagList = mapHashTagsToQuestionTags(question, existsHashTas);
         questionTagList.forEach(questionTag -> haveToSave.put(questionTag.getHashTag().getHashTagName(), questionTag));
     }
-    
+
     private List<HashTag> createNewHashTags(Set<String> newHastTagNames, Map<String, QuestionTag> haveToSave) {
         return createHashTagsWithHashTagNames(newHastTagNames)
                 .stream()
