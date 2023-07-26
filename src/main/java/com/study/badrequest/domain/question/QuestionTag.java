@@ -30,10 +30,10 @@ public class QuestionTag {
     protected QuestionTag(Question question, HashTag hashTag) {
         this.question = question;
         this.hashTag = hashTag;
-        hashTag.incrementUsage();
     }
 
     public static QuestionTag createQuestionTag(Question question, HashTag hashTag) {
+        hashTag.incrementUsage();
         return new QuestionTag(question, hashTag);
     }
 }

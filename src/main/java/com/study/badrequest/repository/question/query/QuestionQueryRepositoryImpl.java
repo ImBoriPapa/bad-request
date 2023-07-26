@@ -167,7 +167,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
      *                   Integer size: 조회당 요청 데이터의 개수입니다.,
      *                   QuestionSortType sort: 조회 정렬 조건입니다.
      * @return QuestionListResult
-     * updated: 2023/5/23
+     * updated: 2023/7/25
      */
     @Override
     public QuestionListResult findQuestionListByCondition(QuestionSearchCondition condition) {
@@ -331,7 +331,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 .join(questionMetrics.question, question);
         final BooleanExpression exposure = questionMetrics.exposure.eq(PUBLIC);
         final OrderSpecifier<Integer> variableSortingCriteria;
-
         final Predicate cursor;
 
         if (sort == VIEW) {
