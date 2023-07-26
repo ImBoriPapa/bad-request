@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 
 import static com.study.badrequest.domain.question.QQuestionMetrics.*;
+import static com.study.badrequest.domain.question.QuestionSortType.*;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
@@ -38,7 +39,7 @@ public class FindQuestionListByConditionTest extends QuestionQueryTestBase {
         //given
         Long lastOfData = null;
         Integer size = null;
-        QuestionSortType sort = QuestionSortType.NEW_EAST;
+        QuestionSortType sort = NEW_EAST;
 
         QuestionSearchCondition condition = new QuestionSearchCondition(lastOfData, size, sort);
         //when
@@ -46,7 +47,7 @@ public class FindQuestionListByConditionTest extends QuestionQueryTestBase {
         //then
         assertThat(result.getSize() == 10).isTrue();
         assertThat(result.getHasNext()).isTrue();
-        assertThat(result.getSortBy() == QuestionSortType.NEW_EAST).isTrue();
+        assertThat(result.getSortBy() == NEW_EAST).isTrue();
         assertThat(result.getLastOfData()).isNotNull();
         assertThat(result.getResults().size() == 10).isTrue();
     }
@@ -57,39 +58,39 @@ public class FindQuestionListByConditionTest extends QuestionQueryTestBase {
         //given
         Long lastOfData = null;
         Integer size = 3;
-        QuestionSortType sort = QuestionSortType.VIEW;
+        QuestionSortType sort = VIEW;
 
         QuestionSearchCondition condition = new QuestionSearchCondition(lastOfData, size, sort);
 
-        Question question1 = questionRepository.findById(10L).get();
-        question1.getQuestionMetrics().incrementCountOfView();
-        question1.getQuestionMetrics().incrementCountOfView();
-        question1.getQuestionMetrics().incrementCountOfView();
 
-        Question question2 = questionRepository.findById(9L).get();
-        question2.getQuestionMetrics().incrementCountOfView();
-        question2.getQuestionMetrics().incrementCountOfView();
+        //when
+        Question 조회수3 = questionRepository.findById(10L).get();
+        조회수3.getQuestionMetrics().incrementCountOfView();
+        조회수3.getQuestionMetrics().incrementCountOfView();
+        조회수3.getQuestionMetrics().incrementCountOfView();
 
-        Question question3 = questionRepository.findById(8L).get();
-        question3.getQuestionMetrics().incrementCountOfView();
+        Question 조회수2 = questionRepository.findById(9L).get();
+        조회수2.getQuestionMetrics().incrementCountOfView();
+        조회수2.getQuestionMetrics().incrementCountOfView();
+
+        Question 조회수1 = questionRepository.findById(8L).get();
+        조회수1.getQuestionMetrics().incrementCountOfView();
 
         entityManager.flush();
         entityManager.clear();
 
-        //when
         QuestionListResult result = questionQueryRepository.findQuestionListByCondition(condition);
 
         //then
         assertThat(result).isNotNull();
+        assertThat(result.getSize() == 3).isTrue();
+        assertThat(result.getLastOfData() == 1L).isTrue();
+        assertThat(result.getSortBy() == VIEW).isTrue();
+        assertThat(result.getHasNext()).isTrue();
         assertThat(result.getResults().size() == 3).isTrue();
-        List<QuestionDto> questionDtos = result.getResults();
-        for (QuestionDto questionDto : questionDtos) {
-            log.info("id: {}",questionDto.getId());
-        }
-        List<Question> all = questionRepository.findAll();
-        for (Question question : all) {
-            log.info("ID: {}, VIEW: {}",question.getId(),question.getQuestionMetrics().getCountOfView());
-        }
+        assertThat(result.getResults().get(0).getId()).isEqualTo(조회수3.getId());
+        assertThat(result.getResults().get(1).getId()).isEqualTo(조회수2.getId());
+        assertThat(result.getResults().get(2).getId()).isEqualTo(조회수1.getId());
     }
 
     @Test
