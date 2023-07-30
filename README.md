@@ -1,15 +1,8 @@
 # Bad-Request
 
-- Bad-Request 프로젝트는 프로그래밍에 대한 질문과 답변 댓글 API를 제공하는  REST API Server 입니다.
+### Bad-Request 프로젝트는 질문 개발자 질문, 답변 커뮤니티 REST API Server
 
-***
-Version: 2.0.0
-- JWT을 사용한 토큰 인증 기반 로그인 API를 제공합니다.
-- OAUTH2를 사용한 Google,Github,Login 로그인 기능을 제공합니다.
-- 질문 게시글, 답변, 댓글의 CRUD API을 제공합니다.
-- 추천과 비추천 API
-
-----
+---
 
 ## 프로젝트 개발 및 운영 인원: 
 #### Backend 
@@ -19,7 +12,7 @@ Version: 2.0.0
 
 ***
 
-## 사용 기술
+## Tech Stacks
 
 - Java 11
 - Spring Boot 2.7.7
@@ -33,42 +26,45 @@ Version: 2.0.0
 
 ***
 
-## 프로젝트 구조
-
-![bad-request Project Architecture](https://user-images.githubusercontent.com/98242564/219410077-ff6967bc-be5f-43e8-8f01-2a9b4e294586.png)
-
-***
-
-## 구현 기능
+## Features
 
 ### Version 1.0
 
-| 기능                                       | 설명                                                                 |
-|------------------------------------------|--------------------------------------------------------------------|
-| 1. 배포 자동화                                | 프로젝트의 자동배포를 하기 위해 jenkins,docker,AWS EC2,Ncloud,GitHub를 사용하여 CI/CD |
-| 2. Spring Security + JWT 토큰 기반 인증 로그인 구현 | Spring security+JWT를 사용한 로그인 기능을 구현하였습니다.                          |
-| 3. Haetoas                               | Spring Haetoas 프로젝트를 사용하여 Haetoas 기능을 구현해 보았습니다.                   |
-| 4. 이미지 업로드                               | AWS S3를 사용한 이미지 파일 저장기능을 구현하였습니다.                                  |
-| 5. 질문,답변,댓글 CRUD                         | 주 기능인 질문,답변,댓글의 CRUD API를 구현했습니다.                                  |
-| 6. API 문서화                               | Spring REST Docs를 사용하여 API문서를 작성하였습니다.                             |
+- **JWT 토큰 기반 로그인 기능 및 로그아웃 기능 구현**
+    - **Refresh Token을 사용한 보안과 사용자 인증을 강화하였습니다.**
+    - **Redis를 사용하여 인증 정보를 분리하여 RDBMS의 I/O 작업을 최소화**
+- **Jenkins와 Docker를 사용하여 Pipeline을 통한 자동 배포 구현**
+- **Spring Rest Docs를 사용하여 end-point Test 및 API 문서 제공**
+    - **엔드포인트 테스트를 용이하게 하고 사용자 및 개발자들에게 포괄적인 API 문서를 제공**
+- **질문 게시글, 답변글, 댓글 CRUD API 구현**
+    - **조회 로직을 분리하기 위해 Command Query Separation(CQS)을 적용하여 유지보수성 향상**
+- **EventListener를 활용한 Service Layer의 의존성의 분리**
+    - **코드 모듈성과 테스트 용이성을 개선하였습니다.**
+- **쿼리 실행 계획을 확인하여 질문 게시글 조회수 및 추천 수 정렬 조회 최적화**
 
-### Version 2.0 - 구현중
+### Version 2.0 - Dev
+- 회원 활동 내용 | 회원의 활동 내용을 저장 및 확인하는 기능을 구현하였습니다.
+- 블로그 API  | 간단한 블로그 기능을 구현중입니다.               
 
-| 기능          | 설명                                |
-|-------------|-----------------------------------|
-| 1. 회원 활동 내용 | 회원의 활동 내용을 저장 및 확인하는 기능을 구현하였습니다. |
-| 2. 블로그 API  | 간단한 블로그 기능을 구현중입니다.               |
+## [Show API Docs](https://www.bad-request.kr/docs/index.html)
 
-## Troubleshootings
-[트러블 슈팅 문서 보기](https://github.com/ImBoriPapa/study-note/tree/main/troubleshooting/bad-request%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8)
-1. Builder 패턴과 정적 팩토리 메서드 패턴을 활용한 엔티티 생성
-2. EventListener를 활용한 Service Layer의 의존성과 관심사의 분리
-3. 사용자 정의 예외클래스와 Enum을 활용한 에러응답
-4. CI/CD 구축
-*** 
+---
 
-## [API 문서 보기](https://www.bad-request.kr/docs/index.html)
+## Project Architecture
+
+![bad-request Project Architecture](https://user-images.githubusercontent.com/98242564/219410077-ff6967bc-be5f-43e8-8f01-2a9b4e294586.png)
+
+### **Functional Flow Diagrams**
+
+1. **Login and Request/Response Flow**
+![로그인](https://github.com/ImBoriPapa/bori-market/assets/98242564/40ee8bb4-bc5d-4e4e-b0c6-9566262a6c2b)
+
+3. **Reissuing JWT Token & Request-Response Flow**
+![토큰 갱신](https://github.com/ImBoriPapa/bori-market/assets/98242564/62194eb6-88e5-4485-acda-cd004c7bf40c)
+
 ***
 
 ## ERD
-![bad-requestERD](https://github.com/ImBoriPapa/study-note/assets/98242564/e0a34e54-07a7-4f7c-95b0-2c4608cd0558)
+![erd](https://github.com/ImBoriPapa/bori-market/assets/98242564/c9bb0210-7260-4280-927b-aa6858de533f)
+
+
