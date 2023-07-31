@@ -32,9 +32,8 @@ public class QuestionApiController {
     private final QuestionModelAssembler modelAssembler;
 
     @PostMapping(value = QUESTION_BASE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity create(@RequestBody @Valid QuestionRequest.Create form,
-                                 BindingResult bindingResult,
-                                 @LoggedInMember CurrentMember.Information information) {
+    public ResponseEntity createQuestion(@RequestBody @Valid QuestionRequest.Create form, BindingResult bindingResult,
+                                         @LoggedInMember CurrentMember.Information information) {
         log.info("Question Create Request");
 
         if (bindingResult.hasErrors()) {

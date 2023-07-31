@@ -47,7 +47,7 @@ public class QuestionModelAssembler {
 
     public EntityModel<QuestionResponse.Create> createCreateModel(QuestionResponse.Create response) {
         List<Link> links = List.of(
-                linkTo(methodOn(QuestionApiController.class).create(null, null, null)).withSelfRel(),
+                linkTo(methodOn(QuestionApiController.class).createQuestion(null, null, null)).withSelfRel(),
                 linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(response.getId(), null, null, null)).withRel("detail"),
                 linkTo(methodOn(QuestionApiController.class).modify(response.getId(), null, null)).withRel("modify"),
                 linkTo(methodOn(QuestionApiController.class).delete(response.getId(), null)).withRel("delete")

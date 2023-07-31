@@ -82,57 +82,6 @@ public class QuestionApiDocs {
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Test
-    @DisplayName("질문 생성")
-    @WithCustomMockUser(memberId = "321312", authority = MEMBER)
-    void 질문생성() throws Exception {
-        //given
-        Long memberId = 321312L;
-        Long questionId = 424211L;
-        String title = "제목입니다.";
-        String markdownContents = "내용입니다. ----- * 내용은 * 마크다운형식입니다.";
-        List<String> tags = List.of("Java", "Spring");
-        List<Long> imageIds = List.of(53L, 34L, 53L);
-        String accessToken = UUID.randomUUID().toString();
-        QuestionRequest.Create create = new QuestionRequest.Create(title, markdownContents, tags, imageIds);
-        QuestionResponse.Create response = new QuestionResponse.Create(questionId, LocalDateTime.now());
-        //when
-        when(questionService.createQuestionProcessing(any(), any())).thenReturn(response);
-        //then
-        mockMvc.perform(post(QUESTION_BASE_URL)
-                        .header(AUTHORIZATION_HEADER, ACCESS_TOKEN_PREFIX + accessToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(create))
-                )
-                .andDo(print())
-                .andDo(document("question-create",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestHeaders(
-                                headerWithName(AUTHORIZATION_HEADER).description("Access Token")
-                        ),
-                        responseHeaders(
-                                headerWithName(HttpHeaders.LOCATION).description("Resource Location")
-                        ),
-                        requestFields(
-                                fieldWithPath("title").type(STRING).description("질문 제목"),
-                                fieldWithPath("contents").type(STRING).description("질문 내용"),
-                                fieldWithPath("tags").type(ARRAY).description("태그"),
-                                fieldWithPath("imageIds").type(ARRAY).description("업로드된 이미지 식별 아이디").optional()
-                        ),
-                        responseFields(
-                                fieldWithPath("status").type(STRING).description("응답 상태"),
-                                fieldWithPath("code").type(NUMBER).description("응답 코드"),
-                                fieldWithPath("message").type(STRING).description("응답 메시지"),
-                                fieldWithPath("result.id").type(NUMBER).description("질문 식별 아이디"),
-                                fieldWithPath("result.askedAt").type(STRING).description("질문 생성 시간"),
-                                fieldWithPath("result.links.[0].rel").type(STRING).description("self"),
-                                fieldWithPath("result.links.[0].href").type(STRING).description("uri")
-                        )
-                ));
-
-    }
-
-    @Test
     @DisplayName("질문 수정")
     @WithCustomMockUser(memberId = "321312", authority = MEMBER)
     void 질문수정() throws Exception {

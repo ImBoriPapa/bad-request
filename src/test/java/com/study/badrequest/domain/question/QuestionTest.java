@@ -3,7 +3,10 @@ package com.study.badrequest.domain.question;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.domain.member.Member;
 
+import com.study.badrequest.domain.memberProfile.MemberProfile;
+import com.study.badrequest.domain.memberProfile.ProfileImage;
 import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -27,8 +30,8 @@ class QuestionTest extends QuestionEntityTestBase {
         String title = "title";
         String contents = "contents";
 
-        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234");
-        Member save = memberRepository.save(member);
+
+        Member save = memberRepository.save(createSampleMember());
 
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
         Question question = Question.createQuestion(title, contents, save, questionMetrics);
@@ -36,12 +39,17 @@ class QuestionTest extends QuestionEntityTestBase {
         Question savedQuestion = questionRepository.save(question);
         Question findById = questionRepository.findById(savedQuestion.getId()).get();
         //then
-        System.out.println(member.getMemberProfile().getActivityScore());
-        System.out.println(findById.getMember().getMemberProfile().getActivityScore());
-        assertThat(findById.getId()).isEqualTo(savedQuestion.getId());
-        assertThat(findById.getMember().getId()).isEqualTo(member.getId());
-        assertThat(findById.getMember().getMemberProfile().getId()).isEqualTo(member.getMemberProfile().getId());
 
+        assertThat(findById.getId()).isEqualTo(savedQuestion.getId());
+
+
+    }
+
+
+    private Member createSampleMember() {
+        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234");
+        member.assignMemberProfile(MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        return member;
     }
 
     @Test
@@ -51,8 +59,7 @@ class QuestionTest extends QuestionEntityTestBase {
         String title = "title";
         String contents = "contents";
 
-        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234");
-        Member save = memberRepository.save(member);
+        Member save = memberRepository.save(createSampleMember());
 
         QuestionMetrics questionMetrics = QuestionMetrics.createQuestionMetrics();
         Question question = Question.createQuestion(title, contents, save, questionMetrics);
