@@ -19,7 +19,9 @@ public class GlobalExceptionAdvisor {
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ApiResponse.Error> handleException(HttpServletRequest request, Exception e) {
-        log.info("handle exception Request -> method: {}, uri:{}, message: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
+
+        final String message = e.getMessage() == null ? "메시지 없음" : e.getMessage();
+        log.info("handle exception Request -> method: {}, uri:{}, message: {}", request.getMethod(), request.getRequestURI(), message);
 
         return ResponseEntity
                 .internalServerError()

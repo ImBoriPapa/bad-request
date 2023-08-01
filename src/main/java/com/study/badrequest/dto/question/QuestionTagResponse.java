@@ -16,4 +16,12 @@ public class QuestionTagResponse {
         private List<Long> questionTagIds;
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class Add {
+        private Long questionTagId;
+
+    }
+
 }

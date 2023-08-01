@@ -12,10 +12,11 @@ import java.util.Collection;
 
 @Getter
 public class CurrentMember extends User {
-    private  Information information;
+    private final Information information;
+
     public CurrentMember(String username, Long id, Collection<? extends GrantedAuthority> authorities) {
         super(username, "", authorities);
-        this.information = new Information(id,username, Authority.getAuthorityByAuthorities(authorities));
+        this.information = new Information(id, username, Authority.getAuthorityByAuthorities(authorities));
     }
 
     @NoArgsConstructor

@@ -1,5 +1,6 @@
 package com.study.badrequest.service.question;
 
+import com.study.badrequest.commons.status.ExposureStatus;
 import com.study.badrequest.domain.hashTag.HashTag;
 import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.domain.question.QuestionTag;
@@ -126,10 +127,15 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
     }
 
+    @Override
     @Transactional
-    public void addQuestionTag(Long questionId, String questionTag) {
-        log.info("질문 태그 추가 시작");
+    public QuestionTagResponse.Add addQuestionTagProcessing(Long questionId, String questionTag) {
+        log.info("addQuestionTagProcessing");
         Question question = getQuestion(questionId);
+
+        if (question.getExposure() == ExposureStatus.DELETE) {
+            throw CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION);
+        }
 
         String hashTag = HashTagUtils.stringToHashTagString(questionTag);
 
@@ -139,6 +145,8 @@ public class QuestionTagServiceImpl implements QuestionTagService {
                 .orElseGet(() -> QuestionTag.createQuestionTag(question, HashTag.createHashTag(hashTag)));
 
         questionTagRepository.save(newQuestionTag);
+
+        return null;
     }
 
     @Transactional
