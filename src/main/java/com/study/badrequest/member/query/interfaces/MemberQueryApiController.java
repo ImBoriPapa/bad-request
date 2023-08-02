@@ -1,6 +1,6 @@
 package com.study.badrequest.member.query.interfaces;
 
-import com.study.badrequest.api.login.LoginController;
+import com.study.badrequest.member.command.interfaces.LoginController;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;

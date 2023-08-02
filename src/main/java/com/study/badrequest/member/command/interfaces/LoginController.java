@@ -1,4 +1,4 @@
-package com.study.badrequest.api.login;
+package com.study.badrequest.member.command.interfaces;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;

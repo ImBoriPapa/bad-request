@@ -1,4 +1,4 @@
-package com.study.badrequest.api.blog;
+package com.study.badrequest.blog.command.interfaces;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

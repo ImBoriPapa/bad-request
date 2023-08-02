@@ -1,10 +1,12 @@
-package com.study.badrequest.answer.query;
+package com.study.badrequest.answer.query.dao;
 
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.study.badrequest.answer.query.dto.AnswerDto;
+import com.study.badrequest.answer.query.dto.AnswerResult;
 import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.answer.command.domain.AnswerRecommendation;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;

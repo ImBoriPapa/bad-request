@@ -1,4 +1,4 @@
-package com.study.badrequest.api.admin;
+package com.study.badrequest.admin.query.interfaces;
 
 
 import com.study.badrequest.common.response.ApiResponseStatus;

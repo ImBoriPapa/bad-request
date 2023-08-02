@@ -1,6 +1,6 @@
 package com.study.badrequest.api_docs;
 
-import com.study.badrequest.api.login.LoginController;
+import com.study.badrequest.member.command.interfaces.LoginController;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;

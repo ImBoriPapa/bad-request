@@ -1,4 +1,4 @@
-package com.study.badrequest.answer.query;
+package com.study.badrequest.answer.query.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;

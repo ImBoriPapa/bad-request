@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.modelAssembler;
 
-import com.study.badrequest.api.login.LoginController;
+import com.study.badrequest.member.command.interfaces.LoginController;
 import com.study.badrequest.member.command.interfaces.MemberAccountApiController;
 import com.study.badrequest.member.command.interfaces.MemberProfileApiController;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;

@@ -1,9 +1,9 @@
-package com.study.badrequest.api.answer;
+package com.study.badrequest.answer.query.interfaces;
 
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.answer.query.AnswerQueryRepositoryImpl;
-import com.study.badrequest.answer.query.AnswerResult;
-import com.study.badrequest.answer.query.AnswerSearchCondition;
+import com.study.badrequest.answer.query.dao.AnswerQueryRepositoryImpl;
+import com.study.badrequest.answer.query.dto.AnswerResult;
+import com.study.badrequest.answer.query.dto.AnswerSearchCondition;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

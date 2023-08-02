@@ -1,5 +1,6 @@
-package com.study.badrequest.answer.query;
+package com.study.badrequest.answer.query.dto;
 
+import com.study.badrequest.answer.query.dto.AnswerDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

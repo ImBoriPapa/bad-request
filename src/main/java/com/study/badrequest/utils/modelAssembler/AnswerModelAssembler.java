@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.modelAssembler;
 
-import com.study.badrequest.api.answer.AnswerApiController;
+import com.study.badrequest.answer.command.interfaces.AnswerApiController;
 import com.study.badrequest.dto.answer.AnswerResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

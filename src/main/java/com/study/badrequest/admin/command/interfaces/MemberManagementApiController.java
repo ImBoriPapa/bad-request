@@ -1,4 +1,4 @@
-package com.study.badrequest.api.admin;
+package com.study.badrequest.admin.command.interfaces;
 
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;

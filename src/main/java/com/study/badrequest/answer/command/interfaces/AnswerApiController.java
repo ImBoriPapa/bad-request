@@ -1,5 +1,6 @@
-package com.study.badrequest.api.answer;
+package com.study.badrequest.answer.command.interfaces;
 
+import com.study.badrequest.answer.query.interfaces.AnswerQueryApiController;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
@@ -10,6 +11,7 @@ import com.study.badrequest.answer.command.application.AnswerService;
 import com.study.badrequest.utils.modelAssembler.AnswerModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -41,7 +43,7 @@ public class AnswerApiController {
         AnswerResponse.Register register = answerService.createAnswer(information.getId(), questionId, request);
 
         return ResponseEntity
-                .created(linkTo(methodOn(AnswerQueryApiController.class).getAnswers(questionId,null)).toUri())
+                .created(WebMvcLinkBuilder.linkTo(methodOn(AnswerQueryApiController.class).getAnswers(questionId,null)).toUri())
                 .body(ApiResponse.success(modelAssembler.createAnswerRegisterModel(questionId, register)));
     }
 

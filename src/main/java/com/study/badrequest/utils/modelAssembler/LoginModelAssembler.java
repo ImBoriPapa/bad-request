@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.modelAssembler;
 
-import com.study.badrequest.api.login.LoginController;
+import com.study.badrequest.member.command.interfaces.LoginController;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 import com.study.badrequest.dto.login.LoginResponse;
 import org.springframework.hateoas.EntityModel;

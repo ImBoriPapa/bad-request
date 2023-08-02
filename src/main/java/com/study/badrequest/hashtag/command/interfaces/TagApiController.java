@@ -1,4 +1,4 @@
-package com.study.badrequest.api.tag;
+package com.study.badrequest.hashtag.command.interfaces;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.study.badrequest.api.image;
+package com.study.badrequest.image.command.interfaces;
 
 
 import com.study.badrequest.common.response.ApiResponse;
