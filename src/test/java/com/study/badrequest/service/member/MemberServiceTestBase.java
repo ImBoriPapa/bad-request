@@ -4,7 +4,7 @@ import com.study.badrequest.member.command.application.MemberServiceImpl;
 import com.study.badrequest.member.command.domain.EmailAuthenticationCodeRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
-import com.study.badrequest.utils.image.ImageUploader;
+import com.study.badrequest.image.command.infra.ImageUploader;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;

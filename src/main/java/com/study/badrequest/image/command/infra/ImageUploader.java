@@ -1,4 +1,4 @@
-package com.study.badrequest.utils.image;
+package com.study.badrequest.image.command.infra;
 
 
 import org.springframework.web.multipart.MultipartFile;

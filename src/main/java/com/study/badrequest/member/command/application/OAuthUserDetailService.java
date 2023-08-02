@@ -11,7 +11,7 @@ import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.member.command.domain.RegistrationType;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.utils.email.EmailUtils;
-import com.study.badrequest.utils.image.S3ImageUploader;
+import com.study.badrequest.image.command.infra.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

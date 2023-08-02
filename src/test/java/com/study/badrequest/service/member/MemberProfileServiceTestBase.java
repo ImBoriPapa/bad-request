@@ -2,7 +2,7 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.member.command.application.MemberProfileServiceImpl;
 import com.study.badrequest.member.command.domain.MemberRepository;
-import com.study.badrequest.utils.image.ImageUploader;
+import com.study.badrequest.image.command.infra.ImageUploader;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;

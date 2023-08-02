@@ -1,4 +1,4 @@
-package com.study.badrequest.utils.image;
+package com.study.badrequest.image.command.infra;
 
 
 

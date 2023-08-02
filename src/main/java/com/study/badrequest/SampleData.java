@@ -15,7 +15,7 @@ import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.answer.command.application.AnswerServiceImpl;
 import com.study.badrequest.question.command.application.QuestionService;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
-import com.study.badrequest.utils.image.S3ImageUploader;
+import com.study.badrequest.image.command.infra.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
