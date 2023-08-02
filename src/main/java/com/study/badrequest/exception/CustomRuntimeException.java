@@ -32,6 +32,10 @@ public class CustomRuntimeException extends RuntimeException {
         return new CustomRuntimeException(status.getHttpStatus(), status.name(), status.getCode(), status.getMessage());
     }
 
+    public static CustomRuntimeException createWithApiResponseStatusAndMessage(ApiResponseStatus status,String message) {
+        return new CustomRuntimeException(status.getHttpStatus(), status.name(), status.getCode(), message);
+    }
+
     public static CustomRuntimeException createWithBindingResults(ApiResponseStatus status, BindingResult bindingResult) {
         return new CustomRuntimeException(status.getHttpStatus(), status.name(), status.getCode(), extractErrorMessageFromBindingResults(bindingResult));
     }

@@ -72,7 +72,7 @@ public class Member {
         this.deletedAt = deletedAt;
     }
 
-    public static Member createWithEmail(String email, String password, String contact) {
+    public static Member createWithEmail(String email, String password, String contact,MemberProfile memberProfile) {
 
         Member member = Member.builder()
                 .email(email)
@@ -86,7 +86,7 @@ public class Member {
                 .updatedAt(null)
                 .deletedAt(null)
                 .build();
-
+        member.assignMemberProfile(memberProfile);
         member.generateDateTimeIndex();
         member.generateAuthenticationCode();
 
@@ -114,6 +114,10 @@ public class Member {
         return member;
     }
 
+    public boolean isActive(){
+        return this.accountStatus != AccountStatus.WITHDRAWN;
+    }
+
     public void withdrawn() {
         this.deletedAt = LocalDateTime.now();
         this.changeStatus(AccountStatus.WITHDRAWN);
@@ -129,7 +133,7 @@ public class Member {
         this.changeStatus(AccountStatus.USING_NOT_CONFIRMED_EMAIL);
     }
 
-    public void assignMemberProfile(MemberProfile memberProfile) {
+    private void assignMemberProfile(MemberProfile memberProfile) {
         this.memberProfile = memberProfile;
     }
 

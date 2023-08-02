@@ -3,15 +3,9 @@ package com.study.badrequest.member.command.application;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
-import com.study.badrequest.member.command.domain.MemberEventDto;
+import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.exception.CustomRuntimeException;
 
-import com.study.badrequest.member.command.domain.EmailAuthenticationCode;
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.member.command.domain.TemporaryPassword;
-import com.study.badrequest.member.command.domain.EmailAuthenticationCodeRepository;
-import com.study.badrequest.member.command.domain.MemberRepository;
-import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
 import com.study.badrequest.utils.email.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
 
         emailAuthenticationProcessing(email, emailAuthenticationCode);
 
-        return memberRepository.save(Member.createWithEmail(email, encodedPassword, contact)).getId();
+        return memberRepository.save(Member.createWithEmail(email, encodedPassword, contact, MemberProfile.createMemberProfile("", ProfileImage.createDefaultImage("")))).getId();
 
     }
 

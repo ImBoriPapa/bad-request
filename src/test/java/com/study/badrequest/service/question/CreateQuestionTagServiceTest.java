@@ -153,7 +153,7 @@ class CreateQuestionTagServiceTest extends QuestionTagServiceTestBase {
     private List<HashTag> createExistsHashTags() {
         HashTag hashTag4 = HashTag.createHashTag("#tag4");
         HashTag hashTag5 = HashTag.createHashTag("#tag5");
-        return List.of(hashTag4,hashTag5);
+        return List.of(hashTag4, hashTag5);
     }
 
 
@@ -178,8 +178,6 @@ class CreateQuestionTagServiceTest extends QuestionTagServiceTestBase {
 
 
     private Member createSampleMember() {
-        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01011111234");
-        member.assignMemberProfile(MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
-        return member;
+        return Member.createWithEmail("email@email.com", "password1234!@", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
     }
 }

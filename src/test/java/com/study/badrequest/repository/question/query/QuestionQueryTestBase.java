@@ -64,7 +64,7 @@ public class QuestionQueryTestBase {
     }
 
     public void createSampleQuestion(int numberOfQuestions) {
-        log.info("Create {} Sample Questions ",numberOfQuestions);
+        log.info("Create {} Sample Questions ", numberOfQuestions);
         List<Member> sampleMembers = createSampleMembers();
         List<Question> list = new ArrayList<>();
 
@@ -101,8 +101,8 @@ public class QuestionQueryTestBase {
         Member member = Member.createWithEmail(
                 "sample" + index + "@gmail.com",
                 "sample1234!@",
-                "010" + new Random().nextInt(10000000) + 1);
-        member.assignMemberProfile(MemberProfile.createMemberProfile("nickname" + index, ProfileImage.createDefaultImage("image")));
+                "010" + new Random().nextInt(10000000) + 1, MemberProfile.createMemberProfile("nickname" + index, ProfileImage.createDefaultImage("image")));
+        ;
         return member;
     }
 }

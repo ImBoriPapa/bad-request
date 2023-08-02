@@ -46,8 +46,8 @@ class QuestionTest extends QuestionEntityTestBase {
 
 
     private Member createSampleMember() {
-        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234");
-        member.assignMemberProfile(MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createWithEmail("email@email.com", "password1234!@", "01012341234",MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+
         return member;
     }
 

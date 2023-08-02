@@ -47,7 +47,7 @@ public class ModifyQuestionTest extends QuestionServiceTestBase {
         Long memberId = 123L;
         Long questionId = 1324L;
         QuestionRequest.Modify request = new QuestionRequest.Modify();
-        Member member = Member.createWithEmail("email@email.com", "password", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password", "01012341234",MemberProfile.createMemberProfile("",ProfileImage.createDefaultImage("")));
 
         Question question = Question.createQuestion("", "", member, QuestionMetrics.createQuestionMetrics());
 
@@ -68,9 +68,9 @@ public class ModifyQuestionTest extends QuestionServiceTestBase {
         Long questionId = 1324L;
         QuestionRequest.Modify request = new QuestionRequest.Modify("New Title", "New Contents", List.of(1L, 2L, 3L));
 
-        Member questioner = Member.createWithEmail("email@email.com", "password", "01012341234");
-        questioner.assignMemberProfile(MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
-        Member requester = Member.createWithEmail("email@email.com", "password", "01012341234");
+        Member questioner = Member.createWithEmail("email@email.com", "password", "01012341234",MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+
+        Member requester = Member.createWithEmail("email@email.com", "password", "01012341234",MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         Question question = Question.createQuestion("title", "contents", questioner, QuestionMetrics.createQuestionMetrics());
         //when

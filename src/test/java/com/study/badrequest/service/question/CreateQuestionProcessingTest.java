@@ -120,8 +120,7 @@ class CreateQuestionProcessingTest extends QuestionServiceTestBase {
         final String contact = "01012341234";
         final String nickname = "nickname";
         final String defaultImage = "defaultImage";
-        Member member = Member.createWithEmail(email, password, contact);
-        member.assignMemberProfile(MemberProfile.createMemberProfile(nickname, ProfileImage.createDefaultImage(defaultImage)));
+        Member member = Member.createWithEmail(email, password, contact,MemberProfile.createMemberProfile(nickname, ProfileImage.createDefaultImage(defaultImage)));
         return member;
     }
 }
