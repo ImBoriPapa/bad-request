@@ -1,13 +1,13 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.recommendation.Recommendation;
-import com.study.badrequest.domain.recommendation.RecommendationKind;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.recommandation.command.domain.Recommendation;
+import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.repository.reommendation.RecommendationRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;

@@ -1,17 +1,17 @@
 package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.api.question.QuestionApiController;
-import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.question.QuestionSortType;
-import com.study.badrequest.domain.recommendation.RecommendationKind;
+import com.study.badrequest.question.command.interfaces.QuestionApiController;
+import com.study.badrequest.question.query.interfaces.QuestionQueryApiController;
+import com.study.badrequest.question.command.domain.QuestionSortType;
+import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.repository.question.query.QuestionDetail;
-import com.study.badrequest.repository.question.query.TagDto;
-import com.study.badrequest.repository.question.query.QuestionDto;
-import com.study.badrequest.repository.question.query.QuestionListResult;
+import com.study.badrequest.question.query.QuestionDetail;
+import com.study.badrequest.question.query.TagDto;
+import com.study.badrequest.question.query.QuestionDto;
+import com.study.badrequest.question.query.QuestionListResult;
 import com.study.badrequest.service.question.QuestionMetricsService;
 import com.study.badrequest.service.question.QuestionQueryService;
 import com.study.badrequest.service.question.QuestionService;
@@ -27,7 +27,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import org.springframework.test.context.ActiveProfiles;
@@ -40,7 +39,7 @@ import java.util.UUID;
 import static com.study.badrequest.commons.constants.ApiURL.*;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
-import static com.study.badrequest.domain.member.Authority.*;
+import static com.study.badrequest.member.command.domain.Authority.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;

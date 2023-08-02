@@ -1,10 +1,11 @@
 package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.*;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
+import com.study.badrequest.member.command.domain.EmailAuthenticationCode;
+import com.study.badrequest.member.command.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,6 +1,6 @@
 package com.study.badrequest.handler;
 
-import com.study.badrequest.domain.login.MemberPrincipal;
+import com.study.badrequest.member.command.domain.MemberPrincipal;
 import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
 import com.study.badrequest.service.login.LoginService;
 import com.study.badrequest.utils.cookie.CookieUtils;

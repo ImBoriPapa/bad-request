@@ -2,11 +2,9 @@ package com.study.badrequest.exception;
 
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.repository.member.MemberRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

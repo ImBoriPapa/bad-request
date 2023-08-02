@@ -1,16 +1,13 @@
 package com.study.badrequest.api.question;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,7 +22,7 @@ import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
-import static com.study.badrequest.domain.member.Authority.MEMBER;
+import static com.study.badrequest.member.command.domain.Authority.MEMBER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;

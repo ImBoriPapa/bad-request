@@ -1,10 +1,8 @@
 package com.study.badrequest.dto.record;
 
 
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.record.ActionStatus;
+import com.study.badrequest.record.command.domain.ActionStatus;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

@@ -3,18 +3,18 @@ package com.study.badrequest.repository.question.query;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionSortType;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.domain.QuestionSortType;
+import com.study.badrequest.question.query.QuestionListResult;
+import com.study.badrequest.question.query.QuestionSearchCondition;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static com.study.badrequest.domain.question.QQuestionMetrics.*;
-import static com.study.badrequest.domain.question.QuestionSortType.*;
+import static com.study.badrequest.question.command.domain.QuestionSortType.*;
 import static org.assertj.core.api.Assertions.*;
 
 @Slf4j

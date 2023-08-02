@@ -1,8 +1,8 @@
 package com.study.badrequest.service.question;
 
 import com.study.badrequest.repository.hashTag.HashTagRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
-import com.study.badrequest.repository.question.QuestionTagRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
+import com.study.badrequest.question.command.domain.QuestionTagRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 

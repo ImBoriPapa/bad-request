@@ -1,17 +1,17 @@
 package com.study.badrequest;
 
 
-import com.study.badrequest.domain.hashTag.HashTag;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.hashtag.command.domain.HashTag;
+import com.study.badrequest.member.command.domain.Member;
 
-import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.dto.question.QuestionRequest;
 
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.repository.hashTag.HashTagRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.service.answer.AnswerServiceImpl;
 import com.study.badrequest.service.question.QuestionService;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;

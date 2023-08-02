@@ -1,11 +1,10 @@
 package com.study.badrequest.service.login;
 
-import com.study.badrequest.aop.annotation.CustomLogTracer;
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.login.MemberPrincipal;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.member.command.domain.MemberPrincipal;
+import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

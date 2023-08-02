@@ -1,8 +1,8 @@
 package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.badrequest.api.member.MemberProfileApiController;
-import com.study.badrequest.domain.login.CurrentMember;
+import com.study.badrequest.member.command.interfaces.MemberProfileApiController;
+import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
@@ -32,7 +32,7 @@ import static com.study.badrequest.commons.constants.ApiURL.PATCH_MEMBER_NICKNAM
 import static com.study.badrequest.commons.constants.ApiURL.PATCH_MEMBER_PROFILE_IMAGE;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
-import static com.study.badrequest.domain.member.Authority.MEMBER;
+import static com.study.badrequest.member.command.domain.Authority.MEMBER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;

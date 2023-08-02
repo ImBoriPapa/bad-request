@@ -3,20 +3,20 @@ package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.study.badrequest.api.member.MemberAccountApiController;
+import com.study.badrequest.member.command.interfaces.MemberAccountApiController;
 
-import com.study.badrequest.api.member.MemberQueryApiController;
-import com.study.badrequest.domain.login.CurrentMember;
-import com.study.badrequest.domain.member.RegistrationType;
+import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
+import com.study.badrequest.member.command.domain.CurrentMember;
+import com.study.badrequest.member.command.domain.RegistrationType;
 
 
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 
-import com.study.badrequest.repository.member.MemberQueryRepository;
-import com.study.badrequest.repository.member.query.LoggedInMemberInformation;
-import com.study.badrequest.service.member.MemberService;
+import com.study.badrequest.member.query.MemberQueryRepository;
+import com.study.badrequest.member.query.LoggedInMemberInformation;
+import com.study.badrequest.member.command.application.MemberService;
 import com.study.badrequest.service.member.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
@@ -44,13 +44,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 
-import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.study.badrequest.domain.member.Authority.*;
+import static com.study.badrequest.member.command.domain.Authority.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static com.study.badrequest.commons.constants.ApiURL.*;
@@ -147,19 +145,12 @@ public class MemberApiDocs {
         String password = "password1234!@";
         String nickname = "마스터오브자바";
         String contact = "01012341234";
-        URI locationUri = URI.create("/members/123");
-        MemberResponse.Create createForm = new MemberResponse.Create(12324L, LocalDateTime.now());
-        List<Link> links = List.of(
-                Link.of("https://www.bad-request.kr/api/v2/members", "self"),
-                Link.of("https://www.bad-request.kr/api/v2/login", "login")
-        );
-        EntityModel<MemberResponse.Create> entityModel = EntityModel.of(createForm, links);
+        Long memberId = 12324L;
+
         //when
         MemberRequest.SignUp signUpForm = new MemberRequest.SignUp(email, password, nickname, contact, "938304");
-        given(memberService.signupMemberProcessingByEmail(any(),any())).willReturn(createForm);
+        given(memberService.signUpWithEmail(any())).willReturn(memberId);
 
-        given(memberResponseModelAssembler.getLocationUri(any())).willReturn(locationUri);
-        given(memberResponseModelAssembler.createMemberModel(any())).willReturn(entityModel);
         //then
         mockMvc.perform(post(POST_MEMBER_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -188,7 +179,6 @@ public class MemberApiDocs {
                         )
                 ));
     }
-
 
 
     @Test

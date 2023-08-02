@@ -2,9 +2,9 @@ package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.status.JwtStatus;
-import com.study.badrequest.domain.login.RefreshToken;
-import com.study.badrequest.domain.member.Authority;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.member.command.domain.RefreshToken;
+import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;

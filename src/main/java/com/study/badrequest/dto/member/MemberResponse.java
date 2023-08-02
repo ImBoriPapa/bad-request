@@ -1,7 +1,7 @@
 package com.study.badrequest.dto.member;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.member.command.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.study.badrequest.repository.blog;
 
-import com.study.badrequest.domain.blog.Blog;
+import com.study.badrequest.bolg.command.domain.Blog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

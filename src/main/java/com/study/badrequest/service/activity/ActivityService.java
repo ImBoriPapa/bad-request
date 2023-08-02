@@ -1,7 +1,7 @@
 package com.study.badrequest.service.activity;
 
-import com.study.badrequest.domain.activity.ActivityAction;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.active.command.domain.ActivityAction;
+import com.study.badrequest.member.command.domain.Member;
 
 import java.time.LocalDateTime;
 

@@ -2,10 +2,10 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.login.CurrentMember;
+import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.question.query.*;
+import com.study.badrequest.question.query.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

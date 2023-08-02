@@ -1,15 +1,13 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.domain.hashTag.HashTag;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
-import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionMetrics;
-import com.study.badrequest.domain.question.QuestionTag;
+import com.study.badrequest.hashtag.command.domain.HashTag;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.domain.QuestionMetrics;
+import com.study.badrequest.question.command.domain.QuestionTag;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.utils.hash_tag.HashTagUtils;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

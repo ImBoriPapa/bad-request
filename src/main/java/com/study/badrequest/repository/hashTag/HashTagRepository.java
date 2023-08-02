@@ -1,7 +1,7 @@
 package com.study.badrequest.repository.hashTag;
 
 
-import com.study.badrequest.domain.hashTag.HashTag;
+import com.study.badrequest.hashtag.command.domain.HashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.study.badrequest.repository.reommendation;
 
-import com.study.badrequest.domain.recommendation.Recommendation;
+import com.study.badrequest.recommandation.command.domain.Recommendation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,12 +1,14 @@
 package com.study.badrequest.service.member;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.*;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 
+import com.study.badrequest.member.command.application.SignUpForm;
+import com.study.badrequest.member.command.domain.EmailAuthenticationCode;
+import com.study.badrequest.member.command.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +39,15 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
-        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
+
+        SignUpForm signUpForm = SignUpForm.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .contact(contact)
+                .authenticationCode(authenticationCode)
+                .ipAddress(ipAddress)
+                .build();
 
         Member activeMember = Member.createWithEmail(email, password, contact);
 
@@ -45,7 +55,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(members);
         //then
-        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signUpWithEmail(signUpForm))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.DUPLICATE_EMAIL.getMessage());
     }
@@ -60,7 +70,15 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
-        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
+
+        SignUpForm signUpForm = SignUpForm.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .contact(contact)
+                .authenticationCode(authenticationCode)
+                .ipAddress(ipAddress)
+                .build();
 
         Member member = Member.createWithEmail(email, password, contact);
         List<Member> members = List.of(member);
@@ -68,7 +86,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(members);
         //then
-        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signUpWithEmail(signUpForm))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.DUPLICATE_CONTACT.getMessage());
     }
@@ -83,14 +101,22 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
-        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
+
+        SignUpForm signUpForm = SignUpForm.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .contact(contact)
+                .authenticationCode(authenticationCode)
+                .ipAddress(ipAddress)
+                .build();
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.empty());
         //then
-        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signUpWithEmail(signUpForm))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOTFOUND_AUTHENTICATION_EMAIL.getMessage());
         verify(emailAuthenticationCodeRepository).findByEmail(email);
@@ -108,14 +134,23 @@ class MemberSignUpTest extends MemberServiceTestBase {
 
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         String authenticationCode = code.getCode() + 313;
-        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, authenticationCode);
+
+        SignUpForm signUpForm = SignUpForm.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .contact(contact)
+                .authenticationCode(authenticationCode)
+                .ipAddress(ipAddress)
+                .build();
+
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
         //then
-        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signUpWithEmail(signUpForm))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.WRONG_EMAIL_AUTHENTICATION_CODE.getMessage());
     }
@@ -132,7 +167,16 @@ class MemberSignUpTest extends MemberServiceTestBase {
 
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         code.changeExpiredAt(LocalDateTime.now().minusSeconds(1));
-        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, code.getCode());
+
+        SignUpForm signUpForm = SignUpForm.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .contact(contact)
+                .authenticationCode(code.getCode())
+                .ipAddress(ipAddress)
+                .build();
+
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -140,7 +184,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
 
         //then
-        assertThatThrownBy(() -> memberService.signupMemberProcessingByEmail(form, ipAddress))
+        assertThatThrownBy(() -> memberService.signUpWithEmail(signUpForm))
                 .isInstanceOf(CustomRuntimeException.class)
                 .hasMessage(ApiResponseStatus.NOTFOUND_AUTHENTICATION_EMAIL.getMessage());
     }
@@ -155,7 +199,16 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String ipAddress = "ipAddress";
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
-        MemberRequest.SignUp form = new MemberRequest.SignUp(email, password, nickname, contact, code.getCode());
+
+        SignUpForm signUpForm = SignUpForm.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname)
+                .contact(contact)
+                .authenticationCode(code.getCode())
+                .ipAddress(ipAddress)
+                .build();
+
         Member member = Member.createWithEmail(email, password, contact);
 
         //when
@@ -163,14 +216,14 @@ class MemberSignUpTest extends MemberServiceTestBase {
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
         given(emailAuthenticationCodeRepository.findByEmail(any())).willReturn(Optional.of(code));
         given(memberRepository.save(any())).willReturn(member);
-        memberService.signupMemberProcessingByEmail(form, ipAddress);
+        memberService.signUpWithEmail(signUpForm);
         //then
         verify(memberRepository).findMembersByEmail(email);
         verify(memberRepository).findMembersByContact(contact);
         verify(emailAuthenticationCodeRepository).findByEmail(email);
         verify(emailAuthenticationCodeRepository).delete(code);
         verify(memberRepository).save(member);
-        verify(eventPublisher).publishEvent(new MemberEventDto.Create(any(),nickname,"이메일 회원 가입",ipAddress,member.getCreatedAt()));
+        verify(eventPublisher).publishEvent(new MemberEventDto.Create(any(), nickname, "이메일 회원 가입", ipAddress, member.getCreatedAt()));
     }
 
 

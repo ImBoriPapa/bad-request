@@ -1,8 +1,7 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.*;
-import com.study.badrequest.domain.login.RefreshToken;
+import com.study.badrequest.member.command.domain.RefreshToken;
 
 
 import com.study.badrequest.dto.login.LoginResponse;
@@ -10,11 +9,12 @@ import com.study.badrequest.event.member.MemberEventDto;
 
 import com.study.badrequest.exception.CustomRuntimeException;
 
+import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
 import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 
-import com.study.badrequest.repository.member.TemporaryPasswordRepository;
+import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import com.study.badrequest.commons.status.JwtStatus;
 import com.study.badrequest.utils.email.EmailUtils;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.REFRESH_TOKEN_COOKIE;
 import static com.study.badrequest.commons.response.ApiResponseStatus.*;
-import static com.study.badrequest.domain.member.RegistrationType.*;
+import static com.study.badrequest.member.command.domain.RegistrationType.*;
 import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
 

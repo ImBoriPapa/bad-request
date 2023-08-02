@@ -1,15 +1,15 @@
 package com.study.badrequest.utils.modelAssembler;
 
-import com.study.badrequest.api.member.MemberQueryApiController;
-import com.study.badrequest.api.question.QuestionApiController;
-import com.study.badrequest.api.question.QuestionMetricsApiController;
-import com.study.badrequest.api.question.QuestionQueryApiController;
-import com.study.badrequest.domain.question.QuestionSortType;
+import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
+import com.study.badrequest.question.command.interfaces.QuestionApiController;
+import com.study.badrequest.question.command.interfaces.QuestionMetricsApiController;
+import com.study.badrequest.question.query.interfaces.QuestionQueryApiController;
+import com.study.badrequest.question.command.domain.QuestionSortType;
 import com.study.badrequest.dto.question.QuestionResponse;
-import com.study.badrequest.repository.question.query.QuestionDetail;
-import com.study.badrequest.repository.question.query.TagDto;
-import com.study.badrequest.repository.question.query.QuestionListResult;
-import com.study.badrequest.repository.question.query.QuestionSearchCondition;
+import com.study.badrequest.question.query.QuestionDetail;
+import com.study.badrequest.question.query.TagDto;
+import com.study.badrequest.question.query.QuestionListResult;
+import com.study.badrequest.question.query.QuestionSearchCondition;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

@@ -1,20 +1,18 @@
 package com.study.badrequest.service.answer;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.answer.Answer;
-import com.study.badrequest.domain.answerRecommendation.AnswerRecommendation;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.recommendation.RecommendationKind;
+import com.study.badrequest.answer.command.domain.Answer;
+import com.study.badrequest.answer.command.domain.AnswerRecommendation;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.answer.AnswerRepository;
 import com.study.badrequest.repository.answerRecommendation.AnswerRecommendationRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.Table;
 
 @Service
 @Slf4j

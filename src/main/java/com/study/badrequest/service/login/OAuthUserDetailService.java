@@ -1,13 +1,15 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.login.MemberPrincipal;
-import com.study.badrequest.domain.login.Oauth2UserInformation;
-import com.study.badrequest.domain.member.*;
+import com.study.badrequest.member.command.domain.MemberPrincipal;
+import com.study.badrequest.member.command.domain.Oauth2UserInformation;
 
 import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomOauth2LoginException;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.AccountStatus;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.RegistrationType;
+import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.utils.email.EmailUtils;
 import com.study.badrequest.utils.image.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.study.badrequest.domain.member.RegistrationType.getOauth2UserInformation;
+import static com.study.badrequest.member.command.domain.RegistrationType.getOauth2UserInformation;
 
 
 @Component

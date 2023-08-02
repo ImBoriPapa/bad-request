@@ -1,9 +1,6 @@
 package com.study.badrequest.event.question;
 
-import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.member.Member;
-
-import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.question.command.domain.Question;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

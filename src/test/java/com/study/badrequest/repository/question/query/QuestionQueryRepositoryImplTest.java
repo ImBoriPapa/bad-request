@@ -4,8 +4,13 @@ package com.study.badrequest.repository.question.query;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.commons.status.ExposureStatus;
 
-import com.study.badrequest.domain.question.*;
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.domain.QuestionSortType;
+import com.study.badrequest.question.command.domain.QuestionRepository;
+import com.study.badrequest.question.query.QuestionDetail;
+import com.study.badrequest.question.query.QuestionListResult;
+import com.study.badrequest.question.query.QuestionQueryRepositoryImpl;
+import com.study.badrequest.question.query.QuestionSearchCondition;
 import com.study.badrequest.testHelper.TestConfig;
 import com.study.badrequest.testHelper.TestData;
 import lombok.extern.slf4j.Slf4j;

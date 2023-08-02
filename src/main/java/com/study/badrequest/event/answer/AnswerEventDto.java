@@ -1,7 +1,7 @@
 package com.study.badrequest.event.answer;
 
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.answer.Answer;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.answer.command.domain.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

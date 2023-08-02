@@ -1,12 +1,9 @@
 package com.study.badrequest.service.image;
 
-import com.study.badrequest.domain.question.Question;
 import com.study.badrequest.dto.image.QuestionImageResponse;
-import com.study.badrequest.exception.UrgentCheckedException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 public interface QuestionImageService {
 

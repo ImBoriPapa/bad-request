@@ -1,7 +1,7 @@
 package com.study.badrequest.service.notification;
 
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.notification.NotificationMessage;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.notification.command.domain.NotificationMessage;
 import com.study.badrequest.repository.notification.NotificationMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

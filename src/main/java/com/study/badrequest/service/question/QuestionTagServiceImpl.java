@@ -1,19 +1,18 @@
 package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.hashTag.HashTag;
-import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionTag;
+import com.study.badrequest.hashtag.command.domain.HashTag;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.domain.QuestionTag;
 import com.study.badrequest.dto.question.QuestionTagResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 import com.study.badrequest.repository.hashTag.HashTagRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
-import com.study.badrequest.repository.question.QuestionTagRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
+import com.study.badrequest.question.command.domain.QuestionTagRepository;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,11 +1,9 @@
 package com.study.badrequest.domain.question;
 
-import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.test.context.ActiveProfiles;
 
 import javax.persistence.EntityManager;
 

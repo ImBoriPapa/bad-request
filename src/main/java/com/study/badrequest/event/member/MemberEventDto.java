@@ -2,8 +2,6 @@ package com.study.badrequest.event.member;
 
 
 
-import com.study.badrequest.domain.member.EmailAuthenticationCode;
-import com.study.badrequest.domain.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

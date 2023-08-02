@@ -1,27 +1,23 @@
 package com.study.badrequest.service.image;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.image.ImageStatus;
-import com.study.badrequest.domain.image.QuestionImage;
-import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.image.command.domain.ImageStatus;
+import com.study.badrequest.image.command.domain.QuestionImage;
+import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.image.QuestionImageRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-
-import static com.study.badrequest.config.AsyncConfig.QUESTION_IMAGE_ASYNC_EXECUTOR;
 
 @Service
 @Transactional(readOnly = true)

@@ -1,13 +1,12 @@
 package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.memberProfile.MemberProfile;
-import com.study.badrequest.domain.memberProfile.ProfileImage;
-import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionMetrics;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.domain.QuestionMetrics;
 import com.study.badrequest.dto.question.QuestionRequest;
-import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

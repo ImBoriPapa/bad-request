@@ -8,6 +8,7 @@ import java.util.Arrays;
 
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
 import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
+
 @Slf4j
 public class HttpHeaderResolver {
 

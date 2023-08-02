@@ -1,11 +1,11 @@
 package com.study.badrequest.service.blog;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.blog.Blog;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.bolg.command.domain.Blog;
+import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.blog.BlogRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

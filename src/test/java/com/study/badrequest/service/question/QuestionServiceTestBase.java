@@ -1,7 +1,7 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.context.ApplicationEventPublisher;

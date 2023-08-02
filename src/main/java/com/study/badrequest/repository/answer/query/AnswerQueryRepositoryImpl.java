@@ -6,8 +6,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.answerRecommendation.AnswerRecommendation;
-import com.study.badrequest.domain.recommendation.RecommendationKind;
+import com.study.badrequest.answer.command.domain.AnswerRecommendation;
+import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.study.badrequest.domain.answer.QAnswer.answer;
-import static com.study.badrequest.domain.answerRecommendation.QAnswerRecommendation.*;
-import static com.study.badrequest.domain.member.QMember.*;
-import static com.study.badrequest.domain.memberProfile.QMemberProfile.memberProfile;
+import static com.study.badrequest.answer.command.domain.QAnswer.answer;
+import static com.study.badrequest.answer.command.domain.QAnswerRecommendation.answerRecommendation;
+import static com.study.badrequest.member.command.domain.QMember.member;
+import static com.study.badrequest.member.command.domain.QMemberProfile.memberProfile;
 
 
 @Repository

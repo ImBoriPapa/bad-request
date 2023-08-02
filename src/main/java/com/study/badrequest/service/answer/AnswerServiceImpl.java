@@ -1,17 +1,15 @@
 package com.study.badrequest.service.answer;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.Authority;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.answer.Answer;
-import com.study.badrequest.domain.question.Question;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.answer.command.domain.Answer;
+import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
 import com.study.badrequest.event.answer.AnswerEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.answer.AnswerRepository;
-import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.repository.question.QuestionRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.question.command.domain.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;

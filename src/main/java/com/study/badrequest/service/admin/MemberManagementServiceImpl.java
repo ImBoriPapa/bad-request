@@ -1,12 +1,12 @@
 package com.study.badrequest.service.admin;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.admin.AdministratorActivityHistory;
-import com.study.badrequest.domain.member.Authority;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.admin.command.domain.AdministratorActivityHistory;
+import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.admin.AdministratorActivityHistoryRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

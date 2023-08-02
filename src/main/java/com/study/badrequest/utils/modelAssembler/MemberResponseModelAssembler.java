@@ -1,17 +1,16 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.api.login.LoginController;
-import com.study.badrequest.api.member.MemberAccountApiController;
-import com.study.badrequest.api.member.MemberProfileApiController;
-import com.study.badrequest.api.member.MemberQueryApiController;
+import com.study.badrequest.member.command.interfaces.MemberAccountApiController;
+import com.study.badrequest.member.command.interfaces.MemberProfileApiController;
+import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 
 import com.study.badrequest.dto.member.MemberResponse;
-import com.study.badrequest.repository.member.query.MemberDetailDto;
+import com.study.badrequest.member.query.MemberDetailDto;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import java.net.URI;
 import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -20,15 +19,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class MemberResponseModelAssembler {
-    public EntityModel<MemberResponse.Create> createMemberModel(MemberResponse.Create create) {
-
-        List<Link> links = List.of(
-                linkTo(methodOn(MemberAccountApiController.class).createMember(null, null, null)).withSelfRel(),
-                linkTo(methodOn(LoginController.class).loginByEmail(null, null, null)).withRel("Login")
-        );
-
-        return EntityModel.of(create, links);
-    }
 
     public EntityModel<MemberResponse.Update> changeNicknameModel(MemberResponse.Update form) {
 
@@ -87,12 +77,7 @@ public class MemberResponseModelAssembler {
         return EntityModel.of(password, links);
     }
 
-    /**
-     * Member Resource 생성 위치
-     */
-    public URI getLocationUri(Long memberId) {
-        return linkTo(methodOn(MemberQueryApiController.class).retrieveMemberAccount(null, memberId)).toUri();
-    }
+
 
     public EntityModel<MemberDetailDto> retrieveMemberModel(MemberDetailDto memberDetailDto) {
 

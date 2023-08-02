@@ -1,6 +1,5 @@
 package com.study.badrequest.event.question;
 
-import com.study.badrequest.domain.record.ActionStatus;
 import com.study.badrequest.dto.record.MemberRecordRequest;
 import com.study.badrequest.service.image.QuestionImageService;
 import com.study.badrequest.service.record.RecordService;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
-import static com.study.badrequest.domain.record.ActionStatus.*;
+import static com.study.badrequest.record.command.domain.ActionStatus.*;
 
 @Component
 @Slf4j

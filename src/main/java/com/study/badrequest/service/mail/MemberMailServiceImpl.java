@@ -1,11 +1,11 @@
 package com.study.badrequest.service.mail;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.mail.MemberMail;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.mail.command.domain.MemberMail;
+import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.mail.MemberMailRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +19,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static com.study.badrequest.domain.mail.MemberMail.createTemporaryPasswordMail;
+import static com.study.badrequest.mail.command.domain.MemberMail.createTemporaryPasswordMail;
 
 
 @Service

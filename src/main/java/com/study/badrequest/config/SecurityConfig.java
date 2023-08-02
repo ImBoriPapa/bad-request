@@ -1,6 +1,6 @@
 package com.study.badrequest.config;
 
-import com.study.badrequest.domain.member.Authority;
+import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;

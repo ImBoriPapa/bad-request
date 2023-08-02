@@ -1,8 +1,9 @@
 package com.study.badrequest.service.member;
 
-import com.study.badrequest.repository.member.EmailAuthenticationCodeRepository;
-import com.study.badrequest.repository.member.MemberRepository;
-import com.study.badrequest.repository.member.TemporaryPasswordRepository;
+import com.study.badrequest.member.command.application.MemberServiceImpl;
+import com.study.badrequest.member.command.domain.EmailAuthenticationCodeRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
 import com.study.badrequest.utils.image.ImageUploader;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

@@ -2,15 +2,15 @@ package com.study.badrequest.service.answerComment;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.commons.status.ExposureStatus;
-import com.study.badrequest.domain.answer.Answer;
-import com.study.badrequest.domain.answerComment.AnswerComment;
-import com.study.badrequest.domain.member.Member;
+import com.study.badrequest.answer.command.domain.Answer;
+import com.study.badrequest.answer.command.domain.AnswerComment;
+import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.dto.answerComment.AnswerCommentRequest;
 import com.study.badrequest.dto.answerComment.AnswerCommentResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.answer.AnswerRepository;
 import com.study.badrequest.repository.answerComment.AnswerCommentRepository;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

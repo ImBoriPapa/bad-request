@@ -1,7 +1,6 @@
 package com.study.badrequest.service.mail;
 
-import com.study.badrequest.domain.mail.NonMemberMail;
-import com.study.badrequest.domain.member.EmailAuthenticationCode;
+import com.study.badrequest.mail.command.domain.NonMemberMail;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.repository.mail.NonMemberMailRepository;
 import lombok.RequiredArgsConstructor;

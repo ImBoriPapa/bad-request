@@ -1,8 +1,10 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.*;
 import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.domain.DisposableAuthenticationCode;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.RegistrationType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

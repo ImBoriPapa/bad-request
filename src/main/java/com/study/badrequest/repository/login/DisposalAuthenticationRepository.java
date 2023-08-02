@@ -1,6 +1,6 @@
 package com.study.badrequest.repository.login;
 
-import com.study.badrequest.domain.member.DisposableAuthenticationCode;
+import com.study.badrequest.member.command.domain.DisposableAuthenticationCode;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

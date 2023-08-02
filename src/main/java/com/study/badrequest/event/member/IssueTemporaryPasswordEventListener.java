@@ -1,6 +1,6 @@
 package com.study.badrequest.event.member;
 
-import com.study.badrequest.domain.record.ActionStatus;
+import com.study.badrequest.record.command.domain.ActionStatus;
 import com.study.badrequest.dto.record.MemberRecordRequest;
 import com.study.badrequest.service.mail.MemberMailService;
 import com.study.badrequest.service.record.RecordService;

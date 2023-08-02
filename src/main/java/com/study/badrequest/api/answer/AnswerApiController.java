@@ -2,7 +2,7 @@ package com.study.badrequest.api.answer;
 
 import com.study.badrequest.commons.annotation.LoggedInMember;
 import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.domain.login.CurrentMember;
+import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
 import com.study.badrequest.exception.CustomRuntimeException;

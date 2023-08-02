@@ -1,11 +1,11 @@
 package com.study.badrequest.service.record;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.record.MemberRecord;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.record.command.domain.MemberRecord;
 import com.study.badrequest.dto.record.MemberRecordRequest;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.member.MemberRepository;
+import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.repository.record.MemberRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

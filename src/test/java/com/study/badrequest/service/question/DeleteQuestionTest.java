@@ -1,9 +1,9 @@
 package com.study.badrequest.service.question;
 
 import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.domain.member.Member;
-import com.study.badrequest.domain.question.Question;
-import com.study.badrequest.domain.question.QuestionMetrics;
+import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.domain.QuestionMetrics;
 import com.study.badrequest.event.question.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
