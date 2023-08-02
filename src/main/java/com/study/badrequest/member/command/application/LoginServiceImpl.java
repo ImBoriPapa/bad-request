@@ -10,8 +10,8 @@ import com.study.badrequest.event.member.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.*;
-import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
-import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
+import com.study.badrequest.member.command.domain.DisposalAuthenticationRepository;
+import com.study.badrequest.member.command.domain.RedisRefreshTokenRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;

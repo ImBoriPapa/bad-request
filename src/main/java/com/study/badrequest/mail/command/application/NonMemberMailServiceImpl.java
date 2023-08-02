@@ -2,7 +2,7 @@ package com.study.badrequest.mail.command.application;
 
 import com.study.badrequest.mail.command.domain.NonMemberMail;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.mail.NonMemberMailRepository;
+import com.study.badrequest.mail.command.domain.NonMemberMailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

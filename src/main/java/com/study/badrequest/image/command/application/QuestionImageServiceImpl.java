@@ -6,7 +6,7 @@ import com.study.badrequest.image.command.domain.QuestionImage;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.image.QuestionImageRepository;
+import com.study.badrequest.image.command.domain.QuestionImageRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
 import com.study.badrequest.utils.image.ImageUploader;

@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.login;
+package com.study.badrequest.member.command.domain;
 
 import com.study.badrequest.member.command.domain.DisposableAuthenticationCode;
 

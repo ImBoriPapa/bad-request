@@ -4,8 +4,7 @@ package com.study.badrequest.handler;
 import com.study.badrequest.commons.response.ApiResponseStatus;
 
 import com.study.badrequest.exception.CustomOauth2LoginException;
-import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
+import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.study.badrequest.repository.login.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
+import static com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
 
 @Component

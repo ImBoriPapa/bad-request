@@ -6,7 +6,7 @@ import com.study.badrequest.record.command.domain.MemberRecord;
 import com.study.badrequest.dto.record.MemberRecordRequest;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.MemberRepository;
-import com.study.badrequest.repository.record.MemberRecordRepository;
+import com.study.badrequest.record.command.domain.MemberRecordRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

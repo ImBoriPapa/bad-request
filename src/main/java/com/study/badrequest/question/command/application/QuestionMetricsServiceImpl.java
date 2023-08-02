@@ -8,7 +8,7 @@ import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
-import com.study.badrequest.repository.reommendation.RecommendationRepository;
+import com.study.badrequest.recommandation.command.domain.RecommendationRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,7 +6,7 @@ import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.handler.Oauth2AuthenticationFailHandler;
 import com.study.badrequest.handler.Oauth2AuthenticationSuccessHandler;
-import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
+import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;
 import com.study.badrequest.member.command.application.JwtUserDetailService;
 import com.study.badrequest.member.command.application.OAuthUserDetailService;
 

@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.answer.query;
+package com.study.badrequest.answer.query;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

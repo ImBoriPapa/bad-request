@@ -7,7 +7,7 @@ import com.study.badrequest.question.command.domain.QuestionTag;
 import com.study.badrequest.dto.question.QuestionTagResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 
-import com.study.badrequest.repository.hashTag.HashTagRepository;
+import com.study.badrequest.hashtag.command.domain.HashTagRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.question.command.domain.QuestionTagRepository;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;

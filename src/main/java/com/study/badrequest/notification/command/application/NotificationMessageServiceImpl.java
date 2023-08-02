@@ -2,7 +2,7 @@ package com.study.badrequest.notification.command.application;
 
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.notification.command.domain.NotificationMessage;
-import com.study.badrequest.repository.notification.NotificationMessageRepository;
+import com.study.badrequest.notification.command.domain.NotificationMessageRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

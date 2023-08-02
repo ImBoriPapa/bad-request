@@ -1,6 +1,8 @@
 package com.study.badrequest.repository.answer.query;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.study.badrequest.answer.query.AnswerQueryRepositoryImpl;
+import com.study.badrequest.answer.query.AnswerResult;
 import com.study.badrequest.testHelper.TestConfig;
 import com.study.badrequest.testHelper.TestData;
 import lombok.extern.slf4j.Slf4j;

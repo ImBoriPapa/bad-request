@@ -8,8 +8,8 @@ import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.dto.answerComment.AnswerCommentRequest;
 import com.study.badrequest.dto.answerComment.AnswerCommentResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.answer.AnswerRepository;
-import com.study.badrequest.repository.answerComment.AnswerCommentRepository;
+import com.study.badrequest.answer.command.domain.AnswerRepository;
+import com.study.badrequest.answer.command.domain.AnswerCommentRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
 import lombok.RequiredArgsConstructor;

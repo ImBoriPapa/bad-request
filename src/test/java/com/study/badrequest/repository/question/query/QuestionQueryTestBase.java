@@ -11,7 +11,7 @@ import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionMetrics;
 import com.study.badrequest.question.command.domain.QuestionTag;
 import com.study.badrequest.question.query.QuestionQueryRepositoryImpl;
-import com.study.badrequest.repository.hashTag.HashTagRepository;
+import com.study.badrequest.hashtag.command.domain.HashTagRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.question.command.domain.QuestionTagRepository;

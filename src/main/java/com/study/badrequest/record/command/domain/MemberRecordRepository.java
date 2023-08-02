@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.record;
+package com.study.badrequest.record.command.domain;
 
 
 import com.study.badrequest.record.command.domain.MemberRecord;

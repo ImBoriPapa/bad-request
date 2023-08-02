@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.answer.query;
+package com.study.badrequest.answer.query;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;

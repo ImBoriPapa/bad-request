@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.activity;
+package com.study.badrequest.active.command.application;
 
 import com.study.badrequest.active.command.domain.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.image;
+package com.study.badrequest.image.command.domain;
 
 import com.study.badrequest.image.command.domain.QuestionImage;
 import com.study.badrequest.question.command.domain.Question;

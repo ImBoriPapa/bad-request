@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.hashTag;
+package com.study.badrequest.hashtag.command.domain;
 
 
 import com.study.badrequest.hashtag.command.domain.HashTag;

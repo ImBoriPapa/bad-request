@@ -4,7 +4,7 @@ import com.study.badrequest.commons.response.ApiResponseStatus;
 import com.study.badrequest.mail.command.domain.MemberMail;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.mail.MemberMailRepository;
+import com.study.badrequest.mail.command.domain.MemberMailRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

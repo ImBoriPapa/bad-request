@@ -7,7 +7,7 @@ import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
 import com.study.badrequest.event.answer.AnswerEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.repository.answer.AnswerRepository;
+import com.study.badrequest.answer.command.domain.AnswerRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import lombok.RequiredArgsConstructor;

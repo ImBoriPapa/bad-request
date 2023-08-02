@@ -1,7 +1,7 @@
 package com.study.badrequest.handler;
 
 import com.study.badrequest.member.command.domain.MemberPrincipal;
-import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
+import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;
 import com.study.badrequest.member.command.application.LoginService;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import java.net.URI;
 import java.util.Optional;
 
 
-import static com.study.badrequest.repository.login.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
+import static com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
 @Component
 @RequiredArgsConstructor

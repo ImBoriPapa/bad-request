@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.mail;
+package com.study.badrequest.mail.command.domain;
 
 
 import com.study.badrequest.mail.command.domain.MemberMail;

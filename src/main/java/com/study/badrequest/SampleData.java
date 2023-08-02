@@ -8,7 +8,7 @@ import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.dto.question.QuestionRequest;
 
 import com.study.badrequest.dto.question.QuestionResponse;
-import com.study.badrequest.repository.hashTag.HashTagRepository;
+import com.study.badrequest.hashtag.command.domain.HashTagRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
 import com.study.badrequest.question.command.domain.QuestionRepository;

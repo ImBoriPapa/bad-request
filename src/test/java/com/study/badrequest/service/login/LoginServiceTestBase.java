@@ -1,8 +1,8 @@
 package com.study.badrequest.service.login;
 
 import com.study.badrequest.member.command.application.LoginServiceImpl;
-import com.study.badrequest.repository.login.DisposalAuthenticationRepository;
-import com.study.badrequest.repository.login.RedisRefreshTokenRepository;
+import com.study.badrequest.member.command.domain.DisposalAuthenticationRepository;
+import com.study.badrequest.member.command.domain.RedisRefreshTokenRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
 import com.study.badrequest.utils.jwt.JwtUtils;

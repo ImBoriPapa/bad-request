@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.notification;
+package com.study.badrequest.notification.command.domain;
 
 import com.study.badrequest.notification.command.domain.NotificationMessage;
 import org.springframework.data.jpa.repository.JpaRepository;

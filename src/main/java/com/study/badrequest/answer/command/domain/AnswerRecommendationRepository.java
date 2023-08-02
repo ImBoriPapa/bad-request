@@ -1,4 +1,4 @@
-package com.study.badrequest.repository.answerRecommendation;
+package com.study.badrequest.answer.command.domain;
 
 import com.study.badrequest.answer.command.domain.AnswerRecommendation;
 import org.springframework.data.jpa.repository.JpaRepository;
