@@ -17,7 +17,7 @@ import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.member.query.MemberQueryRepository;
 import com.study.badrequest.member.query.LoggedInMemberInformation;
 import com.study.badrequest.member.command.application.MemberService;
-import com.study.badrequest.service.member.MemberProfileService;
+import com.study.badrequest.member.command.application.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;

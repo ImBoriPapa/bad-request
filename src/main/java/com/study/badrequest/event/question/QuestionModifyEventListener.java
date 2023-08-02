@@ -1,8 +1,8 @@
 package com.study.badrequest.event.question;
 
 import com.study.badrequest.dto.record.MemberRecordRequest;
-import com.study.badrequest.service.image.QuestionImageService;
-import com.study.badrequest.service.record.RecordService;
+import com.study.badrequest.image.command.application.QuestionImageService;
+import com.study.badrequest.record.command.application.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

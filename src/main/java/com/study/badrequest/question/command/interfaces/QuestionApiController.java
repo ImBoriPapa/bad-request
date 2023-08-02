@@ -7,7 +7,7 @@ import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.question.query.interfaces.QuestionQueryApiController;
-import com.study.badrequest.service.question.QuestionService;
+import com.study.badrequest.question.command.application.QuestionService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

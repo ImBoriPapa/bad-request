@@ -5,7 +5,7 @@ import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.service.login.LoginService;
+import com.study.badrequest.member.command.application.LoginService;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;
 import org.junit.jupiter.api.DisplayName;

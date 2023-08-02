@@ -6,7 +6,7 @@ import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.service.answer.AnswerService;
+import com.study.badrequest.answer.command.application.AnswerService;
 import com.study.badrequest.utils.modelAssembler.AnswerModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

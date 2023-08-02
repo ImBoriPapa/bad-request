@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.study.badrequest.domain.question.QQuestionMetrics.*;
+import static com.study.badrequest.question.command.domain.QQuestionMetrics.questionMetrics;
 import static com.study.badrequest.question.command.domain.QuestionSortType.*;
 import static org.assertj.core.api.Assertions.*;
 

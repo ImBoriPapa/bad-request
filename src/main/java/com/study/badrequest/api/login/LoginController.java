@@ -7,7 +7,7 @@ import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;
 
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.service.login.LoginService;
+import com.study.badrequest.member.command.application.LoginService;
 
 import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;
 

@@ -6,7 +6,7 @@ import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.service.member.MemberProfileService;
+import com.study.badrequest.member.command.application.MemberProfileService;
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import org.junit.jupiter.api.DisplayName;

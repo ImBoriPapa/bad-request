@@ -8,7 +8,7 @@ import com.study.badrequest.question.query.QuestionDetail;
 import com.study.badrequest.question.query.QuestionListResult;
 import com.study.badrequest.question.query.QuestionSearchCondition;
 
-import com.study.badrequest.service.question.QuestionQueryService;
+import com.study.badrequest.question.command.application.QuestionQueryService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

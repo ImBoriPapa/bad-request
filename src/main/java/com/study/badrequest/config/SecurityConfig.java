@@ -7,8 +7,8 @@ import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.handler.Oauth2AuthenticationFailHandler;
 import com.study.badrequest.handler.Oauth2AuthenticationSuccessHandler;
 import com.study.badrequest.repository.login.CustomAuthorizationRequestRepository;
-import com.study.badrequest.service.login.JwtUserDetailService;
-import com.study.badrequest.service.login.OAuthUserDetailService;
+import com.study.badrequest.member.command.application.JwtUserDetailService;
+import com.study.badrequest.member.command.application.OAuthUserDetailService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

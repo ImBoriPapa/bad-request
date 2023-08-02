@@ -1,9 +1,9 @@
 package com.study.badrequest.event.question;
 
 
-import com.study.badrequest.service.question.QuestionMetricsService;
-import com.study.badrequest.service.question.QuestionTagService;
-import com.study.badrequest.service.record.RecordService;
+import com.study.badrequest.question.command.application.QuestionMetricsService;
+import com.study.badrequest.question.command.application.QuestionTagService;
+import com.study.badrequest.record.command.application.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

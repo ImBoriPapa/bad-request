@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.api.image.ImageApiController;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
-import com.study.badrequest.service.image.QuestionImageService;
+import com.study.badrequest.image.command.application.QuestionImageService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;

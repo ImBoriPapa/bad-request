@@ -1,7 +1,7 @@
 package com.study.badrequest.event.answer;
 
 import com.study.badrequest.active.command.domain.ActivityAction;
-import com.study.badrequest.service.activity.ActivityService;
+import com.study.badrequest.active.command.application.ActivityService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

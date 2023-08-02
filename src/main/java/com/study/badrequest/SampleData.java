@@ -12,8 +12,8 @@ import com.study.badrequest.repository.hashTag.HashTagRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
 import com.study.badrequest.question.command.domain.QuestionRepository;
-import com.study.badrequest.service.answer.AnswerServiceImpl;
-import com.study.badrequest.service.question.QuestionService;
+import com.study.badrequest.answer.command.application.AnswerServiceImpl;
+import com.study.badrequest.question.command.application.QuestionService;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
 import com.study.badrequest.utils.image.S3ImageUploader;
 import lombok.RequiredArgsConstructor;

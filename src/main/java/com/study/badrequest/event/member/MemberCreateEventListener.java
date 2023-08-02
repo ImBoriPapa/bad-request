@@ -2,10 +2,10 @@ package com.study.badrequest.event.member;
 
 import com.study.badrequest.record.command.domain.ActionStatus;
 import com.study.badrequest.dto.record.MemberRecordRequest;
-import com.study.badrequest.service.blog.BlogService;
-import com.study.badrequest.service.mail.MemberMailService;
-import com.study.badrequest.service.member.MemberProfileService;
-import com.study.badrequest.service.record.RecordService;
+import com.study.badrequest.blog.command.application.BlogService;
+import com.study.badrequest.mail.command.application.MemberMailService;
+import com.study.badrequest.member.command.application.MemberProfileService;
+import com.study.badrequest.record.command.application.RecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

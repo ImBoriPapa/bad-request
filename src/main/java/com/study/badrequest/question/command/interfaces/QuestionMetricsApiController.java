@@ -3,7 +3,7 @@ package com.study.badrequest.question.command.interfaces;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionResponse;
-import com.study.badrequest.service.question.QuestionMetricsService;
+import com.study.badrequest.question.command.application.QuestionMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

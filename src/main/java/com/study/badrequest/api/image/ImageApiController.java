@@ -4,11 +4,10 @@ package com.study.badrequest.api.image;
 import com.study.badrequest.commons.response.ApiResponse;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.service.image.QuestionImageService;
+import com.study.badrequest.image.command.application.QuestionImageService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
