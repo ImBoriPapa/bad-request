@@ -1,10 +1,10 @@
 package com.study.badrequest.member.command.application;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.MemberPrincipal;
 import com.study.badrequest.member.command.domain.Oauth2UserInformation;
 
-import com.study.badrequest.event.member.MemberEventDto;
+import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.exception.CustomOauth2LoginException;
 import com.study.badrequest.member.command.domain.AccountStatus;
 import com.study.badrequest.member.command.domain.Member;

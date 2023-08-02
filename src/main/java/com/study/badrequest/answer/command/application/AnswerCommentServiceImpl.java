@@ -1,7 +1,7 @@
 package com.study.badrequest.answer.command.application;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.answer.command.domain.Answer;
 import com.study.badrequest.answer.command.domain.AnswerComment;
 import com.study.badrequest.member.command.domain.Member;

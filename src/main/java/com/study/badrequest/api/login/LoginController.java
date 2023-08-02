@@ -1,7 +1,7 @@
 package com.study.badrequest.api.login;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponse;
 
 import com.study.badrequest.dto.login.LoginRequest;
 import com.study.badrequest.dto.login.LoginResponse;
@@ -28,8 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.constants.ApiURL.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.ipAddressResolver;
 

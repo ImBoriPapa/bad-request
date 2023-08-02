@@ -1,6 +1,6 @@
 package com.study.badrequest.api.answer;
 
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.answer.query.AnswerQueryRepositoryImpl;
 import com.study.badrequest.answer.query.AnswerResult;
 import com.study.badrequest.answer.query.AnswerSearchCondition;

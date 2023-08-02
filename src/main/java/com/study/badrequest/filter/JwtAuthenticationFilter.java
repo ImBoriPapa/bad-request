@@ -1,7 +1,7 @@
 package com.study.badrequest.filter;
 
 import com.study.badrequest.member.command.application.LoginService;
-import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.JWT_STATUS_HEADER;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.JWT_STATUS_HEADER;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
 
 

@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.REFRESH_TOKEN_COOKIE;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.REFRESH_TOKEN_COOKIE;
 
 @Slf4j
 public class CookieUtils {

@@ -1,8 +1,7 @@
 package com.study.badrequest.service.member;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.exception.CustomRuntimeException;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +10,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 

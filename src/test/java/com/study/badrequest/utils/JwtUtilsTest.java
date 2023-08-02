@@ -1,7 +1,7 @@
 package com.study.badrequest.utils;
 
 
-import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import io.jsonwebtoken.Claims;
@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static com.study.badrequest.commons.status.JwtStatus.*;
+import static com.study.badrequest.common.status.JwtStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
 

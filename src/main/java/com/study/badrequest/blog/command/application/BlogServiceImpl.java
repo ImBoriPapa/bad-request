@@ -1,6 +1,6 @@
 package com.study.badrequest.blog.command.application;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.blog.command.domain.Blog;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.exception.CustomRuntimeException;

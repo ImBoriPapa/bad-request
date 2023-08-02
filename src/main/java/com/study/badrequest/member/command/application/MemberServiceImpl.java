@@ -1,9 +1,9 @@
 package com.study.badrequest.member.command.application;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
-import com.study.badrequest.event.member.MemberEventDto;
+import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.EmailAuthenticationCode;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.member.command.domain.AccountStatus.*;
 
 @Service

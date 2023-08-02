@@ -18,10 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.constants.ApiURL.QUESTION_BASE_URL;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.member.command.domain.Authority.MEMBER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;

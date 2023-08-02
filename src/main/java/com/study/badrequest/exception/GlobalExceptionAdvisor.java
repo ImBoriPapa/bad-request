@@ -1,10 +1,7 @@
 package com.study.badrequest.exception;
 
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.response.ApiResponse;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;

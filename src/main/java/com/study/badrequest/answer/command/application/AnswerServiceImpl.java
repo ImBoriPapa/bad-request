@@ -5,7 +5,7 @@ import com.study.badrequest.answer.command.domain.Answer;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.dto.answer.AnswerRequest;
 import com.study.badrequest.dto.answer.AnswerResponse;
-import com.study.badrequest.event.answer.AnswerEventDto;
+import com.study.badrequest.answer.command.domain.AnswerEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.answer.command.domain.AnswerRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_ALLOW_EMPTY_ANSWER;
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_FOUND_ANSWER;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.NOT_ALLOW_EMPTY_ANSWER;
+import static com.study.badrequest.common.response.ApiResponseStatus.NOT_FOUND_ANSWER;
 import static com.study.badrequest.utils.authority.AuthorityUtils.verifyPermission;
 import static com.study.badrequest.utils.verification.WordValidateUtils.findBannedWord;
 

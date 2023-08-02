@@ -36,9 +36,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
+import static com.study.badrequest.common.constants.ApiURL.*;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static com.study.badrequest.member.command.domain.Authority.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;

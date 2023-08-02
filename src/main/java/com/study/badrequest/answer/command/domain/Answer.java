@@ -1,6 +1,6 @@
 package com.study.badrequest.answer.command.domain;
 
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.member.command.domain.Member;
 
 import com.study.badrequest.question.command.domain.Question;

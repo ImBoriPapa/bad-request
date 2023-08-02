@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 
 @Component
 @Slf4j

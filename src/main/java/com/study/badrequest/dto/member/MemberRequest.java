@@ -9,7 +9,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
 
-import static com.study.badrequest.commons.constants.Regex.PASSWORD;
+import static com.study.badrequest.common.constants.Regex.PASSWORD;
 
 public class MemberRequest {
     @NoArgsConstructor

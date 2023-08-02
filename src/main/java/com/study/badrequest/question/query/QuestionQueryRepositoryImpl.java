@@ -8,8 +8,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.recommandation.command.domain.Recommendation;
 
 
@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.study.badrequest.commons.status.ExposureStatus.PUBLIC;
+import static com.study.badrequest.common.status.ExposureStatus.PUBLIC;
 
 import static com.study.badrequest.hashtag.command.domain.QHashTag.hashTag;
 import static com.study.badrequest.member.command.domain.QMember.member;

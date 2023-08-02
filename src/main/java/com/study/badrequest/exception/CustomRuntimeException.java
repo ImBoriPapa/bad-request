@@ -1,12 +1,10 @@
 package com.study.badrequest.exception;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import org.jetbrains.annotations.NotNull;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import org.springframework.context.MessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class CustomRuntimeException extends RuntimeException {

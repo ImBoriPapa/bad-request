@@ -1,12 +1,11 @@
 package com.study.badrequest.utils.verification;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.VALIDATION_ERROR;
+import static com.study.badrequest.common.response.ApiResponseStatus.VALIDATION_ERROR;
 
 @Slf4j
 public class RequestValidUtils {

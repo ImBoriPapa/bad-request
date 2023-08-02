@@ -26,9 +26,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.UPLOAD_QUESTION_IMAGE;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
+import static com.study.badrequest.common.constants.ApiURL.UPLOAD_QUESTION_IMAGE;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;

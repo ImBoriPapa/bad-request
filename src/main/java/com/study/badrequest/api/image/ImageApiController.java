@@ -1,7 +1,7 @@
 package com.study.badrequest.api.image;
 
 
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.dto.image.QuestionImageResponse;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.image.command.application.QuestionImageService;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import static com.study.badrequest.commons.constants.ApiURL.UPLOAD_QUESTION_IMAGE;
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.constants.ApiURL.UPLOAD_QUESTION_IMAGE;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static org.springframework.http.MediaType.*;
 
 @RestController

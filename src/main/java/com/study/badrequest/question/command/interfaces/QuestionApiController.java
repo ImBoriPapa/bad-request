@@ -1,7 +1,7 @@
 package com.study.badrequest.question.command.interfaces;
 
-import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.annotation.LoggedInMember;
+import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.constants.ApiURL.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.MediaType.*;

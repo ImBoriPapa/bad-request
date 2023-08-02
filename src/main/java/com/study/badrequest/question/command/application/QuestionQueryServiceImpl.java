@@ -1,9 +1,9 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.member.command.domain.CurrentMember;
-import com.study.badrequest.event.question.QuestionEventDto;
+import com.study.badrequest.question.command.domain.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.question.query.*;
 import lombok.RequiredArgsConstructor;

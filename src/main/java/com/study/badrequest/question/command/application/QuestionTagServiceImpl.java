@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.hashtag.command.domain.HashTag;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionTag;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 
 @Service
 @Slf4j

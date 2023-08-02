@@ -5,7 +5,7 @@ import com.study.badrequest.exception.CustomRuntimeException;
 
 import java.util.List;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.BANNED_WORD;
+import static com.study.badrequest.common.response.ApiResponseStatus.BANNED_WORD;
 
 public class WordValidateUtils {
 

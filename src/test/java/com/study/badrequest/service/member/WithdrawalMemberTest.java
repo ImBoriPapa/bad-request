@@ -1,8 +1,8 @@
 package com.study.badrequest.service.member;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.event.member.MemberEventDto;
+import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

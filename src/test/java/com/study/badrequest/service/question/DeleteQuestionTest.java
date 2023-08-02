@@ -1,10 +1,10 @@
 package com.study.badrequest.service.question;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionMetrics;
-import com.study.badrequest.event.question.QuestionEventDto;
+import com.study.badrequest.question.command.domain.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

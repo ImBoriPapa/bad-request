@@ -1,8 +1,8 @@
 package com.study.badrequest.filter;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.utils.jwt.JwtAuthenticationFilterResponseFactory;
-import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.common.status.JwtStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumMap;
 
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.JWT_STATUS_HEADER;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.JWT_STATUS_HEADER;
 
 @Component
 @RequiredArgsConstructor

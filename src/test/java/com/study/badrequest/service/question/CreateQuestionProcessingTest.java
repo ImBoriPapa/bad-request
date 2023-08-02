@@ -9,7 +9,7 @@ import com.study.badrequest.question.command.domain.QuestionMetrics;
 
 import com.study.badrequest.dto.question.QuestionRequest;
 
-import com.study.badrequest.event.question.QuestionEventDto;
+import com.study.badrequest.question.command.domain.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

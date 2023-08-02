@@ -1,8 +1,7 @@
 package com.study.badrequest.service.member;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.dto.member.MemberRequest;
-import com.study.badrequest.event.member.MemberEventDto;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 

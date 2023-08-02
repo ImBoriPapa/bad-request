@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static org.assertj.core.api.Assertions.*;
 
 import static org.mockito.ArgumentMatchers.any;

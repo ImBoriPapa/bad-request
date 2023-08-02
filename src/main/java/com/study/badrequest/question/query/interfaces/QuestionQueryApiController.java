@@ -1,7 +1,7 @@
 package com.study.badrequest.question.query.interfaces;
 
-import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.annotation.LoggedInMember;
+import com.study.badrequest.common.response.ApiResponse;
 
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.question.query.QuestionDetail;
@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_BASE_URL;
-import static com.study.badrequest.commons.constants.ApiURL.QUESTION_DETAIL_URL;
-import static com.study.badrequest.commons.response.ApiResponseStatus.SUCCESS;
+import static com.study.badrequest.common.constants.ApiURL.QUESTION_BASE_URL;
+import static com.study.badrequest.common.constants.ApiURL.QUESTION_DETAIL_URL;
+import static com.study.badrequest.common.response.ApiResponseStatus.SUCCESS;
 import static org.springframework.http.MediaType.*;
 
 @RestController

@@ -16,7 +16,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.FAIL_SEND_MAIL;
+import static com.study.badrequest.common.response.ApiResponseStatus.FAIL_SEND_MAIL;
 
 @Service
 @RequiredArgsConstructor

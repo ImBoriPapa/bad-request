@@ -1,11 +1,11 @@
 package com.study.badrequest.service.login;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.member.command.domain.RefreshToken;
 import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.event.member.MemberEventDto;
+import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,8 +22,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;

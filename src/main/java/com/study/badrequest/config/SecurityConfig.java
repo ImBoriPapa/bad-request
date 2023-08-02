@@ -27,7 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
+import static com.study.badrequest.common.constants.ApiURL.*;
 
 @Configuration
 @EnableWebSecurity

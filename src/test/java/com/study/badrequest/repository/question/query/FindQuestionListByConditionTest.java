@@ -2,7 +2,7 @@ package com.study.badrequest.repository.question.query;
 
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionSortType;
 import com.study.badrequest.question.query.QuestionListResult;

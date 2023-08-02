@@ -12,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_SUPPORT_ERROR;
-import static com.study.badrequest.commons.response.ApiResponseStatus.WRONG_FILE_ERROR;
+import static com.study.badrequest.common.response.ApiResponseStatus.NOT_SUPPORT_ERROR;
+import static com.study.badrequest.common.response.ApiResponseStatus.WRONG_FILE_ERROR;
 import static org.assertj.core.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)

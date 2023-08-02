@@ -1,7 +1,7 @@
 package com.study.badrequest.handler;
 
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 
 import com.study.badrequest.exception.CustomOauth2LoginException;
 import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;

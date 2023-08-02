@@ -1,6 +1,6 @@
 package com.study.badrequest.image.command.application;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.image.command.domain.ImageStatus;
 import com.study.badrequest.image.command.domain.QuestionImage;
 import com.study.badrequest.question.command.domain.Question;

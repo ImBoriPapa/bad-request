@@ -1,7 +1,7 @@
 package com.study.badrequest.exception;
 
-import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponse;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

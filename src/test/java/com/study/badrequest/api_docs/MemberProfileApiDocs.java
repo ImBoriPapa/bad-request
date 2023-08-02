@@ -28,10 +28,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.PATCH_MEMBER_NICKNAME;
-import static com.study.badrequest.commons.constants.ApiURL.PATCH_MEMBER_PROFILE_IMAGE;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
+import static com.study.badrequest.common.constants.ApiURL.PATCH_MEMBER_NICKNAME;
+import static com.study.badrequest.common.constants.ApiURL.PATCH_MEMBER_PROFILE_IMAGE;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.ACCESS_TOKEN_PREFIX;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.AUTHORIZATION_HEADER;
 import static com.study.badrequest.member.command.domain.Authority.MEMBER;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;

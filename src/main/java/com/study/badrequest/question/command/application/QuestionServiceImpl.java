@@ -4,7 +4,7 @@ import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.dto.question.QuestionRequest;
 import com.study.badrequest.dto.question.QuestionResponse;
-import com.study.badrequest.event.question.QuestionEventDto;
+import com.study.badrequest.question.command.domain.QuestionEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.MemberRepository;
@@ -23,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
-import static com.study.badrequest.commons.status.ExposureStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.status.ExposureStatus.*;
 
 
 @Service

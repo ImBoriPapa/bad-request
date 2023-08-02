@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_FOUND_QUESTION;
+import static com.study.badrequest.common.response.ApiResponseStatus.NOT_FOUND_QUESTION;
 
 @Service
 @Slf4j

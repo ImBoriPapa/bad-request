@@ -1,9 +1,9 @@
 package com.study.badrequest.member.query.interfaces;
 
 import com.study.badrequest.api.login.LoginController;
-import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.annotation.LoggedInMember;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.member.query.MemberQueryRepository;
@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOTFOUND_MEMBER;
-import static com.study.badrequest.commons.response.ApiResponseStatus.NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER;
+import static com.study.badrequest.common.constants.ApiURL.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.NOTFOUND_MEMBER;
+import static com.study.badrequest.common.response.ApiResponseStatus.NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER;
 import static com.study.badrequest.utils.authority.AuthorityUtils.verifyPermission;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;

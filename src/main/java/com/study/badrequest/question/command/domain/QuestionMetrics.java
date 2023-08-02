@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

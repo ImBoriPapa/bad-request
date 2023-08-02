@@ -1,6 +1,6 @@
 package com.study.badrequest.member.command.domain;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.exception.CustomRuntimeException;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

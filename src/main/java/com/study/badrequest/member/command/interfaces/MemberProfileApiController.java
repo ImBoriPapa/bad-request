@@ -1,7 +1,7 @@
 package com.study.badrequest.member.command.interfaces;
 
-import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.annotation.LoggedInMember;
+import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
@@ -20,8 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.constants.ApiURL.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController

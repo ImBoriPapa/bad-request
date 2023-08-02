@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.interfaces;
 
-import com.study.badrequest.commons.response.ApiResponse;
+import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import com.study.badrequest.dto.question.QuestionResponse;
 import com.study.badrequest.question.command.application.QuestionMetricsService;
@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.SUCCESS;
+import static com.study.badrequest.common.response.ApiResponseStatus.SUCCESS;
 
 @RestController
 @RequiredArgsConstructor

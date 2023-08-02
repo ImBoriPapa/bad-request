@@ -1,7 +1,7 @@
 package com.study.badrequest.question.query;
 
 
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 
 import java.util.Optional;
 

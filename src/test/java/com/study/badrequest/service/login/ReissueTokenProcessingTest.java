@@ -1,7 +1,7 @@
 package com.study.badrequest.service.login;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
-import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.member.command.domain.RefreshToken;
 import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.Member;

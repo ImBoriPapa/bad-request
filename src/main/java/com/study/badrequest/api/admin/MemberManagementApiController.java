@@ -1,8 +1,8 @@
 package com.study.badrequest.api.admin;
 
-import com.study.badrequest.commons.annotation.LoggedInMember;
-import com.study.badrequest.commons.response.ApiResponse;
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.annotation.LoggedInMember;
+import com.study.badrequest.common.response.ApiResponse;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.admin.command.domain.AdministratorActivityHistory;
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.member.command.domain.Authority;

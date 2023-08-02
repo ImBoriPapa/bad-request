@@ -1,7 +1,7 @@
 package com.study.badrequest.question.command.domain;
 
 
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.active.command.domain.ActivityScore;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.utils.markdown.MarkdownUtils;

@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.commons.response.ApiResponseStatus;
+import com.study.badrequest.common.response.ApiResponseStatus;
 
 import com.study.badrequest.exception.CustomRuntimeException;
 import org.springframework.util.StringUtils;

@@ -6,7 +6,7 @@ import com.study.badrequest.member.command.domain.ProfileImage;
 import com.study.badrequest.dto.member.MemberRequest;
 import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.dto.memberProfile.MemberProfileResponse;
-import com.study.badrequest.event.member.MemberEventDto;
+import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.utils.image.ImageUploadDto;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.study.badrequest.commons.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 
 @Service
 @Transactional(readOnly = true)

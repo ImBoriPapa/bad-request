@@ -5,7 +5,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.answer.command.domain.AnswerRecommendation;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import lombok.RequiredArgsConstructor;

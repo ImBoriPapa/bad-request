@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.jwt;
 
-import com.study.badrequest.commons.status.JwtStatus;
+import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.dto.jwt.JwtTokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;

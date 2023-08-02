@@ -28,8 +28,8 @@ import javax.servlet.http.Cookie;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-import static com.study.badrequest.commons.constants.ApiURL.*;
-import static com.study.badrequest.commons.constants.AuthenticationHeaders.*;
+import static com.study.badrequest.common.constants.ApiURL.*;
+import static com.study.badrequest.common.constants.AuthenticationHeaders.*;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentRequest;
 import static com.study.badrequest.testHelper.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.ArgumentMatchers.any;

@@ -2,7 +2,7 @@ package com.study.badrequest.repository.question.query;
 
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.study.badrequest.commons.status.ExposureStatus;
+import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.hashtag.command.domain.HashTag;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.member.command.domain.MemberProfile;
