@@ -1,4 +1,4 @@
-package com.study.badrequest.member.command.infra.profileImage;
+package com.study.badrequest.member.command.infra.uploader;
 
 import com.study.badrequest.image.command.infra.ImageUploader;
 import com.study.badrequest.member.command.domain.ProfileImage;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ProfileImageServiceImpl {
+public class ProfileImageUploader {
     private final ImageUploader imageUploader;
 
     public ProfileImage getDefaultProfileImage() {
