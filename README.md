@@ -3,9 +3,9 @@
 ### Bad-Request 프로젝트는 질문 개발자 질문, 답변 커뮤니티 REST API Server
 
 ### Notification
-- 2023.08.03- 현재 프로젝트는 CQRS 패턴을 더 보강하는 작업중입니다.
+- 2023.08.03- 현재 DDD 설계로 변경 작업중.
 1. Domain-Driven-Design 적용중
-2. CQRS 고도화 작업
+2. CQS -> CQRS
 3. Event 고도화 작업
 4. 테스트 고도화: Test pyramid 적용
 
