@@ -3,11 +3,11 @@
 ### Bad-Request 프로젝트는 질문 개발자 질문, 답변 커뮤니티 REST API Server
 
 ### Notification
-- 2023.08.03- 현재 DDD 설계로 변경 작업중.
-1. Domain-Driven-Design 적용중
-2. CQS -> CQRS
-3. Event 고도화 작업
-4. 테스트 고도화: Test pyramid 적용
+- 2023.08.03- 현재 D.D.D 설계로 변경 작업중.
+1. Domain-Driven-Design 적용중 - doing
+2. CQS -> CQRS - preparing
+3. Event 고도화 작업 - preparing
+4. 테스트 고도화: Test pyramid 적용 - preparing
 
 ---
 
