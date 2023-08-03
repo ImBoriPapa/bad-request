@@ -4,6 +4,7 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.RefreshToken;
 
 
+import com.study.badrequest.member.command.infra.redis.RedisRefreshTokenRepository;
 import com.study.badrequest.member.command.interfaces.LoginResponse;
 import com.study.badrequest.member.command.domain.MemberEventDto;
 
@@ -11,7 +12,6 @@ import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.member.command.domain.DisposalAuthenticationRepository;
-import com.study.badrequest.member.command.domain.RedisDomainRefreshTokenRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
@@ -51,7 +51,7 @@ import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenRe
 @Transactional(readOnly = true)
 public class LoginServiceImpl implements LoginService {
     private final MemberRepository memberRepository;
-    private final RedisDomainRefreshTokenRepository refreshTokenRepository;
+    private final RedisRefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;

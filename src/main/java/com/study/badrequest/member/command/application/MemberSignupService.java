@@ -3,6 +3,7 @@ package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.*;
+import com.study.badrequest.member.command.infra.uploader.ProfileImageUploader;
 import com.study.badrequest.utils.email.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +23,7 @@ import static com.study.badrequest.common.response.ApiResponseStatus.*;
 public class MemberSignupService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ProfileImageService profileImageService;
+    private final ProfileImageUploader profileImageUploader;
     private final EmailAuthenticationCodeRepository emailAuthenticationCodeRepository;
 
     @Transactional
@@ -72,7 +73,7 @@ public class MemberSignupService {
 
 
     private MemberProfile createMemberProfile(String nickname) {
-        ProfileImage defaultProfileImage = profileImageService.getDefaultProfileImage();
+        ProfileImage defaultProfileImage = profileImageUploader.getDefaultProfileImage();
         return MemberProfile.createMemberProfile(nickname, defaultProfileImage);
     }
 
