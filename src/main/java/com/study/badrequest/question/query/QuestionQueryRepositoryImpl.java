@@ -13,7 +13,7 @@ import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.recommandation.command.domain.Recommendation;
 
 
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.question.command.domain.QuestionSortType;
 import com.study.badrequest.question.command.domain.QuestionTag;
 import lombok.RequiredArgsConstructor;

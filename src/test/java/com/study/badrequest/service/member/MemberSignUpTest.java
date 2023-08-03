@@ -1,13 +1,11 @@
 package com.study.badrequest.service.member;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.member.command.domain.MemberEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.domain.*;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 
 
 import com.study.badrequest.member.command.application.SignUpForm;
-import com.study.badrequest.member.command.domain.EmailAuthenticationCode;
-import com.study.badrequest.member.command.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +46,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
                 .ipAddress(ipAddress)
                 .build();
 
-        Member activeMember = Member.createWithEmail(email, password, contact);
+        Member activeMember = Member.createWithEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         List<Member> members = List.of(activeMember);
         //when
@@ -79,7 +77,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
                 .ipAddress(ipAddress)
                 .build();
 
-        Member member = Member.createWithEmail(email, password, contact);
+        Member member = Member.createWithEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         List<Member> members = List.of(member);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -208,7 +206,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
                 .ipAddress(ipAddress)
                 .build();
 
-        Member member = Member.createWithEmail(email, password, contact);
+        Member member = Member.createWithEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());

@@ -3,10 +3,7 @@ package com.study.badrequest.member.command.interfaces;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;
 
-import com.study.badrequest.dto.login.LoginRequest;
-import com.study.badrequest.dto.login.LoginResponse;
-
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.application.LoginService;
 
 import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;

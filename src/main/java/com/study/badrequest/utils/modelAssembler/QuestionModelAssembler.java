@@ -5,7 +5,7 @@ import com.study.badrequest.question.command.interfaces.QuestionApiController;
 import com.study.badrequest.question.command.interfaces.QuestionMetricsApiController;
 import com.study.badrequest.question.query.interfaces.QuestionQueryApiController;
 import com.study.badrequest.question.command.domain.QuestionSortType;
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.question.query.QuestionDetail;
 import com.study.badrequest.question.query.TagDto;
 import com.study.badrequest.question.query.QuestionListResult;

@@ -2,8 +2,7 @@ package com.study.badrequest.image.command.interfaces;
 
 
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.dto.image.QuestionImageResponse;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.image.command.application.QuestionImageService;
 
 import lombok.RequiredArgsConstructor;

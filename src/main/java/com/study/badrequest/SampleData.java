@@ -4,10 +4,12 @@ package com.study.badrequest;
 import com.study.badrequest.hashtag.command.domain.HashTag;
 import com.study.badrequest.member.command.domain.Member;
 
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
 import com.study.badrequest.question.command.domain.Question;
-import com.study.badrequest.dto.question.QuestionRequest;
+import com.study.badrequest.question.query.interfaces.QuestionRequest;
 
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.hashtag.command.domain.HashTagRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
@@ -65,7 +67,7 @@ public class SampleData {
                 "sample@gmail.com",
                 passwordEncoder.encode("sample1234!@"),
                 "01011111111"
-        );
+                , MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("")));
 
         memberList.add(sampleMember);
 
@@ -82,6 +84,7 @@ public class SampleData {
                     email + index + domain,
                     passwordEncoder.encode(password),
                     contact
+                    , MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage(""))
             );
             memberList.add(member);
         });

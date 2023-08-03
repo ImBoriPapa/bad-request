@@ -4,7 +4,7 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.admin.command.domain.AdministratorActivityHistory;
 import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.admin.command.domain.AdministratorActivityHistoryRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;

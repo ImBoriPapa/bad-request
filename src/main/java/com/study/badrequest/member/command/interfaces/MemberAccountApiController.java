@@ -4,8 +4,6 @@ package com.study.badrequest.member.command.interfaces;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
-import com.study.badrequest.dto.member.MemberRequest;
-import com.study.badrequest.dto.member.MemberResponse;
 import com.study.badrequest.member.command.application.MemberService;
 
 import com.study.badrequest.member.command.application.SignUpForm;

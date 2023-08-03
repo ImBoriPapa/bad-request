@@ -2,7 +2,7 @@ package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.member.command.interfaces.LoginController;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
-import com.study.badrequest.dto.login.LoginResponse;
+import com.study.badrequest.member.command.interfaces.LoginResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;

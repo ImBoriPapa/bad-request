@@ -7,7 +7,7 @@ import com.study.badrequest.member.command.domain.ProfileImage;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionMetrics;
 import com.study.badrequest.question.command.domain.QuestionTag;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,5 +1,7 @@
 package com.study.badrequest.exception;
 
+import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.GlobalExceptionAdvisor;
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import org.junit.jupiter.api.DisplayName;

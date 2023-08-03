@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.email;
 
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import static com.study.badrequest.common.response.ApiResponseStatus.INVALID_EMAIL_FORM;
 

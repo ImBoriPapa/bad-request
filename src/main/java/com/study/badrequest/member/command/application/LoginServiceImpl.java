@@ -4,10 +4,10 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.RefreshToken;
 
 
-import com.study.badrequest.dto.login.LoginResponse;
+import com.study.badrequest.member.command.interfaces.LoginResponse;
 import com.study.badrequest.member.command.domain.MemberEventDto;
 
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.member.command.domain.DisposalAuthenticationRepository;
@@ -19,7 +19,7 @@ import com.study.badrequest.utils.cookie.CookieUtils;
 import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.utils.email.EmailUtils;
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.dto.jwt.JwtTokenDto;
+import com.study.badrequest.member.command.interfaces.JwtTokenDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

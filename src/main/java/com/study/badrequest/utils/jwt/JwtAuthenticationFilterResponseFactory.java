@@ -3,7 +3,7 @@ package com.study.badrequest.utils.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;

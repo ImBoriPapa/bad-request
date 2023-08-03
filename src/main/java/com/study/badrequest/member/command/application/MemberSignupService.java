@@ -1,13 +1,11 @@
 package com.study.badrequest.member.command.application;
 
 
-import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.utils.email.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.study.badrequest.common.response.ApiResponseStatus.*;
-import static com.study.badrequest.member.command.domain.AccountStatus.*;
 
 @Service
 @RequiredArgsConstructor

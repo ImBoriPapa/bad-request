@@ -1,10 +1,10 @@
 package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.dto.member.MemberRequest;
-import com.study.badrequest.dto.member.MemberResponse;
+import com.study.badrequest.member.command.interfaces.MemberRequest;
+import com.study.badrequest.member.command.interfaces.MemberResponse;
 import com.study.badrequest.member.command.domain.*;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.utils.email.EmailUtils;
 import lombok.RequiredArgsConstructor;

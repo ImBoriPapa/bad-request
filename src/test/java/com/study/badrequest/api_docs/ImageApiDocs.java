@@ -2,7 +2,7 @@ package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.badrequest.image.command.interfaces.ImageApiController;
-import com.study.badrequest.dto.image.QuestionImageResponse;
+import com.study.badrequest.image.command.interfaces.QuestionImageResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.image.command.application.QuestionImageService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;

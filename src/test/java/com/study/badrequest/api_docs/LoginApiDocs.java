@@ -1,9 +1,11 @@
 package com.study.badrequest.api_docs;
 
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
 import com.study.badrequest.member.command.interfaces.LoginController;
 import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.dto.login.LoginRequest;
-import com.study.badrequest.dto.login.LoginResponse;
+import com.study.badrequest.member.command.interfaces.LoginRequest;
+import com.study.badrequest.member.command.interfaces.LoginResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.member.command.application.LoginService;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -121,7 +123,7 @@ public class LoginApiDocs {
     @DisplayName("1회용 인증 코드로 로그인")
     void oneTimeCodeLoginTest() throws Exception {
         //given
-        Member member = Member.createWithEmail("email@email.com", "password", "01011111234");
+        Member member = Member.createWithEmail("email@email.com", "password", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         String authenticationCode = UUID.randomUUID().toString();
 

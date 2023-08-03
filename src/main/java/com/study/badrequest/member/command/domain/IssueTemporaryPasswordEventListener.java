@@ -1,7 +1,7 @@
 package com.study.badrequest.member.command.domain;
 
 import com.study.badrequest.record.command.domain.ActionStatus;
-import com.study.badrequest.dto.record.MemberRecordRequest;
+import com.study.badrequest.record.command.application.MemberRecordRequest;
 import com.study.badrequest.mail.command.application.MemberMailService;
 import com.study.badrequest.record.command.application.RecordService;
 import lombok.RequiredArgsConstructor;

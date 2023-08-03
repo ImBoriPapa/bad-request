@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.dto.question.QuestionTagResponse;
+import com.study.badrequest.question.query.interfaces.QuestionTagResponse;
 
 import java.util.List;
 

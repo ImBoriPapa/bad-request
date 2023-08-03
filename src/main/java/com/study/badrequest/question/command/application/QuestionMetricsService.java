@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

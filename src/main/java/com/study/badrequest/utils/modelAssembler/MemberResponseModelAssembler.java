@@ -5,8 +5,8 @@ import com.study.badrequest.member.command.interfaces.MemberAccountApiController
 import com.study.badrequest.member.command.interfaces.MemberProfileApiController;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 
-import com.study.badrequest.dto.member.MemberResponse;
-import com.study.badrequest.member.query.MemberDetailDto;
+import com.study.badrequest.member.command.interfaces.MemberResponse;
+import com.study.badrequest.member.query.dto.MemberDetailDto;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;

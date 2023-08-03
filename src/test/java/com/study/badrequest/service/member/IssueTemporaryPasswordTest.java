@@ -1,10 +1,8 @@
 package com.study.badrequest.service.member;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.member.command.domain.MemberEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.member.command.domain.TemporaryPassword;
+import com.study.badrequest.member.command.domain.*;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +42,7 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
 
-        Member withdrawnMember = Member.createWithEmail(email, "", "01011111223");
+        Member withdrawnMember = Member.createWithEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         withdrawnMember.withdrawn();
 
         List<Member> members = List.of(withdrawnMember);
@@ -63,10 +61,10 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
 
-        Member withDrawnMember = Member.createWithEmail(email, "", "01011111223");
+        Member withDrawnMember = Member.createWithEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         withDrawnMember.withdrawn();
 
-        Member activeMember = Member.createWithEmail(email, "", "01011111223");
+        Member activeMember = Member.createWithEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         List<Member> members = List.of(withDrawnMember, activeMember);
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword("", activeMember);

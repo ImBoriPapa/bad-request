@@ -2,8 +2,8 @@ package com.study.badrequest.service.login;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.RefreshToken;
-import com.study.badrequest.dto.jwt.JwtTokenDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.interfaces.JwtTokenDto;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.DisposableAuthenticationCode;
 import com.study.badrequest.member.command.domain.Member;

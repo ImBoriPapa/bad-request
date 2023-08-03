@@ -4,7 +4,7 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.question.command.domain.QuestionEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.question.query.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

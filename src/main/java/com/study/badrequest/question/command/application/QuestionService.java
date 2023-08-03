@@ -1,7 +1,7 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.dto.question.QuestionRequest;
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionRequest;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 
 public interface QuestionService {
 

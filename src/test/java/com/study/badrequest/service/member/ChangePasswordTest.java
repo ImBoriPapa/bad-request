@@ -2,9 +2,11 @@ package com.study.badrequest.service.member;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.dto.member.MemberRequest;
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
+import com.study.badrequest.member.command.interfaces.MemberRequest;
 import com.study.badrequest.member.command.domain.MemberEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,7 +66,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
-        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234");
+        Member member = Member.createWithEmail("email@email.com",passwordEncoder.encode(password) ,"01012131241", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
@@ -85,7 +87,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
-        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01011111234");
+        Member member = Member.createWithEmail("email@email.com",passwordEncoder.encode(password) ,"01012131241", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));

@@ -3,7 +3,7 @@ package com.study.badrequest.utils;
 
 import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
-import com.study.badrequest.dto.jwt.JwtTokenDto;
+import com.study.badrequest.member.command.interfaces.JwtTokenDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

@@ -1,7 +1,7 @@
 package com.study.badrequest.api.question;
 
-import com.study.badrequest.dto.question.QuestionRequest;
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionRequest;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
 

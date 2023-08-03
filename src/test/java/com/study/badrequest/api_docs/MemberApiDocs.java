@@ -10,12 +10,12 @@ import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.member.command.domain.RegistrationType;
 
 
-import com.study.badrequest.dto.member.MemberRequest;
-import com.study.badrequest.dto.member.MemberResponse;
+import com.study.badrequest.member.command.interfaces.MemberRequest;
+import com.study.badrequest.member.command.interfaces.MemberResponse;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 
-import com.study.badrequest.member.query.MemberQueryRepository;
-import com.study.badrequest.member.query.LoggedInMemberInformation;
+import com.study.badrequest.member.query.dao.MemberQueryRepository;
+import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
 import com.study.badrequest.member.command.application.MemberService;
 import com.study.badrequest.member.command.application.MemberProfileService;
 

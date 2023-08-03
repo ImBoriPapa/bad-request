@@ -2,7 +2,7 @@ package com.study.badrequest.question.command.domain;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import org.springframework.util.StringUtils;
 
 public enum QuestionSortType {

@@ -1,7 +1,7 @@
 package com.study.badrequest.member.command.application;
 
-import com.study.badrequest.dto.member.MemberRequest;
-import com.study.badrequest.dto.member.MemberResponse;
+import com.study.badrequest.member.command.interfaces.MemberRequest;
+import com.study.badrequest.member.command.interfaces.MemberResponse;
 
 /**
  * Member Entity

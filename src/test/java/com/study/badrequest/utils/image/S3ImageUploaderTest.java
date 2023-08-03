@@ -2,7 +2,7 @@ package com.study.badrequest.utils.image;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.image.command.infra.ImageUploadDto;
 import com.study.badrequest.image.command.infra.S3ImageUploader;
 import org.junit.jupiter.api.DisplayName;

@@ -2,10 +2,12 @@ package com.study.badrequest.service.question;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionMetrics;
 import com.study.badrequest.question.command.domain.QuestionEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,7 +60,7 @@ public class DeleteQuestionTest extends QuestionServiceTestBase {
         //given
         Long memberId = 123L;
         Long questionId = 1234L;
-        Member member = Member.createWithEmail("email@email.com", "password", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         Question question = Question.createQuestion("title", "contents", member, QuestionMetrics.createQuestionMetrics());
         //when
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));

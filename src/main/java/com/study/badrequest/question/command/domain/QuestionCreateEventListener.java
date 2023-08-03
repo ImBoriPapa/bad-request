@@ -1,7 +1,7 @@
 package com.study.badrequest.question.command.domain;
 
 import com.study.badrequest.record.command.domain.ActionStatus;
-import com.study.badrequest.dto.record.MemberRecordRequest;
+import com.study.badrequest.record.command.application.MemberRecordRequest;
 import com.study.badrequest.image.command.application.QuestionImageService;
 import com.study.badrequest.question.command.application.QuestionTagService;
 import com.study.badrequest.record.command.application.RecordService;

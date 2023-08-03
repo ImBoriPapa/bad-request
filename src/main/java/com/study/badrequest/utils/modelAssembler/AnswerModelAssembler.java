@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.modelAssembler;
 
 import com.study.badrequest.answer.command.interfaces.AnswerApiController;
-import com.study.badrequest.dto.answer.AnswerResponse;
+import com.study.badrequest.answer.command.interfaces.AnswerResponse;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;

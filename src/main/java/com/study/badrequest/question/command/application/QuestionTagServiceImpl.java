@@ -4,8 +4,8 @@ import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.hashtag.command.domain.HashTag;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionTag;
-import com.study.badrequest.dto.question.QuestionTagResponse;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.question.query.interfaces.QuestionTagResponse;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.hashtag.command.domain.HashTagRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;

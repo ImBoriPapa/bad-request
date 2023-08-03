@@ -1,7 +1,7 @@
 package com.study.badrequest.answer.command.application;
 
-import com.study.badrequest.dto.answerComment.AnswerCommentRequest;
-import com.study.badrequest.dto.answerComment.AnswerCommentResponse;
+import com.study.badrequest.answer.command.interfaces.AnswerCommentRequest;
+import com.study.badrequest.answer.command.interfaces.AnswerCommentResponse;
 
 public interface AnswerCommentService {
 

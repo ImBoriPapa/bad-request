@@ -1,6 +1,6 @@
 package com.study.badrequest.member.command.application;
 
-import com.study.badrequest.dto.login.LoginResponse;
+import com.study.badrequest.member.command.interfaces.LoginResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

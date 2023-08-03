@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.verification;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
 

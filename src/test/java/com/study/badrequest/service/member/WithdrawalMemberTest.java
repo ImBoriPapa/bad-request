@@ -3,7 +3,9 @@ package com.study.badrequest.service.member;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.member.command.domain.MemberEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.domain.MemberProfile;
+import com.study.badrequest.member.command.domain.ProfileImage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +43,7 @@ public class WithdrawalMemberTest extends MemberServiceTestBase {
         Long memberId = 123L;
         String password = "password1234!@";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01012341234");
+        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(any(), any())).willReturn(false);
@@ -58,7 +60,7 @@ public class WithdrawalMemberTest extends MemberServiceTestBase {
         Long memberId = 123L;
         String password = "password1234!@";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01012341234");
+        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(any(), any())).willReturn(true);

@@ -5,11 +5,11 @@ import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
-import com.study.badrequest.exception.CustomRuntimeException;
-import com.study.badrequest.member.query.MemberQueryRepository;
-import com.study.badrequest.member.query.LoggedInMemberInformation;
-import com.study.badrequest.member.query.MemberDetailDto;
-import com.study.badrequest.member.query.MemberProfileDto;
+import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.member.query.dao.MemberQueryRepository;
+import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
+import com.study.badrequest.member.query.dto.MemberDetailDto;
+import com.study.badrequest.member.query.dto.MemberProfileDto;
 
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import lombok.RequiredArgsConstructor;

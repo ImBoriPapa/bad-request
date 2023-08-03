@@ -2,11 +2,9 @@ package com.study.badrequest.service.login;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.JwtStatus;
-import com.study.badrequest.member.command.domain.RefreshToken;
-import com.study.badrequest.member.command.domain.Authority;
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.dto.jwt.JwtTokenDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.domain.*;
+import com.study.badrequest.member.command.interfaces.JwtTokenDto;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -187,7 +185,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
                 .expiration(604800L)
                 .build();
 
-        Member member = Member.createWithEmail("email@email.com", "password", "01012341234");
+        Member member = Member.createWithEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
                 .accessToken("newAccessToken")

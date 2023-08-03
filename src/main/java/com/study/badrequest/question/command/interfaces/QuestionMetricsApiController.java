@@ -2,7 +2,7 @@ package com.study.badrequest.question.command.interfaces;
 
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.question.command.application.QuestionMetricsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

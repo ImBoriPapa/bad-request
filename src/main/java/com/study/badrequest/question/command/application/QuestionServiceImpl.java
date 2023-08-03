@@ -2,10 +2,10 @@ package com.study.badrequest.question.command.application;
 
 import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.dto.question.QuestionRequest;
-import com.study.badrequest.dto.question.QuestionResponse;
+import com.study.badrequest.question.query.interfaces.QuestionRequest;
+import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.question.command.domain.QuestionEventDto;
-import com.study.badrequest.exception.CustomRuntimeException;
+import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.question.command.domain.Question;
