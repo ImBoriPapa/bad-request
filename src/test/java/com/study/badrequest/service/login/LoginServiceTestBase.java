@@ -2,7 +2,7 @@ package com.study.badrequest.service.login;
 
 import com.study.badrequest.member.command.application.LoginServiceImpl;
 import com.study.badrequest.member.command.domain.DisposalAuthenticationRepository;
-import com.study.badrequest.member.command.domain.RedisRefreshTokenRepository;
+import com.study.badrequest.member.command.domain.RedisDomainRefreshTokenRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
 import com.study.badrequest.utils.jwt.JwtUtils;
@@ -19,7 +19,7 @@ public abstract class LoginServiceTestBase {
     @Mock
     protected MemberRepository memberRepository;
     @Mock
-    protected RedisRefreshTokenRepository redisRefreshTokenRepository;
+    protected RedisDomainRefreshTokenRepository refreshTokenRepository;
     @Mock
     protected DisposalAuthenticationRepository disposalAuthenticationRepository;
     @Mock

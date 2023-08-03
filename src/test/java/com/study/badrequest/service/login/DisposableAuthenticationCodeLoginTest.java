@@ -82,7 +82,7 @@ public class DisposableAuthenticationCodeLoginTest extends LoginServiceTestBase 
         given(disposalAuthenticationRepository.findByCode(any())).willReturn(Optional.of(code));
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(jwtUtils.generateJwtTokens(any())).willReturn(tokenDto);
-        given(redisRefreshTokenRepository.save(any())).willReturn(refreshToken);
+        given(refreshTokenRepository.save(any())).willReturn(refreshToken);
         loginService.disposableAuthenticationCodeLoginProcessing(authenticationCode, ipAddress);
         //then
         verify(disposalAuthenticationRepository).findByCode(authenticationCode);

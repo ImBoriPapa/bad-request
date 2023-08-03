@@ -11,7 +11,7 @@ import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.member.command.domain.DisposalAuthenticationRepository;
-import com.study.badrequest.member.command.domain.RedisRefreshTokenRepository;
+import com.study.badrequest.member.command.domain.RedisDomainRefreshTokenRepository;
 import com.study.badrequest.member.command.domain.MemberRepository;
 
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
@@ -51,7 +51,7 @@ import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenRe
 @Transactional(readOnly = true)
 public class LoginServiceImpl implements LoginService {
     private final MemberRepository memberRepository;
-    private final RedisRefreshTokenRepository redisRefreshTokenRepository;
+    private final RedisDomainRefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;
@@ -194,9 +194,9 @@ public class LoginServiceImpl implements LoginService {
 
         String changeAbleId = jwtUtils.extractChangeableIdInToken(accessToken);
 
-        redisRefreshTokenRepository
+        refreshTokenRepository
                 .findById(changeAbleId)
-                .ifPresent(redisRefreshTokenRepository::delete);
+                .ifPresent(refreshTokenRepository::delete);
 
         Member member = findMemberByChangeAbleId(changeAbleId);
         member.replaceAuthenticationCode();
@@ -241,7 +241,7 @@ public class LoginServiceImpl implements LoginService {
         Member member = findMemberByChangeAbleId(changeableId);
         member.replaceAuthenticationCode();
 
-        redisRefreshTokenRepository.deleteById(refresh.getChangeableId());
+        refreshTokenRepository.deleteById(refresh.getChangeableId());
 
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getAuthenticationCode());
 
@@ -274,7 +274,7 @@ public class LoginServiceImpl implements LoginService {
      * 리프레시 토큰을 찾지 못할 경우 로그아웃된 계정으로 간주
      */
     private RefreshToken findRefreshTokenByChangeableToken(String changeableToken) {
-        return redisRefreshTokenRepository.findById(changeableToken)
+        return refreshTokenRepository.findById(changeableToken)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.ALREADY_LOGOUT));
     }
 
@@ -287,7 +287,7 @@ public class LoginServiceImpl implements LoginService {
                 .authority(member.getAuthority())
                 .expiration(expiration)
                 .build();
-        return redisRefreshTokenRepository.save(token);
+        return refreshTokenRepository.save(token);
     }
 
     private Member findMemberByChangeAbleId(String changeableId) {
@@ -340,7 +340,7 @@ public class LoginServiceImpl implements LoginService {
     public boolean setAuthenticationInContextHolderByChangeableId(String changeableId) {
         log.info("Set Authentication In ContextHolder By ChangeableId ID: {}", changeableId);
 
-        Optional<RefreshToken> optionalRefreshToken = redisRefreshTokenRepository.findById(changeableId);
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findById(changeableId);
 
         if (optionalRefreshToken.isPresent()) {
             RefreshToken refreshToken = optionalRefreshToken.get();

@@ -133,7 +133,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(accessToken)).willReturn(JwtStatus.EXPIRED);
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
-        given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
+        given(refreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
         //then
         Assertions.assertThatThrownBy(() -> loginService.reissueTokenProcessing(accessToken, refreshToken))
                 .isInstanceOf(CustomRuntimeException.class)
@@ -159,7 +159,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(accessToken)).willReturn(JwtStatus.EXPIRED);
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
-        given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
+        given(refreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
         given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId)))
                 .willReturn(Optional.empty());
         //then
@@ -204,18 +204,18 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(accessToken)).willReturn(JwtStatus.EXPIRED);
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
-        given(redisRefreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
+        given(refreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
         given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))).willReturn(Optional.of(member));
         given(jwtUtils.generateJwtTokens(any())).willReturn(jwtTokenDto);
-        given(redisRefreshTokenRepository.save(any())).willReturn(newRefreshToken);
+        given(refreshTokenRepository.save(any())).willReturn(newRefreshToken);
         loginService.reissueTokenProcessing(accessToken, refreshToken);
         //then
         verify(jwtUtils).validateToken(accessToken);
         verify(jwtUtils).validateToken(refreshToken);
         verify(jwtUtils).extractChangeableIdInToken(accessToken);
-        verify(redisRefreshTokenRepository).findById(any());
+        verify(refreshTokenRepository).findById(any());
         verify(memberRepository).findMemberByAuthenticationCodeAndDateIndex(any(),any());
         verify(jwtUtils).generateJwtTokens(any());
-        verify(redisRefreshTokenRepository).save(any());
+        verify(refreshTokenRepository).save(any());
     }
 }

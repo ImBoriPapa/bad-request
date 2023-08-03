@@ -243,7 +243,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(passwordEncoder.matches(any(), any())).willReturn(true);
         given(jwtUtils.generateJwtTokens(any())).willReturn(tokenDto);
-        given(redisRefreshTokenRepository.save(any())).willReturn(refreshToken);
+        given(refreshTokenRepository.save(any())).willReturn(refreshToken);
         loginService.emailLoginProcessing(requestedEmail, password, ipAddress);
         //then
         verify(memberRepository).findMembersByEmail(requestedEmail);
@@ -251,7 +251,7 @@ public class EmailLoginTest extends LoginServiceTestBase {
         verify(passwordEncoder).matches(any(), any());
         verify(passwordEncoder).matches(any(), any());
         verify(jwtUtils).generateJwtTokens(member.getAuthenticationCode());
-        verify(redisRefreshTokenRepository).save(any());
+        verify(refreshTokenRepository).save(any());
         verify(eventPublisher).publishEvent(new MemberEventDto.Login(any(), "이메일 로그인", ipAddress, LocalDateTime.now()));
     }
 }

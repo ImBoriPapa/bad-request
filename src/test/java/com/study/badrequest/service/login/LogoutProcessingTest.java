@@ -112,7 +112,7 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         given(request.getHeader(AUTHORIZATION_HEADER)).willReturn(accessToken);
         given(jwtUtils.validateToken(any())).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(any())).willReturn(changeAbleId);
-        given(redisRefreshTokenRepository.findById(changeAbleId)).willReturn(Optional.of(refreshToken));
+        given(refreshTokenRepository.findById(changeAbleId)).willReturn(Optional.of(refreshToken));
         given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(any(), any())).willReturn(Optional.of(member));
         given(request.getSession()).willReturn(mockSession);
         loginService.logoutProcessing(request, response);
@@ -120,8 +120,8 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         verify(request).getHeader(AUTHORIZATION_HEADER);
         verify(jwtUtils).validateToken(any());
         verify(jwtUtils).extractChangeableIdInToken(any());
-        verify(redisRefreshTokenRepository).findById(any());
-        verify(redisRefreshTokenRepository).delete(any());
+        verify(refreshTokenRepository).findById(any());
+        verify(refreshTokenRepository).delete(any());
         verify(memberRepository).findMemberByAuthenticationCodeAndDateIndex(any(), any());
         verify(mockSession).invalidate();
         verify(eventPublisher).publishEvent(new MemberEventDto.Logout(any(), "로그아웃", null, LocalDateTime.now()));
