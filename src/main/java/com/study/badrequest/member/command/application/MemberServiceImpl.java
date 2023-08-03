@@ -50,8 +50,7 @@ public class MemberServiceImpl implements MemberService {
 
         emailAuthenticationProcessing(email, emailAuthenticationCode);
 
-        return memberRepository.save(Member.createWithEmail(email, encodedPassword, contact, MemberProfile.createMemberProfile("", ProfileImage.createDefaultImage("")))).getId();
-
+        return memberRepository.save(Member.createWithEmail(email, encodedPassword, contact, MemberProfile.createMemberProfile(nickname, ProfileImage.createDefaultImage("")))).getId();
     }
 
     private void emailDuplicateVerification(String email) {
