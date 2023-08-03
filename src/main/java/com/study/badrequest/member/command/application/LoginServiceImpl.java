@@ -4,7 +4,6 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.RefreshToken;
 
 
-import com.study.badrequest.member.command.infra.redis.RedisRefreshTokenRepository;
 import com.study.badrequest.member.command.interfaces.LoginResponse;
 import com.study.badrequest.member.command.domain.MemberEventDto;
 
@@ -51,7 +50,7 @@ import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenRe
 @Transactional(readOnly = true)
 public class LoginServiceImpl implements LoginService {
     private final MemberRepository memberRepository;
-    private final RedisRefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtUtils jwtUtils;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationEventPublisher eventPublisher;

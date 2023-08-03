@@ -5,7 +5,7 @@ import com.study.badrequest.member.command.domain.DisposalAuthenticationReposito
 
 import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.member.command.domain.TemporaryPasswordRepository;
-import com.study.badrequest.member.command.infra.redis.RedisRefreshTokenRepository;
+import com.study.badrequest.member.command.infra.redis.RefreshTokenRedisRepository;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,7 +20,7 @@ public abstract class LoginServiceTestBase {
     @Mock
     protected MemberRepository memberRepository;
     @Mock
-    protected RedisRefreshTokenRepository refreshTokenRepository;
+    protected RefreshTokenRedisRepository refreshTokenRepository;
     @Mock
     protected DisposalAuthenticationRepository disposalAuthenticationRepository;
     @Mock
