@@ -6,7 +6,7 @@ import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
 import com.study.badrequest.member.command.application.MemberService;
 
-import com.study.badrequest.member.command.application.SignUpForm;
+import com.study.badrequest.member.command.application.SignupForm;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
@@ -68,8 +68,8 @@ public class MemberAccountApiController {
         return EntityModel.of(create, links);
     }
 
-    private SignUpForm createSignUpForm(MemberRequest.SignUp form, String ipAddress) {
-        return SignUpForm.builder()
+    private SignupForm createSignUpForm(MemberRequest.SignUp form, String ipAddress) {
+        return SignupForm.builder()
                 .email(form.getEmail())
                 .password(form.getPassword())
                 .nickname(form.getNickname())

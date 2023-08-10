@@ -63,7 +63,7 @@ public class SampleData {
 
         IntStream intStream = IntStream.rangeClosed(1, 10);
 
-        Member sampleMember = Member.createWithEmail(
+        Member sampleMember = Member.createByEmail(
                 "sample@gmail.com",
                 passwordEncoder.encode("sample1234!@"),
                 "01011111111"
@@ -80,7 +80,7 @@ public class SampleData {
             String contact = "010" + String.format("%08d", new Random().nextInt(90000000) + 10000000);
 
 
-            Member member = Member.createWithEmail(
+            Member member = Member.createByEmail(
                     email + index + domain,
                     passwordEncoder.encode(password),
                     contact
@@ -89,7 +89,7 @@ public class SampleData {
             memberList.add(member);
         });
 
-        memberRepository.saveAll(memberList);
+//        memberRepository.saveAllMembers(memberList);
         System.out.println("================== SAMPLE MEMBER INIT FINISH ==================");
     }
 

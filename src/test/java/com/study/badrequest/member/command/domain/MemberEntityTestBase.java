@@ -1,4 +1,4 @@
-package com.study.badrequest.domain.member;
+package com.study.badrequest.member.command.domain;
 
 import com.study.badrequest.member.command.domain.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +18,8 @@ public abstract class MemberEntityTestBase {
 
     @Autowired
     protected MemberRepository memberRepository;
+    @Autowired
+    protected MemberProfileRepository memberProfileRepository;
     @Autowired
     protected EntityManager em;
 

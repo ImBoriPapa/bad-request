@@ -240,7 +240,7 @@ public class LoginServiceImpl implements LoginService {
         Member member = findMemberByChangeAbleId(changeableId);
         member.replaceAuthenticationCode();
 
-        refreshTokenRepository.deleteById(refresh.getChangeableId());
+        refreshTokenRepository.deleteById(refresh.getAuthenticationCode());
 
         JwtTokenDto jwtTokenDto = jwtUtils.generateJwtTokens(member.getAuthenticationCode());
 
@@ -280,7 +280,7 @@ public class LoginServiceImpl implements LoginService {
 
     private RefreshToken createNewRefreshToken(Member member, String refreshToken, long expiration) {
         RefreshToken token = RefreshToken.createRefresh()
-                .changeableId(member.getAuthenticationCode())
+                .authenticationCode(member.getAuthenticationCode())
                 .memberId(member.getId())
                 .token(refreshToken)
                 .authority(member.getAuthority())
@@ -291,7 +291,7 @@ public class LoginServiceImpl implements LoginService {
 
     private Member findMemberByChangeAbleId(String changeableId) {
         return memberRepository
-                .findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))
+                .findMemberByAuthenticationCodeAndCreatedAt(changeableId, Member.getCreatedAtInAuthenticationCode(changeableId))
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
     }
 
@@ -343,7 +343,7 @@ public class LoginServiceImpl implements LoginService {
 
         if (optionalRefreshToken.isPresent()) {
             RefreshToken refreshToken = optionalRefreshToken.get();
-            Authentication authentication = generateAuthentication(refreshToken.getChangeableId(), refreshToken.getMemberId(), refreshToken.getAuthority());
+            Authentication authentication = generateAuthentication(refreshToken.getAuthenticationCode(), refreshToken.getMemberId(), refreshToken.getAuthority());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             return true;
         } else {

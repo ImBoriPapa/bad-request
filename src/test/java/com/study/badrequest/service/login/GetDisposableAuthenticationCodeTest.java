@@ -39,7 +39,7 @@ public class GetDisposableAuthenticationCodeTest extends LoginServiceTestBase {
     void test2() throws Exception {
         //given
         Long memberId = 123L;
-        Member member = Member.createWithOauth2("email@email.com", "01234", RegistrationType.GOOGLE);
+        Member member = Member.createByOAuth2("email@email.com", "01234", RegistrationType.GOOGLE);
         DisposableAuthenticationCode authenticationCode = DisposableAuthenticationCode.createDisposableAuthenticationCode(member);
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));

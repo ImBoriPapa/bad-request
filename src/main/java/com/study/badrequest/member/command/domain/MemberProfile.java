@@ -36,9 +36,9 @@ public class MemberProfile {
     }
 
     public static MemberProfile createMemberProfile(String nickname, ProfileImage profileImage) {
-        final String introduce = "자기 소개를 입력해 주세요";
-        final int score = 10;
-        return new MemberProfile(nickname, introduce, profileImage, score);
+        final String DEFAULT_INTRODUCE = "자기 소개를 입력해 주세요";
+        final int DEFAULT_SCORE = 10;
+        return new MemberProfile(nickname, DEFAULT_INTRODUCE, profileImage, DEFAULT_SCORE);
     }
 
     public void changeNickname(String nickname) {

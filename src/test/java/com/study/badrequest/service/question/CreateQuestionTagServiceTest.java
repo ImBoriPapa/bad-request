@@ -178,6 +178,6 @@ class CreateQuestionTagServiceTest extends QuestionTagServiceTestBase {
 
 
     private Member createSampleMember() {
-        return Member.createWithEmail("email@email.com", "password1234!@", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        return Member.createByEmail("email@email.com", "password1234!@", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
     }
 }

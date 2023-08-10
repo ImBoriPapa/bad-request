@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class SignUpForm {
+public class SignupForm {
     private String email;
     private String password;
     private String nickname;
@@ -15,7 +15,7 @@ public class SignUpForm {
     private String ipAddress;
 
     @Builder
-    public SignUpForm(String email, String password, String nickname, String contact, String authenticationCode, String ipAddress) {
+    public SignupForm(String email, String password, String nickname, String contact, String authenticationCode, String ipAddress) {
         this.email = email;
         this.password = password;
         this.nickname = nickname;

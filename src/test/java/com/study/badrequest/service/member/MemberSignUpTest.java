@@ -5,7 +5,7 @@ import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
 
-import com.study.badrequest.member.command.application.SignUpForm;
+import com.study.badrequest.member.command.application.SignupForm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +37,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
 
-        SignUpForm signUpForm = SignUpForm.builder()
+        SignupForm signUpForm = SignupForm.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -46,7 +46,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
                 .ipAddress(ipAddress)
                 .build();
 
-        Member activeMember = Member.createWithEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member activeMember = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         List<Member> members = List.of(activeMember);
         //when
@@ -68,7 +68,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
 
-        SignUpForm signUpForm = SignUpForm.builder()
+        SignupForm signUpForm = SignupForm.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -77,7 +77,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
                 .ipAddress(ipAddress)
                 .build();
 
-        Member member = Member.createWithEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         List<Member> members = List.of(member);
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());
@@ -99,7 +99,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String authenticationCode = "45125";
         String ipAddress = "ipAddress";
 
-        SignUpForm signUpForm = SignUpForm.builder()
+        SignupForm signUpForm = SignupForm.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -132,7 +132,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         String authenticationCode = code.getCode() + 313;
 
-        SignUpForm signUpForm = SignUpForm.builder()
+        SignupForm signUpForm = SignupForm.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -165,7 +165,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
         code.changeExpiredAt(LocalDateTime.now().minusSeconds(1));
 
-        SignUpForm signUpForm = SignUpForm.builder()
+        SignupForm signUpForm = SignupForm.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -197,7 +197,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
         String ipAddress = "ipAddress";
         EmailAuthenticationCode code = new EmailAuthenticationCode("email");
 
-        SignUpForm signUpForm = SignUpForm.builder()
+        SignupForm signUpForm = SignupForm.builder()
                 .email(email)
                 .password(password)
                 .nickname(nickname)
@@ -206,7 +206,7 @@ class MemberSignUpTest extends MemberServiceTestBase {
                 .ipAddress(ipAddress)
                 .build();
 
-        Member member = Member.createWithEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findMembersByEmail(any())).willReturn(new ArrayList<>());

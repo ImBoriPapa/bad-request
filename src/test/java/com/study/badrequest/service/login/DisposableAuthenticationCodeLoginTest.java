@@ -44,7 +44,7 @@ public class DisposableAuthenticationCodeLoginTest extends LoginServiceTestBase 
         //given
         String authenticationCode = "wrongCode";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithOauth2("email@email.com", "1234", RegistrationType.GOOGLE);
+        Member member = Member.createByOAuth2("email@email.com", "1234", RegistrationType.GOOGLE);
         DisposableAuthenticationCode code = DisposableAuthenticationCode.createDisposableAuthenticationCode(member);
         //when
         given(disposalAuthenticationRepository.findByCode(any())).willReturn(Optional.of(code));
@@ -61,7 +61,7 @@ public class DisposableAuthenticationCodeLoginTest extends LoginServiceTestBase 
         //given
         String authenticationCode = "wrongCode";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithOauth2("email@email.com", "1234", RegistrationType.GOOGLE);
+        Member member = Member.createByOAuth2("email@email.com", "1234", RegistrationType.GOOGLE);
 
         DisposableAuthenticationCode code = DisposableAuthenticationCode.createDisposableAuthenticationCode(member);
 
@@ -73,7 +73,7 @@ public class DisposableAuthenticationCodeLoginTest extends LoginServiceTestBase 
                 .build();
 
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .changeableId(member.getAuthenticationCode())
+                .authenticationCode(member.getAuthenticationCode())
                 .memberId(1L)
                 .token("token")
                 .authority(Authority.MEMBER)

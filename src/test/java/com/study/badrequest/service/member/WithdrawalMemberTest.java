@@ -43,7 +43,7 @@ public class WithdrawalMemberTest extends MemberServiceTestBase {
         Long memberId = 123L;
         String password = "password1234!@";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", passwordEncoder.encode(password), "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(any(), any())).willReturn(false);
@@ -60,7 +60,7 @@ public class WithdrawalMemberTest extends MemberServiceTestBase {
         Long memberId = 123L;
         String password = "password1234!@";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithEmail("email@email.com", passwordEncoder.encode(password), "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", passwordEncoder.encode(password), "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
         given(passwordEncoder.matches(any(), any())).willReturn(true);

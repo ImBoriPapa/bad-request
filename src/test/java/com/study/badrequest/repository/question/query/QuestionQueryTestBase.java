@@ -94,11 +94,12 @@ public class QuestionQueryTestBase {
     private List<Member> createSampleMembers() {
         List<Member> memberList = new ArrayList<>();
         IntStream.rangeClosed(1, 10).forEach(index -> memberList.add(createMemberWithIndex(index)));
-        return memberRepository.saveAllAndFlush(memberList);
+//        memberRepository.saveAllAndFlushMembers(memberList);
+        return null;
     }
 
     private static Member createMemberWithIndex(int index) {
-        Member member = Member.createWithEmail(
+        Member member = Member.createByEmail(
                 "sample" + index + "@gmail.com",
                 "sample1234!@",
                 "010" + new Random().nextInt(10000000) + 1, MemberProfile.createMemberProfile("nickname" + index, ProfileImage.createDefaultImage("image")));

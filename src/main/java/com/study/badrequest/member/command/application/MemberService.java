@@ -10,7 +10,7 @@ import com.study.badrequest.member.command.interfaces.MemberResponse;
  * Delete(resignMember)
  */
 public interface MemberService {
-    Long signUpWithEmail(SignUpForm form);
+    Long signUpWithEmail(SignupForm form);
 
     MemberResponse.SendAuthenticationEmail sendAuthenticationMailProcessing(String email);
 

@@ -98,14 +98,14 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         String changeAbleId = UUID.randomUUID() + "-4241";
 
         RefreshToken refreshToken = RefreshToken.createRefresh()
-                .changeableId(changeAbleId)
+                .authenticationCode(changeAbleId)
                 .expiration(604800L)
                 .memberId(1L)
                 .token("refreshToken")
                 .authority(Authority.MEMBER)
                 .build();
 
-        Member member = Member.createWithEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         HttpSession mockSession = mock(HttpSession.class);
         //when
@@ -113,7 +113,7 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(any())).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(any())).willReturn(changeAbleId);
         given(refreshTokenRepository.findById(changeAbleId)).willReturn(Optional.of(refreshToken));
-        given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(any(), any())).willReturn(Optional.of(member));
+        given(memberRepository.findMemberByAuthenticationCodeAndCreatedAt(any(), any())).willReturn(Optional.of(member));
         given(request.getSession()).willReturn(mockSession);
         loginService.logoutProcessing(request, response);
         //then
@@ -122,7 +122,7 @@ public class LogoutProcessingTest extends LoginServiceTestBase {
         verify(jwtUtils).extractChangeableIdInToken(any());
         verify(refreshTokenRepository).findById(any());
         verify(refreshTokenRepository).delete(any());
-        verify(memberRepository).findMemberByAuthenticationCodeAndDateIndex(any(), any());
+        verify(memberRepository).findMemberByAuthenticationCodeAndCreatedAt(any(), any());
         verify(mockSession).invalidate();
         verify(eventPublisher).publishEvent(new MemberEventDto.Logout(any(), "로그아웃", null, LocalDateTime.now()));
     }

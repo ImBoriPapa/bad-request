@@ -35,7 +35,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Long signUpWithEmail(SignUpForm form) {
+    public Long signUpWithEmail(SignupForm form) {
         log.info("SignUp Processing");
 
         final String email = EmailUtils.convertDomainToLowercase(form.getEmail());
@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
 
         emailAuthenticationProcessing(email, emailAuthenticationCode);
 
-        return memberRepository.save(Member.createWithEmail(email, encodedPassword, contact, MemberProfile.createMemberProfile(nickname, ProfileImage.createDefaultImage("")))).getId();
+        return memberRepository.save(Member.createByEmail(email, encodedPassword, contact, MemberProfile.createMemberProfile(nickname, ProfileImage.createDefaultImage("")))).getId();
     }
 
     private void emailDuplicateVerification(String email) {

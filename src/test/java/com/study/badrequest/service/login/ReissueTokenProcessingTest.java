@@ -125,7 +125,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         RefreshToken tokenEntity = RefreshToken.createRefresh()
                 .memberId(1L)
                 .token(storedToken)
-                .changeableId(changeableId)
+                .authenticationCode(changeableId)
                 .authority(Authority.MEMBER)
                 .expiration(604800L)
                 .build();
@@ -151,7 +151,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         RefreshToken tokenEntity = RefreshToken.createRefresh()
                 .memberId(1L)
                 .token(storedToken)
-                .changeableId(changeableId)
+                .authenticationCode(changeableId)
                 .authority(Authority.MEMBER)
                 .expiration(604800L)
                 .build();
@@ -160,7 +160,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
         given(refreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
-        given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId)))
+        given(memberRepository.findMemberByAuthenticationCodeAndCreatedAt(changeableId, Member.getCreatedAtInAuthenticationCode(changeableId)))
                 .willReturn(Optional.empty());
         //then
         Assertions.assertThatThrownBy(() -> loginService.reissueTokenProcessing(accessToken, refreshToken))
@@ -180,12 +180,12 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         RefreshToken tokenEntity = RefreshToken.createRefresh()
                 .memberId(1L)
                 .token(storedToken)
-                .changeableId(changeableId)
+                .authenticationCode(changeableId)
                 .authority(Authority.MEMBER)
                 .expiration(604800L)
                 .build();
 
-        Member member = Member.createWithEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         JwtTokenDto jwtTokenDto = JwtTokenDto.builder()
                 .accessToken("newAccessToken")
@@ -196,7 +196,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         RefreshToken newRefreshToken = RefreshToken.createRefresh()
                 .memberId(1L)
                 .token(jwtTokenDto.getRefreshToken())
-                .changeableId("newChangeableId")
+                .authenticationCode("newChangeableId")
                 .expiration(jwtTokenDto.getRefreshTokenExpirationMill())
                 .authority(Authority.MEMBER)
                 .build();
@@ -205,7 +205,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         given(jwtUtils.validateToken(refreshToken)).willReturn(JwtStatus.ACCESS);
         given(jwtUtils.extractChangeableIdInToken(accessToken)).willReturn(changeableId);
         given(refreshTokenRepository.findById(any())).willReturn(Optional.of(tokenEntity));
-        given(memberRepository.findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))).willReturn(Optional.of(member));
+        given(memberRepository.findMemberByAuthenticationCodeAndCreatedAt(changeableId, Member.getCreatedAtInAuthenticationCode(changeableId))).willReturn(Optional.of(member));
         given(jwtUtils.generateJwtTokens(any())).willReturn(jwtTokenDto);
         given(refreshTokenRepository.save(any())).willReturn(newRefreshToken);
         loginService.reissueTokenProcessing(accessToken, refreshToken);
@@ -214,7 +214,7 @@ public class ReissueTokenProcessingTest extends LoginServiceTestBase {
         verify(jwtUtils).validateToken(refreshToken);
         verify(jwtUtils).extractChangeableIdInToken(accessToken);
         verify(refreshTokenRepository).findById(any());
-        verify(memberRepository).findMemberByAuthenticationCodeAndDateIndex(any(),any());
+        verify(memberRepository).findMemberByAuthenticationCodeAndCreatedAt(any(),any());
         verify(jwtUtils).generateJwtTokens(any());
         verify(refreshTokenRepository).save(any());
     }

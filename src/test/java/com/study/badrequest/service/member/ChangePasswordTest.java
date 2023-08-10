@@ -66,7 +66,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
-        Member member = Member.createWithEmail("email@email.com",passwordEncoder.encode(password) ,"01012131241", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com",passwordEncoder.encode(password) ,"01012131241", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));
@@ -87,7 +87,7 @@ public class ChangePasswordTest extends MemberServiceTestBase {
         MemberRequest.ChangePassword form = new MemberRequest.ChangePassword(password, newPassword);
         String ipAddress = "ipAddress";
 
-        Member member = Member.createWithEmail("email@email.com",passwordEncoder.encode(password) ,"01012131241", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com",passwordEncoder.encode(password) ,"01012131241", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findById(any())).willReturn(Optional.of(member));

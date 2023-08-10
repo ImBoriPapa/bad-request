@@ -60,7 +60,7 @@ public class DeleteQuestionTest extends QuestionServiceTestBase {
         //given
         Long memberId = 123L;
         Long questionId = 1234L;
-        Member member = Member.createWithEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", "password", "01012341234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         Question question = Question.createQuestion("title", "contents", member, QuestionMetrics.createQuestionMetrics());
         //when
         given(memberRepository.findById(memberId)).willReturn(Optional.of(member));

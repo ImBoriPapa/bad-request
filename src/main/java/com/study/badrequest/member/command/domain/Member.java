@@ -9,6 +9,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import static com.study.badrequest.member.command.domain.AccountStatus.*;
+import static com.study.badrequest.member.command.domain.Authority.*;
+import static com.study.badrequest.member.command.domain.RegistrationType.*;
+
 
 @Entity
 @Getter
@@ -17,7 +21,7 @@ import java.util.UUID;
 @Table(name = "member", indexes = {
         @Index(name = "MEMBER_EMAIL_IDX", columnList = "email"),
         @Index(name = "MEMBER_CONTACT_IDX", columnList = "contact"),
-        @Index(name = "MEMBER_CREATE_DATE_TIME_IDX", columnList = "date_index")
+        @Index(name = "MEMBER_CREATE_DATE_TIME_IDX", columnList = "created_at")
 })
 public class Member {
     @Id
@@ -48,8 +52,6 @@ public class Member {
     @Column(name = "account_status")
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
-    @Column(name = "date_index")
-    private Long dateIndex;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
@@ -72,28 +74,45 @@ public class Member {
         this.deletedAt = deletedAt;
     }
 
-    public static Member createWithEmail(String email, String password, String contact,MemberProfile memberProfile) {
-
+    /**
+     * 회원 Entity 생성: 이메일로 가입시 회원 정보 생성
+     *
+     * @param email         : 회원이 사용하는 이메일
+     * @param password      : 비밀번호
+     * @param contact       : 연락처
+     * @param memberProfile : 회원 프로필 entity
+     * @return Member
+     */
+    public static Member createByEmail(String email, String password, String contact, MemberProfile memberProfile) {
+        assert email != null;
         Member member = Member.builder()
                 .email(email)
                 .oauthId(null)
                 .password(password)
-                .registrationType(RegistrationType.BAD_REQUEST)
+                .registrationType(BAD_REQUEST)
                 .contact(contact)
-                .authority(Authority.MEMBER)
-                .accountStatus(AccountStatus.ACTIVE)
+                .authority(MEMBER)
+                .accountStatus(ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(null)
                 .deletedAt(null)
                 .build();
+
         member.assignMemberProfile(memberProfile);
-        member.generateDateTimeIndex();
         member.generateAuthenticationCode();
 
         return member;
     }
 
-    public static Member createWithOauth2(String email, String oauthId, RegistrationType registrationType) {
+    /**
+     * 회원 Entity 생성: OAuth 로 회원 정보 생성
+     *
+     * @param email            : email
+     * @param oauthId          : oauthId
+     * @param registrationType : registrationType
+     * @return Member
+     */
+    public static Member createByOAuth2(String email, String oauthId, RegistrationType registrationType) {
 
         Member member = Member.builder()
                 .email(email)
@@ -101,36 +120,35 @@ public class Member {
                 .password(null)
                 .registrationType(registrationType)
                 .contact(null)
-                .authority(Authority.MEMBER)
-                .accountStatus(AccountStatus.ACTIVE)
+                .authority(MEMBER)
+                .accountStatus(ACTIVE)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(null)
                 .deletedAt(null)
                 .build();
 
-        member.generateDateTimeIndex();
         member.generateAuthenticationCode();
 
         return member;
     }
 
-    public boolean isActive(){
-        return this.accountStatus != AccountStatus.WITHDRAWN;
+    public boolean isActive() {
+        return this.accountStatus != WITHDRAWN;
     }
 
     public void withdrawn() {
         this.deletedAt = LocalDateTime.now();
-        this.changeStatus(AccountStatus.WITHDRAWN);
+        this.changeStatus(WITHDRAWN);
     }
 
     public void useTemporaryPassword() {
         this.updatedAt = LocalDateTime.now();
-        this.changeStatus(AccountStatus.USING_TEMPORARY_PASSWORD);
+        this.changeStatus(USING_TEMPORARY_PASSWORD);
     }
 
     public void useNotConfirmed() {
         this.updatedAt = LocalDateTime.now();
-        this.changeStatus(AccountStatus.USING_NOT_CONFIRMED_EMAIL);
+        this.changeStatus(USING_NOT_CONFIRMED_EMAIL);
     }
 
     private void assignMemberProfile(MemberProfile memberProfile) {
@@ -142,10 +160,6 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
-    private void generateDateTimeIndex() {
-        this.dateIndex = Long.parseLong(this.createdAt.format(DateTimeFormatter.ofPattern("yyyyMMddHHmm")));
-    }
-
     public void assignIpAddress(String ipAddress) {
         if (ipAddress != null) {
             this.ipAddress = ipAddress;
@@ -153,7 +167,7 @@ public class Member {
     }
 
     private void generateAuthenticationCode() {
-        this.authenticationCode = UUID.randomUUID() + "-" + this.dateIndex;
+        this.authenticationCode = UUID.randomUUID() + "/" + createdAt.toString();
     }
 
     public void replaceAuthenticationCode() {
@@ -177,12 +191,14 @@ public class Member {
     }
 
     public void changeToWithDrawn() {
-        this.accountStatus = AccountStatus.WITHDRAWN;
+        this.accountStatus = WITHDRAWN;
         this.deletedAt = LocalDateTime.now();
     }
 
-    public static Long getDateIndexInAuthenticationCode(String authenticationCode) {
-        return Long.valueOf(authenticationCode.split("-")[5]);
+    public static LocalDateTime getCreatedAtInAuthenticationCode(String authenticationCode) {
+        String stringCreatedAt = authenticationCode.split("/")[1];
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+        return LocalDateTime.parse(stringCreatedAt, formatter);
     }
 
     public void changeNickname(String nickname) {

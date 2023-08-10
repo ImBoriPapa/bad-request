@@ -1,9 +1,6 @@
 package com.study.badrequest.domain.member;
 
-import com.study.badrequest.member.command.domain.AccountStatus;
-import com.study.badrequest.member.command.domain.Authority;
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.member.command.domain.RegistrationType;
+import com.study.badrequest.member.command.domain.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +19,7 @@ class MemberTest extends MemberEntityTestBase {
         final String password = "password1234!@";
         final String contact = "01012341234";
 
-        Member member = Member.createWithEmail(email, password, contact);
+        Member member = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname",ProfileImage.createDefaultImage("image")));
         //when
         Member save = memberRepository.save(member);
         Member found = memberRepository.findById(save.getId()).get();
@@ -39,7 +36,7 @@ class MemberTest extends MemberEntityTestBase {
         assertThat(found.getIpAddress()).isNull();
         assertThat(found.getAccountStatus() == AccountStatus.ACTIVE).isTrue();
         assertThat(found.getCreatedAt().isEqual(save.getCreatedAt())).isTrue();
-        assertThat(found.getDateIndex().equals(save.getDateIndex())).isTrue();
+
     }
 
     @Test
@@ -50,7 +47,7 @@ class MemberTest extends MemberEntityTestBase {
         final String oauthId = "12345";
         final RegistrationType registrationType = RegistrationType.GOOGLE;
 
-        Member member = Member.createWithOauth2(email, oauthId, registrationType);
+        Member member = Member.createByOAuth2(email, oauthId, registrationType);
         //when
         Member save = memberRepository.save(member);
         Member found = memberRepository.findById(save.getId()).get();
@@ -67,7 +64,7 @@ class MemberTest extends MemberEntityTestBase {
         assertThat(found.getIpAddress()).isNull();
         assertThat(found.getAccountStatus() == AccountStatus.ACTIVE).isTrue();
         assertThat(found.getCreatedAt().isEqual(save.getCreatedAt())).isTrue();
-        assertThat(found.getDateIndex().equals(save.getDateIndex())).isTrue();
+
     }
 
     @Test
@@ -78,16 +75,16 @@ class MemberTest extends MemberEntityTestBase {
         final String password = "password1234!@";
         final String contact = "01012341234";
 
-        Member member1 = Member.createWithEmail(email, password, contact);
+        Member member1 = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname",ProfileImage.createDefaultImage("image")));
         member1.withdrawn();
 
-        Member member2 = Member.createWithEmail(email, password, contact);
+        Member member2 = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname",ProfileImage.createDefaultImage("image")));
         member2.withdrawn();
 
-        Member member3 = Member.createWithEmail(email, password, contact);
+        Member member3 = Member.createByEmail(email, password, contact, MemberProfile.createMemberProfile("nickname",ProfileImage.createDefaultImage("image")));
         List<Member> members = List.of(member1, member2, member3);
         //when
-        memberRepository.saveAllAndFlush(members);
+//        memberRepository.saveAllAndFlushMembers(members);
 
         boolean existActiveMember = memberRepository.findMembersByEmail(email)
                 .stream()

@@ -2,7 +2,6 @@ package com.study.badrequest.member.command.domain;
 
 
 
-import com.study.badrequest.member.command.domain.Authority;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 @RedisHash(value = "refresh")
 public class RefreshToken implements Serializable {
     @Id
-    private String changeableId;
+    private String authenticationCode;
     private Long memberId;
     private String token;
     private Authority authority;
@@ -28,11 +27,11 @@ public class RefreshToken implements Serializable {
 
     /**
      * RefreshToken 생성시
-     * changeableId 를 키로 token, 권한정보, 만료까지 남은 시간과 인덱스를 설정
+     * authenticationCode 를 키로 token, 권한정보, 만료까지 남은 시간과 인덱스를 설정
      */
     @Builder(builderMethodName = "createRefresh")
-    public RefreshToken(String changeableId, Long memberId, String token, Authority authority, Long expiration) {
-        this.changeableId = changeableId;
+    public RefreshToken(String authenticationCode, Long memberId, String token, Authority authority, Long expiration) {
+        this.authenticationCode = authenticationCode;
         this.memberId = memberId;
         this.token = token;
         this.authority = authority;

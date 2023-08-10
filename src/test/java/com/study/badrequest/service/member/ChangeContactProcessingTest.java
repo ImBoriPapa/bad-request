@@ -31,7 +31,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member activeMember = Member.createWithEmail("email@email.com", "", contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member activeMember = Member.createByEmail("email@email.com", "", contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         List<Member> members = List.of(activeMember);
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(members);
@@ -67,7 +67,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member widrawnMember = Member.createWithEmail("email@email.com", "", contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member widrawnMember = Member.createByEmail("email@email.com", "", contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         widrawnMember.withdrawn();
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());
@@ -86,7 +86,7 @@ public class ChangeContactProcessingTest extends MemberServiceTestBase {
         String contact = "01012341234";
         String newContact = "01023421341";
         String ipAddress = "ipAddress";
-        Member member = Member.createWithEmail("email@email.com", "", contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", "", contact, MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         //when
         given(memberRepository.findMembersByContact(any())).willReturn(new ArrayList<>());

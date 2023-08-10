@@ -23,7 +23,7 @@ public class JwtUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String changeableId) throws UsernameNotFoundException {
         log.info("Load User By Username");
         return memberRepository
-                .findMemberByAuthenticationCodeAndDateIndex(changeableId, Member.getDateIndexInAuthenticationCode(changeableId))
+                .findMemberByAuthenticationCodeAndCreatedAt(changeableId, Member.getCreatedAtInAuthenticationCode(changeableId))
                 .map(member ->
                         new MemberPrincipal(
                                 member.getId(),

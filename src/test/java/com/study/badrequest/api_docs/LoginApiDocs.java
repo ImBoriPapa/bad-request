@@ -123,7 +123,7 @@ public class LoginApiDocs {
     @DisplayName("1회용 인증 코드로 로그인")
     void oneTimeCodeLoginTest() throws Exception {
         //given
-        Member member = Member.createWithEmail("email@email.com", "password", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", "password", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         String authenticationCode = UUID.randomUUID().toString();
 

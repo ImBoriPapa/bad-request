@@ -1,8 +1,8 @@
 package com.study.badrequest.member.command.interfaces;
 
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.member.command.application.MemberSignupService;
-import com.study.badrequest.member.command.application.SignUpForm;
+import com.study.badrequest.member.command.application.MemberSignupServiceImpl;
+import com.study.badrequest.member.command.application.SignupForm;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
 import com.study.badrequest.utils.verification.RequestValidUtils;
@@ -38,7 +38,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 @Slf4j
 public class MemberSignupApiController {
-    private final MemberSignupService memberSignupService;
+    private final MemberSignupServiceImpl memberSignupServiceImpl;
 
     @PostMapping(value = POST_MEMBER_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> createMember(HttpServletRequest request, @Validated @RequestBody SignUp form, BindingResult bindingResult) {
@@ -46,15 +46,15 @@ public class MemberSignupApiController {
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
 
-        final Long memberId = memberSignupService.signupByEmail(createSignUpForm(form, ipAddress));
+        final Long memberId = memberSignupServiceImpl.signupByEmail(createSignUpForm(form, ipAddress));
 
         return ResponseEntity
                 .created(getLocationUri(memberId))
                 .body(ApiResponse.success(getCreateEntityModel(new Create(memberId))));
     }
 
-    private SignUpForm createSignUpForm(SignUp form, String ipAddress) {
-        return SignUpForm.builder()
+    private SignupForm createSignUpForm(SignUp form, String ipAddress) {
+        return SignupForm.builder()
                 .email(form.getEmail())
                 .password(form.getPassword())
                 .nickname(form.getNickname())

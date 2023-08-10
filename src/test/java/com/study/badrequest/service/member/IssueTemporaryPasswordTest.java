@@ -42,7 +42,7 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
 
-        Member withdrawnMember = Member.createWithEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member withdrawnMember = Member.createByEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         withdrawnMember.withdrawn();
 
         List<Member> members = List.of(withdrawnMember);
@@ -61,10 +61,10 @@ public class IssueTemporaryPasswordTest extends MemberServiceTestBase {
         String email = "email@email.com";
         String ipAddress = "Ip Address";
 
-        Member withDrawnMember = Member.createWithEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member withDrawnMember = Member.createByEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
         withDrawnMember.withdrawn();
 
-        Member activeMember = Member.createWithEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member activeMember = Member.createByEmail(email, "", "01011111223", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
 
         List<Member> members = List.of(withDrawnMember, activeMember);
         TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword("", activeMember);
