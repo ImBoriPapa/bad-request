@@ -64,14 +64,14 @@ public class S3ImageUploader implements ImageUploader {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFileByStoredNames(String storedName) {
+    public void deleteFileByStoredName(String storedName) {
         log.info("[deleteFile]");
         if (storedName != null) {
             amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName));
         }
     }
 
-    public void deleteFileByStoredNames(List<String> storedNameList) {
+    public void deleteFileByStoredName(List<String> storedNameList) {
         log.info("[deleteFile]");
         if (storedNameList != null) {
             storedNameList.forEach(storedName -> amazonS3Client.deleteObject(new DeleteObjectRequest(BUCKET_NAME, storedName)));

@@ -12,7 +12,7 @@ public interface ImageUploader {
 
     String getDefaultProfileImage();
 
-    void deleteFileByStoredNames(String storedName);
+    void deleteFileByStoredName(String storedName);
 
     void deleteFileByStoredNames(List<String> storedNameList);
 }

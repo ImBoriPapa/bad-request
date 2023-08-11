@@ -52,4 +52,8 @@ public class MemberProfile {
     public void incrementActivityScore(ActivityScore score) {
         this.activityScore = this.activityScore + score.getScore();
     }
+
+    protected void replaceProfileImage(ProfileImage profileImage) {
+        this.profileImage = profileImage;
+    }
 }

@@ -1,16 +1,11 @@
 package com.study.badrequest.member.command.application;
 
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.member.command.domain.MemberProfile;
-import com.study.badrequest.member.command.domain.ProfileImage;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.member.command.interfaces.MemberRequest;
 import com.study.badrequest.member.command.interfaces.MemberResponse;
-import com.study.badrequest.member.command.interfaces.MemberProfileResponse;
-import com.study.badrequest.member.command.domain.MemberEventDto;
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.member.command.domain.MemberRepository;
 import com.study.badrequest.image.command.domain.ImageUploadDto;
-import com.study.badrequest.image.command.domain.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,20 +21,9 @@ import static com.study.badrequest.common.response.ApiResponseStatus.*;
 @Slf4j
 public class MemberProfileServiceImpl implements MemberProfileService {
     private final MemberRepository memberRepository;
-    private final ImageUploader imageUploader;
+    private final ProfileImageUploader profileImageUploader;
     private final ApplicationEventPublisher eventPublisher;
 
-    @Transactional
-    public MemberProfileResponse.Create createMemberProfileProcessing(Long memberId, String nickname) {
-        log.info("Create Member Profile Processing");
-        Member member = findMemberById(memberId);
-
-        ProfileImage defaultImage = ProfileImage.createDefaultImage(imageUploader.getDefaultProfileImage());
-
-
-
-        return new MemberProfileResponse.Create(member.getMemberProfile().getId(), member.getCreatedAt());
-    }
 
     @Transactional
     public MemberResponse.Update changeNickname(Long memberId, MemberRequest.ChangeNickname form, String ipAddress) {
@@ -71,23 +55,20 @@ public class MemberProfileServiceImpl implements MemberProfileService {
         return new MemberResponse.Update(member);
     }
 
-    /**
-     * 프로필 이미지 삭제
-     */
     @Transactional
     public MemberResponse.Delete deleteProfileImage(Long memberId, String ipAddress) {
         log.info("Start change Profile Image To Default memberId: {}", memberId);
 
         Member member = findMemberById(memberId);
-
         ProfileImage profileImage = member.getMemberProfile().getProfileImage();
 
         if (profileImage.getIsDefault()) {
-            throw CustomRuntimeException.createWithApiResponseStatus(CAN_NOT_DELETE_DEFAULT_IMAGE);
+            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.CAN_NOT_DELETE_DEFAULT_IMAGE);
         }
-        imageUploader.deleteFileByStoredNames(profileImage.getStoredFileName());
 
-        member.changeProfileImageToDefault(imageUploader.getDefaultProfileImage());
+        profileImageUploader.deleteProfileImageByStoredName(member.getMemberProfile().getProfileImage().getStoredFileName());
+
+        member.changeProfileImageToDefault(profileImageUploader.getDefaultProfileImage().getImageLocation());
 
         eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "프로필 이미지 삭제 -> 기본 이미지로 변경", ipAddress, member.getUpdatedAt()));
 
@@ -106,16 +87,10 @@ public class MemberProfileServiceImpl implements MemberProfileService {
         MemberProfile profile = member.getMemberProfile();
 
         if (!profile.getProfileImage().getIsDefault()) {
-            imageUploader.deleteFileByStoredNames(profile.getProfileImage().getStoredFileName());
+            profileImageUploader.deleteProfileImageByStoredName(profile.getProfileImage().getStoredFileName());
         }
 
-        ImageUploadDto uploadedFile = imageUploader.uploadImageFile(image, "profile");
-
-        member.changeProfileImage(
-                uploadedFile.getStoredFileName(),
-                uploadedFile.getImageLocation(),
-                uploadedFile.getSize()
-        );
+        member.changeProfileImage(profileImageUploader.uploadProfileImage(image));
 
         eventPublisher.publishEvent(new MemberEventDto.Update(member.getId(), "프로필 이미지 변경", ipAddress, member.getUpdatedAt()));
 

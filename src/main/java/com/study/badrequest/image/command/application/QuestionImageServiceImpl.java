@@ -64,7 +64,7 @@ public class QuestionImageServiceImpl implements QuestionImageService {
 
         if (!findByQuestion.isEmpty()) {
 
-            findByQuestion.forEach(image -> imageUploader.deleteFileByStoredNames(image.getStoredFileName()));
+            findByQuestion.forEach(image -> imageUploader.deleteFileByStoredName(image.getStoredFileName()));
             List<Long> longs = findByQuestion.stream().map(QuestionImage::getId).collect(Collectors.toList());
             questionImageRepository.deleteAllByQuestionImageIds(longs);
 

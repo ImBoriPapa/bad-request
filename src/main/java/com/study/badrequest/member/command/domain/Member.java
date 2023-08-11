@@ -217,9 +217,9 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void changeToWithDrawn(String password,MemberPasswordEncoder memberPasswordEncoder) {
+    public void changeToWithDrawn(String password, MemberPasswordEncoder memberPasswordEncoder) {
 
-        if(!memberPasswordEncoder.matches(password,this.getPassword())){
+        if (!memberPasswordEncoder.matches(password, this.getPassword())) {
             throw CustomRuntimeException.createWithApiResponseStatus(WRONG_PASSWORD);
         }
 
@@ -248,8 +248,8 @@ public class Member {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void changeProfileImage(String storeFilName, String imageLocation, Long size) {
-        this.memberProfile.getProfileImage().replaceProfileImage(storeFilName, imageLocation, size);
+    public void changeProfileImage(ProfileImage profileImage) {
+        this.memberProfile.replaceProfileImage(profileImage);
         this.updatedAt = LocalDateTime.now();
     }
 

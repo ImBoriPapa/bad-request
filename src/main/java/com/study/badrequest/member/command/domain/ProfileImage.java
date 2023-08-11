@@ -31,13 +31,15 @@ public class ProfileImage {
         return new ProfileImage("default image", imageLocation, 1L, true);
     }
 
+    public static ProfileImage createProfileImage(String storedFileName, String imageLocation, Long size) {
+        return new ProfileImage(storedFileName, imageLocation, size, false);
+    }
+
     public void replaceDefaultImage(String imageLocation) {
         this.storedFileName = "default image";
         this.imageLocation = imageLocation;
         this.size = 1L;
         this.isDefault = true;
     }
-    public ProfileImage replaceProfileImage(String storedFileName, String imageLocation, Long size) {
-        return new ProfileImage(storedFileName, imageLocation, size, false);
-    }
+
 }
