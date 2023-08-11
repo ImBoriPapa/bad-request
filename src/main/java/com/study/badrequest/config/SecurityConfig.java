@@ -40,7 +40,6 @@ public class SecurityConfig {
     private final OAuthUserDetailService oauthUserDetailService;
     private final Oauth2AuthenticationFailHandler oauth2AuthenticationFailHandler;
     private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
-
     private final CustomAuthorizationRequestRepository authorizationRequestRepository;
 
 

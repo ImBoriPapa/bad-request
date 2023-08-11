@@ -1,7 +1,11 @@
 package com.study.badrequest.notification.command.domain;
 
-import com.study.badrequest.notification.command.domain.NotificationMessage;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface NotificationMessageRepository extends JpaRepository<NotificationMessage, Long> {
+import java.util.Optional;
+
+public interface NotificationMessageRepository  {
+
+    NotificationMessage save(NotificationMessage notificationMessage);
+
+    Optional<NotificationMessage> findById(Long id);
 }

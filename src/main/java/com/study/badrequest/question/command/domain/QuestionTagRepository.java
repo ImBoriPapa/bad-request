@@ -1,7 +1,16 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.question.command.domain.QuestionTag;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface QuestionTagRepository extends JpaRepository<QuestionTag,Long> {
+import java.util.List;
+import java.util.Optional;
+
+public interface QuestionTagRepository  {
+
+    QuestionTag save(QuestionTag questionTag);
+
+    Optional<QuestionTag> findById(Long id);
+
+    void delete(QuestionTag questionTag);
+    List<QuestionTag> saveAllQuestionTags(Iterable<QuestionTag> questionTags);
+
 }

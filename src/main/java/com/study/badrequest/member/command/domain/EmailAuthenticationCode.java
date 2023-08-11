@@ -1,5 +1,6 @@
 package com.study.badrequest.member.command.domain;
 
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,6 +9,9 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Random;
+
+import static com.study.badrequest.common.response.ApiResponseStatus.NOTFOUND_AUTHENTICATION_EMAIL;
+import static com.study.badrequest.common.response.ApiResponseStatus.WRONG_EMAIL_AUTHENTICATION_CODE;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -48,6 +52,17 @@ public class EmailAuthenticationCode {
     public void renewAuthenticationCode() {
         this.code = generateCode();
         this.expiredAt = LocalDateTime.now().plusMinutes(5);
+    }
+
+    public void validateCode(String authenticationCode) {
+
+        if (!this.code.equals(authenticationCode)) {
+            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_EMAIL_AUTHENTICATION_CODE);
+        }
+
+        if (LocalDateTime.now().isAfter(this.expiredAt)) {
+            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_AUTHENTICATION_EMAIL);
+        }
     }
 
     public void changeExpiredAt(LocalDateTime expiredAt) {

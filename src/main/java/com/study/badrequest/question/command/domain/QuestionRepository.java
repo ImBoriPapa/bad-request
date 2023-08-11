@@ -1,11 +1,13 @@
 package com.study.badrequest.question.command.domain;
 
 
-import com.study.badrequest.question.command.domain.Question;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
 
+public interface QuestionRepository  {
 
+    Question save(Question question);
 
-public interface QuestionRepository extends JpaRepository<Question,Long> {
+    Optional<Question> findById(Long questionId);
+
 
 }

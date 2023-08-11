@@ -3,15 +3,11 @@ package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.*;
-import com.study.badrequest.member.command.infra.uploader.ProfileImageUploader;
-import com.study.badrequest.utils.email.EmailUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.study.badrequest.common.response.ApiResponseStatus.*;
@@ -22,55 +18,55 @@ import static com.study.badrequest.common.response.ApiResponseStatus.*;
 @Transactional(readOnly = true)
 public class MemberSignupServiceImpl implements MemberSignupService {
     private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final MemberPasswordEncoder memberPasswordEncoder;
     private final ProfileImageUploader profileImageUploader;
     private final EmailAuthenticationCodeRepository emailAuthenticationCodeRepository;
 
     /**
-     * Create member Entity and do something
+     * 이메일로 회원 가입하는 메서드입니다.
      *
-     * @param form: SignupForm
-     * @return Long: memberId;
+     * @param form (SignupForm, required)
+     * @return Long 회원 식별 아이디
+     * @ImplNote 요청에 필요한 필드에 null,blank 를 확인합니다.
+     * 이메일 인증 코드를 찾고 없을시 예외를 발생시킵니다.
+     * 이메일 인증 코드에 validate 를 호출합니다.
+     * 확인이된 이메일 코드는 삭제합니다.
+     * 회원 엔티티를 생성하고 영속화합니다.
+     * Domain 계층에 의존성만을 가지고 있습니다. 추후 Infra 계층에 의존성을 가질 수도 있습니다.
+     * @see EmailAuthenticationCode#validateCode(String)
+     * @see EmailAuthenticationCodeRepository#delete(EmailAuthenticationCode)
+     * @see Member#createByEmail(String, String, String, String, String, MemberPasswordEncoder)
+     * @see MemberRepository#save(Member)
      */
     @Override
     @Transactional
     public Long signupByEmail(SignupForm form) {
         log.info("Member SignUp By Email");
 
-        nullCheck(form);
+        signupFormNullAndEmptyCheck(form);
 
-        final String convertedEmail = EmailUtils.convertDomainToLowercase(form.getEmail());
-        final String encodedPassword = passwordEncoder.encode(form.getPassword());
-        final String contact = form.getContact();
-        final String nickname = form.getNickname();
-        final String emailAuthenticationCode = form.getAuthenticationCode();
+        final String convertedEmail = MemberEmail.convertDomainToLowercase(form.getEmail());
 
         emailDuplicateCheck(convertedEmail);
 
-        authenticationCodeCheck(convertedEmail, emailAuthenticationCode);
+        EmailAuthenticationCode authenticationCode = findEmailAuthenticationCode(convertedEmail);
 
-        Member member = Member.createByEmail(convertedEmail, encodedPassword, contact, createMemberProfile(nickname));
+        authenticationCode.validateCode(form.getAuthenticationCode());
 
-        return persisteMember(member).getId();
+        emailAuthenticationCodeRepository.delete(authenticationCode);
+
+        Member member = Member.createByEmail(form.getEmail(), form.getPassword(), form.getNickname(), form.getContact(), profileImageUploader.getDefaultProfileImage().getImageLocation(), memberPasswordEncoder);
+
+        return persistedMember(member).getId();
     }
 
-    private void authenticationCodeCheck(String convertedEmail, String emailAuthenticationCode) {
-        EmailAuthenticationCode authenticationCode = emailAuthenticationCodeRepository.findByEmail(convertedEmail)
+    private EmailAuthenticationCode findEmailAuthenticationCode(String email) {
+        return emailAuthenticationCodeRepository.findByEmail(email)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_AUTHENTICATION_EMAIL));
-
-        boolean equals = authenticationCode.getCode().equals(emailAuthenticationCode);
-
-        if (!equals) {
-            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_EMAIL_AUTHENTICATION_CODE);
-        }
-
-        if (LocalDateTime.now().isAfter(authenticationCode.getExpiredAt())) {
-            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_AUTHENTICATION_EMAIL);
-        }
     }
 
     private void emailDuplicateCheck(String email) {
-        boolean exists = memberRepository.findMembersByEmail(email).stream()
+        boolean exists = memberRepository.findMembersByEmail(MemberEmail.convertDomainToLowercase(email)).stream()
                 .anyMatch(Member::isActive);
 
         if (exists) {
@@ -78,47 +74,42 @@ public class MemberSignupServiceImpl implements MemberSignupService {
         }
     }
 
-
-    private MemberProfile createMemberProfile(String nickname) {
-        ProfileImage defaultProfileImage = profileImageUploader.getDefaultProfileImage();
-        return MemberProfile.createMemberProfile(nickname, defaultProfileImage);
-    }
-
-    private Member persisteMember(Member member) {
+    private Member persistedMember(Member member) {
         return memberRepository.save(member);
     }
 
-    private void nullCheck(SignupForm form) {
+    private void signupFormNullAndEmptyCheck(SignupForm form) {
 
-        final List<String> nullFields = new ArrayList<>();
+        final List<String> fieldNames = new ArrayList<>();
 
-        if (form.getEmail() == null) {
-            nullFields.add("Null email");
+        if (form.getEmail() == null || form.getEmail().isBlank()) {
+            fieldNames.add("Email");
         }
 
-        if (form.getPassword() == null) {
-            nullFields.add("Null password");
+        if (form.getPassword() == null || form.getPassword().isBlank()) {
+            fieldNames.add("Password");
         }
 
-        if (form.getNickname() == null) {
-            nullFields.add("Null nickname");
+        if (form.getNickname() == null || form.getNickname().isBlank()) {
+            fieldNames.add("Nickname");
         }
 
-        if (form.getContact() == null) {
-            nullFields.add("Null contact");
+        if (form.getContact() == null || form.getContact().isBlank()) {
+            fieldNames.add("Contact");
         }
 
-        if (form.getAuthenticationCode() == null) {
-            nullFields.add("Null authentication code");
+        if (form.getAuthenticationCode() == null || form.getAuthenticationCode().isBlank()) {
+            fieldNames.add("Authentication Code");
         }
 
-        if (form.getIpAddress() == null) {
-            nullFields.add("Null IpAddress");
+        if (form.getIpAddress() == null || form.getIpAddress().isBlank()) {
+            fieldNames.add("IpAddress");
         }
 
-        if (!nullFields.isEmpty()) {
-            throwValidationErrorWithMessage("Null Fields: " + String.join(",", nullFields));
+        if (!fieldNames.isEmpty()) {
+            throwValidationErrorWithMessage("Null or empty fields: " + String.join(", ", fieldNames));
         }
+
     }
 
     private void throwValidationErrorWithMessage(String message) {

@@ -47,7 +47,7 @@ public class MemberMailServiceImpl implements MemberMailService {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
 
         sendMail(
-                member.getEmail(),
+                member.getEmail().getEmail(),
                 temporaryPasswordSubject,
                 mailSender.createMimeMessage(),
                 createTemporaryPasswordMailBody(temporaryPassword),

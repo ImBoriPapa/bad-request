@@ -1,7 +1,13 @@
 package com.study.badrequest.answer.command.domain;
 
-import com.study.badrequest.answer.command.domain.AnswerRecommendation;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AnswerRecommendationRepository extends JpaRepository<AnswerRecommendation,Long> {
+import java.util.Optional;
+
+public interface AnswerRecommendationRepository  {
+
+    AnswerRecommendation save(AnswerRecommendation answerRecommendation);
+
+    Optional<AnswerRecommendation> findById(Long id);
+
+    void delete(AnswerRecommendation answerRecommendation);
 }

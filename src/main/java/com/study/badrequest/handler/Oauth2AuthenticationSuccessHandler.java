@@ -21,8 +21,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-
 import static com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
+
+
 
 @Component
 @RequiredArgsConstructor

@@ -3,6 +3,7 @@ package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.study.badrequest.member.command.application.MemberSignupService;
 import com.study.badrequest.member.command.interfaces.MemberAccountApiController;
 
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
@@ -16,7 +17,7 @@ import com.study.badrequest.filter.JwtAuthenticationFilter;
 
 import com.study.badrequest.member.query.dao.MemberQueryRepository;
 import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
-import com.study.badrequest.member.command.application.MemberService;
+import com.study.badrequest.member.command.application.MemberWithDrawnService;
 import com.study.badrequest.member.command.application.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
@@ -83,7 +84,9 @@ public class MemberApiDocs {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private MemberService memberService;
+    private MemberWithDrawnService memberWithDrawnService;
+    @MockBean
+    private MemberSignupService memberSignupService;
     @MockBean
     private MemberProfileService memberProfileService;
     @MockBean
@@ -104,7 +107,7 @@ public class MemberApiDocs {
         MemberRequest.SendAuthenticationEmail authenticationEmail = new MemberRequest.SendAuthenticationEmail(email);
         MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt, expiredAt);
         //when
-        given(memberService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
+        given(memberWithDrawnService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
 
         given(memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)).willReturn(
                 EntityModel.of(
@@ -149,7 +152,7 @@ public class MemberApiDocs {
 
         //when
         MemberRequest.SignUp signUpForm = new MemberRequest.SignUp(email, password, nickname, contact, "938304");
-        given(memberService.signUpWithEmail(any())).willReturn(memberId);
+        given(memberSignupService.signupByEmail(any())).willReturn(memberId);
 
         //then
         mockMvc.perform(post(POST_MEMBER_URL)

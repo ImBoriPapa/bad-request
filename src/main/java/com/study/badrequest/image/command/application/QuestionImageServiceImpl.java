@@ -8,8 +8,8 @@ import com.study.badrequest.image.command.interfaces.QuestionImageResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.image.command.domain.QuestionImageRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
-import com.study.badrequest.image.command.infra.ImageUploadDto;
-import com.study.badrequest.image.command.infra.ImageUploader;
+import com.study.badrequest.image.command.domain.ImageUploadDto;
+import com.study.badrequest.image.command.domain.ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,8 +65,8 @@ public class QuestionImageServiceImpl implements QuestionImageService {
         if (!findByQuestion.isEmpty()) {
 
             findByQuestion.forEach(image -> imageUploader.deleteFileByStoredNames(image.getStoredFileName()));
-
-            questionImageRepository.deleteAll(findByQuestion);
+            List<Long> longs = findByQuestion.stream().map(QuestionImage::getId).collect(Collectors.toList());
+            questionImageRepository.deleteAllByQuestionImageIds(longs);
 
         }
     }
@@ -96,7 +96,7 @@ public class QuestionImageServiceImpl implements QuestionImageService {
             List<Long> toDelete = savedIds.stream()
                     .filter(image -> !imageIds.contains(image))
                     .collect(Collectors.toList());
-            questionImageRepository.deleteAllById(toDelete);
+            questionImageRepository.deleteAllByQuestionImageIds(toDelete);
             //수정 요청된 이미지중 임시저장파일을 저장완료로 변경
             questionImageRepository.findAllById(imageIds)
                     .forEach(image -> {

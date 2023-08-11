@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface EmailAuthenticationCodeRepository extends JpaRepository<EmailAuthenticationCode,Long> {
+public interface EmailAuthenticationCodeRepository  {
+
+    EmailAuthenticationCode save(EmailAuthenticationCode emailAuthenticationCode);
     Optional<EmailAuthenticationCode> findByEmail(String email);
+
+    void delete(EmailAuthenticationCode emailAuthenticationCode);
 }

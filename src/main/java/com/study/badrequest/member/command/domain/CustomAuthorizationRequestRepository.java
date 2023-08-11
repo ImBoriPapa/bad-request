@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 @Slf4j
 public class CustomAuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
-
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
     public static final String REDIRECT_URL_PARAM_COOKIE_NAME = "redirect_url"; //client와 맞춰야함
     private static final int cookieExpireSeconds = 180;
@@ -50,4 +49,5 @@ public class CustomAuthorizationRequestRepository implements AuthorizationReques
         CookieUtils.deleteCookie(request, response, OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME);
         CookieUtils.deleteCookie(request, response, REDIRECT_URL_PARAM_COOKIE_NAME);
     }
+
 }

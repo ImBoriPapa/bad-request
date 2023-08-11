@@ -12,8 +12,6 @@ public interface MemberRepository {
     List<Member> findAll();
 
     List<Member> findMembersByEmail(String email);
-
     List<Member> findMembersByContact(String contact);
-
     Optional<Member> findMemberByAuthenticationCodeAndCreatedAt(String authenticationCode, LocalDateTime createdAt);
 }

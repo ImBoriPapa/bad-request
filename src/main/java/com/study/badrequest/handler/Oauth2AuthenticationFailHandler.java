@@ -4,6 +4,7 @@ package com.study.badrequest.handler;
 import com.study.badrequest.common.response.ApiResponseStatus;
 
 import com.study.badrequest.common.exception.CustomOauth2LoginException;
+
 import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;

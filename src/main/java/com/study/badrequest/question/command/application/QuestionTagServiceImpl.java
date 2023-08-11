@@ -93,7 +93,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
         addQuestionTagsToHaveToSave(question, createNewHashTags(newHastTagNames, haveToSave), haveToSave);
 
-        return questionTagRepository.saveAll(haveToSave.values());
+        return questionTagRepository.saveAllQuestionTags(haveToSave.values());
     }
 
     private void addQuestionTagsToHaveToSave(Question question, List<HashTag> existsHashTas, Map<String, QuestionTag> haveToSave) {
@@ -110,7 +110,7 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
     private List<QuestionTag> saveQuestionTagsWithNewHashTagNames(Question question, Set<String> newHashTagNames) {
         List<HashTag> newHashTags = createHashTagsWithHashTagNames(newHashTagNames);
-        return questionTagRepository.saveAll(mapHashTagsToQuestionTags(question, newHashTags));
+        return questionTagRepository.saveAllQuestionTags(mapHashTagsToQuestionTags(question, newHashTags));
     }
 
     private List<HashTag> createHashTagsWithHashTagNames(Set<String> requestedTags) {

@@ -1,5 +1,6 @@
 package com.study.badrequest.api_docs;
 
+import com.study.badrequest.member.command.domain.MemberPasswordEncoder;
 import com.study.badrequest.member.command.domain.MemberProfile;
 import com.study.badrequest.member.command.domain.ProfileImage;
 import com.study.badrequest.member.command.interfaces.LoginController;
@@ -59,6 +60,8 @@ public class LoginApiDocs {
     private ObjectMapper objectMapper;
     @MockBean
     private LoginService loginService;
+    @MockBean
+    private MemberPasswordEncoder memberPasswordEncoder;
     @MockBean
     private JwtUtils jwtUtils;
     @MockBean
@@ -123,7 +126,7 @@ public class LoginApiDocs {
     @DisplayName("1회용 인증 코드로 로그인")
     void oneTimeCodeLoginTest() throws Exception {
         //given
-        Member member = Member.createByEmail("email@email.com", "password", "01011111234", MemberProfile.createMemberProfile("nickname", ProfileImage.createDefaultImage("image")));
+        Member member = Member.createByEmail("email@email.com", "password1234!@", "password", "01011111234", "image", memberPasswordEncoder);
 
         String authenticationCode = UUID.randomUUID().toString();
 

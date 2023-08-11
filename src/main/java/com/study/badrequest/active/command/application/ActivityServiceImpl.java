@@ -2,6 +2,7 @@ package com.study.badrequest.active.command.application;
 
 import com.study.badrequest.active.command.domain.Activity;
 import com.study.badrequest.active.command.domain.ActivityAction;
+import com.study.badrequest.active.command.domain.ActivityRepository;
 import com.study.badrequest.member.command.domain.Member;
 
 import lombok.RequiredArgsConstructor;
