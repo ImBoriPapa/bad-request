@@ -3,7 +3,7 @@ package com.study.badrequest.api_docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import com.study.badrequest.member.command.application.MemberSignupService;
+import com.study.badrequest.member.command.application.*;
 import com.study.badrequest.member.command.interfaces.MemberAccountApiController;
 
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
@@ -17,8 +17,6 @@ import com.study.badrequest.filter.JwtAuthenticationFilter;
 
 import com.study.badrequest.member.query.dao.MemberQueryRepository;
 import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
-import com.study.badrequest.member.command.application.MemberWithDrawnService;
-import com.study.badrequest.member.command.application.MemberProfileService;
 
 import com.study.badrequest.testHelper.WithCustomMockUser;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
@@ -88,12 +86,14 @@ public class MemberApiDocs {
     @MockBean
     private MemberSignupService memberSignupService;
     @MockBean
-    private MemberProfileService memberProfileService;
+    private MemberInformationUpdateService memberInformationUpdateService;
+    @MockBean
+    private MemberAuthenticationService memberAuthenticationService;
     @MockBean
     private MemberQueryRepository memberQueryRepository;
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-    @MockBean
+
     private MemberResponseModelAssembler memberResponseModelAssembler;
 
     @Test
@@ -107,7 +107,7 @@ public class MemberApiDocs {
         MemberRequest.SendAuthenticationEmail authenticationEmail = new MemberRequest.SendAuthenticationEmail(email);
         MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt, expiredAt);
         //when
-        given(memberWithDrawnService.sendAuthenticationMailProcessing(any())).willReturn(sendAuthenticationEmail);
+        given(memberWithDrawnService.withdrawalMember(any())).willReturn(LocalDateTime.now());
 
         given(memberResponseModelAssembler.getSendAuthenticationMail(sendAuthenticationEmail)).willReturn(
                 EntityModel.of(

@@ -2,6 +2,7 @@ package com.study.badrequest.member.command.application;
 
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.application.dto.SignupForm;
 import com.study.badrequest.member.command.domain.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

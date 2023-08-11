@@ -1,15 +1,15 @@
-package com.study.badrequest.member.command.application;
+package com.study.badrequest.member.command.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class ContactChangeForm {
-
+public class PasswordChangeForm {
     private Long memberId;
-    private String contact;
+    private String currentPassword;
+    private String newPassword;
     private String ipAddress;
 }

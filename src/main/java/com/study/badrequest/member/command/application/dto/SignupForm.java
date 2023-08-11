@@ -1,4 +1,4 @@
-package com.study.badrequest.member.command.application;
+package com.study.badrequest.member.command.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;

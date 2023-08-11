@@ -1,15 +1,13 @@
-package com.study.badrequest.member.command.application;
+package com.study.badrequest.member.command.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@Getter
 @AllArgsConstructor
-public class MemberWithDawnForm {
-    private Long memberId;
-    private String password;
+@Getter
+public class TemporaryPasswordIssuanceForm {
+    private String email;
     private String ipAddress;
-
 }

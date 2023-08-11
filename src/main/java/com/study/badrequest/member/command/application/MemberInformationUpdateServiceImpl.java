@@ -1,6 +1,8 @@
 package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.application.dto.ContactChangeForm;
+import com.study.badrequest.member.command.application.dto.PasswordChangeForm;
 import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.member.command.domain.MemberPasswordEncoder;
 import com.study.badrequest.member.command.domain.MemberRepository;

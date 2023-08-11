@@ -1,5 +1,6 @@
 package com.study.badrequest.member.command.application;
 
+import com.study.badrequest.member.command.application.dto.MemberWithDawnForm;
 import com.study.badrequest.member.command.domain.*;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
@@ -25,7 +26,7 @@ public class MemberWithDrawnServiceImpl implements MemberWithDrawnService {
 
     @Transactional
     @Override
-    public LocalDateTime withdrawalMemberProcessing(MemberWithDawnForm form) {
+    public LocalDateTime withdrawalMember(MemberWithDawnForm form) {
         log.info("Withdrawal Member Process memberId: {}", form.getMemberId());
         Member member = findMemberById(form.getMemberId());
 

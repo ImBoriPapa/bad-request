@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.application.*;
+import com.study.badrequest.member.command.application.dto.*;
 import com.study.badrequest.member.command.domain.CurrentMember;
 
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
-import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.verification.RequestValidUtils;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -47,16 +47,15 @@ public class MemberAccountApiController {
     private final MemberSignupService memberSignupService;
     private final MemberInformationUpdateService memberInformationUpdateService;
     private final MemberAuthenticationService memberAuthenticationService;
-    private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @PostMapping(value = POST_MEMBER_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createMember(HttpServletRequest request, @Validated @RequestBody SignUp form, BindingResult bindingResult) {
+    public ResponseEntity<?> createMember(HttpServletRequest httpServletRequest, @Validated @RequestBody SignUpRequest request, BindingResult bindingResult) {
         log.info("Create Member Request");
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
-        final Long memberId = memberSignupService.signupByEmail(createSignUpForm(form, ipAddress));
+        final Long memberId = memberSignupService.signupByEmail(createSignUpForm(request, ipAddress));
 
         return ResponseEntity
                 .created(getLocationUri(memberId))
@@ -66,7 +65,7 @@ public class MemberAccountApiController {
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
-    public static class SignUp {
+    public static class SignUpRequest {
         @Email(message = "형식에 맞지 않는 이메일입니다.")
         @NotEmpty(message = "이메일을 입력해주세요.")
         private String email;
@@ -92,7 +91,7 @@ public class MemberAccountApiController {
         return linkTo(methodOn(MemberQueryApiController.class).retrieveMemberAccount(null, memberId)).toUri();
     }
 
-    private SignupForm createSignUpForm(SignUp form, String ipAddress) {
+    private SignupForm createSignUpForm(SignUpRequest form, String ipAddress) {
         return SignupForm.builder()
                 .email(form.getEmail())
                 .password(form.getPassword())
@@ -114,17 +113,13 @@ public class MemberAccountApiController {
     }
 
     @PostMapping(value = POST_MEMBER_TEMPORARY_PASSWORD_ISSUE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> issueTemporaryPassword(@Validated
-                                                    @RequestBody MemberRequest.IssueTemporaryPassword form,
-                                                    BindingResult bindingResult,
-                                                    HttpServletRequest request
-    ) {
-        log.info("[임시 비밀번호 요청 email: {}]", form.getEmail());
+    public ResponseEntity<?> issueTemporaryPassword(@Validated @RequestBody IssueTemporaryPasswordRequest request, BindingResult bindingResult, HttpServletRequest httpServletRequest) {
+        log.info("[임시 비밀번호 요청 email: {}]", request.getEmail());
 
-        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
-        TemporaryPasswordIssuanceForm issuanceForm = new TemporaryPasswordIssuanceForm(form.getEmail(), ipAddress);
+        TemporaryPasswordIssuanceForm issuanceForm = new TemporaryPasswordIssuanceForm(request.getEmail(), ipAddress);
 
         Long id = memberAuthenticationService.issueTemporaryPassword(issuanceForm);
 
@@ -142,14 +137,21 @@ public class MemberAccountApiController {
                 .body(ApiResponse.success(SUCCESS, entityModel));
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class IssueTemporaryPasswordRequest {
+        @NotEmpty(message = "이메일을 입력해주세요")
+        private String email;
+    }
 
     @PostMapping(POST_MEMBER_SEND_EMAIL_AUTHENTICATION_CODE)
-    public ResponseEntity<?> sendAuthenticationEmail(@Validated @RequestBody MemberRequest.SendAuthenticationEmail form, BindingResult bindingResult) {
-        log.info("[이메일 인증 번호 요청 email: {}]", form.getEmail());
+    public ResponseEntity<?> sendAuthenticationEmail(@Validated @RequestBody IssueEmailAuthenticationCodeRequest request, BindingResult bindingResult) {
+        log.info("[이메일 인증 번호 요청 email: {}]", request.getEmail());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        EmailAuthenticationCodeValidityTime validityTime = memberAuthenticationService.issueEmailAuthenticationCode(form.getEmail());
+        EmailAuthenticationCodeValidityTime validityTime = memberAuthenticationService.issueEmailAuthenticationCode(request.getEmail());
 
         List<Link> links = List.of(
                 linkTo(methodOn(MemberAccountApiController.class).sendAuthenticationEmail(null, null)).withSelfRel()
@@ -162,23 +164,29 @@ public class MemberAccountApiController {
                 .body(ApiResponse.success(SUCCESS, entityModel));
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class IssueEmailAuthenticationCodeRequest {
+        @Email(message = "형식에 맞지 않는 이메일입니다.")
+        @NotEmpty(message = "이메일을 입력해주세요.")
+        private String email;
+    }
+
     @PatchMapping(value = PATCH_MEMBER_PASSWORD_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> patchPassword(@Validated
-                                           @PathVariable Long memberId,
-                                           @RequestBody MemberRequest.ChangePassword form,
-                                           @LoggedInMember CurrentMember.Information information,
-                                           BindingResult bindingResult,
-                                           HttpServletRequest request
+                                           @PathVariable Long memberId, @RequestBody ChangePasswordRequest request,
+                                           @LoggedInMember CurrentMember.Information information, BindingResult bindingResult, HttpServletRequest httpServletRequest
     ) {
         log.info("[비밀번호 변경 요청 memberId: {}, password: {}, password: {}]", memberId, "PROTECTED", "PROTECTED");
 
-        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        PasswordChangeForm passwordChangeForm = new PasswordChangeForm(memberId, form.getCurrentPassword(), form.getNewPassword(), ipAddress);
+        PasswordChangeForm passwordChangeForm = new PasswordChangeForm(memberId, request.getCurrentPassword(), request.getNewPassword(), ipAddress);
 
         Long id = memberInformationUpdateService.changePassword(passwordChangeForm);
         Update update = new Update(id);
@@ -197,6 +205,16 @@ public class MemberAccountApiController {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class ChangePasswordRequest {
+        @Pattern(regexp = PASSWORD, message = "비밀번호는 숫자,문자,특수문자 포함 8~15자리")
+        private String currentPassword;
+        @Pattern(regexp = PASSWORD, message = "비밀번호는 숫자,문자,특수문자 포함 8~15자리")
+        private String newPassword;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Update {
         private Long id;
     }
@@ -205,14 +223,14 @@ public class MemberAccountApiController {
     @PatchMapping(value = PATCH_MEMBER_CONTACT_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> patchContact(@Validated
                                           @PathVariable Long memberId,
-                                          @RequestBody MemberRequest.UpdateContact form,
+                                          @RequestBody ChangeContactRequest request,
                                           @LoggedInMember CurrentMember.Information information,
                                           BindingResult bindingResult,
-                                          HttpServletRequest request
+                                          HttpServletRequest httpServletRequest
     ) {
-        log.info("[연락처 변경 요청 memberId: {}, contact: {}]", memberId, form.getContact());
+        log.info("[연락처 변경 요청 memberId: {}, contact: {}]", memberId, request.getContact());
 
-        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
@@ -235,23 +253,31 @@ public class MemberAccountApiController {
                 .body(ApiResponse.success(SUCCESS, entityModel));
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class ChangeContactRequest {
+        @NotEmpty(message = "연락처를 입력해주세요")
+        private String contact;
+    }
 
     @DeleteMapping(DELETE_MEMBER_URL)
-    public ResponseEntity<?> deleteMember(@Validated @PathVariable Long memberId, @RequestBody MemberRequest.DeleteMember form,
-                                          @LoggedInMember CurrentMember.Information information, BindingResult bindingResult, HttpServletRequest request
+    public ResponseEntity<?> deleteMember(@Validated @PathVariable Long memberId, @RequestBody WithDrawnRequest request,
+                                          @LoggedInMember CurrentMember.Information information, BindingResult bindingResult,
+                                          HttpServletRequest httpServletRequest
     ) {
 
         log.info("[회원 탈퇴 요청 memberId: {}, password: {}]", memberId, "PROTECTED");
 
-        String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
+        String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
-        MemberWithDawnForm withDawnForm = new MemberWithDawnForm(memberId, form.getPassword(), ipAddress);
+        MemberWithDawnForm withDawnForm = new MemberWithDawnForm(memberId, request.getPassword(), ipAddress);
 
-        LocalDateTime withdrawalAt = memberWithDrawnService.withdrawalMemberProcessing(withDawnForm);
+        LocalDateTime withdrawalAt = memberWithDrawnService.withdrawalMember(withDawnForm);
 
         List<Link> links = List.of(
                 linkTo(methodOn(MemberAccountApiController.class).deleteMember(null, null, null, null, null)).withSelfRel(),
@@ -264,6 +290,14 @@ public class MemberAccountApiController {
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success(SUCCESS, entityModel));
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class WithDrawnRequest {
+        @NotEmpty(message = "비밀번호를 입력해 주세요")
+        private String password;
     }
 
     @NoArgsConstructor
