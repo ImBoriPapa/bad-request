@@ -1,5 +1,9 @@
 package com.study.badrequest.config;
 
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,13 +18,20 @@ public class RedisRepositoryConfig {
     private String redisHost;
     @Value("${spring.redis.port}")
     private int redisPort;
-    @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
 
-        return new LettuceConnectionFactory(redisHost, redisPort);
+    @Bean
+    public RedissonClient redissonClient() {
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress("redis://" + redisHost + ":" + redisPort);
+        return Redisson.create(config);
     }
 
-    // TODO: 2023/02/13 Redis 트랜젝션
+    @Bean
+    public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redissonClient) {
+        return new RedissonConnectionFactory(redissonClient);
+    }
+
     @Bean
     public RedisTemplate<?, ?> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
