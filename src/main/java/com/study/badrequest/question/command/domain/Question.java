@@ -22,9 +22,8 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private Writer writer;
     @Column(name = "title")
     private String title;
     @Column(name = "contents")
@@ -46,8 +45,8 @@ public class Question {
     private LocalDateTime deletedAt;
 
     @Builder(access = AccessLevel.PROTECTED)
-    protected Question(Member member, String title, String contents, String preview, ExposureStatus exposure, LocalDateTime askedAt, LocalDateTime modifiedAt, LocalDateTime deletedAt) {
-        this.member = member;
+    protected Question(Writer writer, String title, String contents, String preview, ExposureStatus exposure, LocalDateTime askedAt, LocalDateTime modifiedAt, LocalDateTime deletedAt) {
+        this.writer = writer;
         this.title = title;
         this.contents = contents;
         this.preview = preview;
@@ -57,7 +56,7 @@ public class Question {
         this.deletedAt = deletedAt;
     }
 
-    public static Question createQuestion(String title, String contents, Member member, QuestionMetrics questionMetrics) {
+    public static Question createQuestion(String title, String contents, Writer writer, QuestionMetrics questionMetrics) {
 
         final String htmlContents = MarkdownUtils.parseMarkdownToHtml(contents);
         final String preview = makePreview(htmlContents);
@@ -70,11 +69,10 @@ public class Question {
                 .askedAt(LocalDateTime.now())
                 .modifiedAt(LocalDateTime.now())
                 .deletedAt(LocalDateTime.now().plusYears(10))
-                .member(member)
+                .writer(writer)
                 .build();
 
         question.addQuestionMetrics(questionMetrics);
-        member.getMemberProfile().incrementActivityScore(ActivityScore.WRITE_QUESTION);
 
         return question;
     }

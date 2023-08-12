@@ -2,15 +2,12 @@ package com.study.badrequest.question.command.application;
 
 import com.study.badrequest.member.command.domain.Authority;
 import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.question.command.domain.*;
 import com.study.badrequest.question.query.interfaces.QuestionRequest;
 import com.study.badrequest.question.query.interfaces.QuestionResponse;
-import com.study.badrequest.question.command.domain.QuestionEventDto;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
 import com.study.badrequest.member.command.domain.MemberRepository;
-import com.study.badrequest.question.command.domain.Question;
-import com.study.badrequest.question.command.domain.QuestionMetrics;
-import com.study.badrequest.question.command.domain.QuestionRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +29,7 @@ import static com.study.badrequest.common.status.ExposureStatus.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class QuestionServiceImpl implements QuestionService {
-    private final MemberRepository memberRepository;
+    private final QuestionMemberRepository questionMemberRepository;
     private final QuestionRepository questionRepository;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -61,11 +58,20 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private Question createQuestionEntity(String title, String contents, Member member) {
-        return Question.createQuestion(title, contents, member, QuestionMetrics.createQuestionMetrics());
+        WriterType writerType = WriterType.MEMBER;
+
+        Authority authority = member.getAuthority();
+
+        if (authority == Authority.ADMIN) {
+            writerType = WriterType.ADMIN;
+        }
+
+        Writer writer = Writer.createWriter(member.getId(), member.getMemberProfile().getNickname(), member.getMemberProfile().getProfileImage().getImageLocation(), member.getMemberProfile().getActivityScore(), writerType);
+        return Question.createQuestion(title, contents, writer, QuestionMetrics.createQuestionMetrics());
     }
 
     private Member findMemberById(Long memberId) {
-        return memberRepository
+        return questionMemberRepository
                 .findById(memberId)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
     }
@@ -79,7 +85,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         Question question = findQuestionById(questionId);
 
-        checkPermissions(requester, question);
+
 
         question.modify(form.getTitle(), form.getContents());
 
@@ -88,13 +94,6 @@ public class QuestionServiceImpl implements QuestionService {
         return new QuestionResponse.Modify(question.getId(), question.getModifiedAt());
     }
 
-    private void checkPermissions(Member requester, Question question) {
-        if (requester.getAuthority() != Authority.ADMIN) {
-            if (!requester.equals(question.getMember())) {
-                throw CustomRuntimeException.createWithApiResponseStatus(PERMISSION_DENIED);
-            }
-        }
-    }
 
     @Transactional
     public QuestionResponse.Delete deleteQuestionProcess(Long memberId, Long questionId) {
@@ -103,7 +102,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         Question question = findQuestionById(questionId);
 
-        checkPermissions(requester, question);
 
         question.changeExposure(DELETE);
 

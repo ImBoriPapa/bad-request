@@ -71,6 +71,11 @@ public class S3ImageUploader implements ImageUploader {
         }
     }
 
+    @Override
+    public void deleteFileByStoredNames(List<String> storedNameList) {
+
+    }
+
     public void deleteFileByStoredName(List<String> storedNameList) {
         log.info("[deleteFile]");
         if (storedNameList != null) {

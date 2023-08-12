@@ -33,13 +33,7 @@ public class MemberCreateEventListener {
     public void handleCreateEvent(MemberEventDto.Create dto) {
         log.info("Create Member Event");
 
-        memberProfileService.createMemberProfileProcessing(dto.getMemberId(), dto.getNickname());
 
-        MemberRecordRequest memberRecordRequest = new MemberRecordRequest(ActionStatus.CREATED, dto.getMemberId(), dto.getIpAddress(), dto.getDescription(), dto.getRecordTime());
-
-        recordService.recordMemberInformation(memberRecordRequest);
-
-        blogService.createBlog(dto.getMemberId());
     }
 
     @Async(WELCOME_MAIL_ASYNC_EXECUTOR)

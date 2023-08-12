@@ -104,7 +104,8 @@ public class MemberApiDocs {
         String email = "member1@gmail.com";
         LocalDateTime createdAt = LocalDateTime.now();
         LocalDateTime expiredAt = createdAt.plusMinutes(5);
-        MemberRequest.SendAuthenticationEmail authenticationEmail = new MemberRequest.SendAuthenticationEmail(email);
+        MemberAccountApiController.IssueEmailAuthenticationCodeRequest request = new MemberAccountApiController.IssueEmailAuthenticationCodeRequest();
+
         MemberResponse.SendAuthenticationEmail sendAuthenticationEmail = new MemberResponse.SendAuthenticationEmail(email, createdAt, expiredAt);
         //when
         given(memberWithDrawnService.withdrawalMember(any())).willReturn(LocalDateTime.now());
@@ -116,7 +117,7 @@ public class MemberApiDocs {
                 ));
         //then
         mockMvc.perform(post(POST_MEMBER_SEND_EMAIL_AUTHENTICATION_CODE)
-                        .content(objectMapper.writeValueAsString(authenticationEmail))
+                        .content(objectMapper.writeValueAsString(request))
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
 
                 .andDo(print())
@@ -151,13 +152,13 @@ public class MemberApiDocs {
         Long memberId = 12324L;
 
         //when
-        MemberRequest.SignUp signUpForm = new MemberRequest.SignUp(email, password, nickname, contact, "938304");
+        MemberAccountApiController.SignUpRequest request = new MemberAccountApiController.SignUpRequest();
         given(memberSignupService.signupByEmail(any())).willReturn(memberId);
 
         //then
         mockMvc.perform(post(POST_MEMBER_URL)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(signUpForm)))
+                        .content(objectMapper.writeValueAsString(request)))
                 .andDo(print())
                 .andDo(document("member-signup",
                         getDocumentRequest(),
