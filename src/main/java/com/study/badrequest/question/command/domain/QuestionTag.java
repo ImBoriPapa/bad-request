@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.hashtag.command.domain.HashTag;
+import com.study.badrequest.hashtag.command.domain.Tag;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,16 +24,25 @@ public class QuestionTag {
     @JoinColumn(name = "question_id")
     public Question question;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hash_tag_id")
-    private HashTag hashTag;
+    @JoinColumn(name = "tag_id")
+    private Tag tag;
 
-    protected QuestionTag(Question question, HashTag hashTag) {
-        this.question = question;
-        this.hashTag = hashTag;
+    protected QuestionTag(Tag tag) {
+        this.tag = tag;
     }
 
-    public static QuestionTag createQuestionTag(Question question, HashTag hashTag) {
-        hashTag.incrementUsage();
-        return new QuestionTag(question, hashTag);
+    public static QuestionTag createQuestionTag(Tag tag) {
+        return new QuestionTag(tag);
+    }
+
+    public void assignQuestion(Question question) {
+
+        if (this.question != null) {
+            this.getQuestion().getQuestionTags().remove(this);
+        }
+
+        this.question = question;
+
+        question.getQuestionTags().add(this);
     }
 }

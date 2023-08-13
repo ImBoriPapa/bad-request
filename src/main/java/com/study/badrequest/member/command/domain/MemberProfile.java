@@ -17,7 +17,7 @@ import javax.persistence.*;
 public class MemberProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_profile_id")
+    @Column(name = "profile_id")
     private Long id;
     @Column(name = "nickname")
     private String nickname;

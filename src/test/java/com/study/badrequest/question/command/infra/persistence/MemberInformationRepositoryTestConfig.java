@@ -1,9 +1,9 @@
-package com.study.badrequest.testHelper;
+package com.study.badrequest.question.command.infra.persistence;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.study.badrequest.member.command.domain.MemberPasswordEncoder;
 import com.study.badrequest.member.command.infra.password.InfrastructurePasswordEncoder;
-import com.study.badrequest.question.command.infra.persistence.MemberInformationRepositoryImpl;
+import com.study.badrequest.testHelper.DatabaseCleaner;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,10 +13,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @TestConfiguration
-public class TestConfig {
+public class MemberInformationRepositoryTestConfig {
 
     @PersistenceContext
-    private EntityManager entityManager;
+    public EntityManager entityManager;
 
     @Bean
     public JPAQueryFactory jpaQueryFactory() {
@@ -32,9 +32,16 @@ public class TestConfig {
     public MemberPasswordEncoder memberPasswordEncoder(PasswordEncoder passwordEncoder) {
         return new InfrastructurePasswordEncoder(passwordEncoder);
     }
+
     @Bean
     public MemberInformationRepositoryImpl memberInformationRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
         return new MemberInformationRepositoryImpl(jpaQueryFactory);
     }
+
+    @Bean
+    public DatabaseCleaner databaseCleaner(EntityManager entityManager){
+        return new DatabaseCleaner(entityManager);
+    }
+
 
 }

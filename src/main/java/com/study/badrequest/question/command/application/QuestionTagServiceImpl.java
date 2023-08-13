@@ -1,13 +1,12 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.hashtag.command.domain.HashTag;
+import com.study.badrequest.hashtag.command.domain.Tag;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionTag;
 import com.study.badrequest.question.query.interfaces.QuestionTagResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
-import com.study.badrequest.hashtag.command.domain.HashTagRepository;
+import com.study.badrequest.hashtag.command.domain.TagRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.question.command.domain.QuestionTagRepository;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
@@ -31,7 +30,7 @@ import static com.study.badrequest.common.response.ApiResponseStatus.*;
 public class QuestionTagServiceImpl implements QuestionTagService {
 
     private final QuestionTagRepository questionTagRepository;
-    private final HashTagRepository hashTagRepository;
+    private final TagRepository tagRepository;
     private final QuestionRepository questionRepository;
 
     @Override
@@ -52,12 +51,12 @@ public class QuestionTagServiceImpl implements QuestionTagService {
 
     private List<QuestionTag> saveQuestionTags(Question question, Set<String> hashtagNames) {
         final List<QuestionTag> questionTags;
-        final List<HashTag> existsHashTags = findExistsHashTagByHashTagNames(hashtagNames);
+        final List<Tag> existsTags = findExistsHashTagByHashTagNames(hashtagNames);
 
-        if (existsHashTags.isEmpty()) {
+        if (existsTags.isEmpty()) {
             questionTags = saveQuestionTagsWithNewHashTagNames(question, hashtagNames);
         } else
-            questionTags = saveQuestionTagsWithNewHashTagNamesAndExistHashTags(question, hashtagNames, existsHashTags);
+            questionTags = saveQuestionTagsWithNewHashTagNamesAndExistHashTags(question, hashtagNames, existsTags);
 
         return questionTags;
     }
@@ -66,8 +65,8 @@ public class QuestionTagServiceImpl implements QuestionTagService {
         return questionTags.stream().map(QuestionTag::getId).collect(Collectors.toList());
     }
 
-    private List<HashTag> findExistsHashTagByHashTagNames(Set<String> hashtagNames) {
-        return hashTagRepository.findAllByHashTagNameIn(hashtagNames);
+    private List<Tag> findExistsHashTagByHashTagNames(Set<String> hashtagNames) {
+        return tagRepository.findAllByNameIn(hashtagNames);
     }
 
     private Set<String> convertToHashTagNames(List<String> tags) {
@@ -86,72 +85,49 @@ public class QuestionTagServiceImpl implements QuestionTagService {
         return questionRepository.findById(questionId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
     }
 
-    private List<QuestionTag> saveQuestionTagsWithNewHashTagNamesAndExistHashTags(Question question, Set<String> newHastTagNames, List<HashTag> existsHashTas) {
+    private List<QuestionTag> saveQuestionTagsWithNewHashTagNamesAndExistHashTags(Question question, Set<String> newHastTagNames, List<Tag> existsHashTas) {
         Map<String, QuestionTag> haveToSave = new HashMap<>();
 
         addQuestionTagsToHaveToSave(question, existsHashTas, haveToSave);
 
         addQuestionTagsToHaveToSave(question, createNewHashTags(newHastTagNames, haveToSave), haveToSave);
 
-        return questionTagRepository.saveAllQuestionTags(haveToSave.values());
+        return questionTagRepository.saveAllQuestionTag(haveToSave.values());
     }
 
-    private void addQuestionTagsToHaveToSave(Question question, List<HashTag> existsHashTas, Map<String, QuestionTag> haveToSave) {
-        List<QuestionTag> questionTagList = mapHashTagsToQuestionTags(question, existsHashTas);
-        questionTagList.forEach(questionTag -> haveToSave.put(questionTag.getHashTag().getHashTagName(), questionTag));
+    private void addQuestionTagsToHaveToSave(Question question, List<Tag> existsHashTas, Map<String, QuestionTag> haveToSave) {
     }
 
-    private List<HashTag> createNewHashTags(Set<String> newHastTagNames, Map<String, QuestionTag> haveToSave) {
+    private List<Tag> createNewHashTags(Set<String> newHastTagNames, Map<String, QuestionTag> haveToSave) {
         return createHashTagsWithHashTagNames(newHastTagNames)
                 .stream()
-                .filter(hashTag -> !haveToSave.containsKey(hashTag.getHashTagName()))
+                .filter(hashTag -> !haveToSave.containsKey(hashTag.getName()))
                 .collect(Collectors.toList());
     }
 
     private List<QuestionTag> saveQuestionTagsWithNewHashTagNames(Question question, Set<String> newHashTagNames) {
-        List<HashTag> newHashTags = createHashTagsWithHashTagNames(newHashTagNames);
-        return questionTagRepository.saveAllQuestionTags(mapHashTagsToQuestionTags(question, newHashTags));
+        return null;
     }
 
-    private List<HashTag> createHashTagsWithHashTagNames(Set<String> requestedTags) {
+    private List<Tag> createHashTagsWithHashTagNames(Set<String> requestedTags) {
         return requestedTags.stream()
-                .map(HashTag::createHashTag)
+                .map(Tag::createTag)
                 .collect(Collectors.toList());
     }
 
-    private List<QuestionTag> mapHashTagsToQuestionTags(Question question, List<HashTag> newHashTags) {
-        return hashTagRepository.saveAll(newHashTags)
-                .stream().map(hashTag -> QuestionTag.createQuestionTag(question, hashTag))
-                .collect(Collectors.toList());
 
-    }
 
     @Override
     @Transactional
     public QuestionTagResponse.Add addQuestionTagProcessing(Long questionId, String questionTag) {
         log.info("addQuestionTagProcessing");
-        Question question = getQuestion(questionId);
 
-        if (question.getExposure() == ExposureStatus.DELETE) {
-            throw CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION);
-        }
-
-        String hashTag = HashTagUtils.stringToHashTagString(questionTag);
-
-        QuestionTag newQuestionTag = hashTagRepository
-                .findByHashTagName(hashTag)
-                .map(tag -> QuestionTag.createQuestionTag(question, tag))
-                .orElseGet(() -> QuestionTag.createQuestionTag(question, HashTag.createHashTag(hashTag)));
-
-        questionTagRepository.save(newQuestionTag);
 
         return null;
     }
 
     @Transactional
     public void deleteQuestionTag(Long questionTagId) {
-        QuestionTag questionTag = questionTagRepository.findById(questionTagId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION_TAG));
-        questionTagRepository.delete(questionTag);
 
     }
 

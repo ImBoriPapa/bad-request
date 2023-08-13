@@ -7,8 +7,6 @@ import com.study.badrequest.question.query.interfaces.QuestionRequest;
 import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
-import com.study.badrequest.member.command.domain.MemberRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +27,7 @@ import static com.study.badrequest.common.status.ExposureStatus.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class QuestionServiceImpl implements QuestionService {
-    private final QuestionMemberRepository questionMemberRepository;
+    private final MemberInformationRepository memberInformationRepository;
     private final QuestionRepository questionRepository;
     private final ApplicationEventPublisher eventPublisher;
 
@@ -42,11 +40,11 @@ public class QuestionServiceImpl implements QuestionService {
 
         final List<Long> imageIds = form.getImageIds() == null ? Collections.emptyList() : form.getImageIds();
 
-        Member member = findMemberById(memberId);
+        MemberInformation member = findMemberById(memberId);
 
         Question question = questionRepository.save(createQuestionEntity(form.getTitle(), form.getContents(), member));
 
-        eventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member.getId(), question.getId(), form.getTags(), imageIds));
+        eventPublisher.publishEvent(new QuestionEventDto.CreateEvent(member.getMemberId(), question.getId(), form.getTags(), imageIds));
 
         return new QuestionResponse.Create(question.getId(), question.getAskedAt());
     }
@@ -57,21 +55,21 @@ public class QuestionServiceImpl implements QuestionService {
         }
     }
 
-    private Question createQuestionEntity(String title, String contents, Member member) {
+    private Question createQuestionEntity(String title, String contents, MemberInformation memberInformation) {
         WriterType writerType = WriterType.MEMBER;
 
-        Authority authority = member.getAuthority();
+        Authority authority = memberInformation.getAuthority();
 
         if (authority == Authority.ADMIN) {
             writerType = WriterType.ADMIN;
         }
 
-        Writer writer = Writer.createWriter(member.getId(), member.getMemberProfile().getNickname(), member.getMemberProfile().getProfileImage().getImageLocation(), member.getMemberProfile().getActivityScore(), writerType);
-        return Question.createQuestion(title, contents, writer, QuestionMetrics.createQuestionMetrics());
+        Writer writer = Writer.createWriter(memberInformation.getMemberId(), memberInformation.getNickname(), memberInformation.getProfileImage(), memberInformation.getActivityScore(), writerType);
+        return Question.createQuestion(title, contents, writer,Collections.emptyList() ,QuestionMetrics.createQuestionMetrics());
     }
 
-    private Member findMemberById(Long memberId) {
-        return questionMemberRepository
+    private MemberInformation findMemberById(Long memberId) {
+        return memberInformationRepository
                 .findById(memberId)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
     }
@@ -81,15 +79,14 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionResponse.Modify modifyQuestionProcessing(Long memberId, Long questionId, QuestionRequest.Modify form) {
         log.info("Modify Question Processing");
 
-        Member requester = findMemberById(memberId);
+        MemberInformation requester = findMemberById(memberId);
 
         Question question = findQuestionById(questionId);
 
 
-
         question.modify(form.getTitle(), form.getContents());
 
-        eventPublisher.publishEvent(new QuestionEventDto.ModifyEvent(requester.getId(), question.getId(), form.getImageIds()));
+        eventPublisher.publishEvent(new QuestionEventDto.ModifyEvent(requester.getMemberId(), question.getId(), form.getImageIds()));
 
         return new QuestionResponse.Modify(question.getId(), question.getModifiedAt());
     }
@@ -98,7 +95,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionResponse.Delete deleteQuestionProcess(Long memberId, Long questionId) {
         log.info("Delete Question Process");
-        Member requester = findMemberById(memberId);
+        MemberInformation requester = findMemberById(memberId);
 
         Question question = findQuestionById(questionId);
 

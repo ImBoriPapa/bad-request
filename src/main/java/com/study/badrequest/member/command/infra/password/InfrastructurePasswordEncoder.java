@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class InfrastructurePasswordEncoder implements MemberPasswordEncoder {
     private final PasswordEncoder passwordEncoder;
-
     @Override
     public String encode(CharSequence rawPassword) {
         return passwordEncoder.encode(rawPassword);

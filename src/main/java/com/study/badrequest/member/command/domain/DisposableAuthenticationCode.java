@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "disposable_authentication_code",
-        indexes = {@Index(name = "CODE_IDX", columnList = "CODE")}
+        indexes = {@Index(name = "CODE_IDX", columnList = "code")}
 )
 public class DisposableAuthenticationCode {
     @Id

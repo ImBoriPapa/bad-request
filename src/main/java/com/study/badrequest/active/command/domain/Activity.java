@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "ACTIVITY")
+@Table(name = "activity")
 @EqualsAndHashCode(of = "id")
 public class Activity {
     @Id

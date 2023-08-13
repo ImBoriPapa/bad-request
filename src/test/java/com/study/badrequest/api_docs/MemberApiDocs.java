@@ -93,7 +93,7 @@ public class MemberApiDocs {
     private MemberQueryRepository memberQueryRepository;
     @MockBean
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
+    @MockBean
     private MemberResponseModelAssembler memberResponseModelAssembler;
 
     @Test

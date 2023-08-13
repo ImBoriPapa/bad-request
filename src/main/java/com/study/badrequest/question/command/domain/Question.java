@@ -2,18 +2,20 @@ package com.study.badrequest.question.command.domain;
 
 
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.active.command.domain.ActivityScore;
-import com.study.badrequest.member.command.domain.Member;
 import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.study.badrequest.common.status.ExposureStatus.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "question", indexes = {
-        @Index(name = "QUESTION_EXPOSURE_IDX", columnList = "exposure")
+        @Index(name = "question_exposure_idx", columnList = "exposure")
 })
 @EqualsAndHashCode(of = "id")
 @Getter
@@ -22,7 +24,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "question_id")
     private Long id;
-    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Writer writer;
     @Column(name = "title")
     private String title;
@@ -31,6 +33,10 @@ public class Question {
     private String contents;
     @Column(name = "preview")
     private String preview;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
+    private List<QuestionTag> questionTags = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(name = "exposure")
     private ExposureStatus exposure;
@@ -44,35 +50,34 @@ public class Question {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    @Builder(access = AccessLevel.PROTECTED)
-    protected Question(Writer writer, String title, String contents, String preview, ExposureStatus exposure, LocalDateTime askedAt, LocalDateTime modifiedAt, LocalDateTime deletedAt) {
+    protected Question(Writer writer, String title, String contents, ExposureStatus exposure, LocalDateTime askedAt) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.preview = preview;
         this.exposure = exposure;
         this.askedAt = askedAt;
-        this.modifiedAt = modifiedAt;
-        this.deletedAt = deletedAt;
+
     }
 
-    public static Question createQuestion(String title, String contents, Writer writer, QuestionMetrics questionMetrics) {
-
-        final String htmlContents = MarkdownUtils.parseMarkdownToHtml(contents);
-        final String preview = makePreview(htmlContents);
-
-        final Question question = Question.builder()
-                .title(title)
-                .contents(htmlContents)
-                .preview(preview)
-                .exposure(ExposureStatus.PUBLIC)
-                .askedAt(LocalDateTime.now())
-                .modifiedAt(LocalDateTime.now())
-                .deletedAt(LocalDateTime.now().plusYears(10))
-                .writer(writer)
-                .build();
-
+    /**
+     * 질문 엔티티 생성
+     *
+     * @param title           질문 게시글 제목
+     * @param contents        질문 내용 - Markdown
+     * @param writer          질문 작성자
+     * @param questionTags    질문 태그 - question (1:N) -> questionTag <-(N:1),tag 연결 테이블
+     * @param questionMetrics 질문글의 관련 지표
+     * @return Question
+     * @ImplNote 질문글을 생성하면서 프리뷰를 만들고 질문 태그, 지표 데이터와 연관관계를 맺습니다.
+     */
+    public static Question createQuestion(String title, String contents, Writer writer, List<QuestionTag> questionTags, QuestionMetrics questionMetrics) {
+        Question question = new Question(writer, title, contents, PUBLIC, LocalDateTime.now());
+        question.makePreview(contents);
         question.addQuestionMetrics(questionMetrics);
+
+        for (QuestionTag questionTag : questionTags) {
+            questionTag.assignQuestion(question);
+        }
 
         return question;
     }
@@ -82,9 +87,8 @@ public class Question {
         questionMetrics.addQuestion(this);
     }
 
-    private static String makePreview(String contents) {
-        final String preview = MarkdownUtils.markdownToPlainText(contents);
-        return preview.length() > 50 ? preview.substring(0, 50) : preview;
+    private void makePreview(String contents) {
+        this.preview = contents.length() > 50 ? contents.substring(0, 50) : contents;
     }
 
     public void changeExposure(ExposureStatus status) {
@@ -96,7 +100,7 @@ public class Question {
     public void modify(String title, String contents) {
         this.title = title;
         this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
-        this.preview = makePreview(contents);
+        makePreview(contents);
         this.modifiedAt = LocalDateTime.now();
     }
 }

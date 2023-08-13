@@ -13,6 +13,6 @@ public class CreateQuestionForm {
     private Long memberId;
     private String title;
     private String contents;
-    private List<Long> hashTagIds;
+    private List<Long> tagIds;
     private List<Long> imageIds;
 }

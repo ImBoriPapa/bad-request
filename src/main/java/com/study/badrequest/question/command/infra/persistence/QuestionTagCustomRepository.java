@@ -6,5 +6,5 @@ import java.util.List;
 
 
 public interface QuestionTagCustomRepository{
-    List<QuestionTag> saveAllQuestionTags(Iterable<QuestionTag> questionTags);
+    List<QuestionTag> saveAllQuestionTag(Iterable<QuestionTag> questionTags);
 }

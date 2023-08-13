@@ -1,23 +1,17 @@
 package com.study.badrequest.testHelper;
 
-import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.dynamic.output.OutputType;
-import io.lettuce.core.protocol.CommandHandler;
+
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 
-import org.mockito.Captor;
-import org.springframework.data.redis.core.RedisHash;
-import org.springframework.stereotype.Component;
+
 import org.springframework.test.context.ActiveProfiles;
-import org.testcontainers.containers.Container;
+
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.output.OutputFrame;
+
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
+
 
 @DisplayName("Redis Test Containers")
 @ActiveProfiles("test")

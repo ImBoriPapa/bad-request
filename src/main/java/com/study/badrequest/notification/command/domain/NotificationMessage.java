@@ -14,7 +14,7 @@ import static com.study.badrequest.notification.command.domain.NotificationType.
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_NOTIFICATION")
+@Table(name = "notification_message")
 @EqualsAndHashCode(of = "id")
 public class NotificationMessage {
     @Id

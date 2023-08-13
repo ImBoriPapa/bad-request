@@ -30,6 +30,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
+        globally_quoted_identifiers: true
         format_sql: true # log
         show_sql: true
         default_batch_fetch_size: 100

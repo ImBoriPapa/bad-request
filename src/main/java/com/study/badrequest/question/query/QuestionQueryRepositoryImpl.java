@@ -10,6 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.ExposureStatus;
+import com.study.badrequest.hashtag.command.domain.QTag;
 import com.study.badrequest.recommandation.command.domain.Recommendation;
 
 
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.study.badrequest.common.status.ExposureStatus.PUBLIC;
 
-import static com.study.badrequest.hashtag.command.domain.QHashTag.hashTag;
+import static com.study.badrequest.hashtag.command.domain.QTag.*;
 import static com.study.badrequest.member.command.domain.QMember.member;
 import static com.study.badrequest.member.command.domain.QMemberProfile.memberProfile;
 import static com.study.badrequest.question.command.domain.QQuestion.question;
@@ -99,7 +100,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         log.debug("[QUERY]==> findTagsDtoByQuestionId- QuestionID: {}", questionId);
         return findQuestionTagsByQuestionId(questionId)
                 .stream()
-                .map(tag -> new TagDto(tag.getId(), tag.getHashTag().getHashTagName()))
+                .map(tag -> new TagDto(tag.getId(), tag.getTag().getName()))
                 .collect(Collectors.toList());
     }
 
@@ -121,7 +122,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         return jpaQueryFactory
                 .selectDistinct(questionTag)
                 .from(questionTag)
-                .join(questionTag.hashTag, hashTag)
+                .join(questionTag.tag, tag)
                 .fetchJoin()
                 .where(questionTag.question.id.eq(questionId))
                 .fetch();
@@ -153,7 +154,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                 )
                 .from(question)
                 .join(question.questionMetrics, questionMetrics)
-                .join(question.member, member)
                 .join(member.memberProfile, memberProfile)
                 .where(question.id.eq(questionId).and(eqExposure(exposureStatus)))
                 .stream()
@@ -257,7 +257,7 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
         List<QuestionTag> questionTags = jpaQueryFactory
                 .selectDistinct(questionTag)
                 .from(questionTag)
-                .join(questionTag.hashTag, hashTag).fetchJoin()
+                .join(questionTag.tag, tag).fetchJoin()
                 .where(hashTagCursor(condition.getLastIndex()),
                         getHasTagPredicate(extractedTags)
                 )
@@ -374,7 +374,6 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                         question.askedAt.as("askedAt")))
                 .from(question)
                 .join(question.questionMetrics, questionMetrics)
-                .join(question.member, member)
                 .join(member.memberProfile, memberProfile)
                 .where(question.id.in(questionIds))
                 .orderBy(question.id.desc())
@@ -398,11 +397,11 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
                         Projections.fields(QuestionTagDto.class,
                                 questionTag.id.as("id"),
                                 questionTag.question.id.as("questionId"),
-                                hashTag.id.as("hashTagId"),
-                                hashTag.hashTagName.as("hashTagName")
+                                tag.id.as("hashTagId"),
+                                tag.name.as("hashTagName")
                         ))
                 .from(questionTag)
-                .join(questionTag.hashTag, hashTag)
+                .join(questionTag.tag, tag)
                 .where(questionTag.id.in(questionTagIds))
                 .orderBy(questionTag.id.asc())
                 .fetch();
@@ -519,11 +518,11 @@ public class QuestionQueryRepositoryImpl implements QuestionQueryRepository {
     }
 
     private Predicate eqTagName(String hashTag) {
-        return questionTag.hashTag.hashTagName.eq(hashTag);
+        return questionTag.tag.name.eq(hashTag);
     }
 
     private Predicate tagNamesIn(List<String> extractedTags) {
-        return questionTag.hashTag.hashTagName.in(extractedTags);
+        return questionTag.tag.name.in(extractedTags);
     }
 
     private List<String> getExtractedTags(String searchWord) {

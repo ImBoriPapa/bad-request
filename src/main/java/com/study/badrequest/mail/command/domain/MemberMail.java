@@ -1,8 +1,6 @@
 package com.study.badrequest.mail.command.domain;
 
 
-
-
 import com.study.badrequest.member.command.domain.Member;
 import lombok.*;
 
@@ -12,12 +10,13 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER_SERVICE_MAIL",indexes = {
-        @Index(name = "MEMBER_SERVICE_MAIL_KIND_IDX",columnList = "MAIL_KIND")
+@Table(name = "member_mail", indexes = {
+        @Index(name = "MEMBER_SERVICE_MAIL_KIND_IDX", columnList = "MAIL_KIND")
 })
 @EqualsAndHashCode(of = "id")
 public class MemberMail {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMBER_MAIL_ID")
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
@@ -34,7 +33,8 @@ public class MemberMail {
     private Boolean sentMailSuccess;
     @Column(name = "TIME_OF_SENT")
     private LocalDateTime timeOfSent;
-    @Builder(builderMethodName = "createMemberMail",access = AccessLevel.PROTECTED)
+
+    @Builder(builderMethodName = "createMemberMail", access = AccessLevel.PROTECTED)
     protected MemberMail(Member recipient, String subject, String text, MailKind mailKind) {
         this.recipient = recipient;
         this.subject = subject;
@@ -44,7 +44,7 @@ public class MemberMail {
         this.timeOfSent = LocalDateTime.now();
     }
 
-    public static MemberMail createTemporaryPasswordMail(Member recipient,String subject){
+    public static MemberMail createTemporaryPasswordMail(Member recipient, String subject) {
         return MemberMail.createMemberMail()
                 .recipient(recipient)
                 .subject(subject)
@@ -52,7 +52,7 @@ public class MemberMail {
                 .build();
     }
 
-    public void sentFail(){
+    public void sentFail() {
         this.sentMailSuccess = false;
     }
 }
