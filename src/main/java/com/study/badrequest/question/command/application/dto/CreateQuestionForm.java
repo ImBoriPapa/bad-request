@@ -1,4 +1,4 @@
-package com.study.badrequest.question.command.domain;
+package com.study.badrequest.question.command.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

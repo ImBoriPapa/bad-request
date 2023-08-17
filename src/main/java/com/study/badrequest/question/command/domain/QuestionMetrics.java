@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+import static com.study.badrequest.common.status.ExposureStatus.*;
+
 @Entity
 @Table(name = "question_metrics", indexes = {
         @Index(name = "VIEW_IDX", columnList = "count_of_view"),
@@ -43,7 +45,7 @@ public class QuestionMetrics {
     }
 
     public static QuestionMetrics createQuestionMetrics() {
-        return new QuestionMetrics(0, 0, 0, ExposureStatus.PUBLIC);
+        return new QuestionMetrics(0, 0, 0, PUBLIC);
     }
 
     public void addQuestion(Question question) {

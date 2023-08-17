@@ -1,6 +1,5 @@
 package com.study.badrequest.question.command.infra.persistence;
 
-import com.study.badrequest.hashtag.command.domain.TagRepository;
 import com.study.badrequest.testHelper.DatabaseCleaner;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

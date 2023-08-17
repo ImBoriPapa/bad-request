@@ -27,6 +27,8 @@ repositories {
 }
 
 dependencies {
+    //kafka
+    implementation ('org.springframework.kafka:spring-kafka:2.8.5')
     //oauth2
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     //jwt
@@ -38,6 +40,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     // MariaDB
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+
     //querydsl 추가
     implementation "com.querydsl:querydsl-jpa:5.0.0"
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0"

@@ -1,8 +1,8 @@
 package com.study.badrequest.question.command.infra.persistence;
 
 
-import com.study.badrequest.hashtag.command.domain.Tag;
-import com.study.badrequest.hashtag.command.domain.TagRepository;
+import com.study.badrequest.question.command.domain.Tag;
+import com.study.badrequest.question.command.domain.TagRepository;
 import com.study.badrequest.testHelper.DatabaseCleaner;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

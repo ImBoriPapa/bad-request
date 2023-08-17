@@ -3,6 +3,7 @@ package com.study.badrequest.question.command.interfaces;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.member.command.domain.CurrentMember;
+import com.study.badrequest.question.command.application.QuestionCreateService;
 import com.study.badrequest.question.query.interfaces.QuestionRequest;
 import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
@@ -30,6 +31,7 @@ import static org.springframework.http.MediaType.*;
 @Slf4j
 public class QuestionApiController {
     private final QuestionService questionService;
+    private final QuestionCreateService questionCreateService;
     private final QuestionModelAssembler modelAssembler;
 
     @PostMapping(value = QUESTION_BASE_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)

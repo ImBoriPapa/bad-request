@@ -1,8 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
 
-import com.study.badrequest.hashtag.command.domain.Tag;
-import com.study.badrequest.hashtag.command.domain.TagRepository;
 import com.study.badrequest.question.command.infra.persistence.QuestionTagJpaRepositoryTestConfig;
 import com.study.badrequest.testHelper.DatabaseCleaner;
 import lombok.extern.slf4j.Slf4j;

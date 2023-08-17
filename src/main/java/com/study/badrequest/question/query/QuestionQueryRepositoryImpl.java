@@ -10,7 +10,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.hashtag.command.domain.QTag;
+import com.study.badrequest.question.command.domain.QTag;
 import com.study.badrequest.recommandation.command.domain.Recommendation;
 
 
@@ -29,12 +29,13 @@ import java.util.stream.Collectors;
 
 import static com.study.badrequest.common.status.ExposureStatus.PUBLIC;
 
-import static com.study.badrequest.hashtag.command.domain.QTag.*;
+
 import static com.study.badrequest.member.command.domain.QMember.member;
 import static com.study.badrequest.member.command.domain.QMemberProfile.memberProfile;
 import static com.study.badrequest.question.command.domain.QQuestion.question;
 import static com.study.badrequest.question.command.domain.QQuestionMetrics.questionMetrics;
 import static com.study.badrequest.question.command.domain.QQuestionTag.questionTag;
+import static com.study.badrequest.question.command.domain.QTag.*;
 import static com.study.badrequest.question.command.domain.QuestionSortType.*;
 import static com.study.badrequest.recommandation.command.domain.QRecommendation.recommendation;
 

@@ -100,6 +100,10 @@ public class SecurityConfig {
                 .antMatchers("/test")
                 .permitAll()
 
+                //test
+                .antMatchers("/testing")
+                .permitAll()
+
                 .anyRequest().authenticated()
                 //oauth2
                 .and()

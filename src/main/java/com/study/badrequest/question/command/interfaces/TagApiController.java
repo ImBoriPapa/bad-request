@@ -1,4 +1,4 @@
-package com.study.badrequest.hashtag.command.interfaces;
+package com.study.badrequest.question.command.interfaces;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

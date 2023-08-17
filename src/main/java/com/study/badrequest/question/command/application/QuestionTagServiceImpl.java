@@ -1,12 +1,12 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.hashtag.command.domain.Tag;
+import com.study.badrequest.question.command.domain.Tag;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.question.command.domain.QuestionTag;
 import com.study.badrequest.question.query.interfaces.QuestionTagResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
-import com.study.badrequest.hashtag.command.domain.TagRepository;
+import com.study.badrequest.question.command.domain.TagRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.question.command.domain.QuestionTagRepository;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;

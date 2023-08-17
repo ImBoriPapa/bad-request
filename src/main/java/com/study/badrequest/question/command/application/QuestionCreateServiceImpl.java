@@ -2,12 +2,14 @@ package com.study.badrequest.question.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.hashtag.command.domain.Tag;
-import com.study.badrequest.hashtag.command.domain.TagRepository;
+
+import com.study.badrequest.question.command.domain.Tag;
+import com.study.badrequest.question.command.domain.TagRepository;
+import com.study.badrequest.question.command.application.dto.CreateQuestionForm;
 import com.study.badrequest.question.command.domain.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,13 +21,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
-public class QuestionCreateServiceImpl {
+public class QuestionCreateServiceImpl implements QuestionCreateService {
     private final MemberInformationRepository memberInformationRepository;
     private final WriterRepository writerRepository;
     private final QuestionRepository questionRepository;
     private final QuestionTagRepository questionTagRepository;
     private final TagRepository tagRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * 질문 생성
@@ -47,6 +48,7 @@ public class QuestionCreateServiceImpl {
      * @see QuestionRepository#save(Question)
      */
     @Transactional
+    @Override
     public Long createQuestion(CreateQuestionForm form) {
 
         final String title = form.getTitle();
@@ -61,10 +63,6 @@ public class QuestionCreateServiceImpl {
         List<QuestionTag> questionTags = createQuestionTags(tags);
 
         Question question = persisteQuestion(title, contents, writer, questionTags);
-
-        QuestionEvent questionEvent = new QuestionEvent(question.getId());
-
-        applicationEventPublisher.publishEvent(questionEvent);
 
         return question.getId();
     }
