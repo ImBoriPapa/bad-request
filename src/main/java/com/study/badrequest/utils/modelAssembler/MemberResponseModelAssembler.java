@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.modelAssembler;
 
-import com.study.badrequest.member.command.interfaces.LoginController;
-import com.study.badrequest.member.command.interfaces.MemberAccountApiController;
+import com.study.badrequest.login.command.interfaces.LoginController;
+import com.study.badrequest.member.command.interfaces.MemberManagementApiController;
 import com.study.badrequest.member.command.interfaces.MemberProfileApiController;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 
@@ -30,16 +30,14 @@ public class MemberResponseModelAssembler {
     }
 
     public EntityModel<MemberResponse.SendAuthenticationEmail> getSendAuthenticationMail(MemberResponse.SendAuthenticationEmail email) {
-        List<Link> links = List.of(
-                linkTo(methodOn(MemberAccountApiController.class).sendAuthenticationEmail(null, null)).withSelfRel()
-        );
+        List<Link> links = List.of();
         return EntityModel.of(email, links);
     }
 
     public EntityModel<MemberResponse.Update> getChangePasswordModel(MemberResponse.Update update) {
 
         List<Link> links = List.of(
-                linkTo(methodOn(MemberAccountApiController.class).patchPassword(update.getId(), null, null, null, null)).withSelfRel(),
+                linkTo(methodOn(MemberManagementApiController.class).patchPassword(update.getId(), null, null, null, null)).withSelfRel(),
                 linkTo(methodOn(MemberQueryApiController.class).getProfile(null, null)).withRel("Profile")
         );
 
@@ -49,7 +47,7 @@ public class MemberResponseModelAssembler {
     public EntityModel<MemberResponse.Update> getChangeContactModel(MemberResponse.Update update) {
 
         List<Link> links = List.of(
-                linkTo(methodOn(MemberAccountApiController.class).patchContact(update.getId(), null, null, null, null)).withSelfRel(),
+                linkTo(methodOn(MemberManagementApiController.class).patchContact(update.getId(), null, null, null, null)).withSelfRel(),
                 linkTo(methodOn(MemberQueryApiController.class).getProfile(null, null)).withRel("Profile")
         );
 
@@ -60,8 +58,8 @@ public class MemberResponseModelAssembler {
     public EntityModel<MemberResponse.Delete> getDeleteModel(MemberResponse.Delete result) {
 
         List<Link> links = List.of(
-                linkTo(methodOn(MemberAccountApiController.class).deleteMember(null, null, null, null, null)).withSelfRel(),
-                linkTo(methodOn(MemberAccountApiController.class).createMember(null, null, null)).withRel("Signup Member")
+                linkTo(methodOn(MemberManagementApiController.class).deleteMember(null, null, null, null, null)).withSelfRel(),
+                linkTo(methodOn(MemberManagementApiController.class).createMember(null, null, null)).withRel("Signup Member")
         );
 
         return EntityModel.of(result, links);
@@ -70,7 +68,6 @@ public class MemberResponseModelAssembler {
     public EntityModel<MemberResponse.TemporaryPassword> getIssuePasswordModel(MemberResponse.TemporaryPassword password) {
 
         List<Link> links = List.of(
-                linkTo(methodOn(MemberAccountApiController.class).issueTemporaryPassword(null, null, null)).withSelfRel(),
                 linkTo(methodOn(LoginController.class).loginByEmail(null, null, null)).withRel("Login")
         );
 
@@ -78,18 +75,17 @@ public class MemberResponseModelAssembler {
     }
 
 
-
     public EntityModel<MemberDetailDto> retrieveMemberModel(MemberDetailDto memberDetailDto) {
 
         return EntityModel.of(memberDetailDto)
                 .add(linkTo(methodOn(MemberQueryApiController.class).retrieveMemberAccount(null, memberDetailDto.getId())).withSelfRel())
                 .add(linkTo(methodOn(MemberProfileApiController.class).changeNickname(memberDetailDto.getId(), null, null, null, null)).withRel("Change Nickname"))
-                .add(linkTo(methodOn(MemberAccountApiController.class).patchContact(memberDetailDto.getId(), null, null, null, null)).withRel("Change Contact"))
+                .add(linkTo(methodOn(MemberManagementApiController.class).patchContact(memberDetailDto.getId(), null, null, null, null)).withRel("Change Contact"))
                 .add(linkTo(methodOn(MemberProfileApiController.class).changeIntroduce(memberDetailDto.getId(), null, null)).withRel("Change Self-Introduce"))
                 .add(linkTo(methodOn(MemberProfileApiController.class).changeProfileImage(memberDetailDto.getId(), null, null)).withRel("Change Profile Image"))
                 .add(linkTo(methodOn(MemberProfileApiController.class).deleteProfileImage(memberDetailDto.getId(), null)).withRel("Change Profile Image To Default"))
-                .add(linkTo(methodOn(MemberAccountApiController.class).patchPassword(memberDetailDto.getId(), null, null, null, null)).withRel("Change Password"))
-                .add(linkTo(methodOn(MemberAccountApiController.class).deleteMember(memberDetailDto.getId(), null, null, null, null)).withRel("Withdrawing Member"));
+                .add(linkTo(methodOn(MemberManagementApiController.class).patchPassword(memberDetailDto.getId(), null, null, null, null)).withRel("Change Password"))
+                .add(linkTo(methodOn(MemberManagementApiController.class).deleteMember(memberDetailDto.getId(), null, null, null, null)).withRel("Withdrawing Member"));
     }
 
     public EntityModel<MemberResponse.Update> changeProfileImageModel(MemberResponse.Update response) {

@@ -1,27 +1,24 @@
 package com.study.badrequest.member.query.dao;
 
 
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Projections;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
-import com.study.badrequest.member.command.interfaces.MemberSearchCondition;
+import com.study.badrequest.member.query.interfaces.MemberSearchCondition;
 
 import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
 import com.study.badrequest.member.query.dto.MemberDetailDto;
 import com.study.badrequest.member.query.dto.MemberListDto;
-import com.study.badrequest.member.query.dto.MemberListResult;
+
 import com.study.badrequest.member.query.dto.MemberProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+
 import java.util.Optional;
 
-import static com.study.badrequest.member.command.domain.QMember.member;
+
 
 
 @Repository
@@ -36,27 +33,7 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
      */
     @Override
     public Optional<MemberDetailDto> findMemberDetail(Long memberId) {
-        return jpaQueryFactory
-                .select(
-                        Projections.fields(
-                                MemberDetailDto.class,
-                                member.id.as("id"),
-                                member.email.as("email"),
-                                member.contact.as("contact"),
-                                member.memberProfile.nickname.as("nickname"),
-                                member.memberProfile.introduce.as("selfIntroduce"),
-                                member.memberProfile.profileImage.imageLocation.as("profileImage"),
-                                member.authority.as("authority"),
-                                member.registrationType.as("loginType"),
-                                member.createdAt.as("createdAt"),
-                                member.updatedAt.as("updatedAt")
-                        )
-                )
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetch()
-                .stream()
-                .findFirst();
+        return null;
 
     }
 
@@ -68,58 +45,9 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     @Override
     public MemberListDto findMemberList(MemberSearchCondition condition) {
 
-        Long offSet = condition.getOffset();
-        Integer size = condition.getSize();
-        Order order = condition.getOrder();
-
-        offSet = Objects.requireNonNullElse(offSet, 0L);
-        size = Objects.requireNonNullElse(size, 10);
-        order = Objects.requireNonNullElse(order, Order.DESC);
-
-        List<MemberListResult> memberListResults = jpaQueryFactory
-                .select(
-                        Projections.fields(
-                                MemberListResult.class,
-                                member.id.as("id"),
-                                member.email.as("email"),
-                                member.memberProfile.nickname.as("nickname"),
-                                member.memberProfile.profileImage.imageLocation.as("profileImage")
-                        )
-                )
-                .from(member)
-                .offset(offSet)
-                .limit(size)
-                .orderBy(new OrderSpecifier<>(order, member.id))
-                .fetch();
-
-
-        long totalMembers = getCount().orElse(0L);
-        long totalPages = (long) Math.ceil((double) totalMembers / size);
-        long currentPageNumber = (offSet / size) + 1;
-        boolean first = (offSet == 0);
-        boolean last = ((offSet + size) >= totalMembers);
-
-        return MemberListDto.builder()
-                .offSet(offSet)
-                .size(size)
-                .order(order)
-                .first(first)
-                .last(last)
-                .currentPageNumber(currentPageNumber)
-                .totalElements(memberListResults.size())
-                .totalMembers(totalMembers)
-                .totalPages(totalPages)
-                .memberListResults(memberListResults)
-                .build();
+        return null;
     }
 
-    private Optional<Long> getCount() {
-        Long count = jpaQueryFactory
-                .select(member.count())
-                .from(member)
-                .fetchOne();
-        return count == null ? Optional.empty() : Optional.of(count);
-    }
 
     /**
      * 프로필 조회
@@ -127,38 +55,12 @@ public class MemberQueryRepositoryImpl implements MemberQueryRepository {
     @Override
     public Optional<MemberProfileDto> findMemberProfileByMemberId(Long memberId) {
 
-        MemberProfileDto memberProfileDto = jpaQueryFactory
-                .select(
-                        Projections.fields(MemberProfileDto.class,
-                                member.id.as("memberId"),
-                                member.memberProfile.nickname.as("nickname"),
-                                member.memberProfile.introduce.as("selfIntroduce"),
-                                member.memberProfile.profileImage.imageLocation.as("profileImage")
-                        )
-                )
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetchOne();
-
-        return memberProfileDto == null ? Optional.empty() : Optional.of(memberProfileDto);
+        return null;
     }
 
     @Override
     public Optional<LoggedInMemberInformation> findLoggedInMemberInformation(Long memberId) {
-
-        return jpaQueryFactory
-                .select(Projections.fields(LoggedInMemberInformation.class,
-                        member.id.as("id"),
-                        member.authority.as("authority"),
-                        member.memberProfile.nickname.as("nickname"),
-                        member.memberProfile.profileImage.imageLocation.as("profileImage"),
-                        member.registrationType.as("loggedInAs")
-                ))
-                .from(member)
-                .where(member.id.eq(memberId))
-                .fetch()
-                .stream()
-                .findFirst();
+        return null;
 
 
     }

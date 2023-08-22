@@ -1,8 +1,8 @@
 package com.study.badrequest.admin.command.domain;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.member.command.domain.Authority;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.values.Authority;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -26,17 +26,17 @@ public class AdministratorActivityHistory {
     private String reason;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member admin;
+    private MemberEntity admin;
     private LocalDateTime activityAt;
 
-    protected AdministratorActivityHistory(String activityDetails, String reason, Member admin, LocalDateTime activityAt) {
+    protected AdministratorActivityHistory(String activityDetails, String reason, MemberEntity admin, LocalDateTime activityAt) {
         this.activityDetails = activityDetails;
         this.reason = reason;
         this.admin = admin;
         this.activityAt = activityAt;
     }
 
-    public static AdministratorActivityHistory createAdministratorActivityHistory(String activityDetails, String reason, Member admin, LocalDateTime activityAt) {
+    public static AdministratorActivityHistory createAdministratorActivityHistory(String activityDetails, String reason, MemberEntity admin, LocalDateTime activityAt) {
 
         if (admin.getAuthority() != Authority.ADMIN) {
             throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.PERMISSION_DENIED);

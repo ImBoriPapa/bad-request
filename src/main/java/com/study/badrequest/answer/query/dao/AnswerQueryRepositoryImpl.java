@@ -18,10 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.study.badrequest.answer.command.domain.QAnswer.answer;
-import static com.study.badrequest.answer.command.domain.QAnswerRecommendation.answerRecommendation;
-import static com.study.badrequest.member.command.domain.QMember.member;
-import static com.study.badrequest.member.command.domain.QMemberProfile.memberProfile;
+
 
 
 @Repository
@@ -33,59 +30,7 @@ public class AnswerQueryRepositoryImpl {
 
     public AnswerResult findAnswerByQuestionId(Long questionId, Long lastOfData, ExposureStatus exposureStatus, Long memberId) {
 
-        BooleanExpression index = lastOfData == null ? null : answer.id.gt(lastOfData);
-        BooleanExpression exposure = exposureStatus == null ? answer.exposureStatus.eq(ExposureStatus.PUBLIC) : answer.exposureStatus.eq(exposureStatus);
-
-        int defaultLimitSize = 5;
-        int searchLimitSize = defaultLimitSize + 1;
-        boolean hasNext = false;
-        long last = 0L;
-
-        List<AnswerDto> result = jpaQueryFactory
-                .select(
-                        Projections.fields(AnswerDto.class,
-                                answer.id.as("id"),
-                                answer.contents.as("contents"),
-                                Expressions.asBoolean(false).as("isAnswerer"),
-                                Projections.fields(AnswerDto.Answerer.class,
-                                        member.id.as("id"),
-                                        memberProfile.nickname.as("nickname"),
-                                        memberProfile.profileImage.imageLocation.as("profileImage")
-                                ).as("answerer"),
-                                Projections.fields(AnswerDto.Metrics.class,
-                                        answer.numberOfRecommendation.as("numberOfRecommendation"),
-                                        answer.numberOfComment.as("numberOfComment"),
-                                        Expressions.asBoolean(false).as("hasRecommendation"),
-                                        Expressions.asEnum(RecommendationKind.NOT_EXIST_RECOMMENDATION).as("kind")
-                                ).as("metrics"),
-                                answer.answeredAt.as("answeredAt"),
-                                answer.modifiedAt.as("modifiedAt")
-                        )
-                )
-                .from(answer)
-                .join(answer.member, member)
-                .join(member.memberProfile, memberProfile)
-                .where(
-                        answer.question.id.eq(questionId),
-                        index,
-                        exposure
-                )
-                .orderBy(answer.id.asc())
-                .limit(searchLimitSize)
-                .fetch();
-
-        if (result.size() > defaultLimitSize) {
-            hasNext = true;
-            result.remove(result.size() - 1);
-        }
-
-        last = result.stream().mapToLong(AnswerDto::getId).max().orElse(0);
-
-        if (!result.isEmpty() && memberId != null) {
-            setRecommendationMetrics(memberId, result);
-        }
-
-        return new AnswerResult(result.size(), last, hasNext, result);
+        return null;
     }
 
     private void setRecommendationMetrics(Long memberId, List<AnswerDto> result) {
@@ -110,12 +55,6 @@ public class AnswerQueryRepositoryImpl {
     }
 
     private List<AnswerRecommendation> findAnswerRecommendationInAnswerIds(List<Long> answerIds) {
-        List<AnswerRecommendation> recommendationList = jpaQueryFactory
-                .select(answerRecommendation)
-                .from(answerRecommendation)
-                .where(
-                        answerRecommendation.answer.id.in(answerIds)
-                ).fetch();
-        return recommendationList;
+        return null;
     }
 }

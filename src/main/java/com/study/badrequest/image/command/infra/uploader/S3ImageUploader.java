@@ -1,10 +1,7 @@
 package com.study.badrequest.image.command.infra.uploader;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
@@ -39,6 +36,11 @@ public class S3ImageUploader implements ImageUploader {
     private String BUCKET_URL;
     @Value("${s3-image.default-profile-image}")
     private String DEFAULT_PROFILE_IMAGE;
+
+    @Override
+    public ImageUploadDto getByStoredName() {
+        return null;
+    }
 
     public ImageUploadDto uploadImageFile(MultipartFile image, String folderName) {
 

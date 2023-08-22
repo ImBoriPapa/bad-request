@@ -2,13 +2,10 @@ package com.study.badrequest.question.command.interfaces;
 
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.member.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CurrentMember;
 import com.study.badrequest.question.command.application.QuestionCreateService;
 import com.study.badrequest.question.query.interfaces.QuestionRequest;
-import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.question.query.interfaces.QuestionQueryApiController;
-import com.study.badrequest.question.command.application.QuestionService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +20,12 @@ import javax.validation.Valid;
 import static com.study.badrequest.common.constants.ApiURL.*;
 import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.MediaType.*;
 
 @RestController
 @RequiredArgsConstructor
 @Slf4j
 public class QuestionApiController {
-    private final QuestionService questionService;
     private final QuestionCreateService questionCreateService;
     private final QuestionModelAssembler modelAssembler;
 
@@ -43,11 +38,11 @@ public class QuestionApiController {
             throw CustomRuntimeException.createWithBindingResults(VALIDATION_ERROR, bindingResult);
         }
 
-        QuestionResponse.Create response = questionService.createQuestionProcessing(information.getId(), form);
+//        QuestionResponse.Create response = questionService.createQuestionProcessing(information.getId(), form);
 
-        return ResponseEntity
-                .created(linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(response.getId(), null, null, null)).toUri())
-                .body(ApiResponse.success(modelAssembler.createCreateModel(response)));
+        return ResponseEntity.ok()
+//                .created(linkTo(methodOn(QuestionQueryApiController.class).getQuestionDetail(response.getId(), null, null, null)).toUri())
+                .body(ApiResponse.success(modelAssembler.createCreateModel(null)));
     }
 
     @PatchMapping(value = QUESTION_PATCH_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
@@ -55,21 +50,21 @@ public class QuestionApiController {
                                  @RequestBody QuestionRequest.Modify form,
                                  @LoggedInMember CurrentMember.Information information) {
         log.info("Question Modify Request");
-        QuestionResponse.Modify response = questionService.modifyQuestionProcessing(information.getId(), questionId, form);
+//        QuestionResponse.Modify response = questionService.modifyQuestionProcessing(information.getId(), questionId, form);
 
         return ResponseEntity.ok()
-                .body(ApiResponse.success(modelAssembler.createModifyModel(response)));
+                .body(ApiResponse.success(modelAssembler.createModifyModel(null)));
     }
 
     @DeleteMapping(QUESTION_DELETE_URL)
     public ResponseEntity delete(@PathVariable Long questionId,
                                  @LoggedInMember CurrentMember.Information information) {
         log.info("Question Delete Request");
-        QuestionResponse.Delete response = questionService.deleteQuestionProcess(information.getId(), questionId);
+//        QuestionResponse.Delete response = questionService.deleteQuestionProcess(information.getId(), questionId);
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(modelAssembler.createDeleteModel(response)));
+                .body(ApiResponse.success(modelAssembler.createDeleteModel(null)));
     }
 
 

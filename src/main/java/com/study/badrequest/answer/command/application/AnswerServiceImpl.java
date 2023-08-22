@@ -1,6 +1,6 @@
 package com.study.badrequest.answer.command.application;
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.answer.command.domain.Answer;
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.answer.command.interfaces.AnswerRequest;
@@ -8,7 +8,7 @@ import com.study.badrequest.answer.command.interfaces.AnswerResponse;
 import com.study.badrequest.answer.command.domain.AnswerEventDto;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.answer.command.domain.AnswerRepository;
-import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Register createAnswer(Long memberId, Long questionId, AnswerRequest.Register form) {
         log.info("Create Answer Start");
-        Member member = memberRepository.findById(memberId)
+        MemberEntity member = memberRepository.findById(memberId)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
         Question question = questionRepository.findById(questionId)
@@ -66,7 +66,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Modify modifyAnswer(Long memberId, Long answerId, AnswerRequest.Modify form) {
         log.info("Modify Answer");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_ANSWER));
 
@@ -81,7 +81,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Delete deleteAnswer(Long memberId, Long answerId) {
         log.info("Delete Answer");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_ANSWER));
 

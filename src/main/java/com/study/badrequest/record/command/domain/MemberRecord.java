@@ -1,7 +1,7 @@
 package com.study.badrequest.record.command.domain;
 
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,7 +21,7 @@ public class MemberRecord {
     private ActionStatus action;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private MemberEntity member;
     @Column(name = "IP_ADDRESS")
     private String ipAddress;
     @Column(name = "DESCRIPTION")
@@ -30,7 +30,7 @@ public class MemberRecord {
     private LocalDateTime recodeTime;
 
     @Builder
-    public MemberRecord(ActionStatus action, Member member, String ipAddress, String description, LocalDateTime recodeTime) {
+    public MemberRecord(ActionStatus action, MemberEntity member, String ipAddress, String description, LocalDateTime recodeTime) {
         this.action = action;
         this.member = member;
         this.ipAddress = ipAddress;

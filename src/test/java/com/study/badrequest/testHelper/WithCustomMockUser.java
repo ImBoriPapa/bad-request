@@ -1,6 +1,6 @@
 package com.study.badrequest.testHelper;
 
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.values.Authority;
 import org.springframework.security.test.context.support.WithSecurityContext;
 
 import java.lang.annotation.Retention;

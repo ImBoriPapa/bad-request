@@ -1,7 +1,7 @@
 package com.study.badrequest.blog.command.domain;
 
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,7 +26,7 @@ public class Blog {
     private String title;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private MemberEntity member;
     private Boolean commentNotification;
     private Boolean emailNotification;
     private ExposureStatus exposureStatus;
@@ -34,7 +34,7 @@ public class Blog {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
-    protected Blog(String title, Member member) {
+    protected Blog(String title, MemberEntity member) {
         this.location = generateRandomLocation();
         this.title = title;
         this.member = member;
@@ -46,7 +46,7 @@ public class Blog {
         this.deletedAt = LocalDateTime.now();
     }
 
-    public static Blog createBlog(Member member) {
+    public static Blog createBlog(MemberEntity member) {
         String title = member
                 .getMemberProfile()
                 .getNickname()

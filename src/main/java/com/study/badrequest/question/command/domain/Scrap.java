@@ -1,7 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,7 +18,7 @@ public class Scrap {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private MemberEntity member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QUESTION_ID")

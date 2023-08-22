@@ -12,8 +12,9 @@ import javax.persistence.*;
 public class Writer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "WRITER_ID")
+    @Column(name = "writer_id")
     private Long id;
+    @Embedded
     private MemberId memberId;
     private String nickname;
     private String profileImage;
@@ -31,7 +32,6 @@ public class Writer {
     }
 
     public static Writer createWriter(Long memberId, String nickname, String profileImage, Integer activityScore, WriterType writerType) {
-
         return Writer.builder()
                 .memberId(new MemberId(memberId))
                 .nickname(nickname)
@@ -39,5 +39,11 @@ public class Writer {
                 .activityScore(activityScore)
                 .writerType(writerType)
                 .build();
+    }
+
+    public void update(String nickname, String profileImage, Integer activityScore) {
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+        this.activityScore = activityScore;
     }
 }

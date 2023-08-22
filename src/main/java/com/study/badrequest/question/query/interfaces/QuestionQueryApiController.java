@@ -3,12 +3,12 @@ package com.study.badrequest.question.query.interfaces;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
 
-import com.study.badrequest.member.command.domain.CurrentMember;
-import com.study.badrequest.question.query.QuestionDetail;
-import com.study.badrequest.question.query.QuestionListResult;
-import com.study.badrequest.question.query.QuestionSearchCondition;
+import com.study.badrequest.login.command.domain.CurrentMember;
+import com.study.badrequest.question.query.dto.QuestionDetail;
+import com.study.badrequest.question.query.dto.QuestionListResult;
+import com.study.badrequest.question.query.dto.QuestionSearchCondition;
 
-import com.study.badrequest.question.command.application.QuestionQueryService;
+import com.study.badrequest.question.query.dao.QuestionQueryService;
 import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

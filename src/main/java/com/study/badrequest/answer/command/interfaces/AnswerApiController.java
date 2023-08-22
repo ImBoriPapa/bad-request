@@ -3,7 +3,7 @@ package com.study.badrequest.answer.command.interfaces;
 import com.study.badrequest.answer.query.interfaces.AnswerQueryApiController;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.member.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CurrentMember;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.answer.command.application.AnswerService;
 import com.study.badrequest.utils.modelAssembler.AnswerModelAssembler;

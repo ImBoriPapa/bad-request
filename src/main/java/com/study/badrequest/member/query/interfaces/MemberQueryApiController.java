@@ -1,10 +1,10 @@
 package com.study.badrequest.member.query.interfaces;
 
-import com.study.badrequest.member.command.interfaces.LoginController;
+import com.study.badrequest.login.command.interfaces.LoginController;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.member.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CurrentMember;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.query.dao.MemberQueryRepository;
 import com.study.badrequest.member.query.dto.LoggedInMemberInformation;

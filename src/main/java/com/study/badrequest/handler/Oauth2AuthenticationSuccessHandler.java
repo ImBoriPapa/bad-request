@@ -1,8 +1,8 @@
 package com.study.badrequest.handler;
 
-import com.study.badrequest.member.command.domain.MemberPrincipal;
-import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;
-import com.study.badrequest.member.command.application.LoginService;
+import com.study.badrequest.login.command.domain.MemberPrincipal;
+import com.study.badrequest.login.command.domain.CustomAuthorizationRequestRepository;
+import com.study.badrequest.login.command.application.LoginService;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;
 
-import static com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
+import static com.study.badrequest.login.command.domain.CustomAuthorizationRequestRepository.REDIRECT_URL_PARAM_COOKIE_NAME;
 
 
 

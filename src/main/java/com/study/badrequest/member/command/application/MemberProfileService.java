@@ -1,5 +1,7 @@
 package com.study.badrequest.member.command.application;
 
+import com.study.badrequest.member.command.domain.dto.MemberChangeNickname;
+import com.study.badrequest.member.command.domain.model.MemberId;
 import com.study.badrequest.member.command.interfaces.MemberRequest;
 import com.study.badrequest.member.command.interfaces.MemberResponse;
 import com.study.badrequest.member.command.interfaces.MemberProfileResponse;
@@ -7,11 +9,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface MemberProfileService {
 
-    MemberResponse.Update changeNickname(Long memberId, MemberRequest.ChangeNickname form, String ipAddress);
+    MemberId changeNickname(MemberId memberId, MemberChangeNickname memberChangeNickname);
 
-    MemberResponse.Update changeIntroduce(Long memberId, MemberRequest.ChangeIntroduce form, String ipAddress);
+    MemberId changeIntroduce(MemberId memberId, MemberRequest.ChangeIntroduce form, String ipAddress);
 
-    MemberResponse.Delete deleteProfileImage(Long memberId,String ipAddress);
+    MemberId deleteProfileImage(MemberId memberId,String ipAddress);
 
-    MemberResponse.Update changeProfileImage(Long memberId, MultipartFile image,String ipAddress);
+    MemberId changeProfileImage(MemberId memberId, MultipartFile image,String ipAddress);
 }

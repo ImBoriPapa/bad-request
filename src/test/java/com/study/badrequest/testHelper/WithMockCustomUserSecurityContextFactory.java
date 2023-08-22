@@ -1,7 +1,7 @@
 package com.study.badrequest.testHelper;
 
 
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.values.Authority;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

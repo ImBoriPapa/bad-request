@@ -1,7 +1,7 @@
 package com.study.badrequest.answer.command.domain;
 
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +25,7 @@ public class AnswerComment {
     private ExposureStatus exposureStatus;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member writer;
+    private MemberEntity writer;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ANSWER_ID")
     private Answer answer;
@@ -35,7 +35,7 @@ public class AnswerComment {
     private LocalDateTime deletedAt;
 
     @Builder
-    public AnswerComment(String contents, ExposureStatus exposureStatus, Member writer, Answer answer, LocalDateTime addedAt, LocalDateTime deletedAt) {
+    public AnswerComment(String contents, ExposureStatus exposureStatus, MemberEntity writer, Answer answer, LocalDateTime addedAt, LocalDateTime deletedAt) {
         this.contents = contents;
         this.exposureStatus = exposureStatus;
         this.writer = writer;

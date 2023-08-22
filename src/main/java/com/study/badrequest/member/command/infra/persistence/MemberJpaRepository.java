@@ -1,9 +1,12 @@
 package com.study.badrequest.member.command.infra.persistence;
 
-import com.study.badrequest.member.command.domain.Member;
-import com.study.badrequest.member.command.domain.MemberRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberJpaRepository extends JpaRepository<Member, Long>, MemberRepository {
+import java.util.List;
 
+
+public interface MemberJpaRepository extends JpaRepository<MemberEntity, Long> {
+    List<MemberEntity> findMemberEntityByEmail(String email);
+
+    List<MemberEntity> findAllByContact(String contact);
 }

@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.authority;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.values.Authority;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 
 

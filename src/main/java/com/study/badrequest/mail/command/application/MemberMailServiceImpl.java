@@ -2,10 +2,10 @@ package com.study.badrequest.mail.command.application;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.mail.command.domain.MemberMail;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.mail.command.domain.MemberMailRepository;
-import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,10 +44,10 @@ public class MemberMailServiceImpl implements MemberMailService {
     public void sendTemporaryPassword(Long memberId, String temporaryPassword) {
         log.info("회원 임시 비밀번호 메일 발송 시작");
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
 
         sendMail(
-                member.getEmail().getEmail(),
+                null,
                 temporaryPasswordSubject,
                 mailSender.createMimeMessage(),
                 createTemporaryPasswordMailBody(temporaryPassword),

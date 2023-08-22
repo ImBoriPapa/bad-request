@@ -1,14 +1,14 @@
 package com.study.badrequest.config;
 
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.values.Authority;
 import com.study.badrequest.filter.JwtAccessDeniedFilter;
 import com.study.badrequest.filter.JwtAuthenticationEntryPointFilter;
 import com.study.badrequest.filter.JwtAuthenticationFilter;
 import com.study.badrequest.handler.Oauth2AuthenticationFailHandler;
 import com.study.badrequest.handler.Oauth2AuthenticationSuccessHandler;
-import com.study.badrequest.member.command.domain.CustomAuthorizationRequestRepository;
-import com.study.badrequest.member.command.application.JwtUserDetailService;
-import com.study.badrequest.member.command.application.OAuthUserDetailService;
+import com.study.badrequest.login.command.domain.CustomAuthorizationRequestRepository;
+import com.study.badrequest.login.command.application.JwtUserDetailService;
+import com.study.badrequest.login.command.application.OAuthUserDetailService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

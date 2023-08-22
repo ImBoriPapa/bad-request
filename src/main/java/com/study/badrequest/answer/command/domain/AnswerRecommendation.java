@@ -1,6 +1,6 @@
 package com.study.badrequest.answer.command.domain;
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -25,21 +25,21 @@ public class AnswerRecommendation {
     private RecommendationKind kind;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private MemberEntity member;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ANSWER_ID")
     private Answer answer;
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    protected AnswerRecommendation(Member member, Answer answer, RecommendationKind kind) {
+    protected AnswerRecommendation(MemberEntity member, Answer answer, RecommendationKind kind) {
         this.kind = kind;
         this.member = member;
         this.answer = answer;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static AnswerRecommendation createRecommendation(Member member, Answer answer, RecommendationKind kind) {
+    public static AnswerRecommendation createRecommendation(MemberEntity member, Answer answer, RecommendationKind kind) {
 
         AnswerRecommendation recommendation = new AnswerRecommendation(member, answer, kind);
 

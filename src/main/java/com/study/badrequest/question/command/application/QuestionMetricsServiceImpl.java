@@ -1,12 +1,12 @@
 package com.study.badrequest.question.command.application;
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.question.command.domain.Question;
-import com.study.badrequest.recommandation.command.domain.Recommendation;
+import com.study.badrequest.recommandation.command.domain.QuestionRecommendation;
 import com.study.badrequest.recommandation.command.domain.RecommendationKind;
 import com.study.badrequest.question.query.interfaces.QuestionResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import com.study.badrequest.question.command.domain.QuestionRepository;
 import com.study.badrequest.recommandation.command.domain.RecommendationRepository;
 import com.study.badrequest.utils.cookie.CookieUtils;
@@ -41,26 +41,26 @@ public class QuestionMetricsServiceImpl implements QuestionMetricsService {
             throw new IllegalArgumentException("질문에 추천 혹은 비추천은 한개만 가능하다.");
         }
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException(""));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException(""));
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException(""));
 
-        Recommendation recommendation = Recommendation.createRecommendation(member, question, RecommendationKind.RECOMMENDATION);
+        QuestionRecommendation questionRecommendation = QuestionRecommendation.createRecommendation(member, question, RecommendationKind.RECOMMENDATION);
 
-        recommendationRepository.save(recommendation);
+        recommendationRepository.save(questionRecommendation);
 
         return new QuestionResponse.Modify(question.getId(), question.getModifiedAt());
     }
 
     @Transactional
     public QuestionResponse.Modify deleteRecommendation(Long memberId, Long questionId) {
-        Recommendation recommendation = recommendationRepository.findByMemberIdAndQuestionId(memberId, questionId)
+        QuestionRecommendation questionRecommendation = recommendationRepository.findByMemberIdAndQuestionId(memberId, questionId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는다."));
-        recommendation
+        questionRecommendation
                 .getQuestion()
                 .getQuestionMetrics()
                 .decrementCountOfRecommendations();
-        recommendationRepository.deleteById(recommendation.getId());
+        recommendationRepository.deleteById(questionRecommendation.getId());
         return new QuestionResponse.Modify(questionId, LocalDateTime.now());
     }
 

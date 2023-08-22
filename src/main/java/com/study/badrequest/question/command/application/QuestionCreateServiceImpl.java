@@ -47,6 +47,7 @@ public class QuestionCreateServiceImpl implements QuestionCreateService {
      * @see Question#createQuestion(String, String, Writer, List, QuestionMetrics)
      * @see QuestionRepository#save(Question)
      */
+    // TODO: 2023/08/17 이벤트 발행
     @Transactional
     @Override
     public Long createQuestion(CreateQuestionForm form) {

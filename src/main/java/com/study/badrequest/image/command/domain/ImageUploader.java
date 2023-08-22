@@ -7,6 +7,8 @@ import java.util.List;
 
 public interface ImageUploader {
 
+    ImageUploadDto getByStoredName();
+
     ImageUploadDto uploadImageFile(MultipartFile image, String folderName);
     List<ImageUploadDto> uploadImageFile(List<MultipartFile> images, String folderName);
 

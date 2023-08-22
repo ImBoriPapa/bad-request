@@ -27,6 +27,8 @@ public class QuestionMetrics {
     private Long id;
     @Column(name = "count_of_recommend")
     private Integer countOfRecommend;
+    @Column(name = "count_of_un_recommend")
+    private Integer countOfUnRecommend;
     @Column(name = "count_of_view")
     private Integer countOfView;
     @Column(name = "count_of_answer")
@@ -37,15 +39,16 @@ public class QuestionMetrics {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "questionMetrics")
     private Question question;
 
-    protected QuestionMetrics(Integer countOfRecommend, Integer countOfView, Integer countOfAnswer, ExposureStatus exposure) {
+    protected QuestionMetrics(Integer countOfRecommend, Integer countOfUnRecommend, Integer countOfView, Integer countOfAnswer, ExposureStatus exposure) {
         this.countOfRecommend = countOfRecommend;
+        this.countOfUnRecommend = countOfUnRecommend;
         this.countOfView = countOfView;
         this.countOfAnswer = countOfAnswer;
         this.exposure = exposure;
     }
 
     public static QuestionMetrics createQuestionMetrics() {
-        return new QuestionMetrics(0, 0, 0, PUBLIC);
+        return new QuestionMetrics(0, 0, 0, 0, PUBLIC);
     }
 
     public void addQuestion(Question question) {
@@ -57,7 +60,19 @@ public class QuestionMetrics {
     }
 
     public void decrementCountOfRecommendations() {
-        --this.countOfRecommend;
+        if (this.countOfRecommend >= 0) {
+            --this.countOfRecommend;
+        }
+    }
+
+    public void incrementCountOfUnRecommendations() {
+        ++this.countOfRecommend;
+    }
+
+    public void decrementCountOfUnRecommendations() {
+        if (this.countOfRecommend >= 0) {
+            --this.countOfRecommend;
+        }
     }
 
     public void incrementCountOfView() {

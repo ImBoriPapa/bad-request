@@ -1,7 +1,7 @@
 package com.study.badrequest.member.command.interfaces;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +51,7 @@ public class MemberResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime confirmedAt;
 
-        public EmailConfirm(Member member) {
+        public EmailConfirm(MemberEntity member) {
             this.id = member.getId();
             this.confirmedAt = member.getUpdatedAt();
         }
@@ -65,7 +65,7 @@ public class MemberResponse {
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "Asia/Seoul")
         private LocalDateTime updatedAt;
 
-        public Update(Member member) {
+        public Update(MemberEntity member) {
             this.id = member.getId();
             this.updatedAt = member.getUpdatedAt();
         }

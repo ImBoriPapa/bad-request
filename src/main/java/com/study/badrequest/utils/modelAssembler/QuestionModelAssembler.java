@@ -6,10 +6,10 @@ import com.study.badrequest.question.command.interfaces.QuestionMetricsApiContro
 import com.study.badrequest.question.query.interfaces.QuestionQueryApiController;
 import com.study.badrequest.question.command.domain.QuestionSortType;
 import com.study.badrequest.question.query.interfaces.QuestionResponse;
-import com.study.badrequest.question.query.QuestionDetail;
-import com.study.badrequest.question.query.TagDto;
-import com.study.badrequest.question.query.QuestionListResult;
-import com.study.badrequest.question.query.QuestionSearchCondition;
+import com.study.badrequest.question.query.dto.QuestionDetail;
+import com.study.badrequest.question.query.dto.TagDto;
+import com.study.badrequest.question.query.dto.QuestionListResult;
+import com.study.badrequest.question.query.dto.QuestionSearchCondition;
 import com.study.badrequest.utils.hash_tag.HashTagUtils;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;

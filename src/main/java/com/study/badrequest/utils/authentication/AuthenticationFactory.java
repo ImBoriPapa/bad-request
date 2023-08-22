@@ -1,8 +1,8 @@
 package com.study.badrequest.utils.authentication;
 
 
-import com.study.badrequest.member.command.domain.CurrentMember;
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.login.command.domain.CurrentMember;
+import com.study.badrequest.member.command.domain.values.Authority;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

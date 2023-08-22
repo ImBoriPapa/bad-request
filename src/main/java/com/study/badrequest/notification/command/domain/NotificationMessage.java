@@ -1,7 +1,7 @@
 package com.study.badrequest.notification.command.domain;
 
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -23,7 +23,7 @@ public class NotificationMessage {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
-    private Member member;
+    private MemberEntity member;
     @Column(name = "MESSAGE")
     private String message;
     @Column(name = "IS_READ")
@@ -34,7 +34,7 @@ public class NotificationMessage {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    protected NotificationMessage(Member member, String message, Boolean isRead, NotificationType type, LocalDateTime createdAt) {
+    protected NotificationMessage(MemberEntity member, String message, Boolean isRead, NotificationType type, LocalDateTime createdAt) {
         this.member = member;
         this.message = message;
         this.isRead = isRead;
@@ -42,21 +42,21 @@ public class NotificationMessage {
         this.createdAt = createdAt;
     }
 
-    private static NotificationMessage createMessage(Member member, String result, NotificationType notice) {
+    private static NotificationMessage createMessage(MemberEntity member, String result, NotificationType notice) {
         return new NotificationMessage(member, result, false, notice, LocalDateTime.now());
     }
 
-    public static NotificationMessage createWelcomeMessage(Member member) {
+    public static NotificationMessage createWelcomeMessage(MemberEntity member) {
         String welcome = "Welcome to Bad-Request !!!";
         return new NotificationMessage(member, welcome, false, WELCOME, LocalDateTime.now());
     }
 
-    public static NotificationMessage createNoticeMessage(Member member, String message) {
+    public static NotificationMessage createNoticeMessage(MemberEntity member, String message) {
         String result = "[공지사항] " + message;
         return createMessage(member, result, NOTICE);
     }
 
-    public static NotificationMessage createUpdateMessage(Member member, String message) {
+    public static NotificationMessage createUpdateMessage(MemberEntity member, String message) {
 
         LocalDate now = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 W주차");
@@ -67,25 +67,25 @@ public class NotificationMessage {
         return createMessage(member, result, UPDATE);
     }
 
-    public static NotificationMessage createAnswerMessage(Member member, String questionTitle, String nickname) {
+    public static NotificationMessage createAnswerMessage(MemberEntity member, String questionTitle, String nickname) {
         String result = "회원님의 질문 \"" + questionTitle + "\" 에 " + nickname + " 님이 답변을 달았습니다.";
 
         return createMessage(member, result, ANSWER);
     }
 
-    public static NotificationMessage createCommentMessage(Member member, String answer, String nickname) {
+    public static NotificationMessage createCommentMessage(MemberEntity member, String answer, String nickname) {
         String result = "회원님의 답변 \"" + answer + "\" 에 " + nickname + " 님이 댓글을 달았습니다.";
 
         return createMessage(member, result, ADD_COMMENT);
     }
 
-    public static NotificationMessage createQuestionRecommendationMessage(Member member, String questionTitle, String nickname) {
+    public static NotificationMessage createQuestionRecommendationMessage(MemberEntity member, String questionTitle, String nickname) {
         String result = "회원님의 질문 \"" + questionTitle + "\" 을 " + nickname + " 님이 추천 하였습니다.";
 
         return createMessage(member, result, QUESTION_RECOMMENDATION);
     }
 
-    public static NotificationMessage createAnswerRecommendationMessage(Member member, String answer, String nickname) {
+    public static NotificationMessage createAnswerRecommendationMessage(MemberEntity member, String answer, String nickname) {
         String result = "회원님의 답변 \"" + answer + "\" 을 " + nickname + " 님이 추천 하였습니다.";
 
         return createMessage(member, result, ANSWER_RECOMMENDATION);

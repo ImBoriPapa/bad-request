@@ -1,7 +1,7 @@
 package com.study.badrequest.utils.jwt;
 
 import com.study.badrequest.common.status.JwtStatus;
-import com.study.badrequest.member.command.interfaces.JwtTokenDto;
+import com.study.badrequest.login.command.interfaces.JwtTokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

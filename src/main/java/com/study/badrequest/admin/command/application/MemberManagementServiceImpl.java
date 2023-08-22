@@ -2,11 +2,11 @@ package com.study.badrequest.admin.command.application;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.admin.command.domain.AdministratorActivityHistory;
-import com.study.badrequest.member.command.domain.Authority;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.domain.values.Authority;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.admin.command.domain.AdministratorActivityHistoryRepository;
-import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +21,9 @@ public class MemberManagementServiceImpl implements MemberManagementService {
     @Transactional
     public AdministratorActivityHistory changeMemberAuthority(Long adminId, Long memberId, Authority authority, String reason) {
 
-        Member admin = memberRepository.findById(adminId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity admin = memberRepository.findById(adminId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
         member.changePermissions(authority);
 
         AdministratorActivityHistory history = AdministratorActivityHistory.createAdministratorActivityHistory("", "", admin, member.getUpdatedAt());

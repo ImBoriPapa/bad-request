@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.study.badrequest.member.command.domain.QMember.*;
+
 
 @Repository
 @Transactional
@@ -28,22 +28,11 @@ public class MemberInformationRepositoryImpl implements MemberInformationReposit
      */
     @Override
     public Optional<MemberInformation> findById(Long id) {
-        return jpaQueryFactory
-                .select(getFields())
-                .from(member)
-                .where(member.id.eq(id))
-                .fetch()
-                .stream()
-                .findFirst();
+        return null;
 
     }
 
     private QBean<MemberInformation> getFields() {
-        return Projections.fields(MemberInformation.class,
-                member.id.as("memberId"),
-                member.memberProfile.nickname.as("nickname"),
-                member.memberProfile.profileImage.imageLocation.as("profileImage"),
-                member.memberProfile.activityScore.as("activityScore"),
-                member.authority.as("authority"));
+        return null;
     }
 }

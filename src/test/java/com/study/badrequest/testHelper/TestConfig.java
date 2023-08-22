@@ -1,8 +1,8 @@
 package com.study.badrequest.testHelper;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.study.badrequest.member.command.domain.MemberPasswordEncoder;
-import com.study.badrequest.member.command.infra.password.InfrastructurePasswordEncoder;
+import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
+import com.study.badrequest.member.command.infra.imports.MemberPasswordEncoderImpl;
 import com.study.badrequest.question.command.infra.persistence.MemberInformationRepositoryImpl;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ public class TestConfig {
 
     @Bean
     public MemberPasswordEncoder memberPasswordEncoder(PasswordEncoder passwordEncoder) {
-        return new InfrastructurePasswordEncoder(passwordEncoder);
+        return new MemberPasswordEncoderImpl(passwordEncoder);
     }
     @Bean
     public MemberInformationRepositoryImpl memberInformationRepositoryImpl(JPAQueryFactory jpaQueryFactory) {

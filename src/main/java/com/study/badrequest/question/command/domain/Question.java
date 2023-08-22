@@ -1,8 +1,8 @@
 package com.study.badrequest.question.command.domain;
 
 
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;
 
 import javax.persistence.*;
@@ -10,13 +10,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.common.status.ExposureStatus.*;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "question", indexes = {
-        @Index(name = "question_exposure_idx", columnList = "exposure")
-})
+@Table(name = "question")
 @EqualsAndHashCode(of = "id")
 @Getter
 public class Question {
@@ -33,13 +32,8 @@ public class Question {
     private String contents;
     @Column(name = "preview")
     private String preview;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "question")
     private List<QuestionTag> questionTags = new ArrayList<>();
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "exposure")
-    private ExposureStatus exposure;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "question_metrics_id")
     private QuestionMetrics questionMetrics;
@@ -50,13 +44,11 @@ public class Question {
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
-    protected Question(Writer writer, String title, String contents, ExposureStatus exposure, LocalDateTime askedAt) {
+    protected Question(Writer writer, String title, String contents, LocalDateTime askedAt) {
         this.writer = writer;
         this.title = title;
         this.contents = contents;
-        this.exposure = exposure;
         this.askedAt = askedAt;
-
     }
 
     /**
@@ -71,7 +63,7 @@ public class Question {
      * @ImplNote 질문글을 생성하면서 프리뷰를 만들고 질문 태그, 지표 데이터와 연관관계를 맺습니다.
      */
     public static Question createQuestion(String title, String contents, Writer writer, List<QuestionTag> questionTags, QuestionMetrics questionMetrics) {
-        Question question = new Question(writer, title, contents, PUBLIC, LocalDateTime.now());
+        Question question = new Question(writer, title, contents, LocalDateTime.now());
         question.makePreview(contents);
         question.addQuestionMetrics(questionMetrics);
 
@@ -82,25 +74,47 @@ public class Question {
         return question;
     }
 
-    public void addQuestionMetrics(QuestionMetrics questionMetrics) {
+    /**
+     * 질문 수정
+     *
+     * @param requesterId 회원식별아이디-memberId (Long)
+     * @param title       (String)
+     * @param contents    (String)
+     */
+    public void modifyTitleAndContents(Long requesterId, String title, String contents) {
+
+        if (this.questionMetrics.getExposure() != DELETE) {
+            throw CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION);
+        }
+
+        if (!this.writer.getMemberId().getId().equals(requesterId)) {
+            throw CustomRuntimeException.createWithApiResponseStatus(PERMISSION_DENIED);
+        }
+
+        this.title = title;
+        this.contents = contents;
+        this.preview = makePreview(contents);
+        this.modifiedAt = LocalDateTime.now();
+    }
+
+    public void updateWriter(String nickname, String profileImage, Integer activeScore) {
+        this.writer.update(nickname, profileImage, activeScore);
+    }
+
+    private void addQuestionMetrics(QuestionMetrics questionMetrics) {
         this.questionMetrics = questionMetrics;
         questionMetrics.addQuestion(this);
     }
 
-    private void makePreview(String contents) {
-        this.preview = contents.length() > 50 ? contents.substring(0, 50) : contents;
+    private String makePreview(String contents) {
+        return contents.length() > 50 ? contents.substring(0, 50) : contents;
     }
 
-    public void changeExposure(ExposureStatus status) {
-        this.exposure = status;
-        this.questionMetrics.changeExposure(status);
-        this.deletedAt = LocalDateTime.now();
+    public void incrementCountOfRecommendation() {
+        this.questionMetrics.incrementCountOfRecommendations();
     }
 
-    public void modify(String title, String contents) {
-        this.title = title;
-        this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
-        makePreview(contents);
-        this.modifiedAt = LocalDateTime.now();
+    public void decrementCountOfRecommendation() {
+        this.questionMetrics.decrementCountOfRecommendations();
     }
 }

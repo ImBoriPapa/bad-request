@@ -1,9 +1,8 @@
 package com.study.badrequest.member.command.application;
 
-import com.study.badrequest.member.command.application.dto.TemporaryPasswordIssuanceForm;
+import com.study.badrequest.member.command.domain.dto.MemberIssueTemporaryPassword;
 
 public interface MemberAuthenticationService {
 
-    EmailAuthenticationCodeValidityTime issueEmailAuthenticationCode(String email);
-    Long issueTemporaryPassword(TemporaryPasswordIssuanceForm form);
+    Long issueTemporaryPassword(MemberIssueTemporaryPassword temporaryPassword);
 }

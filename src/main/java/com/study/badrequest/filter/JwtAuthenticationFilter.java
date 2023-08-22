@@ -1,6 +1,6 @@
 package com.study.badrequest.filter;
 
-import com.study.badrequest.member.command.application.LoginService;
+import com.study.badrequest.login.command.application.LoginService;
 import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.study.badrequest.member.query.dao;
 
 
-import com.study.badrequest.member.command.interfaces.MemberSearchCondition;
+import com.study.badrequest.member.query.interfaces.MemberSearchCondition;
 import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
 import com.study.badrequest.member.query.dto.MemberDetailDto;
 import com.study.badrequest.member.query.dto.MemberListDto;

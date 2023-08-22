@@ -1,6 +1,6 @@
 package com.study.badrequest.active.command.domain;
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +19,7 @@ public class Activity {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private MemberEntity member;
     @Enumerated(EnumType.STRING)
     @Column(name = "ACTIVITY_ACTION")
     private ActivityAction action;
@@ -30,7 +30,7 @@ public class Activity {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    protected Activity(Member member, ActivityAction action, String title, String description, LocalDateTime createdAt) {
+    protected Activity(MemberEntity member, ActivityAction action, String title, String description, LocalDateTime createdAt) {
         this.member = member;
         this.action = action;
         this.title = title;
@@ -38,7 +38,7 @@ public class Activity {
         this.createdAt = createdAt;
     }
 
-    public static Activity createActivity(Member member, ActivityAction action, String title, String description, LocalDateTime createdAt) {
+    public static Activity createActivity(MemberEntity member, ActivityAction action, String title, String description, LocalDateTime createdAt) {
         return new Activity(member, action, title, description, createdAt);
     }
 

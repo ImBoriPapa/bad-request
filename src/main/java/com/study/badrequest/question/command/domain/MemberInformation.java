@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.values.Authority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

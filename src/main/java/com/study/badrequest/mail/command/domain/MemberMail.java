@@ -1,7 +1,7 @@
 package com.study.badrequest.mail.command.domain;
 
 
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,7 +21,7 @@ public class MemberMail {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member recipient;
+    private MemberEntity recipient;
     @Column(name = "SUBJECT")
     private String subject;
     @Column(name = "TEXT")
@@ -35,7 +35,7 @@ public class MemberMail {
     private LocalDateTime timeOfSent;
 
     @Builder(builderMethodName = "createMemberMail", access = AccessLevel.PROTECTED)
-    protected MemberMail(Member recipient, String subject, String text, MailKind mailKind) {
+    protected MemberMail(MemberEntity recipient, String subject, String text, MailKind mailKind) {
         this.recipient = recipient;
         this.subject = subject;
         this.text = text;
@@ -44,7 +44,7 @@ public class MemberMail {
         this.timeOfSent = LocalDateTime.now();
     }
 
-    public static MemberMail createTemporaryPasswordMail(Member recipient, String subject) {
+    public static MemberMail createTemporaryPasswordMail(MemberEntity recipient, String subject) {
         return MemberMail.createMemberMail()
                 .recipient(recipient)
                 .subject(subject)

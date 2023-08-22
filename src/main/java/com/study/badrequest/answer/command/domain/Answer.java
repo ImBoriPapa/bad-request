@@ -1,7 +1,7 @@
 package com.study.badrequest.answer.command.domain;
 
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 
 import com.study.badrequest.question.command.domain.Question;
 import com.study.badrequest.utils.markdown.MarkdownUtils;
@@ -32,7 +32,7 @@ public class Answer {
     private ExposureStatus exposureStatus;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private MemberEntity member;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QUESTION_ID")
     private Question question;
@@ -44,7 +44,7 @@ public class Answer {
     private LocalDateTime deletedAt;
 
     @Builder(builderMethodName = "createAnswer")
-    public Answer(String contents, Member member, Question question) {
+    public Answer(String contents, MemberEntity member, Question question) {
         this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
         this.numberOfRecommendation = 0;
         this.numberOfComment = 0;

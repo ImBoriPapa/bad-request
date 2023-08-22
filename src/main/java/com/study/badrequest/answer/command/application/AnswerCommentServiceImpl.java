@@ -4,13 +4,13 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.answer.command.domain.Answer;
 import com.study.badrequest.answer.command.domain.AnswerComment;
-import com.study.badrequest.member.command.domain.Member;
+import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.answer.command.interfaces.AnswerCommentRequest;
 import com.study.badrequest.answer.command.interfaces.AnswerCommentResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.answer.command.domain.AnswerRepository;
 import com.study.badrequest.answer.command.domain.AnswerCommentRepository;
-import com.study.badrequest.member.command.domain.MemberRepository;
+import com.study.badrequest.member.command.domain.repository.MemberRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
     public AnswerCommentResponse.Add addComment(Long memberId, Long answerId, AnswerCommentRequest.Add form) {
         log.info("답변 댓글 추가");
 
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_ANSWER));
 
         AnswerComment answerComment = AnswerComment.builder()
@@ -53,7 +53,7 @@ public class AnswerCommentServiceImpl implements AnswerCommentService {
     @Transactional
     public AnswerCommentResponse.Delete deleteComment(Long memberId, Long answerId) {
         log.info("답변 댓글 삭제");
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_ANSWER));
         answer.statusToDelete();
         return new AnswerCommentResponse.Delete(answer.getDeletedAt());

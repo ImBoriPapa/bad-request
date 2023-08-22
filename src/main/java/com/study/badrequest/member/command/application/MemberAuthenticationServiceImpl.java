@@ -1,21 +1,22 @@
 package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.member.command.application.dto.TemporaryPasswordIssuanceForm;
-import com.study.badrequest.member.command.domain.*;
+import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.member.command.domain.dto.MemberIssueTemporaryPassword;
+import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
+import com.study.badrequest.member.command.domain.imports.TemporaryPasswordGenerator;
+import com.study.badrequest.member.command.domain.model.Member;
+import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
-import static com.study.badrequest.common.response.ApiResponseStatus.DUPLICATE_EMAIL;
-import static com.study.badrequest.common.response.ApiResponseStatus.NOTFOUND_MEMBER;
-import static com.study.badrequest.member.command.domain.AccountStatus.WITHDRAWN;
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
+import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,69 +24,39 @@ import static com.study.badrequest.member.command.domain.AccountStatus.WITHDRAWN
 @Slf4j
 public class MemberAuthenticationServiceImpl implements MemberAuthenticationService {
     private final MemberRepository memberRepository;
-    private final ApplicationEventPublisher applicationEventPublisher;
+    private final MemberPasswordEncoder memberPasswordEncoder;
+    private final TemporaryPasswordGenerator temporaryPasswordGenerator;
 
-    private final EmailAuthenticationCodeRepository emailAuthenticationCodeRepository;
-
-    @Transactional
     @Override
-    public EmailAuthenticationCodeValidityTime issueEmailAuthenticationCode(String email) {
-        log.info("Send Authentication Mail requestedEmail: {}", email);
-        final String convertedEmail = MemberEmail.convertDomainToLowercase(email);
-        emailDuplicateVerification(convertedEmail);
+    @Transactional
+    public Long issueTemporaryPassword(MemberIssueTemporaryPassword temporaryPassword) {
 
-        Optional<EmailAuthenticationCode> optionalEmailAuthenticationCode = emailAuthenticationCodeRepository.findByEmail(email);
+        List<Member> members = memberRepository.findMembersByEmail(temporaryPassword.email());
 
-        final EmailAuthenticationCode emailAuthenticationCode;
+        Member member = getActiveOrUsingTemporaryMember(members);
 
-        if (optionalEmailAuthenticationCode.isPresent()) {
-            optionalEmailAuthenticationCode.get().renewAuthenticationCode();
-            emailAuthenticationCode = optionalEmailAuthenticationCode.get();
-        } else {
-            emailAuthenticationCode = emailAuthenticationCodeRepository.save(new EmailAuthenticationCode(email));
+        String generatedTemporaryPassword = temporaryPasswordGenerator.generator();
+        Member issueTemporaryPassword = member.issueTemporaryPassword(generatedTemporaryPassword, memberPasswordEncoder);
+
+        return memberRepository.save(issueTemporaryPassword).getMemberId().getId();
+    }
+
+    private Member getActiveOrUsingTemporaryMember(List<Member> members) {
+        if (members.isEmpty()) {
+            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER);
         }
 
-        applicationEventPublisher.publishEvent(new MemberEventDto.SendAuthenticationMail(emailAuthenticationCode.getEmail(), emailAuthenticationCode.getCode()));
+        Optional<Member> optionalMember = members.stream()
+                .filter(member -> member.getAccountStatus() == ACTIVE || member.getAccountStatus() == USING_TEMPORARY_PASSWORD)
+                .findFirst();
 
-        return new EmailAuthenticationCodeValidityTime();
-    }
 
-    private void emailDuplicateVerification(String email) {
-        boolean isDuplicateEmail = memberRepository.findMembersByEmail(email)
-                .stream()
-                .anyMatch(member -> member.getAccountStatus() != WITHDRAWN);
-
-        if (isDuplicateEmail) {
-            throw CustomRuntimeException.createWithApiResponseStatus(DUPLICATE_EMAIL);
+        if (optionalMember.isEmpty()) {
+            throw CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER);
         }
+
+        return optionalMember.get();
     }
 
-    @Transactional
-    @Override
-    public Long issueTemporaryPassword(TemporaryPasswordIssuanceForm form) {
-        log.info("Issuing Temporary Password email: {}", form.getEmail());
 
-        final String email = MemberEmail.convertDomainToLowercase(form.getEmail());
-
-        Member activeMember = findActiveMemberByEmail(email);
-
-        TemporaryPassword temporaryPassword = TemporaryPassword.createTemporaryPassword(activeMember);
-
-        applicationEventPublisher.publishEvent(new MemberEventDto.IssueTemporaryPassword(activeMember.getId(), temporaryPassword.getPassword(), "임시 비밀번호 발급", form.getIpAddress(), LocalDateTime.now()));
-
-        return activeMember.getId();
-    }
-
-    private Member findActiveMemberByEmail(String email) {
-        List<Member> members = memberRepository.findMembersByEmail(email);
-
-        return getActiveMember(members);
-    }
-
-    private Member getActiveMember(List<Member> members) {
-        return members.stream()
-                .filter(member -> member.getAccountStatus() != WITHDRAWN)
-                .findFirst()
-                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
-    }
 }

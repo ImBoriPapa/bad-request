@@ -2,9 +2,10 @@ package com.study.badrequest.member.command.interfaces;
 
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.member.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CurrentMember;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.application.MemberProfileService;
+import com.study.badrequest.member.command.domain.model.MemberId;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
 import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.verification.RequestValidUtils;
@@ -29,9 +30,7 @@ public class MemberProfileApiController {
     private final MemberProfileService memberProfileService;
     private final MemberResponseModelAssembler memberResponseModelAssembler;
 
-    /**
-     * 닉네임 변경 요청
-     */
+
     @PatchMapping(value = PATCH_MEMBER_NICKNAME, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeNickname(@PathVariable Long memberId,
                                          @Validated @RequestBody MemberRequest.ChangeNickname form, BindingResult bindingResult,
@@ -43,16 +42,14 @@ public class MemberProfileApiController {
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
         RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
 
-        MemberResponse.Update response = memberProfileService.changeNickname(memberId, form, ipAddress);
+        memberProfileService.changeNickname(new MemberId(memberId),null);
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeNicknameModel(response)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeNicknameModel(null)));
     }
 
-    /**
-     * 프로필 이미지 변경
-     */
+
     @PatchMapping(PATCH_MEMBER_PROFILE_IMAGE)
     public ResponseEntity changeProfileImage(@PathVariable Long memberId,
                                              @RequestPart(name = "image", required = false) MultipartFile image,
@@ -70,41 +67,37 @@ public class MemberProfileApiController {
             throw CustomRuntimeException.createWithApiResponseStatus(TOO_BIG_PROFILE_IMAGE_SIZE);
         }
 
-        MemberResponse.Update response = memberProfileService.changeProfileImage(memberId, image, ipAddress);
+        memberProfileService.changeProfileImage(new MemberId(memberId), image, ipAddress);
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeProfileImageModel(response)));
+                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeProfileImageModel(null)));
     }
 
-    /**
-     * 프로필 이미지 삭제 -> 기본 프로필 이미지로 변경
-     */
     @DeleteMapping(DELETE_MEMBER_PROFILE_IMAGE)
     public ResponseEntity deleteProfileImage(@PathVariable Long memberId,
                                              HttpServletRequest request) {
         log.info("Delete Profile Image Request");
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
-        MemberResponse.Delete response = memberProfileService.deleteProfileImage(memberId, ipAddress);
+
+        memberProfileService.deleteProfileImage(new MemberId(memberId), ipAddress);
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(SUCCESS, response));
+                .body(ApiResponse.success(SUCCESS, null));
     }
 
-    /**
-     * 자기 소개 변경 요청
-     */
+
     @PatchMapping(value = PATCH_MEMBER_INTRODUCE, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeIntroduce(@PathVariable Long memberId,
                                           @RequestBody MemberRequest.ChangeIntroduce form,
                                           HttpServletRequest request) {
         log.info("Change Introduce Request");
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
-        MemberResponse.Update update = memberProfileService.changeIntroduce(memberId, form, ipAddress);
+        memberProfileService.changeIntroduce(new MemberId(memberId), form, ipAddress);
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(SUCCESS, update));
+                .body(ApiResponse.success(SUCCESS, null));
     }
 }

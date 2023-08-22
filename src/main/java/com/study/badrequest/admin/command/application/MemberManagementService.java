@@ -1,7 +1,7 @@
 package com.study.badrequest.admin.command.application;
 
 import com.study.badrequest.admin.command.domain.AdministratorActivityHistory;
-import com.study.badrequest.member.command.domain.Authority;
+import com.study.badrequest.member.command.domain.values.Authority;
 
 public interface MemberManagementService {
      AdministratorActivityHistory changeMemberAuthority(Long adminId, Long memberId, Authority authority, String reason);
