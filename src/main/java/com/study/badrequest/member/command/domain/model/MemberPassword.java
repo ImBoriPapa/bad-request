@@ -1,26 +1,32 @@
 package com.study.badrequest.member.command.domain.model;
 
+import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.values.PasswordType;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
+
 @Getter
-public class MemberPassword {
-    private String password;
-    private PasswordType passwordType;
-    private LocalDateTime createdAt;
+public final class MemberPassword {
+    private final String password;
+    private final PasswordType passwordType;
+    private final LocalDateTime createdAt;
 
     public MemberPassword(String password, PasswordType passwordType, LocalDateTime createdAt) {
+
+        passwordNullCheck(password);
+
         this.password = password;
         this.passwordType = passwordType;
         this.createdAt = createdAt;
     }
 
-    public static MemberPassword create(String password, PasswordType passwordType, LocalDateTime createdAt) {
-        return new MemberPassword(password, passwordType, createdAt);
+    private void passwordNullCheck(String password) {
+        if (password == null) {
+            throw CustomRuntimeException.createWithApiResponseStatus(PASSWORD_MUST_NOT_BE_NULL);
+        }
     }
 }
