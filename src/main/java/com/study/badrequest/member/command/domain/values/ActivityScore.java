@@ -1,4 +1,4 @@
-package com.study.badrequest.active.command.domain;
+package com.study.badrequest.member.command.domain.values;
 
 import lombok.Getter;
 
