@@ -1,40 +1,76 @@
 package com.study.badrequest.member.command.domain.model;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import lombok.AccessLevel;
+import com.study.badrequest.common.response.ApiResponseStatus;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-import javax.persistence.Embeddable;
-
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.common.response.ApiResponseStatus.INVALID_EMAIL_FORM;
 
-@Embeddable
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class MemberEmail {
+public final class MemberEmail {
 
-    private String email;
+    private final String email;
 
     public MemberEmail(String email) {
-        this.email = email;
+        this.email = convertDomainToLowercase(email);
     }
 
-    public static MemberEmail createMemberEmail(String email) {
-        String convertedEmail = convertDomainToLowercase(email);
-        return new MemberEmail(convertedEmail);
-    }
+    public String convertDomainToLowercase(String email) {
 
-    public static String convertDomainToLowercase(String email) {
-        int index = email.lastIndexOf('@');
-
-        if (index != -1) {
-            String localPart = email.substring(0, index);
-            String domainPart = email.substring(index + 1);
-            String convertedDomainPart = domainPart.toLowerCase();
-            return localPart + "@" + convertedDomainPart;
+        if (email == null) {
+            throw CustomRuntimeException.createWithApiResponseStatus(EMAIL_MUST_NOT_BE_NULL);
         }
 
-        throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        final int index = getIndex(email);
+
+        return getLocalPart(email, index) + "@" + getDomainPart(email, index);
+
+    }
+
+    private String getDomainPart(String email, int index) {
+        final String domain = email.substring(index + 1);
+
+        if (domain.length() == 0) {
+            throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        }
+
+        if (!domain.contains(".")) {
+            throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        }
+
+        int domainIndex = domain.lastIndexOf(".");
+
+        final String domainPrefix = domain.substring(0, domainIndex).trim();
+
+        if (domainPrefix.length() == 0) {
+            throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        }
+
+        final String suffix = domain.substring(domainIndex + 1).trim();
+
+        if (suffix.length() == 0) {
+            throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        }
+
+        return domain.toLowerCase().trim();
+    }
+
+    private String getLocalPart(String email, int index) {
+        final String local = email.substring(0, index).trim();
+
+        if (local.length() == 0) {
+            throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        }
+
+        return local.trim();
+    }
+
+    private int getIndex(String email) {
+        if (!email.contains("@")) {
+            throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
+        }
+
+        return email.lastIndexOf('@');
     }
 }
