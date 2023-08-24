@@ -175,8 +175,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private MemberEntity findMemberByIdOrElseThrowRuntimeException(Long memberId, ApiResponseStatus status) {
-        return memberRepository.findById(memberId)
-                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(status));
+        return null;
     }
 
     @Override
@@ -198,7 +197,7 @@ public class LoginServiceImpl implements LoginService {
                 .ifPresent(refreshTokenRepository::delete);
 
         MemberEntity member = findMemberByChangeAbleId(changeAbleId);
-        member.replaceAuthenticationCode();
+
 
         SecurityContextHolder.clearContext();
         CookieUtils.deleteCookie(request, response, "JSESSIONID");
@@ -238,7 +237,7 @@ public class LoginServiceImpl implements LoginService {
         verifiyingRequestedRefreshToken(refresh.getToken(), refreshToken);
 
         MemberEntity member = findMemberByChangeAbleId(changeableId);
-        member.replaceAuthenticationCode();
+
 
         refreshTokenRepository.deleteById(refresh.getAuthenticationCode());
 
@@ -307,7 +306,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     private MemberEntity findMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        return null;
     }
 
     private LoginResponse.LoginDto createLoginDto(MemberEntity member, JwtTokenDto jwtTokenDto, RefreshToken refreshToken) {

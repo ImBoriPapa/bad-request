@@ -42,7 +42,7 @@ public class MemberManagementServiceImpl implements MemberManagementService {
 
         ProfileImage defaultProfileImage = profileImageUploader.getDefaultProfileImage();
 
-        MemberProfile memberProfile = MemberProfile.createMemberProfile(memberCreate.nickname(), defaultProfileImage);
+        MemberProfile memberProfile = MemberProfile.createMemberProfile(null, defaultProfileImage);
 
         Member member = Member.createByEmail(memberCreate, memberProfile, authenticationCodeGenerator, memberPasswordEncoder);
 
@@ -55,7 +55,7 @@ public class MemberManagementServiceImpl implements MemberManagementService {
     @Transactional
     public MemberId changePassword(MemberId memberId, MemberChangePassword memberChangePassword) {
         Member savedMember = getMemberByMemberId(memberId);
-        Member updatedMember = savedMember.chanePassword(memberChangePassword, memberPasswordEncoder);
+        Member updatedMember = savedMember.changePassword(memberChangePassword, memberPasswordEncoder);
         return memberRepository.save(updatedMember).getMemberId();
     }
 
@@ -94,7 +94,7 @@ public class MemberManagementServiceImpl implements MemberManagementService {
 
     private void emailDuplicateCheck(String email) {
 
-        boolean exists = memberRepository.findMembersByEmail(MemberEmail.convertDomainToLowercase(email)).stream()
+        boolean exists = memberRepository.findMembersByEmail(email).stream()
                 .anyMatch(member -> member.getAccountStatus() == ACTIVE);
 
         if (exists) {
@@ -114,9 +114,9 @@ public class MemberManagementServiceImpl implements MemberManagementService {
             fieldNames.add("Password");
         }
 
-        if (memberCreate.nickname() == null || memberCreate.nickname().isBlank()) {
-            fieldNames.add("Nickname");
-        }
+//        if (memberCreate.nickname() == null || memberCreate.nickname().isBlank()) {
+//            fieldNames.add("Nickname");
+//        }
 
         if (memberCreate.contact() == null || memberCreate.contact().isBlank()) {
             fieldNames.add("Contact");

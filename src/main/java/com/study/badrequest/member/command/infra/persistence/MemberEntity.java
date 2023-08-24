@@ -1,9 +1,8 @@
 package com.study.badrequest.member.command.infra.persistence;
 
 
+import com.study.badrequest.member.command.domain.dto.MemberInitialize;
 import com.study.badrequest.member.command.domain.model.Member;
-import com.study.badrequest.member.command.domain.model.MemberEmail;
-import com.study.badrequest.member.command.domain.model.MemberId;
 import com.study.badrequest.member.command.domain.model.MemberPassword;
 import com.study.badrequest.member.command.domain.values.AccountStatus;
 import com.study.badrequest.member.command.domain.values.Authority;
@@ -107,14 +106,14 @@ public class MemberEntity {
     }
 
     public Member toModel() {
-        return Member.builder()
-                .memberId(new MemberId(getId()))
+        MemberInitialize memberInitialize = MemberInitialize.builder()
+                .memberId(getId())
                 .authenticationCode(getAuthenticationCode())
                 .oauthId(getOauthId())
-                .memberEmail(MemberEmail.createMemberEmail(getEmail()))
+                .memberEmail(getEmail())
                 .memberProfile(getMemberProfile().toModel())
                 .registrationType(getRegistrationType())
-                .memberPassword(MemberPassword.create(getPassword(), getPasswordType(),getPasswordCreatedAt()))
+                .memberPassword(new MemberPassword(getPassword(), getPasswordType(), getPasswordCreatedAt()))
                 .contact(getContact())
                 .authority(getAuthority())
                 .accountStatus(getAccountStatus())
@@ -122,6 +121,7 @@ public class MemberEntity {
                 .updatedAt(getUpdatedAt())
                 .resignAt(getResignAt())
                 .build();
+        return Member.initialize(memberInitialize);
     }
 
 

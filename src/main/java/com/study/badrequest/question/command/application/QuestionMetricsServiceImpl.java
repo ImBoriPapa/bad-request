@@ -41,7 +41,7 @@ public class QuestionMetricsServiceImpl implements QuestionMetricsService {
             throw new IllegalArgumentException("질문에 추천 혹은 비추천은 한개만 가능하다.");
         }
 
-        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> new IllegalArgumentException(""));
+        MemberEntity member = null;
 
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new IllegalArgumentException(""));
 

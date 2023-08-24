@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @EqualsAndHashCode(of = "id")
 public class MemberId {
-    private Long id;
+    private final Long id;
 
     public MemberId(Long id) {
         this.id = id;

@@ -21,9 +21,9 @@ public class MemberManagementServiceImpl implements MemberManagementService {
     @Transactional
     public AdministratorActivityHistory changeMemberAuthority(Long adminId, Long memberId, Authority authority, String reason) {
 
-        MemberEntity admin = memberRepository.findById(adminId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity admin = null;
 
-        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity member = null;
         member.changePermissions(authority);
 
         AdministratorActivityHistory history = AdministratorActivityHistory.createAdministratorActivityHistory("", "", admin, member.getUpdatedAt());

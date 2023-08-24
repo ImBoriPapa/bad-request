@@ -23,7 +23,7 @@ public class BlogServiceImpl implements BlogService {
     @Transactional
     public Blog createBlog(Long memberId) {
         log.info("Create Blog Request MemberId: {}", memberId);
-        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOTFOUND_MEMBER));
+        MemberEntity member = null;
 
         Blog blog = Blog.createBlog(member);
 

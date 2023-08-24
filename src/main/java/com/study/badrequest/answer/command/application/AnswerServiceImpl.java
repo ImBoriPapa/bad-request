@@ -37,8 +37,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Register createAnswer(Long memberId, Long questionId, AnswerRequest.Register form) {
         log.info("Create Answer Start");
-        MemberEntity member = memberRepository.findById(memberId)
-                .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
+        MemberEntity member = null;
 
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_QUESTION));
@@ -66,7 +65,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Modify modifyAnswer(Long memberId, Long answerId, AnswerRequest.Modify form) {
         log.info("Modify Answer");
-        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
+        MemberEntity member = null;
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_ANSWER));
 
@@ -81,7 +80,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponse.Delete deleteAnswer(Long memberId, Long answerId) {
         log.info("Delete Answer");
-        MemberEntity member = memberRepository.findById(memberId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
+        MemberEntity member = null;
 
         Answer answer = answerRepository.findById(answerId).orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOT_FOUND_ANSWER));
 

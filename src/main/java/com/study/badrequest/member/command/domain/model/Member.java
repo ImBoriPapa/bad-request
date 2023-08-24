@@ -1,5 +1,6 @@
 package com.study.badrequest.member.command.domain.model;
 
+import com.study.badrequest.active.command.domain.ActivityAction;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.dto.*;
@@ -22,10 +23,11 @@ import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
 import static com.study.badrequest.member.command.domain.values.Authority.*;
 import static com.study.badrequest.member.command.domain.values.RegistrationType.*;
 import static java.time.LocalDateTime.*;
+import static lombok.AccessLevel.*;
 
 @Getter
 @EqualsAndHashCode(of = "memberId")
-public class Member {
+public final class Member {
     private final MemberId memberId;
     private final String authenticationCode;
     private final String oauthId;
@@ -40,7 +42,7 @@ public class Member {
     private final LocalDateTime updatedAt;
     private final LocalDateTime resignAt;
 
-    @Builder
+    @Builder(access = PRIVATE)
     private Member(MemberId memberId, String authenticationCode, String oauthId, MemberEmail memberEmail, MemberProfile memberProfile, RegistrationType registrationType, MemberPassword memberPassword, String contact, Authority authority, AccountStatus accountStatus, LocalDateTime signInAt, LocalDateTime updatedAt, LocalDateTime resignAt) {
         this.memberId = memberId;
         this.authenticationCode = authenticationCode;
@@ -57,12 +59,35 @@ public class Member {
         this.resignAt = resignAt;
     }
 
-    public static Member createByEmail(MemberCreate memberCreate, MemberProfile memberProfile, AuthenticationCodeGenerator authenticationCodeGenerator, MemberPasswordEncoder memberPasswordEncoder) {
+    public static Member initialize(MemberInitialize initialize) {
 
-        MemberPassword password = MemberPassword.create(memberPasswordEncoder.encode(memberCreate.password()), AVAILABLE, LocalDateTime.now());
+        if (initialize.memberId() == null) {
+            throw new IllegalArgumentException("Member initialize method must have memberId");
+        }
 
         return Member.builder()
-                .memberEmail(MemberEmail.createMemberEmail(memberCreate.email()))
+                .memberId(new MemberId(initialize.memberId()))
+                .authenticationCode(initialize.authenticationCode())
+                .oauthId(initialize.oauthId())
+                .memberEmail(new MemberEmail(initialize.memberEmail()))
+                .memberProfile(initialize.memberProfile())
+                .registrationType(initialize.registrationType())
+                .memberPassword(initialize.memberPassword())
+                .contact(initialize.contact())
+                .authority(initialize.authority())
+                .accountStatus(initialize.accountStatus())
+                .signInAt(initialize.signInAt())
+                .updatedAt(initialize.updatedAt())
+                .resignAt(initialize.resignAt())
+                .build();
+    }
+
+    public static Member createByEmail(MemberCreate memberCreate, MemberProfile memberProfile, AuthenticationCodeGenerator authenticationCodeGenerator, MemberPasswordEncoder memberPasswordEncoder) {
+
+        MemberPassword password = new MemberPassword(memberPasswordEncoder.encode(memberCreate.password()), AVAILABLE, LocalDateTime.now());
+
+        return Member.builder()
+                .memberEmail(new MemberEmail(memberCreate.email()))
                 .authenticationCode(authenticationCodeGenerator.generate())
                 .memberPassword(password)
                 .memberProfile(memberProfile)
@@ -74,7 +99,7 @@ public class Member {
                 .build();
     }
 
-    public Member chanePassword(MemberChangePassword changePassword, MemberPasswordEncoder memberPasswordEncoder) {
+    public Member changePassword(MemberChangePassword changePassword, MemberPasswordEncoder memberPasswordEncoder) {
 
         if (getMemberPassword().getPasswordType() == TEMPORARY) {
             if (LocalDateTime.now().isAfter(getMemberPassword().getCreatedAt())) {
@@ -97,7 +122,7 @@ public class Member {
                 .memberEmail(getMemberEmail())
                 .oauthId(getOauthId())
                 .authenticationCode(getAuthenticationCode())
-                .memberPassword(MemberPassword.create(changed, AVAILABLE, LocalDateTime.now()))
+                .memberPassword(new MemberPassword(changed, AVAILABLE, LocalDateTime.now()))
                 .memberProfile(getMemberProfile())
                 .registrationType(getRegistrationType())
                 .contact(getContact())
@@ -153,7 +178,7 @@ public class Member {
 
     public Member issueTemporaryPassword(String generatedPassword, MemberPasswordEncoder memberPasswordEncoder) {
 
-        MemberPassword temporaryPassword = MemberPassword.create(memberPasswordEncoder.encode(generatedPassword), TEMPORARY, now());
+        MemberPassword temporaryPassword = new MemberPassword(memberPasswordEncoder.encode(generatedPassword), TEMPORARY, now());
 
         return Member.builder()
                 .memberId(getMemberId())
@@ -174,6 +199,26 @@ public class Member {
 
     public Member changeNickname(MemberChangeNickname memberChangeNickname) {
         return Member.builder().build();
+    }
+
+    public Member increaseActiveScore(ActivityAction activityAction) {
+        MemberProfile increaseActiveScore = this.memberProfile.increaseActiveScore(activityAction);
+
+        return Member.builder()
+                .memberId(getMemberId())
+                .memberEmail(getMemberEmail())
+                .oauthId(getOauthId())
+                .authenticationCode(getAuthenticationCode())
+                .memberPassword(getMemberPassword())
+                .memberProfile(increaseActiveScore)
+                .registrationType(getRegistrationType())
+                .contact(getContact())
+                .authority(getAuthority())
+                .accountStatus(USING_TEMPORARY_PASSWORD)
+                .signInAt(getSignInAt())
+                .updatedAt(getUpdatedAt())
+                .resignAt(getSignInAt())
+                .build();
     }
 }
 

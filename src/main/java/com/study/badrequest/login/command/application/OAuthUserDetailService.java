@@ -62,10 +62,7 @@ public class OAuthUserDetailService extends DefaultOAuth2UserService {
     }
 
     private MemberPrincipal createNewOauth2Member(Oauth2UserInformation oauth2UserInformation) {
-        MemberEntity oauthMember = MemberEntity.createByOAuth2(
-                oauth2UserInformation.getEmail(),
-                oauth2UserInformation.getId(),
-                getOauth2UserInformation(oauth2UserInformation.getProvider()));
+        MemberEntity oauthMember = null;
 
         MemberEntity member = null;
 
