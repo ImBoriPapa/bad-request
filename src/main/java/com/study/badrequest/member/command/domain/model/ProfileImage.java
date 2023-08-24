@@ -3,7 +3,7 @@ package com.study.badrequest.member.command.domain.model;
 import lombok.Getter;
 
 @Getter
-public class ProfileImage {
+public final class ProfileImage {
     private final String storedFileName;
     private final String imageLocation;
     private final Long size;
@@ -13,9 +13,5 @@ public class ProfileImage {
         this.imageLocation = imageLocation;
         this.size = size;
         this.isDefault = isDefault;
-    }
-
-    public static ProfileImage createProfileImage(String storedFileName, String imageLocation, Long size, Boolean isDefault) {
-        return new ProfileImage(storedFileName, imageLocation, size, isDefault);
     }
 }

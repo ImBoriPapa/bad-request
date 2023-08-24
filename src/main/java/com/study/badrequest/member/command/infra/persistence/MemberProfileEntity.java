@@ -23,6 +23,7 @@ public class MemberProfileEntity {
     private ProfileImageValue profileImage;
     @Column(name = "activity_score")
     private Integer activityScore;
+
     @Builder
     public MemberProfileEntity(Long id, String nickname, String introduce, ProfileImageValue profileImage, Integer activityScore) {
         this.id = id;
@@ -44,6 +45,6 @@ public class MemberProfileEntity {
     }
 
     public MemberProfile toModel() {
-        return new MemberProfile(getId(), getNickname(), getIntroduce(), getProfileImage().toModel(), getActivityScore());
+        return MemberProfile.initialize(getId(), getNickname(), getIntroduce(), getProfileImage().toModel(), getActivityScore());
     }
 }

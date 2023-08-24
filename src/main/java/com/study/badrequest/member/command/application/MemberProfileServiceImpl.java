@@ -1,5 +1,6 @@
 package com.study.badrequest.member.command.application;
 
+import com.study.badrequest.active.command.domain.ActivityAction;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.dto.MemberChangeNickname;
 import com.study.badrequest.member.command.domain.model.Member;
@@ -7,6 +8,7 @@ import com.study.badrequest.member.command.domain.model.MemberId;
 import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import com.study.badrequest.member.command.interfaces.MemberRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +18,7 @@ import static com.study.badrequest.common.response.ApiResponseStatus.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class MemberProfileServiceImpl implements MemberProfileService {
 
     private final MemberRepository memberRepository;
@@ -48,4 +51,14 @@ public class MemberProfileServiceImpl implements MemberProfileService {
     public MemberId changeProfileImage(MemberId memberId, MultipartFile image, String ipAddress) {
         return null;
     }
+
+    @Override
+    @Transactional
+    public MemberId increaseActiveScore(MemberId memberId, String activeKind) {
+        Member member = getMemberByMemberId(memberId);
+        Member increaseActiveScore = member.increaseActiveScore(ActivityAction.QUESTION);
+        Member save = memberRepository.save(increaseActiveScore);
+        return save.getMemberId();
+    }
+
 }

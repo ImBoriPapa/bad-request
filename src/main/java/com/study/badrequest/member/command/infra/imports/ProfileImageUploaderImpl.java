@@ -17,7 +17,7 @@ public class ProfileImageUploaderImpl implements ProfileImageUploader {
     @Override
     public ProfileImage getDefaultProfileImage() {
         final String defaultProfileImage = imageUploader.getDefaultProfileImage();
-        return ProfileImage.createProfileImage("default-image", defaultProfileImage, 123L, true);
+        return new ProfileImage("default-image", defaultProfileImage, 123L, true);
     }
 
     @Override
@@ -25,7 +25,7 @@ public class ProfileImageUploaderImpl implements ProfileImageUploader {
 
         ImageUploadDto imageUploadDto = imageUploader.uploadImageFile(imageFile, FOLDER_NAME);
 
-        return ProfileImage.createProfileImage(imageUploadDto.getStoredFileName(), imageUploadDto.getImageLocation(), imageUploadDto.getSize(), false);
+        return new ProfileImage(imageUploadDto.getStoredFileName(), imageUploadDto.getImageLocation(), imageUploadDto.getSize(), false);
     }
 
     @Override
