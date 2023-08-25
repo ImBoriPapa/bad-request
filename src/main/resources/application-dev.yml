@@ -17,7 +17,7 @@ spring:
     allow-bean-definition-overriding: true
   redis:
     host: localhost
-    port: 6379
+    port: 6500
   servlet:
     multipart:
       max-file-size: 10MB
@@ -27,10 +27,10 @@ spring:
       on-profile: dev
 
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://127.0.0.1:3306/badrequest?characterEncoding=UTF-8&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3500/bad_request?characterEncoding=UTF-8&serverTimezone=UTC
     username: root
-    password: 0209
+    password: root
 
   jpa:
     hibernate:

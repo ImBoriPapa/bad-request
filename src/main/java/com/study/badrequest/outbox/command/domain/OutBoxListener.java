@@ -41,7 +41,7 @@ public class OutBoxListener {
         outBoxRepository.save(outBoxMessage);
     }
 
-    @Scheduled(fixedDelay = 5000)
+//    @Scheduled(fixedDelay = 5000)
     public void polling() {
         List<OutBoxMessage> messages = outBoxRepository.findAll();
         List<OutBoxMessage> completedMessages = new ArrayList<>();

@@ -2,7 +2,6 @@ package com.study.badrequest.member.command.domain.model;
 
 import com.study.badrequest.active.command.domain.ActivityAction;
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.dto.*;
 import com.study.badrequest.member.command.domain.imports.AuthenticationCodeGenerator;
 import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
@@ -18,6 +17,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 
+import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.member.command.domain.values.PasswordType.*;
 import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
 import static com.study.badrequest.member.command.domain.values.Authority.*;
@@ -44,6 +44,10 @@ public final class Member {
 
     @Builder(access = PRIVATE)
     private Member(MemberId memberId, String authenticationCode, String oauthId, MemberEmail memberEmail, MemberProfile memberProfile, RegistrationType registrationType, MemberPassword memberPassword, String contact, Authority authority, AccountStatus accountStatus, LocalDateTime signInAt, LocalDateTime updatedAt, LocalDateTime resignAt) {
+
+        validateMemberPassword(memberPassword);
+        validateContact(contact);
+
         this.memberId = memberId;
         this.authenticationCode = authenticationCode;
         this.oauthId = oauthId;
@@ -84,12 +88,10 @@ public final class Member {
 
     public static Member createByEmail(MemberCreate memberCreate, MemberProfile memberProfile, AuthenticationCodeGenerator authenticationCodeGenerator, MemberPasswordEncoder memberPasswordEncoder) {
 
-        MemberPassword password = new MemberPassword(memberPasswordEncoder.encode(memberCreate.password()), AVAILABLE, LocalDateTime.now());
-
         return Member.builder()
                 .memberEmail(new MemberEmail(memberCreate.email()))
                 .authenticationCode(authenticationCodeGenerator.generate())
-                .memberPassword(password)
+                .memberPassword(new MemberPassword(memberPasswordEncoder.encode(memberCreate.password()), AVAILABLE, LocalDateTime.now()))
                 .memberProfile(memberProfile)
                 .registrationType(BAD_REQUEST)
                 .contact(memberCreate.contact())
@@ -99,20 +101,32 @@ public final class Member {
                 .build();
     }
 
+    private void validateMemberPassword(MemberPassword memberPassword) {
+        if (memberPassword == null) {
+            throw CustomRuntimeException.createWithApiResponseStatus(PASSWORD_MUST_NOT_BE_NULL);
+        }
+    }
+
+    private void validateContact(String contact) {
+        if (contact == null) {
+            throw CustomRuntimeException.createWithApiResponseStatus(CONTACT_MUST_NOT_BE_NULL);
+        }
+    }
+
     public Member changePassword(MemberChangePassword changePassword, MemberPasswordEncoder memberPasswordEncoder) {
 
         if (getMemberPassword().getPasswordType() == TEMPORARY) {
             if (LocalDateTime.now().isAfter(getMemberPassword().getCreatedAt())) {
-                throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.IS_EXPIRED_TEMPORARY_PASSWORD);
+                throw CustomRuntimeException.createWithApiResponseStatus(IS_EXPIRED_TEMPORARY_PASSWORD);
             }
         }
 
         if (changePassword.oldPassword().equals(changePassword.newPassword())) {
-            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
+            throw CustomRuntimeException.createWithApiResponseStatus(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
         }
 
         if (!memberPasswordEncoder.matches(changePassword.oldPassword(), getMemberPassword().getPassword())) {
-            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.WRONG_PASSWORD);
+            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_PASSWORD);
         }
 
         final String changed = memberPasswordEncoder.encode(changePassword.newPassword());
@@ -156,7 +170,7 @@ public final class Member {
     public Member resign(MemberResign memberResign, MemberPasswordEncoder memberPasswordEncoder) {
 
         if (!memberPasswordEncoder.matches(memberResign.password(), getMemberPassword().getPassword())) {
-            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.WRONG_PASSWORD);
+            throw CustomRuntimeException.createWithApiResponseStatus(WRONG_PASSWORD);
         }
 
         return Member.builder()

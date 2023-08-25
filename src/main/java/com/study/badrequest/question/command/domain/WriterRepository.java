@@ -6,4 +6,6 @@ public interface WriterRepository {
     Writer save(Writer writer);
 
     Optional<Writer> findById(Long id);
+
+    Optional<Writer> findByMemberId(Long memberId);
 }

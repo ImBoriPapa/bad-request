@@ -4,6 +4,8 @@ import com.study.badrequest.question.command.domain.Writer;
 import com.study.badrequest.question.command.domain.WriterRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WriterJpaRepository extends JpaRepository<Writer,Long>, WriterRepository {
+import java.util.Optional;
 
+public interface WriterJpaRepository extends JpaRepository<WriterEntity,Long>{
+    Optional<WriterEntity> findByMemberId(Long memberId);
 }

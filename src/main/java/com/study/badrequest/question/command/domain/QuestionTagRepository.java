@@ -11,7 +11,7 @@ public interface QuestionTagRepository  {
     Optional<QuestionTag> findById(Long id);
 
     void delete(QuestionTag questionTag);
-    List<QuestionTag> saveAllQuestionTag(Iterable<QuestionTag> questionTags);
+    List<QuestionTag> saveAllQuestionTag(List<QuestionTag> questionTags);
 
 
 }

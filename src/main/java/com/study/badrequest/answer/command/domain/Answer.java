@@ -3,7 +3,7 @@ package com.study.badrequest.answer.command.domain;
 import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 
-import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.infra.persistence.QuestionEntity;
 import com.study.badrequest.utils.markdown.MarkdownUtils;
 import lombok.*;
 
@@ -35,7 +35,7 @@ public class Answer {
     private MemberEntity member;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QUESTION_ID")
-    private Question question;
+    private QuestionEntity question;
     @Column
     private LocalDateTime answeredAt;
     @Column
@@ -44,7 +44,7 @@ public class Answer {
     private LocalDateTime deletedAt;
 
     @Builder(builderMethodName = "createAnswer")
-    public Answer(String contents, MemberEntity member, Question question) {
+    public Answer(String contents, MemberEntity member, QuestionEntity question) {
         this.contents = MarkdownUtils.parseMarkdownToHtml(contents);
         this.numberOfRecommendation = 0;
         this.numberOfComment = 0;

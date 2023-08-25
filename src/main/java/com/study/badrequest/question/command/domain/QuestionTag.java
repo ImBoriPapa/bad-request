@@ -1,5 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
+import com.study.badrequest.question.command.infra.persistence.QuestionEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -7,41 +8,26 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Table(name = "question_tag")
-@EqualsAndHashCode(of = "id")
-public class QuestionTag {
+public final class QuestionTag {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "question_tag_id")
-    public Long id;
+    private final Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_id")
-    public Question question;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
+    private final Question question;
+    private final Tag tag;
 
-    protected QuestionTag(Tag tag) {
+    public QuestionTag(Long id, Question question, Tag tag) {
+        this.id = id;
+        this.question = question;
         this.tag = tag;
     }
 
-    public static QuestionTag createQuestionTag(Tag tag) {
-        return new QuestionTag(tag);
+    public static QuestionTag createQuestionTag(Question question, Tag tag) {
+        return new QuestionTag(null, question, tag);
     }
 
-    public void assignQuestion(Question question) {
-
-        if (this.question != null) {
-            this.getQuestion().getQuestionTags().remove(this);
-        }
-
-        this.question = question;
-
-        question.getQuestionTags().add(this);
+    public static QuestionTag initialize(Long id, Question question, Tag tag) {
+        return new QuestionTag(id, question, tag);
     }
+
 }

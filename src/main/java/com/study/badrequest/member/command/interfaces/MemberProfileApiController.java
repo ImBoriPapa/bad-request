@@ -7,7 +7,6 @@ import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.application.MemberProfileService;
 import com.study.badrequest.member.command.domain.model.MemberId;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
-import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import com.study.badrequest.utils.verification.RequestValidUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +27,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class MemberProfileApiController {
     private final MemberProfileService memberProfileService;
-    private final MemberResponseModelAssembler memberResponseModelAssembler;
-
-
     @PatchMapping(value = PATCH_MEMBER_NICKNAME, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeNickname(@PathVariable Long memberId,
                                          @Validated @RequestBody MemberRequest.ChangeNickname form, BindingResult bindingResult,
@@ -46,7 +42,7 @@ public class MemberProfileApiController {
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeNicknameModel(null)));
+                .body(ApiResponse.success(SUCCESS, null));
     }
 
 
@@ -71,7 +67,7 @@ public class MemberProfileApiController {
 
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(SUCCESS, memberResponseModelAssembler.changeProfileImageModel(null)));
+                .body(ApiResponse.success(SUCCESS, null));
     }
 
     @DeleteMapping(DELETE_MEMBER_PROFILE_IMAGE)

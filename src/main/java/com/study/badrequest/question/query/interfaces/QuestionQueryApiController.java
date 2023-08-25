@@ -9,7 +9,7 @@ import com.study.badrequest.question.query.dto.QuestionListResult;
 import com.study.badrequest.question.query.dto.QuestionSearchCondition;
 
 import com.study.badrequest.question.query.dao.QuestionQueryService;
-import com.study.badrequest.utils.modelAssembler.QuestionModelAssembler;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -31,16 +31,16 @@ import static org.springframework.http.MediaType.*;
 @Slf4j
 public class QuestionQueryApiController {
     private final QuestionQueryService questionQueryService;
-    private final QuestionModelAssembler questionModelAssembler;
+
 
     @GetMapping(value = QUESTION_BASE_URL, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getQuestions(QuestionSearchCondition condition) {
         log.info("질문 목록 조회");
         QuestionListResult result = questionQueryService.getQuestionList(condition);
 
-        EntityModel<QuestionListResult> entityModel = questionModelAssembler.getQuestionListModel(result, condition);
 
-        return ResponseEntity.ok().body(ApiResponse.success(SUCCESS, entityModel));
+
+        return ResponseEntity.ok().body(ApiResponse.success(SUCCESS, result));
     }
 
     @GetMapping("/api/v2/questions/tagged/{tagName}")
@@ -60,6 +60,6 @@ public class QuestionQueryApiController {
         QuestionDetail questionDetail = questionQueryService.getQuestionDetail(request, response, questionId, information);
 
         return ResponseEntity.ok()
-                .body(ApiResponse.success(SUCCESS, questionModelAssembler.createDetailModel(questionDetail)));
+                .body(ApiResponse.success(SUCCESS, questionDetail));
     }
 }

@@ -8,33 +8,23 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 
-@Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id", "name"})
-@Table(name = "tag", indexes = {
-        @Index(name = "TAG_NAME_IDX", columnList = "name")
-})
 @Getter
-public class Tag {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "tag_id")
-    private Long id;
-    @Column(name = "name")
-    private String name;
-    @Column(name = "count_of_usage")
-    private Integer countOfUsage;
+public final class Tag {
+    private final Long id;
+    private final String name;
+    private final Integer countOfUsage;
 
-    protected Tag(String name, Integer countOfUsage) {
+    private Tag(Long id, String name, Integer countOfUsage) {
+        this.id = id;
         this.name = name;
         this.countOfUsage = countOfUsage;
     }
 
-    public static Tag createTag(String tag) {
-        return new Tag(tag, 0);
+    public static Tag createTag(String name, Integer countOfUsage) {
+        return new Tag(null, name, countOfUsage);
     }
 
-    public void incrementUsage() {
-        ++this.countOfUsage;
+    public static Tag initialize(Long id, String name, Integer countOfUsage) {
+        return new Tag(id, name, countOfUsage);
     }
 }

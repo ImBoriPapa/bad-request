@@ -2,7 +2,7 @@ package com.study.badrequest.recommandation.command.domain;
 
 
 import com.study.badrequest.member.command.infra.persistence.MemberEntity;
-import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.infra.persistence.QuestionEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class QuestionRecommendation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "QUESTION_ID")
-    private Question question;
+    private QuestionEntity question;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "KIND")
@@ -35,34 +35,14 @@ public class QuestionRecommendation {
     @Column(name = "CREATED_AT")
     private LocalDateTime createdAt;
 
-    protected QuestionRecommendation(MemberEntity member, Question question, RecommendationKind kind) {
+    protected QuestionRecommendation(MemberEntity member, QuestionEntity question, RecommendationKind kind) {
         this.member = member;
         this.question = question;
         this.kind = kind;
         this.createdAt = LocalDateTime.now();
     }
 
-    public static QuestionRecommendation createRecommendation(MemberEntity member, Question question, RecommendationKind kind) {
 
-        QuestionRecommendation questionRecommendation = new QuestionRecommendation(member, question, kind);
 
-        if (kind == RecommendationKind.RECOMMENDATION) {
-            questionRecommendation.changeToRecommendation();
-        } else if (kind == RecommendationKind.UN_RECOMMENDATION) {
-            questionRecommendation.changeToUnRecommendation();
-        }
-
-        return questionRecommendation;
-    }
-
-    public void changeToRecommendation() {
-        this.question.getQuestionMetrics().incrementCountOfRecommendations();
-        this.kind = RecommendationKind.RECOMMENDATION;
-    }
-
-    public void changeToUnRecommendation() {
-        this.question.getQuestionMetrics().decrementCountOfRecommendations();
-        this.kind = RecommendationKind.UN_RECOMMENDATION;
-    }
 
 }

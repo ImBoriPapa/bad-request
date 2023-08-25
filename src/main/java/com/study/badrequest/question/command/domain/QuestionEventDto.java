@@ -1,6 +1,6 @@
 package com.study.badrequest.question.command.domain;
 
-import com.study.badrequest.question.command.domain.Question;
+import com.study.badrequest.question.command.infra.persistence.QuestionEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +36,7 @@ public class QuestionEventDto {
     @AllArgsConstructor
     @Getter
     public static class DeleteEvent {
-        private Question question;
+        private QuestionEntity question;
     }
 
     @NoArgsConstructor

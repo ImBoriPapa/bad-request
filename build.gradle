@@ -38,10 +38,8 @@ dependencies {
     implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
     //jpa
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    // MariaDB
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
-
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    // MySQL
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
     //querydsl 추가
     implementation "com.querydsl:querydsl-jpa:5.0.0"
@@ -65,8 +63,6 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     //h2
     runtimeOnly 'com.h2database:h2'
-    //mariadb
-    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     //sql log
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.8'
 

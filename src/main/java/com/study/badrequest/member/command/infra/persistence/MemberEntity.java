@@ -22,8 +22,7 @@ import java.time.format.DateTimeFormatter;
 @EqualsAndHashCode(of = {"id"})
 @Table(name = "member", indexes = {
         @Index(name = "MEMBER_EMAIL_IDX", columnList = "email"),
-        @Index(name = "MEMBER_CONTACT_IDX", columnList = "contact"),
-        @Index(name = "MEMBER_CREATE_DATE_TIME_IDX", columnList = "created_at")
+        @Index(name = "MEMBER_CONTACT_IDX", columnList = "contact")
 })
 public class MemberEntity {
     @Id

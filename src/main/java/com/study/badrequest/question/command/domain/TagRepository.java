@@ -10,9 +10,7 @@ public interface TagRepository {
 
     Optional<Tag> findById(Long id);
 
-    List<Tag> findAllById(Iterable<Long> ids);
+    Optional<Tag> findByName(String name);
 
-    Optional<Tag> findByName(String tag);
-
-    List<Tag> findAllByNameIn(Iterable<String> tags);
+    List<Tag> findAllByNameIn(List<Long> tags);
 }

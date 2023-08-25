@@ -51,13 +51,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class MemberManagementApiController {
     private final MemberManagementService memberManagementService;
     @PostMapping(value = POST_MEMBER_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createMember(HttpServletRequest httpServletRequest, @Validated @RequestBody MemberCreate memberCreate, BindingResult bindingResult) {
+    public ResponseEntity<?> createMember(HttpServletRequest httpServletRequest, @Validated @RequestBody MemberCreateForm memberCreateForm, BindingResult bindingResult) {
         log.info("Create Member Request");
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
         String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
-        final Long memberId = memberManagementService.signupByEmail(memberCreate).getId();
+        final Long memberId = memberManagementService.signupByEmail(memberCreateForm).getId();
 
         return ResponseEntity
                 .created(getLocationUri(memberId))

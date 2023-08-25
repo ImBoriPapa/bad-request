@@ -11,7 +11,6 @@ import com.study.badrequest.member.query.dto.LoggedInMemberInformation;
 import com.study.badrequest.member.query.dto.MemberDetailDto;
 import com.study.badrequest.member.query.dto.MemberProfileDto;
 
-import com.study.badrequest.utils.modelAssembler.MemberResponseModelAssembler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
@@ -33,7 +32,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class MemberQueryApiController {
     private final MemberQueryRepository memberQueryRepository;
-    private final MemberResponseModelAssembler memberResponseModelAssembler;
 
     @GetMapping(value = GET_MEMBER_DETAIL_URL, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity retrieveMemberAccount(@LoggedInMember CurrentMember.Information information, @PathVariable Long memberId) {
@@ -44,11 +42,9 @@ public class MemberQueryApiController {
         MemberDetailDto memberDetailDto = memberQueryRepository.findMemberDetail(memberId)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(NOTFOUND_MEMBER));
 
-        EntityModel<MemberDetailDto> entityModel = memberResponseModelAssembler.retrieveMemberModel(memberDetailDto);
-
         return ResponseEntity
                 .ok()
-                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, memberDetailDto));
     }
 
     /**

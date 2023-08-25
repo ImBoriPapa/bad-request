@@ -6,11 +6,11 @@ import com.study.badrequest.common.response.ApiResponse;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.login.command.application.LoginService;
 
-import com.study.badrequest.utils.modelAssembler.LoginModelAssembler;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.hateoas.EntityModel;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
@@ -37,7 +37,7 @@ import static com.study.badrequest.utils.header.HttpHeaderResolver.ipAddressReso
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
-    private final LoginModelAssembler modelAssembler;
+
 
     @PostMapping(value = EMAIL_LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity loginByEmail(@RequestBody @Validated LoginRequest.Login form,
@@ -51,11 +51,11 @@ public class LoginController {
 
         LoginResponse.LoginDto dto = loginService.emailLoginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
 
-        EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(dto.getId(), dto.getLoggedIn()));
+
 
         return ResponseEntity.ok()
                 .headers(createAuthenticationHeader(dto.getAccessToken(), dto.getRefreshCookie()))
-                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, dto));
     }
 
     @PostMapping(value = LOGOUT_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,10 +63,10 @@ public class LoginController {
         log.info("Logout Request");
         LoginResponse.LogoutResult logoutResult = loginService.logoutProcessing(request, response);
 
-        EntityModel<LoginResponse.LogoutResult> entityModel = modelAssembler.createLogoutModel(logoutResult);
+
 
         return ResponseEntity.ok()
-                .body(ApiResponse.success(LOGOUT_SUCCESS, entityModel));
+                .body(ApiResponse.success(LOGOUT_SUCCESS, logoutResult));
     }
 
     @PostMapping(value = TOKEN_REISSUE_URL, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -87,12 +87,12 @@ public class LoginController {
 
         LoginResponse.LoginDto result = loginService.reissueTokenProcessing(accessToken, refreshTokenValue);
 
-        EntityModel<LoginResponse.ReIssueResult> entityModel = modelAssembler.createReissueModel(new LoginResponse.ReIssueResult(result.getId(), result.getLoggedIn()));
+
 
         return ResponseEntity
                 .ok()
                 .headers(createAuthenticationHeader(result.getAccessToken(), result.getRefreshCookie()))
-                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, entityModel));
+                .body(ApiResponse.success(ApiResponseStatus.SUCCESS, result));
     }
 
     @PostMapping(value = ONE_TIME_CODE_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -105,11 +105,11 @@ public class LoginController {
 
         LoginResponse.LoginDto loginDto = loginService.disposableAuthenticationCodeLoginProcessing(form.getCode(), ipAddressResolver(request));
 
-        EntityModel<LoginResponse.LoginResult> entityModel = modelAssembler.createLoginModel(new LoginResponse.LoginResult(loginDto.getId(), loginDto.getLoggedIn()));
+
 
         return ResponseEntity.ok()
                 .headers(createAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie()))
-                .body(ApiResponse.success(SUCCESS, entityModel));
+                .body(ApiResponse.success(SUCCESS, loginDto));
     }
 
     private HttpHeaders createAuthenticationHeader(String accessToken, ResponseCookie cookie) {

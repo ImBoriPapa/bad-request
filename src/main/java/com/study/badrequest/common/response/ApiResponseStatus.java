@@ -70,8 +70,9 @@ public enum ApiResponseStatus {
     NOT_MATCH_REQUEST_MEMBER_WITH_LOGGED_IN_MEMBER(2008, "요청된 회원과 로그인된 회원의 정보가 일치하지 않습니다.", BAD_REQUEST),
     DUPLICATE_EMAIL(2009, "이미 사용중인 이메일입니다.", BAD_REQUEST),
     DUPLICATE_CONTACT(2010, "이미 사용중인 연락처 입니다.", BAD_REQUEST),
-    NOT_FOUND_TEMPORARY_PASSWORD(2011, "임시비밀번호 정보를 찾을 수 없습니다.", UNAUTHORIZED),
-    FAIL_GET_OAUTH2_USER_INFO(2012, "Oauth 유저 정보를 받아오는것에 실패했습니다.", UNAUTHORIZED),
+    CONTACT_MUST_NOT_BE_NULL(2011, "연락처는 NULL 을 하용하지 않습니다.", BAD_REQUEST),
+    NOT_FOUND_TEMPORARY_PASSWORD(2012, "임시비밀번호 정보를 찾을 수 없습니다.", UNAUTHORIZED),
+    FAIL_GET_OAUTH2_USER_INFO(2013, "Oauth 유저 정보를 받아오는것에 실패했습니다.", UNAUTHORIZED),
     /**
      * 질문
      */
@@ -79,7 +80,8 @@ public enum ApiResponseStatus {
     NOT_EXIST_QUESTION_STATUS_VALUE(2501, "존재하지 않는 질문 상태 입니다.", BAD_REQUEST),
     NOT_FOUND_QUESTION(2505, "질문을 찾을 수 없습니다.", BAD_REQUEST),
     AT_LEAST_ONE_TAG_MUST_BE_USED_AND_AT_MOST_FIVE_TAGS_MUST_BE_USED(2530, "태그는 최소 한개 이상 사용해야합니디.", BAD_REQUEST),
-    CAN_NOT_DELETE_DEFAULT_IMAGE(2200, "기본 이미지는 삭제할 수 없습니다.", BAD_REQUEST),
+    CAN_NOT_DELETE_DEFAULT_IMAGE(2600, "기본 이미지는 삭제할 수 없습니다.", BAD_REQUEST),
+    NOT_FOUND_WRITER(2510, "작성자 정보를 찾을 수 없습니다.", BAD_REQUEST),
 
     /**
      * 답변

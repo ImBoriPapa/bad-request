@@ -2,6 +2,7 @@ package com.study.badrequest.member.command.application;
 
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.application.dto.MemberCreateForm;
 import com.study.badrequest.member.command.domain.dto.MemberChangeContact;
 import com.study.badrequest.member.command.domain.dto.MemberChangePassword;
 import com.study.badrequest.member.command.domain.dto.MemberCreate;
@@ -13,6 +14,7 @@ import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import com.study.badrequest.member.command.domain.imports.ProfileImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +36,26 @@ public class MemberManagementServiceImpl implements MemberManagementService {
 
     @Override
     @Transactional
-    public MemberId signupByEmail(MemberCreate memberCreate) {
+    public MemberId signupByEmail(MemberCreateForm memberCreateForm) {
 
-        validate(memberCreate);
+        validate(memberCreateForm);
 
-        emailDuplicateCheck(memberCreate.email());
+        emailDuplicateCheck(memberCreateForm.email());
 
         ProfileImage defaultProfileImage = profileImageUploader.getDefaultProfileImage();
 
         MemberProfile memberProfile = MemberProfile.createMemberProfile(null, defaultProfileImage);
 
-        Member member = Member.createByEmail(memberCreate, memberProfile, authenticationCodeGenerator, memberPasswordEncoder);
+        Member member = Member.createByEmail(createMemberCreate(memberCreateForm), memberProfile, authenticationCodeGenerator, memberPasswordEncoder);
 
         memberRepository.save(member);
 
         return member.getMemberId();
+    }
+
+
+    private MemberCreate createMemberCreate(MemberCreateForm memberCreateForm) {
+        return new MemberCreate(memberCreateForm.email(), memberCreateForm.password(), memberCreateForm.contact());
     }
 
     @Override
@@ -102,23 +109,23 @@ public class MemberManagementServiceImpl implements MemberManagementService {
         }
     }
 
-    private void validate(MemberCreate memberCreate) {
+    private void validate(MemberCreateForm memberCreateForm) {
 
         final List<String> fieldNames = new ArrayList<>();
 
-        if (memberCreate.email() == null || memberCreate.email().isBlank()) {
+        if (memberCreateForm.email() == null || memberCreateForm.email().isBlank()) {
             fieldNames.add("Email");
         }
 
-        if (memberCreate.password() == null || memberCreate.password().isBlank()) {
+        if (memberCreateForm.password() == null || memberCreateForm.password().isBlank()) {
             fieldNames.add("Password");
         }
 
-//        if (memberCreate.nickname() == null || memberCreate.nickname().isBlank()) {
-//            fieldNames.add("Nickname");
-//        }
+        if (memberCreateForm.nickname() == null || memberCreateForm.nickname().isBlank()) {
+            fieldNames.add("Nickname");
+        }
 
-        if (memberCreate.contact() == null || memberCreate.contact().isBlank()) {
+        if (memberCreateForm.contact() == null || memberCreateForm.contact().isBlank()) {
             fieldNames.add("Contact");
         }
 

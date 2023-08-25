@@ -1,10 +1,15 @@
 package com.study.badrequest.question.command.infra.persistence;
 
-import com.study.badrequest.question.command.domain.Tag;
-import com.study.badrequest.question.command.domain.TagRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TagJpaRepository extends JpaRepository<Tag, Long>, TagRepository {
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+public interface TagJpaRepository extends JpaRepository<TagEntity, Long> {
 
 
+    Optional<TagEntity> findByName(String name);
+
+    List<TagEntity> findByIdIn(Collection<Long> id);
 }
