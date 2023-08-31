@@ -1,6 +1,6 @@
 package com.study.badrequest.question.query.dto;
 
-import com.study.badrequest.question.command.domain.QuestionSortType;
+import com.study.badrequest.question.command.domain.values.QuestionSortType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

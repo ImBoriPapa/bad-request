@@ -3,7 +3,7 @@ package com.study.badrequest.question.query.dao;
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.ExposureStatus;
 import com.study.badrequest.login.command.domain.CurrentMember;
-import com.study.badrequest.question.command.domain.QuestionEventDto;
+import com.study.badrequest.question.command.domain.dto.QuestionEventDto;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.question.query.dto.QuestionDetail;
 import com.study.badrequest.question.query.dto.QuestionListResult;

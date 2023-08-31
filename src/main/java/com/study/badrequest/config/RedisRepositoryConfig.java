@@ -42,5 +42,12 @@ public class RedisRepositoryConfig {
         return template;
     }
 
+    @Bean
+    public RedisTemplate<String, Long> redisTemplateForCount(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Long> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        return template;
+    }
 
 }

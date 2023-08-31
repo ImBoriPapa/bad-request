@@ -1,6 +1,6 @@
 package com.study.badrequest.utils.converter;
 
-import com.study.badrequest.question.command.domain.QuestionSortType;
+import com.study.badrequest.question.command.domain.values.QuestionSortType;
 import org.springframework.core.convert.converter.Converter;
 
 public class BindingParamToQuestionSortCriteria implements Converter<String, QuestionSortType> {

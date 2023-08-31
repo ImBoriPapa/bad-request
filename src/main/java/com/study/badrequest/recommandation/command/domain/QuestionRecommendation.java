@@ -2,7 +2,7 @@ package com.study.badrequest.recommandation.command.domain;
 
 
 import com.study.badrequest.member.command.infra.persistence.MemberEntity;
-import com.study.badrequest.question.command.infra.persistence.QuestionEntity;
+import com.study.badrequest.question.command.infra.persistence.question.QuestionEntity;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

@@ -14,8 +14,8 @@ import com.study.badrequest.question.query.dto.*;
 import com.study.badrequest.recommandation.command.domain.QuestionRecommendation;
 
 
-import com.study.badrequest.question.command.domain.QuestionSortType;
-import com.study.badrequest.question.command.domain.QuestionTag;
+import com.study.badrequest.question.command.domain.values.QuestionSortType;
+import com.study.badrequest.question.command.domain.model.QuestionTag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +27,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
-import static com.study.badrequest.question.command.domain.QuestionSortType.*;
+import static com.study.badrequest.question.command.domain.values.QuestionSortType.*;
 
 
 @Repository
