@@ -37,6 +37,7 @@ Content-Type: application/json
 Authorization: {{access_token}}
 
 {
+  "memberId": 123,
   "title": "제목",
   "contents": "내용 입니다.!!",
   "tags": [

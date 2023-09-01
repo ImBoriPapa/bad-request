@@ -10,15 +10,15 @@ import java.util.Optional;
 @Repository
 @RequiredArgsConstructor
 public class CountOfViewRepositoryImpl implements CountOfViewRepository {
-    private final ViewCountOfQuestionJpaRepository viewCountOfQuestionJpaRepository;
+    private final CountOfViewJpaRepository countOfViewJpaRepository;
 
     @Override
     public CountOfView save(CountOfView countOfView) {
-        return viewCountOfQuestionJpaRepository.save(CountOfViewEntity.fromModel(countOfView)).toModel();
+        return countOfViewJpaRepository.save(CountOfViewEntity.fromModel(countOfView)).toModel();
     }
 
     @Override
     public Optional<CountOfView> findByCount(Long count) {
-        return viewCountOfQuestionJpaRepository.findByCount(count).map(CountOfViewEntity::toModel);
+        return countOfViewJpaRepository.findByCount(count).map(CountOfViewEntity::toModel);
     }
 }

@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface ViewCountOfQuestionJpaRepository extends JpaRepository<CountOfViewEntity,Long> {
+public interface CountOfViewJpaRepository extends JpaRepository<CountOfViewEntity,Long> {
     Optional<CountOfViewEntity> findByCount(Long count);
 }

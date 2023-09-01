@@ -10,7 +10,7 @@ public interface AttachedImageRepository {
 
     List<AttachedImage> saveAll(List<AttachedImage> attachedImages);
 
-    List<AttachedImage> findAllByIdsIn(List<Long> ids);
+    List<AttachedImage> findAllByIdIn(List<Long> ids);
 
 
 }

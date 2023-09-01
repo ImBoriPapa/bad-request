@@ -2,6 +2,7 @@ package com.study.badrequest.question.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.common.response.ApiResponseStatus;
+import com.study.badrequest.question.command.application.dto.CreateQuestionRequest;
 import com.study.badrequest.question.command.domain.dto.CreateQuestion;
 import com.study.badrequest.question.command.domain.dto.MemberInformation;
 import com.study.badrequest.question.command.domain.dto.RegisterWriter;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
-public class QuestionCreateServiceImpl {
+public class QuestionCreateServiceImpl implements QuestionCreateService{
     private final WriterRepository writerRepository;
     private final MemberInformationRepository memberInformationRepository;
     private final TagRepository tagRepository;
@@ -33,24 +34,26 @@ public class QuestionCreateServiceImpl {
     private final CountOfAnswerRepository countOfAnswerRepository;
     private final AttachedImageRepository attachedImageRepository;
 
-
+    @Override
     @Transactional
-    public Long createQuestion(Long memberId, String title, String contents, List<Long> tagIds, List<Long> images) {
+    public Long createQuestion(CreateQuestionRequest request) {
         //질문 저장
-        Question save = questionRepository.save(Question.createQuestion(createForm(memberId, title, contents)));
+        Question question = questionRepository.save(Question.createQuestion(createForm(request.memberId(), request.title(), request.contents())));
         //태그 저장
-        saveQuestionTags(tagIds, save);
+        saveQuestionTags(request.tagIds(), question);
         //이미지 저장
-        saveImages(images);
+        saveImages(request.imageIds(), question);
 
-        return save.getId();
+        return question.getId();
     }
 
-    private void saveImages(List<Long> images) {
+    private void saveImages(List<Long> images, Question question) {
         //임시 저장된 이미지 영구 저장으로 변경
         if (!images.isEmpty()) {
-            List<AttachedImage> attachedImages = attachedImageRepository.findAllByIdsIn(images);
-            attachedImageRepository.saveAll(attachedImages.stream().map(AttachedImage::tempToSave).toList());
+            List<AttachedImage> attachedImages = attachedImageRepository.findAllByIdIn(images);
+            attachedImageRepository.saveAll(attachedImages.stream()
+                    .map(attachedImage -> attachedImage.tempToSave(question))
+                    .toList());
         }
     }
 
