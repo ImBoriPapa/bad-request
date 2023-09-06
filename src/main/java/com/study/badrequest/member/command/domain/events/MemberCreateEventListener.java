@@ -1,6 +1,5 @@
 package com.study.badrequest.member.command.domain.events;
 
-import com.study.badrequest.member.command.domain.model.MemberEventDto;
 import com.study.badrequest.blog.command.application.BlogService;
 import com.study.badrequest.mail.command.application.MemberMailService;
 import com.study.badrequest.member.command.application.MemberProfileService;

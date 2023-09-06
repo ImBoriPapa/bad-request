@@ -3,8 +3,8 @@ package com.study.badrequest.member.command.infra.persistence;
 
 import com.study.badrequest.member.command.domain.dto.MemberInitialize;
 import com.study.badrequest.member.command.domain.model.Member;
-import com.study.badrequest.member.command.domain.model.MemberPassword;
-import com.study.badrequest.member.command.domain.values.AccountStatus;
+import com.study.badrequest.member.command.domain.values.MemberPassword;
+import com.study.badrequest.member.command.domain.values.MemberStatus;
 import com.study.badrequest.member.command.domain.values.Authority;
 import com.study.badrequest.member.command.domain.values.PasswordType;
 import com.study.badrequest.member.command.domain.values.RegistrationType;
@@ -56,7 +56,7 @@ public class MemberEntity {
     private String ipAddress;
     @Column(name = "account_status")
     @Enumerated(EnumType.STRING)
-    private AccountStatus accountStatus;
+    private MemberStatus memberStatus;
     @Column(name = "sign_in_at")
     private LocalDateTime signInAt;
     @Column(name = "updated_at")
@@ -65,7 +65,7 @@ public class MemberEntity {
     private LocalDateTime resignAt;
 
     @Builder(access = AccessLevel.PROTECTED)
-    public MemberEntity(Long id, String authenticationCode, String oauthId, String email, MemberProfileEntity memberProfile, RegistrationType registrationType, String password, PasswordType passwordType, LocalDateTime passwordCreatedAt, String contact, Authority authority, String ipAddress, AccountStatus accountStatus, LocalDateTime signInAt, LocalDateTime updatedAt, LocalDateTime resignAt) {
+    public MemberEntity(Long id, String authenticationCode, String oauthId, String email, MemberProfileEntity memberProfile, RegistrationType registrationType, String password, PasswordType passwordType, LocalDateTime passwordCreatedAt, String contact, Authority authority, String ipAddress, MemberStatus memberStatus, LocalDateTime signInAt, LocalDateTime updatedAt, LocalDateTime resignAt) {
         this.id = id;
         this.authenticationCode = authenticationCode;
         this.oauthId = oauthId;
@@ -78,7 +78,7 @@ public class MemberEntity {
         this.contact = contact;
         this.authority = authority;
         this.ipAddress = ipAddress;
-        this.accountStatus = accountStatus;
+        this.memberStatus = memberStatus;
         this.signInAt = signInAt;
         this.updatedAt = updatedAt;
         this.resignAt = resignAt;
@@ -89,15 +89,15 @@ public class MemberEntity {
                 .id(member.getMemberId().getId())
                 .authenticationCode(member.getAuthenticationCode())
                 .oauthId(member.getOauthId())
-                .email(member.getMemberEmail().getEmail())
-                .memberProfile(MemberProfileEntity.fromModel(member.getMemberProfile()))
+                .email(member.getEmail().getEmail())
+                .memberProfile(MemberProfileEntity.fromModel(member.getProfile()))
                 .registrationType(member.getRegistrationType())
-                .password(member.getMemberPassword().getPassword())
-                .passwordType(member.getMemberPassword().getPasswordType())
-                .passwordCreatedAt(member.getMemberPassword().getCreatedAt())
+                .password(member.getPassword().getPassword())
+                .passwordType(member.getPassword().getPasswordType())
+                .passwordCreatedAt(member.getPassword().getCreatedAt())
                 .contact(member.getContact())
                 .authority(member.getAuthority())
-                .accountStatus(member.getAccountStatus())
+                .memberStatus(member.getMemberStatus())
                 .signInAt(member.getSignInAt())
                 .updatedAt(member.getUpdatedAt())
                 .resignAt(member.getResignAt())
@@ -115,7 +115,7 @@ public class MemberEntity {
                 .memberPassword(new MemberPassword(getPassword(), getPasswordType(), getPasswordCreatedAt()))
                 .contact(getContact())
                 .authority(getAuthority())
-                .accountStatus(getAccountStatus())
+                .memberStatus(getMemberStatus())
                 .signInAt(getSignInAt())
                 .updatedAt(getUpdatedAt())
                 .resignAt(getResignAt())

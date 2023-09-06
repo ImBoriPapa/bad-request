@@ -2,10 +2,10 @@ package com.study.badrequest.member.command.interfaces;
 
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.login.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CustomMemberPrincipal;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.application.MemberProfileService;
-import com.study.badrequest.member.command.domain.model.MemberId;
+import com.study.badrequest.member.command.domain.values.MemberId;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
 import com.study.badrequest.utils.verification.RequestValidUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,13 +30,13 @@ public class MemberProfileApiController {
     @PatchMapping(value = PATCH_MEMBER_NICKNAME, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity changeNickname(@PathVariable Long memberId,
                                          @Validated @RequestBody MemberRequest.ChangeNickname form, BindingResult bindingResult,
-                                         @LoggedInMember CurrentMember.Information information,
+                                         @LoggedInMember CustomMemberPrincipal information,
                                          HttpServletRequest request
     ) {
         log.info("Nickname Change Request: memberId: {},", memberId);
         String ipAddress = HttpHeaderResolver.ipAddressResolver(request);
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
-        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getMemberId());
 
         memberProfileService.changeNickname(new MemberId(memberId),null);
 

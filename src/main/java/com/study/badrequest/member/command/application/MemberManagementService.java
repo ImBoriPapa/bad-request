@@ -3,8 +3,7 @@ package com.study.badrequest.member.command.application;
 import com.study.badrequest.member.command.application.dto.MemberCreateForm;
 import com.study.badrequest.member.command.domain.dto.MemberChangeContact;
 import com.study.badrequest.member.command.domain.dto.MemberChangePassword;
-import com.study.badrequest.member.command.domain.dto.MemberCreate;
-import com.study.badrequest.member.command.domain.model.MemberId;
+import com.study.badrequest.member.command.domain.values.MemberId;
 import com.study.badrequest.member.command.domain.dto.MemberResign;
 
 import java.time.LocalDateTime;

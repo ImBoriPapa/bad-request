@@ -3,13 +3,10 @@ package com.study.badrequest.member.command.domain.model;
 import com.study.badrequest.active.command.domain.ActivityAction;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.dto.*;
-import com.study.badrequest.member.command.domain.imports.AuthenticationCodeGenerator;
 import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
 
-import com.study.badrequest.member.command.domain.values.AccountStatus;
-import com.study.badrequest.member.command.domain.values.Authority;
+import com.study.badrequest.member.command.domain.values.*;
 
-import com.study.badrequest.member.command.domain.values.RegistrationType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,7 +16,7 @@ import java.time.LocalDateTime;
 
 import static com.study.badrequest.common.response.ApiResponseStatus.*;
 import static com.study.badrequest.member.command.domain.values.PasswordType.*;
-import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
+import static com.study.badrequest.member.command.domain.values.MemberStatus.*;
 import static com.study.badrequest.member.command.domain.values.Authority.*;
 import static com.study.badrequest.member.command.domain.values.RegistrationType.*;
 import static java.time.LocalDateTime.*;
@@ -31,75 +28,96 @@ public final class Member {
     private final MemberId memberId;
     private final String authenticationCode;
     private final String oauthId;
-    private final MemberEmail memberEmail;
-    private final MemberProfile memberProfile;
+    private final MemberEmail email;
+    private final MemberProfile profile;
     private final RegistrationType registrationType;
-    private final MemberPassword memberPassword;
+    private final MemberPassword password;
     private final String contact;
     private final Authority authority;
-    private final AccountStatus accountStatus;
+    private final MemberStatus memberStatus;
     private final LocalDateTime signInAt;
     private final LocalDateTime updatedAt;
     private final LocalDateTime resignAt;
 
     @Builder(access = PRIVATE)
-    private Member(MemberId memberId, String authenticationCode, String oauthId, MemberEmail memberEmail, MemberProfile memberProfile, RegistrationType registrationType, MemberPassword memberPassword, String contact, Authority authority, AccountStatus accountStatus, LocalDateTime signInAt, LocalDateTime updatedAt, LocalDateTime resignAt) {
-
-        validateMemberPassword(memberPassword);
-        validateContact(contact);
+    private Member(MemberId memberId, String authenticationCode, String oauthId, MemberEmail email, MemberProfile profile, RegistrationType registrationType, MemberPassword password, String contact, Authority authority, MemberStatus memberStatus, LocalDateTime signInAt, LocalDateTime updatedAt, LocalDateTime resignAt) {
 
         this.memberId = memberId;
         this.authenticationCode = authenticationCode;
         this.oauthId = oauthId;
-        this.memberEmail = memberEmail;
-        this.memberProfile = memberProfile;
+        this.email = email;
+        this.profile = profile;
         this.registrationType = registrationType;
-        this.memberPassword = memberPassword;
+        this.password = password;
         this.contact = contact;
         this.authority = authority;
-        this.accountStatus = accountStatus;
+        this.memberStatus = memberStatus;
         this.signInAt = signInAt;
         this.updatedAt = updatedAt;
         this.resignAt = resignAt;
     }
 
     public static Member initialize(MemberInitialize initialize) {
-
-        if (initialize.memberId() == null) {
-            throw new IllegalArgumentException("Member initialize method must have memberId");
-        }
-
         return Member.builder()
                 .memberId(new MemberId(initialize.memberId()))
                 .authenticationCode(initialize.authenticationCode())
                 .oauthId(initialize.oauthId())
-                .memberEmail(new MemberEmail(initialize.memberEmail()))
-                .memberProfile(initialize.memberProfile())
+                .email(MemberEmail.createMemberEmail(initialize.memberEmail()))
+                .profile(initialize.memberProfile())
                 .registrationType(initialize.registrationType())
-                .memberPassword(initialize.memberPassword())
+                .password(initialize.memberPassword())
                 .contact(initialize.contact())
                 .authority(initialize.authority())
-                .accountStatus(initialize.accountStatus())
+                .memberStatus(initialize.memberStatus())
                 .signInAt(initialize.signInAt())
                 .updatedAt(initialize.updatedAt())
                 .resignAt(initialize.resignAt())
                 .build();
     }
 
-    public static Member createByEmail(MemberCreate memberCreate, MemberProfile memberProfile, AuthenticationCodeGenerator authenticationCodeGenerator, MemberPasswordEncoder memberPasswordEncoder) {
+    public static Member createByEmail(CreateMemberByEmail createMemberByEmail) {
 
         return Member.builder()
-                .memberEmail(new MemberEmail(memberCreate.email()))
-                .authenticationCode(authenticationCodeGenerator.generate())
-                .memberPassword(new MemberPassword(memberPasswordEncoder.encode(memberCreate.password()), AVAILABLE, LocalDateTime.now()))
-                .memberProfile(memberProfile)
+                .email(MemberEmail.createMemberEmail(createMemberByEmail.email()))
+                .authenticationCode(createMemberByEmail.authenticationCodeGenerator().generate())
+                .password(new MemberPassword(createMemberByEmail.memberPasswordEncoder().encode(createMemberByEmail.password()), AVAILABLE, LocalDateTime.now()))
+                .profile(createMemberByEmail.memberProfile())
                 .registrationType(BAD_REQUEST)
-                .contact(memberCreate.contact())
+                .contact(createMemberByEmail.contact())
                 .authority(MEMBER)
-                .accountStatus(ACTIVE)
+                .memberStatus(ACTIVE)
                 .signInAt(now())
                 .build();
     }
+
+    public Member loginWithEmail(MemberPasswordEncoder memberPasswordEncoder, String password) {
+        //인증된 이메일인지 확인
+        if (memberStatus == BEFORE_AUTHENTICATION) {
+            throw CustomRuntimeException.createWithApiResponseStatus(IS_NOT_CONFIRMED_MAIL);
+        }
+        //BAD_REQUEST 로 등록된 이메일인지 확인
+        if (this.registrationType != BAD_REQUEST) {
+            throw CustomRuntimeException.createWithApiResponseStatus(ALREADY_REGISTERED_BY_OAUTH2);
+        }
+        //임시비밀번호 확인
+        if (this.password.getPasswordType() == TEMPORARY) {
+            if (this.password.getCreatedAt().plusDays(1).isBefore(LocalDateTime.now())) {
+                throw CustomRuntimeException.createWithApiResponseStatus(IS_EXPIRED_TEMPORARY_PASSWORD);
+            }
+            if (!memberPasswordEncoder.matches(password, this.password.getPassword())) {
+                throw CustomRuntimeException.createWithApiResponseStatus(LOGIN_FAIL);
+            }
+
+            return this;
+        }
+        //비밀번호 확인
+        if (!memberPasswordEncoder.matches(password, this.password.getPassword())) {
+            throw CustomRuntimeException.createWithApiResponseStatus(LOGIN_FAIL);
+        }
+
+        return this;
+    }
+
 
     private void validateMemberPassword(MemberPassword memberPassword) {
         if (memberPassword == null) {
@@ -115,8 +133,8 @@ public final class Member {
 
     public Member changePassword(MemberChangePassword changePassword, MemberPasswordEncoder memberPasswordEncoder) {
 
-        if (getMemberPassword().getPasswordType() == TEMPORARY) {
-            if (LocalDateTime.now().isAfter(getMemberPassword().getCreatedAt())) {
+        if (getPassword().getPasswordType() == TEMPORARY) {
+            if (LocalDateTime.now().isAfter(getPassword().getCreatedAt())) {
                 throw CustomRuntimeException.createWithApiResponseStatus(IS_EXPIRED_TEMPORARY_PASSWORD);
             }
         }
@@ -125,7 +143,7 @@ public final class Member {
             throw CustomRuntimeException.createWithApiResponseStatus(NEW_PASSWORD_CANNOT_BE_SAME_AS_CURRENT);
         }
 
-        if (!memberPasswordEncoder.matches(changePassword.oldPassword(), getMemberPassword().getPassword())) {
+        if (!memberPasswordEncoder.matches(changePassword.oldPassword(), getPassword().getPassword())) {
             throw CustomRuntimeException.createWithApiResponseStatus(WRONG_PASSWORD);
         }
 
@@ -133,15 +151,15 @@ public final class Member {
 
         return Member.builder()
                 .memberId(getMemberId())
-                .memberEmail(getMemberEmail())
+                .email(getEmail())
                 .oauthId(getOauthId())
                 .authenticationCode(getAuthenticationCode())
-                .memberPassword(new MemberPassword(changed, AVAILABLE, LocalDateTime.now()))
-                .memberProfile(getMemberProfile())
+                .password(new MemberPassword(changed, AVAILABLE, LocalDateTime.now()))
+                .profile(getProfile())
                 .registrationType(getRegistrationType())
                 .contact(getContact())
                 .authority(getAuthority())
-                .accountStatus(getAccountStatus())
+                .memberStatus(getMemberStatus())
                 .signInAt(getSignInAt())
                 .updatedAt(LocalDateTime.now())
                 .resignAt(getResignAt())
@@ -152,15 +170,15 @@ public final class Member {
 
         return Member.builder()
                 .memberId(getMemberId())
-                .memberEmail(getMemberEmail())
+                .email(getEmail())
                 .oauthId(getOauthId())
                 .authenticationCode(getAuthenticationCode())
-                .memberPassword(getMemberPassword())
-                .memberProfile(getMemberProfile())
+                .password(getPassword())
+                .profile(getProfile())
                 .registrationType(getRegistrationType())
                 .contact(contact.contact())
                 .authority(getAuthority())
-                .accountStatus(getAccountStatus())
+                .memberStatus(getMemberStatus())
                 .signInAt(getSignInAt())
                 .updatedAt(LocalDateTime.now())
                 .resignAt(getResignAt())
@@ -169,21 +187,21 @@ public final class Member {
 
     public Member resign(MemberResign memberResign, MemberPasswordEncoder memberPasswordEncoder) {
 
-        if (!memberPasswordEncoder.matches(memberResign.password(), getMemberPassword().getPassword())) {
+        if (!memberPasswordEncoder.matches(memberResign.password(), getPassword().getPassword())) {
             throw CustomRuntimeException.createWithApiResponseStatus(WRONG_PASSWORD);
         }
 
         return Member.builder()
                 .memberId(getMemberId())
-                .memberEmail(getMemberEmail())
+                .email(getEmail())
                 .oauthId(getOauthId())
                 .authenticationCode(getAuthenticationCode())
-                .memberPassword(getMemberPassword())
-                .memberProfile(getMemberProfile())
+                .password(getPassword())
+                .profile(getProfile())
                 .registrationType(getRegistrationType())
                 .contact(getContact())
                 .authority(getAuthority())
-                .accountStatus(RESIGNED)
+                .memberStatus(RESIGNED)
                 .signInAt(getSignInAt())
                 .updatedAt(getUpdatedAt())
                 .resignAt(LocalDateTime.now())
@@ -196,15 +214,15 @@ public final class Member {
 
         return Member.builder()
                 .memberId(getMemberId())
-                .memberEmail(getMemberEmail())
+                .email(getEmail())
                 .oauthId(getOauthId())
                 .authenticationCode(getAuthenticationCode())
-                .memberPassword(temporaryPassword)
-                .memberProfile(getMemberProfile())
+                .password(temporaryPassword)
+                .profile(getProfile())
                 .registrationType(getRegistrationType())
                 .contact(getContact())
                 .authority(getAuthority())
-                .accountStatus(USING_TEMPORARY_PASSWORD)
+                .memberStatus(USING_TEMPORARY_PASSWORD)
                 .signInAt(getSignInAt())
                 .updatedAt(getUpdatedAt())
                 .resignAt(getSignInAt())
@@ -216,19 +234,19 @@ public final class Member {
     }
 
     public Member increaseActiveScore(ActivityAction activityAction) {
-        MemberProfile increaseActiveScore = this.memberProfile.increaseActiveScore(activityAction);
+        MemberProfile increaseActiveScore = this.profile.increaseActiveScore(activityAction);
 
         return Member.builder()
                 .memberId(getMemberId())
-                .memberEmail(getMemberEmail())
+                .email(getEmail())
                 .oauthId(getOauthId())
                 .authenticationCode(getAuthenticationCode())
-                .memberPassword(getMemberPassword())
-                .memberProfile(increaseActiveScore)
+                .password(getPassword())
+                .profile(increaseActiveScore)
                 .registrationType(getRegistrationType())
                 .contact(getContact())
                 .authority(getAuthority())
-                .accountStatus(USING_TEMPORARY_PASSWORD)
+                .memberStatus(USING_TEMPORARY_PASSWORD)
                 .signInAt(getSignInAt())
                 .updatedAt(getUpdatedAt())
                 .resignAt(getSignInAt())

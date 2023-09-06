@@ -5,16 +5,16 @@ import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.application.dto.MemberCreateForm;
 import com.study.badrequest.member.command.domain.dto.MemberChangeContact;
 import com.study.badrequest.member.command.domain.dto.MemberChangePassword;
-import com.study.badrequest.member.command.domain.dto.MemberCreate;
+import com.study.badrequest.member.command.domain.dto.CreateMemberByEmail;
 import com.study.badrequest.member.command.domain.dto.MemberResign;
 import com.study.badrequest.member.command.domain.imports.AuthenticationCodeGenerator;
 import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
 import com.study.badrequest.member.command.domain.model.*;
 import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import com.study.badrequest.member.command.domain.imports.ProfileImageUploader;
+import com.study.badrequest.member.command.domain.values.MemberId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.study.badrequest.common.response.ApiResponseStatus.*;
-import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
+import static com.study.badrequest.member.command.domain.values.MemberStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,18 +44,15 @@ public class MemberManagementServiceImpl implements MemberManagementService {
 
         ProfileImage defaultProfileImage = profileImageUploader.getDefaultProfileImage();
 
-        MemberProfile memberProfile = MemberProfile.createMemberProfile(null, defaultProfileImage);
+        MemberProfile memberProfile = MemberProfile.createMemberProfile(memberCreateForm.nickname(), defaultProfileImage);
 
-        Member member = Member.createByEmail(createMemberCreate(memberCreateForm), memberProfile, authenticationCodeGenerator, memberPasswordEncoder);
+        CreateMemberByEmail createMemberByEmail = new CreateMemberByEmail(memberCreateForm.email(), memberCreateForm.password(), memberCreateForm.contact(), memberProfile, authenticationCodeGenerator, memberPasswordEncoder);
+
+        Member member = Member.createByEmail(createMemberByEmail);
 
         memberRepository.save(member);
 
         return member.getMemberId();
-    }
-
-
-    private MemberCreate createMemberCreate(MemberCreateForm memberCreateForm) {
-        return new MemberCreate(memberCreateForm.email(), memberCreateForm.password(), memberCreateForm.contact());
     }
 
     @Override
@@ -88,7 +85,7 @@ public class MemberManagementServiceImpl implements MemberManagementService {
     }
 
     private void duplicateCheckContract(List<Member> members) {
-        boolean isDuplicateContact = members.stream().anyMatch(member -> member.getAccountStatus() == ACTIVE);
+        boolean isDuplicateContact = members.stream().anyMatch(member -> member.getMemberStatus() == ACTIVE);
 
         if (isDuplicateContact) {
             throw CustomRuntimeException.createWithApiResponseStatus(DUPLICATE_CONTACT);
@@ -102,7 +99,7 @@ public class MemberManagementServiceImpl implements MemberManagementService {
     private void emailDuplicateCheck(String email) {
 
         boolean exists = memberRepository.findMembersByEmail(email).stream()
-                .anyMatch(member -> member.getAccountStatus() == ACTIVE);
+                .anyMatch(member -> member.getMemberStatus() == ACTIVE);
 
         if (exists) {
             throw CustomRuntimeException.createWithApiResponseStatus(DUPLICATE_EMAIL);

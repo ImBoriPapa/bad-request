@@ -4,15 +4,13 @@ package com.study.badrequest.member.command.interfaces;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.study.badrequest.common.annotation.LoggedInMember;
 import com.study.badrequest.common.response.ApiResponse;
-import com.study.badrequest.login.command.interfaces.LoginController;
 import com.study.badrequest.member.command.application.*;
 import com.study.badrequest.member.command.application.dto.*;
-import com.study.badrequest.login.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CustomMemberPrincipal;
 
-import com.study.badrequest.member.command.domain.model.MemberId;
+import com.study.badrequest.member.command.domain.values.MemberId;
 import com.study.badrequest.member.command.domain.dto.MemberChangeContact;
 import com.study.badrequest.member.command.domain.dto.MemberChangePassword;
-import com.study.badrequest.member.command.domain.dto.MemberCreate;
 import com.study.badrequest.member.command.domain.dto.MemberResign;
 import com.study.badrequest.member.query.interfaces.MemberQueryApiController;
 import com.study.badrequest.utils.header.HttpHeaderResolver;
@@ -107,8 +105,7 @@ public class MemberManagementApiController {
     private EntityModel<Create> getCreateEntityModel(Create create) {
 
         List<Link> links = List.of(
-                linkTo(methodOn(MemberManagementApiController.class).createMember(null, null, null)).withSelfRel(),
-                linkTo(methodOn(LoginController.class).loginByEmail(null, null, null)).withRel("Login")
+                linkTo(methodOn(MemberManagementApiController.class).createMember(null, null, null)).withSelfRel()
         );
 
         return EntityModel.of(create, links);
@@ -135,13 +132,13 @@ public class MemberManagementApiController {
     @PatchMapping(value = PATCH_MEMBER_PASSWORD_URL, consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<?> patchPassword(@Validated
                                            @PathVariable Long memberId, @RequestBody MemberChangePassword memberChangePassword,
-                                           @LoggedInMember CurrentMember.Information information, BindingResult bindingResult, HttpServletRequest httpServletRequest
+                                           @LoggedInMember CustomMemberPrincipal information, BindingResult bindingResult, HttpServletRequest httpServletRequest
     ) {
         log.info("[비밀번호 변경 요청 memberId: {}, password: {}, password: {}]", memberId, "PROTECTED", "PROTECTED");
 
         String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
-        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getMemberId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
@@ -182,14 +179,14 @@ public class MemberManagementApiController {
     public ResponseEntity<?> patchContact(@Validated
                                           @PathVariable Long memberId,
                                           @RequestBody MemberChangeContact memberChangeContact,
-                                          @LoggedInMember CurrentMember.Information information,
+                                          @LoggedInMember CustomMemberPrincipal information,
                                           BindingResult bindingResult,
                                           HttpServletRequest httpServletRequest) {
 
 
         String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
-        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getMemberId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 
@@ -221,7 +218,7 @@ public class MemberManagementApiController {
     @DeleteMapping(DELETE_MEMBER_URL)
     public ResponseEntity<?> deleteMember(@Validated @PathVariable Long memberId,
                                           @RequestBody MemberResign memberResign,
-                                          @LoggedInMember CurrentMember.Information information, BindingResult bindingResult,
+                                          @LoggedInMember CustomMemberPrincipal information, BindingResult bindingResult,
                                           HttpServletRequest httpServletRequest
     ) {
 
@@ -229,7 +226,7 @@ public class MemberManagementApiController {
 
         String ipAddress = HttpHeaderResolver.ipAddressResolver(httpServletRequest);
 
-        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getId());
+        RequestValidUtils.throwMemberExceptionIfNotMatchMemberId(memberId, information.getMemberId());
 
         RequestValidUtils.throwValidationExceptionIfErrors(bindingResult);
 

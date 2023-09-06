@@ -1,6 +1,6 @@
 package com.study.badrequest.login.command.domain;
 
-import com.study.badrequest.member.command.domain.model.MemberEventDto;
+import com.study.badrequest.member.command.domain.events.MemberEventDto;
 import com.study.badrequest.record.command.domain.ActionStatus;
 import com.study.badrequest.record.command.application.MemberRecordRequest;
 import com.study.badrequest.mail.command.application.MemberMailService;

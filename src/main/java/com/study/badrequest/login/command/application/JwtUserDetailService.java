@@ -26,7 +26,7 @@ public class JwtUserDetailService implements UserDetailsService {
                 .findMemberByAuthenticationCodeAndCreatedAt(changeableId, MemberEntity.getCreatedAtInAuthenticationCode(changeableId))
                 .map(member ->
                         new MemberPrincipal(
-                                member.getId(),
+                                member.getMemberId().getId(),
                                 member.getAuthenticationCode(),
                                 member.getAuthority().getAuthorities())
                 )

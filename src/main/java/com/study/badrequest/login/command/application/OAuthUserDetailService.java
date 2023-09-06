@@ -4,13 +4,13 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.login.command.domain.MemberPrincipal;
 import com.study.badrequest.login.command.domain.Oauth2UserInformation;
 
-import com.study.badrequest.member.command.domain.model.MemberEventDto;
+import com.study.badrequest.member.command.domain.events.MemberEventDto;
 import com.study.badrequest.common.exception.CustomOauth2LoginException;
-import com.study.badrequest.member.command.domain.values.AccountStatus;
+import com.study.badrequest.member.command.domain.values.MemberStatus;
 import com.study.badrequest.member.command.infra.persistence.MemberEntity;
 import com.study.badrequest.member.command.domain.values.RegistrationType;
 import com.study.badrequest.member.command.domain.repository.MemberRepository;
-import com.study.badrequest.utils.email.EmailUtils;
+import com.study.badrequest.utils.email.EmailFormatter;
 import com.study.badrequest.image.command.infra.uploader.S3ImageUploader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,11 +52,11 @@ public class OAuthUserDetailService extends DefaultOAuth2UserService {
 
         Oauth2UserInformation oauth2UserInformation = getOauth2UserInformation(userRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
 
-        final String email = EmailUtils.convertDomainToLowercase(oauth2UserInformation.getEmail());
+        final String email = EmailFormatter.convertDomainToLowercase(oauth2UserInformation.getEmail());
 
         List<MemberEntity> members = null;
         return members.stream()
-                .filter(member -> member.getAccountStatus() != AccountStatus.RESIGNED)
+                .filter(member -> member.getMemberStatus() != MemberStatus.RESIGNED)
                 .findAny().map(member -> renewOauth2Member(oauth2UserInformation, member))
                 .orElseGet(() -> createNewOauth2Member(oauth2UserInformation));
     }

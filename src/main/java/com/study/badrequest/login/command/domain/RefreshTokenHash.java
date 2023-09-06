@@ -2,7 +2,6 @@ package com.study.badrequest.login.command.domain;
 
 
 
-import com.study.badrequest.member.command.domain.values.Authority;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,28 +15,24 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@RedisHash(value = "refresh")
-public class RefreshToken implements Serializable {
+@RedisHash(value = "refresh_token")
+public class RefreshTokenHash implements Serializable {
     @Id
-    private String authenticationCode;
+    private String id;
     private Long memberId;
     private String token;
-    private Authority authority;
     @TimeToLive(unit = TimeUnit.MILLISECONDS) //만료시간이 되면 데이터베이스에서 삭제
     private long expiration;
 
-    /**
-     * RefreshToken 생성시
-     * authenticationCode 를 키로 token, 권한정보, 만료까지 남은 시간과 인덱스를 설정
-     */
-    @Builder(builderMethodName = "createRefresh")
-    public RefreshToken(String authenticationCode, Long memberId, String token, Authority authority, Long expiration) {
-        this.authenticationCode = authenticationCode;
+
+    protected RefreshTokenHash(String id, Long memberId, String token, Long expiration) {
+        this.id = id;
         this.memberId = memberId;
         this.token = token;
-        this.authority = authority;
         this.expiration = expiration;
     }
+
+
 
 
 }

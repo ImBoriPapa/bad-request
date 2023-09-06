@@ -1,5 +1,8 @@
 package com.study.badrequest.member.command.infra.persistence;
 
+
+import com.querydsl.jpa.impl.JPAQueryFactory;
+
 import com.study.badrequest.member.command.domain.model.Member;
 import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +13,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.study.badrequest.member.command.infra.persistence.QMemberEntity.memberEntity;
+
 @Repository
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
     private final MemberJpaRepository memberJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Optional<Member> findById(Long memberId) {
@@ -25,10 +31,6 @@ public class MemberRepositoryImpl implements MemberRepository {
         return memberJpaRepository.save(MemberEntity.fromModel(member)).toModel();
     }
 
-    @Override
-    public List<MemberEntity> findAll() {
-        return null;
-    }
 
     @Override
     public List<Member> findMembersByEmail(String email) {
@@ -45,7 +47,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<MemberEntity> findMemberByAuthenticationCodeAndCreatedAt(String authenticationCode, LocalDateTime createdAt) {
+    public Optional<Member> findMemberByAuthenticationCodeAndCreatedAt(String authenticationCode, LocalDateTime createdAt) {
         return Optional.empty();
     }
 }

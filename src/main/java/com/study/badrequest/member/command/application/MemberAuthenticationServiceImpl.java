@@ -1,7 +1,6 @@
 package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.member.command.domain.dto.MemberIssueTemporaryPassword;
 import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
 import com.study.badrequest.member.command.domain.imports.TemporaryPasswordGenerator;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.study.badrequest.common.response.ApiResponseStatus.*;
-import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
+import static com.study.badrequest.member.command.domain.values.MemberStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +46,7 @@ public class MemberAuthenticationServiceImpl implements MemberAuthenticationServ
         }
 
         Optional<Member> optionalMember = members.stream()
-                .filter(member -> member.getAccountStatus() == ACTIVE || member.getAccountStatus() == USING_TEMPORARY_PASSWORD)
+                .filter(member -> member.getMemberStatus() == ACTIVE || member.getMemberStatus() == USING_TEMPORARY_PASSWORD)
                 .findFirst();
 
 

@@ -2,19 +2,17 @@ package com.study.badrequest.member.command.domain;
 
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.member.command.domain.dto.MemberCreate;
+import com.study.badrequest.member.command.domain.dto.CreateMemberByEmail;
 import com.study.badrequest.member.command.domain.imports.AuthenticationCodeGenerator;
 import com.study.badrequest.member.command.domain.imports.MemberPasswordEncoder;
 import com.study.badrequest.member.command.domain.model.Member;
 import com.study.badrequest.member.command.domain.model.MemberProfile;
 import com.study.badrequest.member.command.domain.model.ProfileImage;
-import com.study.badrequest.member.command.domain.values.AccountStatus;
-import com.study.badrequest.member.command.domain.values.Authority;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.study.badrequest.member.command.domain.values.AccountStatus.*;
+import static com.study.badrequest.member.command.domain.values.MemberStatus.*;
 import static com.study.badrequest.member.command.domain.values.Authority.*;
 import static org.assertj.core.api.Assertions.*;
 
@@ -49,17 +47,17 @@ class MemberTest {
         final String password = "password1234!@";
         final String contact = null;
 
-        MemberCreate memberCreate = new MemberCreate(email, password, contact);
         MemberProfile memberProfile = MemberProfile.createMemberProfile(nickname, profileImage);
+        CreateMemberByEmail createMemberByEmail = new CreateMemberByEmail(email, password, contact,memberProfile,authenticationCodeGenerator,passwordEncoder);
         //when
 
         //then
-        assertThatThrownBy(() -> Member.createByEmail(memberCreate, memberProfile, authenticationCodeGenerator, passwordEncoder))
+        assertThatThrownBy(() -> Member.createByEmail(createMemberByEmail))
                 .isInstanceOf(CustomRuntimeException.class);
     }
 
     @Test
-    @DisplayName("createByEmail 메서드로 회원 애그리거트 생성 성공")
+    @DisplayName("createByEmail 메서드로 회원 생성 성공")
     void 회원생성_성공_테스트() throws Exception {
         //given
         final String email = "email@email.com";
@@ -79,20 +77,20 @@ class MemberTest {
 
         MemberProfile memberProfile = MemberProfile.createMemberProfile(nickname, profileImage);
 
-        MemberCreate memberCreate = new MemberCreate(email, password, contact);
+        CreateMemberByEmail createMemberByEmail = new CreateMemberByEmail(email, password, contact,memberProfile,authenticationCodeGenerator,passwordEncoder);
 
         //when
-        Member member = Member.createByEmail(memberCreate, memberProfile, codeGenerator, passwordEncoder);
+        Member member = Member.createByEmail(createMemberByEmail);
         //then
         assertThat(member.getMemberId()).isNull();
         assertThat(member.getAuthenticationCode()).isEqualTo(codeGenerator.getCode());
         assertThat(member.getOauthId()).isNull();
-        assertThat(member.getMemberEmail().getEmail()).isEqualTo(email);
-        assertThat(member.getMemberProfile()).isEqualTo(memberProfile);
-        assertThat(passwordEncoder.matches(password, member.getMemberPassword().getPassword())).isTrue();
+        assertThat(member.getEmail().getEmail()).isEqualTo(email);
+        assertThat(member.getProfile()).isEqualTo(memberProfile);
+        assertThat(passwordEncoder.matches(password, member.getPassword().getPassword())).isTrue();
         assertThat(member.getContact()).isEqualTo(contact);
         assertThat(member.getAuthority()).isEqualTo(MEMBER);
-        assertThat(member.getAccountStatus()).isEqualTo(ACTIVE);
+        assertThat(member.getMemberStatus()).isEqualTo(ACTIVE);
     }
 
 }

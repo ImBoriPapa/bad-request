@@ -2,6 +2,8 @@ package com.study.badrequest.utils.jwt;
 
 import com.study.badrequest.common.status.JwtStatus;
 import com.study.badrequest.login.command.interfaces.JwtTokenDto;
+import com.study.badrequest.member.command.domain.values.MemberJwtEncodedPayload;
+import com.study.badrequest.member.query.dto.MemberLoginInformation;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -16,9 +18,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static java.util.concurrent.TimeUnit.DAYS;
-import static java.util.concurrent.TimeUnit.MINUTES;
-
 @Component
 @Slf4j
 public class JwtUtils {
@@ -27,20 +26,13 @@ public class JwtUtils {
     private final int REFRESH_TOKEN_LIFE_DAYS;
     private final Key key;
 
-    /**
-     * 인스턴스 생성시 변수 초기화
-     *
-     * @param SECRETE_KEY
-     * @param ACCESS_TOKEN_LIFETIME_MINUTES
-     * @param REFRESH_TOKEN_LIFE_DAY
-     */
-    public JwtUtils(@Value("${token.secret-key}") String SECRETE_KEY,
-                    @Value("${token.access-life}") int ACCESS_TOKEN_LIFETIME_MINUTES,
-                    @Value("${token.refresh-life}") int REFRESH_TOKEN_LIFE_DAY) {
-        this.SECRETE_KEY = SECRETE_KEY;
-        this.ACCESS_TOKEN_LIFETIME_MINUTES = ACCESS_TOKEN_LIFETIME_MINUTES;
-        this.REFRESH_TOKEN_LIFE_DAYS = REFRESH_TOKEN_LIFE_DAY;
-        this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(SECRETE_KEY.getBytes()).getBytes());
+    public JwtUtils(@Value("${token.secret-key}") String secreteKey,
+                    @Value("${token.access-life}") int accessTokenLifetimeMinutes,
+                    @Value("${token.refresh-life}") int refreshTokenLifeDay) {
+        this.SECRETE_KEY = secreteKey;
+        this.ACCESS_TOKEN_LIFETIME_MINUTES = accessTokenLifetimeMinutes;
+        this.REFRESH_TOKEN_LIFE_DAYS = refreshTokenLifeDay;
+        this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(secreteKey.getBytes()).getBytes());
     }
 
     /**
@@ -50,13 +42,11 @@ public class JwtUtils {
      * 2023/05/12
      * Username 으로 TokenDto 생성 후 반환 -> username -> changeableId
      */
-    public JwtTokenDto generateJwtTokens(String changeableId) {
+    public JwtTokenDto generateJwtTokens(MemberJwtEncodedPayload memberJwtEncodedPayload) {
 
-        log.info("[GENERATE ACCESS TOKEN]");
-        String accessToken = createToken(changeableId, MINUTES, ACCESS_TOKEN_LIFETIME_MINUTES);
+        final String accessToken = createAccessToken(memberJwtEncodedPayload, ACCESS_TOKEN_LIFETIME_MINUTES);
 
-        log.info("[GENERATE REFRESH TOKEN]");
-        String refreshToken = createToken(changeableId, DAYS, REFRESH_TOKEN_LIFE_DAYS);
+        final String refreshToken = createRefreshToken(memberJwtEncodedPayload.getMemberId(), REFRESH_TOKEN_LIFE_DAYS);
 
         return JwtTokenDto.builder()
                 .accessToken(accessToken)
@@ -66,27 +56,28 @@ public class JwtUtils {
                 .build();
     }
 
-    /**
-     * 토큰 생성 로직
-     *
-     * @param username
-     * @param timeUnit
-     * @param lifeTime
-     * @return String token
-     */
-    private String createToken(String username, TimeUnit timeUnit, int lifeTime) {
+
+    private String createAccessToken(MemberJwtEncodedPayload memberJwtEncodedPayload, int lifeTime) {
         return Jwts.builder()
-                .setSubject(username)
-                .setExpiration(new Date(System.currentTimeMillis() + timeUnit.toMillis(lifeTime)))
+                .claim("memberId", memberJwtEncodedPayload.getMemberId())
+                .claim("authority", memberJwtEncodedPayload.getAuthority())
+                .claim("status", memberJwtEncodedPayload.getStatus())
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(lifeTime)))
                 .signWith(this.key, SignatureAlgorithm.HS512)
                 .compact();
     }
 
+    private String createRefreshToken(String memberId, int lifeTime) {
+        return Jwts.builder()
+                .claim("memberId", memberId)
+                .setExpiration(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(lifeTime)))
+                .signWith(this.key, SignatureAlgorithm.HS512)
+                .compact();
+    }
+
+
     /**
      * 토큰 검증 로직
-     *
-     * @param token
-     * @return JwtStatus
      */
     public JwtStatus validateToken(String token) {
 
@@ -114,9 +105,7 @@ public class JwtUtils {
 
 
     /**
-     * 토큰에 저장된 토큰 만료 시간*
-     *
-     * @Return LocalDateTime
+     * 토큰에 저장된 토큰 만료 시간
      */
     public LocalDateTime getExpirationLocalDateTime(String token) {
         return getClaimsJws(token)
@@ -129,8 +118,6 @@ public class JwtUtils {
 
     /**
      * Refresh 토큰 만료까지 남은 시간
-     *
-     * @return long
      */
     public long getExpirationTimeMillis(String token) {
         LocalDateTime expirationDate = getExpirationLocalDateTime(token);
@@ -138,15 +125,12 @@ public class JwtUtils {
         return Duration.between(currentDate, expirationDate).toMillis();
     }
 
-
-    /**
-     * 토큰 바디에 저장된 ChangeableId 반환
-     *
-     * @param token
-     * @return String ChangeableId
-     */
-    public String extractChangeableIdInToken(String token) {
-        return getClaimsJws(token).getBody().getSubject();
+    public MemberJwtEncodedPayload getAccessTokenPayload(String token) {
+        Claims claims = getClaimsJws(token).getBody();
+        String memberId = claims.get("memberId", String.class);
+        String authority = claims.get("authority", String.class);
+        String status = claims.get("status", String.class);
+        return new MemberJwtEncodedPayload(memberId, authority, status);
     }
 
 

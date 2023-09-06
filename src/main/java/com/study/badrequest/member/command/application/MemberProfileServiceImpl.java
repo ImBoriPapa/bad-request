@@ -4,7 +4,7 @@ import com.study.badrequest.active.command.domain.ActivityAction;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.member.command.domain.dto.MemberChangeNickname;
 import com.study.badrequest.member.command.domain.model.Member;
-import com.study.badrequest.member.command.domain.model.MemberId;
+import com.study.badrequest.member.command.domain.values.MemberId;
 import com.study.badrequest.member.command.domain.repository.MemberRepository;
 import com.study.badrequest.member.command.interfaces.MemberRequest;
 import lombok.RequiredArgsConstructor;

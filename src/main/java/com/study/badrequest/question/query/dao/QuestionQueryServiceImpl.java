@@ -2,7 +2,7 @@ package com.study.badrequest.question.query.dao;
 
 import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.status.ExposureStatus;
-import com.study.badrequest.login.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CustomMemberPrincipal;
 import com.study.badrequest.question.command.domain.dto.QuestionEventDto;
 import com.study.badrequest.common.exception.CustomRuntimeException;
 import com.study.badrequest.question.query.dto.QuestionDetail;
@@ -27,11 +27,11 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
     private final ApplicationEventPublisher eventPublisher;
     @Override
     @Transactional(readOnly = true)
-    public QuestionDetail getQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, CurrentMember.Information information) {
+    public QuestionDetail getQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, CustomMemberPrincipal information) {
         log.info("질문 조회 서비스");
-        Long memberId = information == null ? null : information.getId();
 
-        QuestionDetail questionDetail = questionQueryRepository.findQuestionDetail(questionId, memberId, ExposureStatus.PUBLIC)
+
+        QuestionDetail questionDetail = questionQueryRepository.findQuestionDetail(questionId, information.getMemberId(), ExposureStatus.PUBLIC)
                 .orElseThrow(() -> CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.NOT_FOUND_QUESTION));
 
         eventPublisher.publishEvent(new QuestionEventDto.ViewEvent(request, response, questionId));

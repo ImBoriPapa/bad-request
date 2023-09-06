@@ -1,11 +1,11 @@
 package com.study.badrequest.member.command.domain.model;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
+import com.study.badrequest.member.command.domain.values.MemberEmail;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class MemberEmailTest {
 
@@ -16,7 +16,7 @@ class MemberEmailTest {
         String email = "email";
         //when
         //then
-        assertThatThrownBy(() -> new MemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
+        assertThatThrownBy(() -> MemberEmail.createMemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
 
     }
 
@@ -28,7 +28,7 @@ class MemberEmailTest {
         //when
 
         //then
-        assertThatThrownBy(() -> new MemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
+        assertThatThrownBy(() -> MemberEmail.createMemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
 
 
     }
@@ -41,7 +41,7 @@ class MemberEmailTest {
         //when
 
         //then
-        assertThatThrownBy(() -> new MemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
+        assertThatThrownBy(() -> MemberEmail.createMemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
 
 
     }
@@ -54,7 +54,7 @@ class MemberEmailTest {
         //when
 
         //then
-        assertThatThrownBy(() -> new MemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
+        assertThatThrownBy(() -> MemberEmail.createMemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
 
 
     }
@@ -67,7 +67,7 @@ class MemberEmailTest {
         //when
 
         //then
-        assertThatThrownBy(() -> new MemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
+        assertThatThrownBy(() -> MemberEmail.createMemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
 
     }
 
@@ -79,7 +79,7 @@ class MemberEmailTest {
         //when
 
         //then
-        assertThatThrownBy(() -> new MemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
+        assertThatThrownBy(() -> MemberEmail.createMemberEmail(email)).isInstanceOf(CustomRuntimeException.class);
 
     }
 
@@ -90,7 +90,7 @@ class MemberEmailTest {
         final String email = "email@Gmail.com";
         final String expected = "email@gmail.com";
         //when
-        MemberEmail memberEmail = new MemberEmail(email);
+        MemberEmail memberEmail = MemberEmail.createMemberEmail(email);
         //then
         assertThat(memberEmail.getEmail()).isEqualTo(expected);
 

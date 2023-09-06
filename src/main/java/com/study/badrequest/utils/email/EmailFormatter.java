@@ -1,22 +1,13 @@
-package com.study.badrequest.member.command.domain.model;
+package com.study.badrequest.utils.email;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.common.response.ApiResponseStatus;
-import lombok.Getter;
 
-import static com.study.badrequest.common.response.ApiResponseStatus.*;
+import static com.study.badrequest.common.response.ApiResponseStatus.EMAIL_MUST_NOT_BE_NULL;
 import static com.study.badrequest.common.response.ApiResponseStatus.INVALID_EMAIL_FORM;
 
-@Getter
-public final class MemberEmail {
+public class EmailFormatter {
 
-    private final String email;
-
-    public MemberEmail(String email) {
-        this.email = convertDomainToLowercase(email);
-    }
-
-    public String convertDomainToLowercase(String email) {
+    public static String convertDomainToLowercase(String email) {
 
         if (email == null) {
             throw CustomRuntimeException.createWithApiResponseStatus(EMAIL_MUST_NOT_BE_NULL);
@@ -28,7 +19,7 @@ public final class MemberEmail {
 
     }
 
-    private String getDomainPart(String email, int index) {
+    private static String getDomainPart(String email, int index) {
         final String domain = email.substring(index + 1);
 
         if (domain.length() == 0) {
@@ -56,7 +47,7 @@ public final class MemberEmail {
         return domain.toLowerCase().trim();
     }
 
-    private String getLocalPart(String email, int index) {
+    private static String getLocalPart(String email, int index) {
         final String local = email.substring(0, index).trim();
 
         if (local.length() == 0) {
@@ -66,11 +57,13 @@ public final class MemberEmail {
         return local.trim();
     }
 
-    private int getIndex(String email) {
+    private static int getIndex(String email) {
         if (!email.contains("@")) {
             throw CustomRuntimeException.createWithApiResponseStatus(INVALID_EMAIL_FORM);
         }
 
         return email.lastIndexOf('@');
     }
+
+
 }

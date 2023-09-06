@@ -2,7 +2,7 @@ package com.study.badrequest.handler;
 
 import com.study.badrequest.login.command.domain.MemberPrincipal;
 import com.study.badrequest.login.command.domain.CustomAuthorizationRequestRepository;
-import com.study.badrequest.login.command.application.LoginService;
+import com.study.badrequest.member.command.application.LoginService;
 import com.study.badrequest.utils.cookie.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,9 +39,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         MemberPrincipal principal = (MemberPrincipal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        String temporaryAuthenticationCode = loginService.getDisposableAuthenticationCode(principal.getMemberId());
-
-        String targetUrl = determineTargetUrl(request, response, authentication, temporaryAuthenticationCode);
+        String targetUrl = determineTargetUrl(request, response, authentication, null);
 
         clearAuthenticationAttributes(request, response);
 

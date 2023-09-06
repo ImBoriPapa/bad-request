@@ -73,6 +73,9 @@ public enum ApiResponseStatus {
     CONTACT_MUST_NOT_BE_NULL(2011, "연락처는 NULL 을 하용하지 않습니다.", BAD_REQUEST),
     NOT_FOUND_TEMPORARY_PASSWORD(2012, "임시비밀번호 정보를 찾을 수 없습니다.", UNAUTHORIZED),
     FAIL_GET_OAUTH2_USER_INFO(2013, "Oauth 유저 정보를 받아오는것에 실패했습니다.", UNAUTHORIZED),
+    NULL_MEMBER_PROFILE(2014, "회원 정보생성을 위한 프로필 정보를 찾을 수 없습니다.", INTERNAL_SERVER_ERROR),
+    NULL_AUTHENTICATION_CODE_GENERATOR(2016, "인증 코드 생성기를 찾을 수 없습니다.", INTERNAL_SERVER_ERROR),
+    NULL_MEMBER_PASSWORD_ENCODER(2017, "비밀번호 인코더를 찾을 수 없습니다.", INTERNAL_SERVER_ERROR),
     /**
      * 질문
      */

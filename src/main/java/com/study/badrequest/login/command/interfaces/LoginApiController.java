@@ -4,7 +4,7 @@ import com.study.badrequest.common.response.ApiResponseStatus;
 import com.study.badrequest.common.response.ApiResponse;
 
 import com.study.badrequest.common.exception.CustomRuntimeException;
-import com.study.badrequest.login.command.application.LoginService;
+import com.study.badrequest.member.command.application.LoginService;
 
 
 
@@ -17,8 +17,6 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,23 +33,14 @@ import static com.study.badrequest.utils.header.HttpHeaderResolver.ipAddressReso
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginApiController {
     private final LoginService loginService;
 
-
     @PostMapping(value = EMAIL_LOGIN_URL, consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity loginByEmail(@RequestBody @Validated LoginRequest.Login form,
-                                       HttpServletRequest request,
-                                       BindingResult bindingResult) {
+    public ResponseEntity loginByEmail(@RequestBody LoginRequest.Login form, HttpServletRequest request) {
         log.info("이메일 로그인 요청");
 
-        if (bindingResult.hasErrors()) {
-            throw CustomRuntimeException.createWithBindingResults(VALIDATION_ERROR, bindingResult);
-        }
-
         LoginResponse.LoginDto dto = loginService.emailLoginProcessing(form.getEmail(), form.getPassword(), ipAddressResolver(request));
-
-
 
         return ResponseEntity.ok()
                 .headers(createAuthenticationHeader(dto.getAccessToken(), dto.getRefreshCookie()))
@@ -95,22 +84,7 @@ public class LoginController {
                 .body(ApiResponse.success(ApiResponseStatus.SUCCESS, result));
     }
 
-    @PostMapping(value = ONE_TIME_CODE_LOGIN, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity loginByOneTimeAuthenticationCode(@RequestBody LoginRequest.LoginByOneTimeCode form, HttpServletRequest request) {
-        log.info("일회용 코드로 로그인");
 
-        if (form.getCode() == null) {
-            throw CustomRuntimeException.createWithApiResponseStatus(ApiResponseStatus.EMPTY_ONE_TIME_CODE);
-        }
-
-        LoginResponse.LoginDto loginDto = loginService.disposableAuthenticationCodeLoginProcessing(form.getCode(), ipAddressResolver(request));
-
-
-
-        return ResponseEntity.ok()
-                .headers(createAuthenticationHeader(loginDto.getAccessToken(), loginDto.getRefreshCookie()))
-                .body(ApiResponse.success(SUCCESS, loginDto));
-    }
 
     private HttpHeaders createAuthenticationHeader(String accessToken, ResponseCookie cookie) {
         HttpHeaders headers = new HttpHeaders();

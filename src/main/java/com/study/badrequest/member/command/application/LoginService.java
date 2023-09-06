@@ -1,4 +1,4 @@
-package com.study.badrequest.login.command.application;
+package com.study.badrequest.member.command.application;
 
 import com.study.badrequest.login.command.interfaces.LoginResponse;
 
@@ -13,10 +13,4 @@ public interface LoginService {
     LoginResponse.LogoutResult logoutProcessing(HttpServletRequest request, HttpServletResponse response);
 
     LoginResponse.LoginDto reissueTokenProcessing(String accessToken, String refreshToken);
-
-    String getDisposableAuthenticationCode(Long memberId);
-
-    LoginResponse.LoginDto disposableAuthenticationCodeLoginProcessing(String temporaryCode, String ipAddress);
-
-    boolean setAuthenticationInContextHolderByChangeableId(String changeableId);
 }

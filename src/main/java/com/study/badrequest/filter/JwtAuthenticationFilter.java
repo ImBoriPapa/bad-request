@@ -1,10 +1,15 @@
 package com.study.badrequest.filter;
 
-import com.study.badrequest.login.command.application.LoginService;
+import com.study.badrequest.member.command.application.LoginService;
 import com.study.badrequest.common.status.JwtStatus;
+import com.study.badrequest.member.command.domain.values.MemberJwtDecodedPayload;
+import com.study.badrequest.member.command.domain.values.MemberJwtEncodedPayload;
+import com.study.badrequest.utils.jwt.JwtPayloadEncoder;
 import com.study.badrequest.utils.jwt.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.study.badrequest.common.constants.AuthenticationHeaders.JWT_STATUS_HEADER;
+import static com.study.badrequest.utils.authentication.AuthenticationFactory.generateAuthentication;
 import static com.study.badrequest.utils.header.HttpHeaderResolver.accessTokenResolver;
 
 
@@ -45,14 +51,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private void handleJwtStatus(HttpServletRequest request, String accessToken, JwtStatus jwtStatus) {
         switch (jwtStatus) {
             case ACCESS:
-                String changeableId = jwtUtils.extractChangeableIdInToken(accessToken);
-                if (loginServiceImpl.setAuthenticationInContextHolderByChangeableId(changeableId)) {
+
+                MemberJwtEncodedPayload encodedPayload = jwtUtils.getAccessTokenPayload(accessToken);
+                MemberJwtDecodedPayload decodedPayload = new JwtPayloadEncoder().decodedPayload(encodedPayload);
+
+                Authentication authentication = generateAuthentication(decodedPayload.getMemberId(), decodedPayload.getAuthority());
+                
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+
                     log.info("Access token processed successfully");
-                    break;
-                } else {
-                    log.info("Access token status is Logout token");
-                    jwtStatus = JwtStatus.LOGOUT;
-                }
+
                 break;
             case EXPIRED:
                 log.info("[Access token status is EXPIRED token]");

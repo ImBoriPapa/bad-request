@@ -1,4 +1,4 @@
-package com.study.badrequest.member.command.domain.model;
+package com.study.badrequest.member.command.domain.events;
 
 
 

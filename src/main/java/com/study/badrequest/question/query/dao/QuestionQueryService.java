@@ -1,6 +1,6 @@
 package com.study.badrequest.question.query.dao;
 
-import com.study.badrequest.login.command.domain.CurrentMember;
+import com.study.badrequest.login.command.domain.CustomMemberPrincipal;
 import com.study.badrequest.question.query.dto.QuestionDetail;
 import com.study.badrequest.question.query.dto.QuestionListResult;
 import com.study.badrequest.question.query.dto.QuestionSearchCondition;
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface QuestionQueryService {
 
-    QuestionDetail getQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, CurrentMember.Information information);
+    QuestionDetail getQuestionDetail(HttpServletRequest request, HttpServletResponse response, Long questionId, CustomMemberPrincipal principal);
 
     QuestionListResult getQuestionList(QuestionSearchCondition condition);
 

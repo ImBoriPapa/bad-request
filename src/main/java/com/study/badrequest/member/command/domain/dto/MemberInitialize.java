@@ -1,8 +1,8 @@
 package com.study.badrequest.member.command.domain.dto;
 
-import com.study.badrequest.member.command.domain.model.MemberPassword;
+import com.study.badrequest.member.command.domain.values.MemberPassword;
 import com.study.badrequest.member.command.domain.model.MemberProfile;
-import com.study.badrequest.member.command.domain.values.AccountStatus;
+import com.study.badrequest.member.command.domain.values.MemberStatus;
 import com.study.badrequest.member.command.domain.values.Authority;
 import com.study.badrequest.member.command.domain.values.RegistrationType;
 import lombok.Builder;
@@ -19,7 +19,7 @@ public record MemberInitialize(Long memberId,
                                MemberPassword memberPassword,
                                String contact,
                                Authority authority,
-                               AccountStatus accountStatus,
+                               MemberStatus memberStatus,
                                LocalDateTime signInAt,
                                LocalDateTime updatedAt,
                                LocalDateTime resignAt) {
